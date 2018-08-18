@@ -1,5 +1,11 @@
 # dchege711.github.io
 
-~~I am moving to Heroku because I want a dynamic site. Any requests to http://dchege711.github.io/ will be redirected to https://chege-gitau.herokuapp.com/~~
+* Accessible from either [https://www.c13u.com/](https://www.c13u.com/) or [https://dchege711.github.io/](https://dchege711.github.io/)
 
-I want to see how much can be done with a static website.
+* Built using [Jekyll](https://jekyllrb.com/docs/home/), a static site generator.
+
+## Frequent Commands
+
+Generate the current folder into `./_site` using `$ jekyll build --watch`
+
+Fire up the server by running `$ jekyll serve --livereload`
