@@ -8,6 +8,4 @@
 
 * Use the same Github Pages gem as the live one: `$ gem update github-pages`
 
-* Generate the current folder into `./_site` using `$ jekyll build --watch`
-
-* Fire up the server by running `$ jekyll serve --livereload`
+* Fire up the server by running `$ bundle exec jekyll serve --livereload`
