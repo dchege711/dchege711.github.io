@@ -2,6 +2,7 @@
 
 layout: post
 title: Random Stuff On the Internet (#1)
+date: 2018-08-30
 
 ---
 

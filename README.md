@@ -6,6 +6,8 @@
 
 ## Frequent Commands
 
-Generate the current folder into `./_site` using `$ jekyll build --watch`
+* Use the same Github Pages gem as the live one: `$ gem update github-pages`
 
-Fire up the server by running `$ jekyll serve --livereload`
+* Generate the current folder into `./_site` using `$ jekyll build --watch`
+
+* Fire up the server by running `$ jekyll serve --livereload`
