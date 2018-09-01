@@ -6,6 +6,6 @@
 
 ## Frequent Commands
 
-* Use the same Github Pages gem as the live one: `$ gem update github-pages`
+* Use the same Github Pages gem as the live one: `$ bundle update github-pages`
 
 * Fire up the server by running `$ bundle exec jekyll serve --livereload`
