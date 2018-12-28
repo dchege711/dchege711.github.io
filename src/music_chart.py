@@ -7,8 +7,11 @@ Keeps track of my top songs as provided by LastFM
 """
 
 import os
+from glob import glob
 import sqlite3
 import json
+from datetime import date
+import re
 
 import requests
 
@@ -57,7 +60,7 @@ def fetch_top_tracks():
         tracks = []
         while True:
             res_json = sess.get(BASE_URL, params=get_params).json()
-            tracks.append(res_json["toptracks"]["track"])
+            tracks += res_json["toptracks"]["track"]
             metadata = res_json["toptracks"]["@attr"]
             if int(metadata["page"]) < int(metadata["totalPages"]):
                 get_params["page"] = int(metadata["page"]) + 1
@@ -129,8 +132,14 @@ def dump_top_tracks(k=10):
         ), [k]
     )
     tracks = [dict(**x) for x in res.fetchall()]
-    with open("../assets/top_songs.json", "w") as output_file:
+    with open("../_data/top_songs.json", "w") as output_file:
         json.dump(tracks, output_file, indent=2)
+
+    prvs_filepath = glob("../notebooks/_posts/*-top-10-tracks.html")[0]
+    today_str = date.today().strftime("%Y-%m-%d")
+    os.rename(
+        prvs_filepath, re.sub(r"\d{4}-\d{2}-\d{2}", today_str, prvs_filepath)
+    )
 
 if __name__ == "__main__":
     initialize_db()
