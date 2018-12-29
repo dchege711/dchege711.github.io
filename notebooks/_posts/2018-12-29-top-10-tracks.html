@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title: My Top 10 Tracks
+title: Daily Top 10 Tracks
 
 ---
 
@@ -20,7 +20,15 @@ title: My Top 10 Tracks
                     <td></td>
                 {% endif %}
                 <td>{{ track.track_name }}</td>
-                <td>{{ track.artist_name }}</td><td>{{ track.rank_delta }}</td>
+                <td>{{ track.artist_name }}</td>
+                {% if track.rank_delta > 0 %}
+                    <td><span style="color:rgb(2, 187, 2);">&#9650;</span> {{ track.rank_delta }}</td>
+                {% elsif track.rank_delta < 0 %}
+                    <td><span style="color:red;">&#9660;</span> {{ track.rank_delta | abs }}</td>
+                {% else %}
+                    <td> - </td>
+                {% endif %}
+                
             </tr>
         {% endfor %}
     </tbody>
