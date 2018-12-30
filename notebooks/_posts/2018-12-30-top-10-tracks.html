@@ -5,6 +5,31 @@ title: Daily Top 10 Tracks
 
 ---
 
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    
+    tr:nth-child(even){
+        background-color: #f2f2f2;
+    }
+    
+</style>
+
 <table>
     <thead>
         <tr><td>Rank</td><td></td><td>Track</td><td>Artist</td><td>Change</td></tr>
@@ -25,8 +50,10 @@ title: Daily Top 10 Tracks
                     <td><span style="color:rgb(2, 187, 2);">&#9650;</span> {{ track.rank_delta }}</td>
                 {% elsif track.rank_delta < 0 %}
                     <td><span style="color:red;">&#9660;</span> {{ track.rank_delta | abs }}</td>
-                {% else %}
+                {% elsif track.rank_delta == 0 %}
                     <td> - </td>
+                {% else %}
+                    <td style="color:rgb(2, 187, 2);"> New! </td>
                 {% endif %}
                 
             </tr>
