@@ -151,3 +151,5 @@ if __name__ == "__main__":
         persist_tracks(tracks)
         dump_top_tracks()
         print("Processed", len(tracks), "tracks for this week...")
+    else:
+        print("Already updated today's top 10 tracks...")
