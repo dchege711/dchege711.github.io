@@ -142,13 +142,12 @@ def dump_top_tracks(k=10):
     )
 
 if __name__ == "__main__":
-    initialize_db()
-    tracks = fetch_top_tracks()
-    # data_file = open("sample_tracks.json", "r")
-    # tracks = json.load(data_file)
-    # data_file.close()
-
-    persist_tracks(tracks)
-
-    dump_top_tracks()
-    print("Processed", len(tracks), "tracks for this week...")
+    # Only run the script at least 1 day after previous execution time
+    prvs_filepath = glob("../notebooks/_posts/*-top-10-tracks.html")[0]
+    today_str = date.today().strftime("%Y-%m-%d")
+    if today_str not in prvs_filepath:
+        initialize_db()
+        tracks = fetch_top_tracks()
+        persist_tracks(tracks)
+        dump_top_tracks()
+        print("Processed", len(tracks), "tracks for this week...")
