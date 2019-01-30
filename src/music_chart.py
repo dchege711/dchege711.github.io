@@ -33,7 +33,7 @@ def initialize_db():
 
     conn.execute((
         "CREATE TABLE IF NOT EXISTS tracks ( "
-        "track_id TEXT PRIMARY KEY, artist_id TEXT, image_url TEXT, "
+        "track_id TEXT PRIMARY KEY, artist_id TEXT, image_url TEXT, date_modified VARCHAR(255), "
         "track_name TEXT, rank INT, rank_delta INT, music_brains_id VARCHAR(255));"
     ))
 
@@ -55,7 +55,7 @@ def fetch_top_tracks():
         sess.headers.update({"user-agent": APP_NAME})
         get_params = {
             "method": "user.gettoptracks", "user": USERNAME, "period": "7day",
-            "api_key": API_KEY, "limit": 500, "format": "json"
+            "api_key": API_KEY, "limit": 600, "format": "json"
         }
         tracks = []
         while True:
@@ -74,6 +74,7 @@ def persist_tracks(tracks):
     Save the tracks into the database.
     """
     last_fm_prefix = "https://www.last.fm/music/"
+    today_str = date.today().strftime("%Y-%m-%d")
 
     for track in tracks:
 
@@ -86,6 +87,7 @@ def persist_tracks(tracks):
         track["track_name"] = track["name"]
         track["rank"] = track["@attr"]["rank"]
         track["music_brains_id"] = track["mbid"]
+        track["date_modified"] = today_str
         existing_row = conn.execute(
             "SELECT * FROM tracks WHERE track_id = ?", [track["track_id"]]
         ).fetchone()
@@ -94,8 +96,8 @@ def persist_tracks(tracks):
             conn.execute(
                 (
                     "INSERT INTO tracks (track_id, artist_id, image_url, track_name, "
-                    "rank, music_brains_id) VALUES (:track_id, :artist_id, "
-                    ":image_url, :track_name, :rank, :music_brains_id);"
+                    "rank, music_brains_id, date_modified) VALUES (:track_id, :artist_id, "
+                    ":image_url, :track_name, :rank, :music_brains_id, :date_modified);"
                 ),
                 track
             )
@@ -104,7 +106,7 @@ def persist_tracks(tracks):
             conn.execute(
                 (
                     "UPDATE tracks "
-                    "SET rank_delta = :rank_delta, rank = :rank "
+                    "SET rank_delta = :rank_delta, date_modified = :date_modified, rank = :rank "
                     "WHERE track_id = :track_id;"
                 ),
                 track
@@ -117,6 +119,10 @@ def persist_tracks(tracks):
             ),
             [track["artist_id"], track["artist"]["name"], track["artist"]["mbid"]]
         )
+
+    conn.execute(
+        "DELETE FROM tracks WHERE date_modified != ?", [today_str]
+    )
 
     conn.commit()
 
