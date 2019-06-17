@@ -1,0 +1,149 @@
+---
+
+layout: draft
+title: I've Downloaded an Academic Citations Dataset, Now What?
+date: 2019-06-16
+
+---
+
+<section>
+    <p>
+        I recently downloaded citations data from <a href="https://www.aminer.org/citation">
+        https://www.aminer.org/citation</a><sup><a href="#aminer-citation">[1]</a></sup> 
+        without a clear purpose for doing so. Legend has it that some arcane graph 
+        algorithm will unequivocally point out all that's broken in academia. Anyway, 
+        my database is as follows:
+    </p>
+    
+    <table>
+        <thead>
+            <th>Table</th><th>Columns</th><th>Remarks</th>
+        </thead>
+        <tr>
+            <td>papers</td>
+            <td>paper_id, title, venue, year, number of citations, abstract</td>
+            <td>3,079,007 papers from 1936 to 2018</td>
+        </tr>
+        <tr>
+            <td>authors</td>
+            <td>name, appearance order, paper_id</td>
+            <td>1,766,547 distinct names (out of 9,476,165 names)</td>
+        </tr>
+    
+        <tr>
+            <td>paper_references</td>
+            <td>paper_id, cited_paper_id</td>
+            <td>25,166,994 references</td>
+        </tr>
+    </table>
+</section>
+
+<section>
+
+    <h2>Which are the 3 most important papers?</h2>
+
+    <blockquote>Approach 1: Count the number of citations</blockquote>
+    
+    <p>For one, we can answer that with a SQL query:</p>
+    <pre>
+        <code>
+            SELECT papers.* FROM papers ORDER BY papers.n_citation DESC LIMIT 3;
+        </code>
+    </pre>
+    
+    <p>And the results are:</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Number of Citations</th><th>Title</th><th>Year</th><th>My Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>73,362</td>
+                <td>Genetic Algorithms in Search, Optimization and Machine Learning</td>
+                <td>1989</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>42,508</td>
+                <td>Distinctive Image Features from Scale-Invariant Keypoints</td>
+                <td>2004</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>34,288</td>
+                <td>Bowling alone: the collapse and revival of American community</td>
+                <td>2000</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+</section>
+
+<section>
+    <h2>Appendix</h2>
+
+    <ul>
+        <li id="aminer-citation">
+            Jie Tang, Jing Zhang, Limin Yao, Juanzi Li, Li Zhang, and Zhong Su. 
+            ArnetMiner: Extraction and Mining of Academic Social Networks. In 
+            Proceedings of the Fourteenth ACM SIGKDD International Conference on 
+            Knowledge Discovery and Data Mining (SIGKDD'2008). pp.990-998. 
+            [PDF] [Slides] [System] [API]
+        </li>
+        <li id="abstract-genetic-algorithms">
+            From the Publisher:#R##N#This book brings together - in an informal and 
+            tutorial fashion - the computer techniques, mathematical tools, and research 
+            results that will enable both students and practitioners to apply genetic 
+            algorithms to problems in many fields. #R##N##R##N#Major concepts are 
+            illustrated with running examples, and major algorithms are illustrated 
+            by Pascal computer programs. No prior knowledge of GAs or genetics is 
+            assumed, and only a minimum of computer programming and mathematics 
+            background is required.
+        </li>
+        <li id="abstract-distinctive-image-features">
+            This paper presents a method for extracting distinctive invariant 
+            features from images that can be used to perform reliable matching between 
+            different views of an object or scene. The features are invariant to image 
+            scale and rotation, and are shown to provide robust matching across a 
+            substantial range of affine distortion, change in 3D viewpoint, addition 
+            of noise, and change in illumination. The features are highly distinctive, 
+            in the sense that a single feature can be correctly matched with high 
+            probability against a large database of features from many images. 
+            This paper also describes an approach to using these features for object 
+            recognition. The recognition proceeds by matching individual features to 
+            a database of features from known objects using a fast nearest-neighbor 
+            algorithm, followed by a Hough transform to identify clusters belonging 
+            to a single object, and finally performing verification through 
+            least-squares solution for consistent pose parameters. This approach to 
+            recognition can robustly identify objects among clutter and occlusion 
+            while achieving near real-time performance.
+        </li>
+        <li id="abstract-bowling-alone">
+            BOWLING ALONE warns Americans that their stock of "social capital", 
+            the very fabric of their connections with each other, has been 
+            accelerating down. Putnam describes the resulting impoverishment of 
+            their lives and communities. Drawing on evidence that includes nearly 
+            half a million interviews conducted over a quarter of a century in 
+            America, Putnam shows how changes in work, family structure, age, 
+            suburban life, television, computers, women's roles and other 
+            factors are isolating Americans from each other in a trend whose 
+            reflection can clearly be seen in British society. We sign 30 
+            percent fewer petitions than we did ten years ago. Membership in 
+            organisations- from the Boy Scouts to political parties and the 
+            Church is falling. Ties with friends and relatives are fraying: 
+            we're 35 percent less likely to visit our neighbours or have dinner 
+            with our families than we were thirty years ago. We watch sport 
+            alone instead of with our friends. A century ago, American citizens' 
+            means of connecting were at a low point after decades of urbanisation, 
+            industrialisation and immigration uprooted them from families and 
+            friends. That generation demonstrated a capacity for renewal by 
+            creating the organisations that pulled Americans together. 
+            Putnam shows how we can learn from them and reinvent common enterprises 
+            that will make us secure, productive, happy and hopeful.
+        </li>
+    </ul>
+</section>
