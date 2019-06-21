@@ -132,7 +132,7 @@ def dump_top_tracks(k=10):
     """
     res = conn.execute(
         (
-            "SELECT track_name, artist_name, rank, rank_delta, image_url "
+            "SELECT track_id, track_name, tracks.artist_id, artist_name, rank, rank_delta, image_url "
             "FROM tracks, artists WHERE tracks.artist_id = artists.artist_id AND "
             "rank <= ? ORDER BY rank ASC;"
         ), [k]
