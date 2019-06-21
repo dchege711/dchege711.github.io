@@ -19,6 +19,7 @@ BASE_URL = "http://ws.audioscrobbler.com/2.0/"
 APP_NAME = os.environ["LAST_FM_APP_NAME"]
 API_KEY = os.environ["LAST_FM_API_KEY"]
 USERNAME = os.environ["LAST_FM_USERNAME"]
+LAST_FM_PREFIX = "https://www.last.fm/music/"
 
 conn = sqlite3.connect("c13u_music.db")
 conn.row_factory = sqlite3.Row
@@ -73,7 +74,6 @@ def persist_tracks(tracks):
     """
     Save the tracks into the database.
     """
-    last_fm_prefix = "https://www.last.fm/music/"
     today_str = date.today().strftime("%Y-%m-%d")
 
     for track in tracks:
@@ -81,8 +81,8 @@ def persist_tracks(tracks):
         try: image_url = track["image"][-1]["#text"]
         except IndexError: image_url = ""
 
-        track["track_id"] = track["url"].replace(last_fm_prefix, "")
-        track["artist_id"] = track["artist"]["url"].replace(last_fm_prefix, "")
+        track["track_id"] = track["url"].replace(LAST_FM_PREFIX, "")
+        track["artist_id"] = track["artist"]["url"].replace(LAST_FM_PREFIX, "")
         track["image_url"] = image_url
         track["track_name"] = track["name"]
         track["rank"] = track["@attr"]["rank"]
@@ -138,6 +138,10 @@ def dump_top_tracks(k=10):
         ), [k]
     )
     tracks = [dict(**x) for x in res.fetchall()]
+    for track in tracks:
+        track["last_fm_track_url"] = "".join([LAST_FM_PREFIX, track["track_id"]])
+        track["last_fm_artist_url"] = "".join([LAST_FM_PREFIX, track["artist_id"]])
+
     with open("../_data/top_songs.json", "w") as output_file:
         json.dump(tracks, output_file, indent=2)
 
