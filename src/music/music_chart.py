@@ -142,7 +142,7 @@ def dump_top_tracks(k=10):
         track["last_fm_track_url"] = "".join([LAST_FM_PREFIX, track["track_id"]])
         track["last_fm_artist_url"] = "".join([LAST_FM_PREFIX, track["artist_id"]])
 
-    with open("../_data/top_songs.json", "w") as output_file:
+    with open("../../_data/top_songs.json", "w") as output_file:
         json.dump(tracks, output_file, indent=2)
 
     prvs_filepath = glob("../notebooks/_posts/*-top-10-tracks.html")[0]
