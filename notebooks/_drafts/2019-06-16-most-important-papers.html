@@ -1,19 +1,18 @@
 ---
 
 layout: draft
-title: I've Downloaded an Academic Citations Dataset, Now What?
+title: Which are the 3 Most Influential Academic Publications?
 date: 2019-06-16
-num_revisions: 2
 
 ---
 
 <section>
     <p>
-        I recently downloaded citations data from <a href="https://www.aminer.org/citation">
-        https://www.aminer.org/citation</a><sup><a href="#aminer-citation">[1]</a></sup> 
-        without a clear purpose for doing so. Legend has it that some arcane graph 
-        algorithm will unequivocally point out all that's broken in academia. Anyway, 
-        the 6.3GB database is as follows:
+        I recently downloaded citations data from <cite><a href="#aminer-citation">
+        Aminer</a></cite> without a clear purpose for doing so. Legend has it that some 
+        arcane graph algorithm will unequivocally point out all that's fixable 
+        in academia. For now, I'll ask the question: <em>Which are the 3 most
+        influential academic publications?</em> The 6.3GB database is as follows:
     </p>
     
     <table>
@@ -41,9 +40,7 @@ num_revisions: 2
 
 <section>
 
-    <h2>Which are the 3 most important papers?</h2>
-
-    <blockquote>Approach 1: Count the number of citations</blockquote>
+    <h2>Approach 1: Count the number of citations</h2>
     
     <p>
         For one, we can answer that with a SQL query: 
@@ -88,11 +85,41 @@ num_revisions: 2
         </tbody>
     </table>
 
-    <blockquote>Approach 2: PageRank</blockquote>
+    <p>
+        Huh, <cite><a href="#aminer-citation">Aminer's</a></cite> dataset is incomplete. 
+        I expected to find <cite><a href="#lowry-citation">
+        Protein Measurement With the Folin Phenol Reagent</a></cite>, which according 
+        to <a href="https://www.nature.com/news/the-top-100-papers-1.16224#/">Nature</a>, 
+        had garnered 305,000 citations by 2014. Nonetheless, this blog post must go on.
+    </p>
+
+</section>
+
+<section>
+
+    <h2>Approach 2: PageRank</h2>
 
     <p>
-        Counting the number of citations is cool and all, but let's try a more 
-        realistic approach. 
+        Counting the number of citations is cool and all, but let's try using 
+        <a href="https://en.wikipedia.org/wiki/PageRank">Google's PageRank
+        algorithm</a>. PageRank is appropriate because not all links have the 
+        same weight. Understandably, I'm not the first to apply it - <cite>
+            <a href="senanayake_citation">Senanayake et. al.</a>
+        </cite> used PageRank to develop a better index than the 
+        <a href="https://en.wikipedia.org/wiki/H-index">Hirsch Index</a> for 
+        quantifying the impact of the publications of a scholar. However, I'm 
+        interested in finding interesting papers (not scholars) to read during 
+        my free time now that I'm momentarily done with school 
+        <a href="#fermat_note">[note]</a>.
+    </p>
+
+    <p>
+        Wikipedia discusses an <a href="https://en.wikipedia.org/wiki/PageRank#Implementation">
+        implementation of PageRank that uses an adjacency matrix</a>. Given that 
+        there are 3,079,007 papers, the adjacency matrix \(M\) would have 
+        \(9,480,284,106,049\) entries, and therefore, assuming 4 bytes per float, 
+        needs at least \(35,317\) GB. I only have \(16\) GB of RAM, so ¯\_(ツ)_/¯
+        
     </p>
 
 </section>
@@ -101,13 +128,6 @@ num_revisions: 2
     <h2>Appendix</h2>
 
     <ul>
-        <li id="aminer-citation">
-            Jie Tang, Jing Zhang, Limin Yao, Juanzi Li, Li Zhang, and Zhong Su. 
-            ArnetMiner: Extraction and Mining of Academic Social Networks. In 
-            Proceedings of the Fourteenth ACM SIGKDD International Conference on 
-            Knowledge Discovery and Data Mining (SIGKDD'2008). pp.990-998. 
-            [PDF] [Slides] [System] [API]
-        </li>
         <li id="abstract-genetic-algorithms">
             From the Publisher:#R##N#This book brings together - in an informal and 
             tutorial fashion - the computer techniques, mathematical tools, and research 
@@ -158,6 +178,39 @@ num_revisions: 2
             creating the organisations that pulled Americans together. 
             Putnam shows how we can learn from them and reinvent common enterprises 
             that will make us secure, productive, happy and hopeful.
+        </li>
+        <li id="fermat_note">
+            On finding interesting papers to read, <a href="https://fermatslibrary.com/journal_club">
+            Fermat's Library Journal Club</a> usually has great weekly picks. The 
+            <a href="https://getpolarized.io/2019/01/08/top-pdfs-of-2018-hackernews.html">
+            PDF submissions on Hacker News</a> also tend to be worth the time.
+        </li>
+    </ul>
+</section>
+
+<section>
+    <h2>References</h2>
+    <ul>
+        <li id="aminer-citation">
+            Jie Tang, Jing Zhang, Limin Yao, Juanzi Li, Li Zhang, and Zhong Su. 
+            ArnetMiner: Extraction and Mining of Academic Social Networks. In 
+            Proceedings of the Fourteenth ACM SIGKDD International Conference on 
+            Knowledge Discovery and Data Mining (SIGKDD'2008). pp.990-998. 
+            <a href="https://www.aminer.org/citation">https://www.aminer.org/citation</a> 
+            [PDF] [Slides] [System] [API] [Web]
+        </li>
+
+        <li id="lowry-citation">
+            Lowry, O. H., Rosebrough, N. J., Farr, A. L., & Randall, R. J. (1951). 
+            Protein measurement with the Folin phenol reagent. Journal of 
+            biological chemistry, 193, 265-275. <a href="http://www.jbc.org/content/193/1/265.full.pdf">
+            http://www.jbc.org/content/193/1/265.full.pdf</a>
+        </li>
+        <li id="senanayake_citation">
+            Senanayake U, Piraveenan M, Zomaya A (2015) The Pagerank-Index: 
+            Going beyond Citation Counts in Quantifying Scientific Impact of 
+            Researchers. PLOS ONE 10(8): e0134794. <a href="https://doi.org/10.1371/journal.pone.0134794">
+            https://doi.org/10.1371/journal.pone.0134794</a>
         </li>
     </ul>
 </section>
