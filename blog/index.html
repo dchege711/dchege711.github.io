@@ -4,7 +4,6 @@ title: c13u's Blog
 ---
 
 <section>
-    <h3>Posts</h3>
 
     <ul class="posts">
         {% for post in site.posts %}
@@ -17,15 +16,19 @@ title: c13u's Blog
 
 </section>
 
-<section>
-    <h3>Drafts</h3>
+{% if jekyll.environment == "development" %}
+    <section>
 
-    <ul class="posts">
-        {% for draft in site.drafts %}
-            <li>
-                <span>{{ draft.date | date_to_string }}</span> » <a href="{{ draft.url }}" title="{{ draft.title }}">{{ draft.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-    
-</section>
+        <h5>Drafts</h5>
+
+        <ul class="posts">
+            {% for draft in site.drafts %}
+                <li>
+                    <span>{{ draft.date | date_to_string }}</span> » <a href="{{ draft.url }}" title="{{ draft.title }}">{{ draft.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        
+    </section>
+{% endif %}
+
