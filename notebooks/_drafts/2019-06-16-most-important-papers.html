@@ -1,23 +1,27 @@
 ---
 
 layout: draft
-title: Which are the 3 Most Influential Academic Publications?
+title: Which Academic Publications Should I Read?
 date: 2019-06-16
 
 ---
 
 <section>
     <p>
-        I recently downloaded citations data from <cite><a href="#aminer-citation">
-        Aminer</a></cite> without a clear purpose for doing so. Legend has it that some 
-        arcane graph algorithm will unequivocally point out all that's fixable 
-        in academia. For now, I'll ask the question: <em>Which are the 3 most
-        influential academic publications?</em> The 6.3GB database is as follows:
+        I recently downloaded citations data from <cite>
+            <a href="https://www.aminer.org/citation"
+                title="Jie Tang, Jing Zhang, Limin Yao, Juanzi Li, Li Zhang, and Zhong Su. ArnetMiner: Extraction and Mining of Academic Social Networks. In Proceedings of the Fourteenth ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (SIGKDD'2008). pp.990-998. [PDF] [Slides] [System] [API]">
+                Aminer
+            </a>
+        </cite>. I seek interesting papers to read during my free time <a href="#fermat_note">[note]</a>.
+        The database has the following structure:
     </p>
-    
+
     <table>
         <thead>
-            <th>Table</th><th>Columns</th><th>Remarks</th>
+            <th>Table</th>
+            <th>Columns</th>
+            <th>Remarks</th>
         </thead>
         <tr>
             <td>papers</td>
@@ -29,7 +33,7 @@ date: 2019-06-16
             <td>name, appearance order, paper_id</td>
             <td>1,766,547 distinct names (out of 9,476,165 names)</td>
         </tr>
-    
+
         <tr>
             <td>paper_references</td>
             <td>paper_id, cited_paper_id</td>
@@ -41,56 +45,173 @@ date: 2019-06-16
 <section>
 
     <h2>Approach 1: Count the number of citations</h2>
-    
+
     <p>
-        For one, we can answer that with a SQL query: 
-        <pre><code>SELECT papers.* FROM papers ORDER BY papers.n_citation DESC LIMIT 3;</code></pre>
+        For one, we can answer that with a SQL query:
+        <pre><code>SELECT papers.* FROM papers ORDER BY papers.n_citation DESC LIMIT 10;</code></pre>
     </p>
-    
+
     <table>
         <thead>
             <tr>
-                <th>Number of Citations</th><th>Title</th><th>Year</th><th>My Remarks</th>
+                <th># Citations</th>
+                <th>Title</th>
+                <th>Year</th>
+                <th>Format</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>73,362</td>
-                <td>Genetic Algorithms in Search, Optimization and Machine Learning</td>
-                <td>1989</td>
                 <td>
-                    I never joined the hype train. Maybe it's not too late to hop on. 
-                    I don't have a good idea when genetic algorithms are best suited for problems.
-                    See <a href="#abstract-genetic-algorithms">abstract</a>.
+                    <cite>
+                        <a href="https://dl.acm.org/citation.cfm?id=534133"
+                            title="David E. Goldberg. 1989. Genetic Algorithms in Search, Optimization and Machine Learning (1st ed.). Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA.">
+                            Genetic Algorithms in Search, Optimization and Machine Learning
+                        </a>
+                    </cite>
                 </td>
+                <td>1989</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
             </tr>
             <tr>
                 <td>42,508</td>
-                <td>Distinctive Image Features from Scale-Invariant Keypoints</td>
-                <td>2004</td>
                 <td>
-                    Yeah, should have taken COS 429. The abstract reads vaguely familiar.
-                    See <a href="#abstract-distinctive-image-features">abstract</a>.
+                    <cite>
+                        <a title="Lowe, D. G. (2004). Distinctive image features from scale-invariant keypoints. International journal of computer vision, 60(2), 91-110."
+                            href="https://link.springer.com/article/10.1023/B:VISI.0000029664.99615.94">
+                            Distinctive Image Features from Scale-Invariant Keypoints
+                        </a>
+                    </cite>
                 </td>
+                <td>2004</td>
+                <td><i class="far fa-fw fa-file"></i></td>
             </tr>
             <tr>
                 <td>34,288</td>
-                <td>Bowling alone: the collapse and revival of American community</td>
-                <td>2000</td>
                 <td>
-                    Haha <a href="http://old.reddit.com/r/2meirl4meirl/">/r/2meirl4meirl</a> 
-                    made it to academic circles! See <a href="#abstract-bowling-alone">abstract</a>.
+                    <cite>
+                        <a href="https://books.google.com/books?hl=en&lr=&id=rd2ibodep7UC&oi=fnd&pg=PA13&dq=Bowling+alone:+the+collapse+and+revival+of+American+community&ots=G5J8oWmiQ6&sig=HT5xJ2nKW9-5nFFvQBTHF8daxnU"
+                            title="Putnam, R. D. (2001). Bowling Alone: The Collapse and Revival of American Community. Simon and Schuster.">
+                            Bowling Alone: The Collapse and Revival of American Community
+                        </a>
+                    </cite>
+
                 </td>
+                <td>2000</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
             </tr>
+
+            <tr>
+                <td>33,016</td>
+                <td>
+                    <cite>
+                        <a title="Chang, C. C., & Lin, C. J. (2011). LIBSVM: A Library for Support Vector Machines. ACM Transactions on Intelligent Systems and Technology (TIST), 2(3), 27."
+                            href="http://dns2.asia.edu.tw/~ysho/YSHO-English/1000%20Taiwan%20(Independent)/PDF/ACM%20Tra%20Int%20Sys%20Tec2,%2027.pdf">
+                            LIBSVM: A library for support vector machines
+                        </a>
+                    </cite>
+                </td>
+                <td>2011</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>29,285</td>
+                <td>
+                    <cite>
+                        <a title="Richard S. Sutton and Andrew G. Barto. 1998. Introduction to Reinforcement Learning (1st ed.). MIT Press, Cambridge, MA, USA. "
+                            href="http://incompleteideas.net/book/first/the-book.html">
+                            Reinforcement Learning: An Introduction
+                        </a>
+                    </cite>
+                </td>
+                <td>1999</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+            <tr>
+                <td>28,679</td>
+                <td>
+                    <cite>
+                        <a title=" Leo Breiman. 2001. Random Forests. Mach. Learn. 45, 1 (October 2001), 5-32. DOI: https://doi.org/10.1023/A:1010933404324"
+                            href="https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf">
+                            Random Forests
+                        </a>
+                    </cite>
+                </td>
+                <td>2001</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>27,068</td>
+                <td>
+                    <cite>
+                        <a title="Fred D. Davis. 1989. Perceived usefulness, perceived ease of use, and user acceptance of information technology. MIS Q. 13, 3 (September 1989), 319-340. DOI=http://dx.doi.org/10.2307/249008"
+                            href="http://dx.doi.org/10.2307/249008">
+                            Perceived Usefulness, Perceived Ease of Use, and User Acceptance of Information Technology
+                        </a>
+                    </cite>
+                </td>
+                <td>1989</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>26,357</td>
+                <td>
+                    <cite>
+                        <a title="Charles E. Perkins and Elizabeth M. Royer. 1999. Ad-hoc On-Demand Distance Vector Routing. In Proceedings of the Second IEEE Workshop on Mobile Computer Systems and Applications (WMCSA '99). IEEE Computer Society, Washington, DC, USA, 90-."
+                            href="https://ieeexplore.ieee.org/document/749281">
+                            Ad-hoc On-demand Distance Vector Routing
+                        </a>
+                    </cite>
+                </td>
+                <td>1999</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>26,114</td>
+                <td>
+                    <cite>
+                        <a title="Cortes, C., & Vapnik, V. (1995). Support-Vector Networks. Machine learning, 20(3), 273-297."
+                            href="https://link.springer.com/content/pdf/10.1007/BF00994018.pdf">
+                            Support-Vector Networks
+                        </a>
+                    </cite>
+                </td>
+                <td>1995</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>25,835</td>
+                <td>
+                    <cite>
+                        <a title="Takagi, T., & Sugeno, M. (1993). Fuzzy identification of systems and its applications to modeling and control. In Readings in Fuzzy Sets for Intelligent Systems (pp. 387-403). Morgan Kaufmann."
+                            href="https://doi.org/10.1016/B978-1-4832-1450-4.50045-6">
+                            Fuzzy Identification of Systems and Its Applications to Modeling and Control
+                        </a>
+                    </cite>
+                </td>
+                <td>1985</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
         </tbody>
     </table>
 
     <p>
-        Huh, <cite><a href="#aminer-citation">Aminer's</a></cite> dataset is incomplete. 
-        I expected to find <cite><a href="#lowry-citation">
-        Protein Measurement With the Folin Phenol Reagent</a></cite>, which according 
-        to <a href="https://www.nature.com/news/the-top-100-papers-1.16224#/">Nature</a>, 
-        had garnered 305,000 citations by 2014. Nonetheless, this blog post must go on.
+        Huh, Aminer's dataset is incomplete. I expected to find <cite>
+            <a title="Lowry, O. H., Rosebrough, N. J., Farr, A. L., & Randall, R. J. (1951). Protein Measurement with the Folin Phenol Reagent. Journal of Biological Chemistry, 193, 265-275."
+                href="http://www.jbc.org/content/193/1/265.full.pdf">
+                Protein Measurement With the Folin Phenol Reagent
+            </a>
+        </cite>, which according to <a href="https://www.nature.com/news/the-top-100-papers-1.16224#/">
+            Nature</a>, had garnered 305,000 citations by 2014. Nonetheless, this
+        blog post must go on.
     </p>
 
 </section>
@@ -100,117 +221,192 @@ date: 2019-06-16
     <h2>Approach 2: PageRank</h2>
 
     <p>
-        Counting the number of citations is cool and all, but let's try using 
-        <a href="https://en.wikipedia.org/wiki/PageRank">Google's PageRank
-        algorithm</a>. PageRank is appropriate because not all links have the 
-        same weight. Understandably, I'm not the first to apply it - <cite>
-            <a href="senanayake_citation">Senanayake et. al.</a>
-        </cite> used PageRank to develop a better index than the 
-        <a href="https://en.wikipedia.org/wiki/H-index">Hirsch Index</a> for 
-        quantifying the impact of the publications of a scholar. However, I'm 
-        interested in finding interesting papers (not scholars) to read during 
-        my free time now that I'm momentarily done with school 
-        <a href="#fermat_note">[note]</a>.
+        <cite>
+            <a title="Brin, S., & Page, L. (1998). The Anatomy of a Large-Scale Hypertextual Web Search Engine. Computer networks and ISDN systems, 30(1-7), 107-117."
+                href="https://doi.org/10.1016/S0169-7552(98)00110-X">
+                The Anatomy of a Large-Scale Hypertextual Web Search Engine
+            </a>
+        </cite> presents Google's PageRank algorithm which <a href="https://en.wikipedia.org/wiki/PageRank">
+            counts the number and quality of links to a page to determine a rough
+            estimate of how important the website is
+        </a>. Understandably, I'm not the only one to apply it to citation graphs, e.g. <cite>
+            <a href="https://doi.org/10.1371/journal.pone.0134794"
+                title="Senanayake U, Piraveenan M, Zomaya A (2015) The Pagerank-Index: Going beyond Citation Counts in Quantifying Scientific Impact of Researchers. PLOS ONE 10(8): e0134794.">
+                The Pagerank-Index: Going beyond Citation Counts in Quantifying Scientific Impact of Researchers
+            </a>
+        </cite>. However, I'm interested in finding interesting papers, not scholars.
+
     </p>
 
     <p>
-        Wikipedia discusses an <a href="https://en.wikipedia.org/wiki/PageRank#Implementation">
-        implementation of PageRank that uses an adjacency matrix</a>. Given that 
-        there are 3,079,007 papers, the adjacency matrix \(M\) would have 
-        \(9,480,284,106,049\) entries, and therefore, assuming 4 bytes per float, 
-        needs at least \(35,317\) GB. I only have \(16\) GB of RAM, so ¯\_(ツ)_/¯
-        
+        <a
+            href="https://networkx.github.io/documentation/stable/reference/algorithms/link_analysis.html#module-networkx.algorithms.link_analysis.pagerank_alg">
+            NetworkX</a> provides a good implementation of PageRank in Python, so I used 
+        that instead. To save on computational resources, I only considered publications
+        that had either had \(\ge 100\) citations, or were cited by papers that had
+        had \(\ge 100\) citations. Here are the results:
     </p>
 
+    <table>
+        <thead>
+            <tr>
+                <th># Citations</th>
+                <th>Title</th>
+                <th>Year</th>
+                <th>Format</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>73,362</td>
+                <td>
+                    <cite>
+                        <a href="https://dl.acm.org/citation.cfm?id=534133"
+                            title="David E. Goldberg. 1989. Genetic Algorithms in Search, Optimization and Machine Learning (1st ed.). Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA.">
+                            Genetic Algorithms in Search, Optimization and Machine Learning
+                        </a>
+                    </cite>
+                </td>
+                <td>1989</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+            <tr>
+                <td>13,227</td>
+                <td>
+                    <cite>
+                        <a href="https://doc.lagout.org/science/0_Computer%20Science/2_Algorithms/The%20Design%20and%20Analysis%20of%20Computer%20Algorithms%20%5BAho%2C%20Hopcroft%20%26%20Ullman%201974-01-11%5D.pdf" 
+                            title="Alfred V. Aho and John E. Hopcroft. 1974. The Design and Analysis of Computer Algorithms (1st ed.). Addison-Wesley Longman Publishing Co., Inc., Boston, MA, USA.">
+                            The Design and Analysis of Computer Algorithms
+                        </a>
+                    </cite>
+                </td>
+                <td>1974</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+            <tr>
+                <td>6,589</td>
+                <td>
+                    <cite>
+                        <a href="https://www.sciencedirect.com/book/9780080514895/probabilistic-reasoning-in-intelligent-systems" 
+                        title="Judea Pearl. 1988. Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference. Morgan Kaufmann Publishers Inc., San Francisco, CA, USA.">
+                        Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference</a>
+                    </cite>
+                </td>
+                <td>1988</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+            
+            <tr>
+                <td>11,580</td>
+                <td>
+                    <cite>
+                        <a href="https://people.eecs.berkeley.edu/~luca/cs172/karp.pdf" 
+                        title="Karp R.M. (1972) Reducibility among Combinatorial Problems. In: Miller R.E., Thatcher J.W., Bohlinger J.D. (eds) Complexity of Computer Computations. The IBM Research Symposia Series. Springer, Boston, MA">
+                        Reducibility among Combinatorial Problems</a>
+                    </cite>
+                </td>
+                <td>2010</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+            
+            <tr>
+                <td>21,256</td>
+                <td>
+                    <cite>
+                        <a href="https://link.springer.com/content/pdf/10.1007/BF00133570.pdf" 
+                            title="Kass, M., Witkin, A., & Terzopoulos, D. (1988). Snakes: Active Contour Models. International journal of computer vision, 1(4), 321-331.">
+                        Snakes: Active Contour Models</a>
+                    </cite>
+                </td>
+                <td>1988</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+            <tr>
+                <td>17,064</td>
+                <td>
+                    <cite>
+                        <a href="https://caislab.kaist.ac.kr/lecture/2010/spring/cs548/basic/B08.pdf" 
+                            title="Diffie, W., & Hellman, M. (1976). New directions in cryptography. IEEE transactions on Information Theory, 22(6), 644-654.">
+                        New Directions in Cryptography</a>
+                    </cite>
+                </td>
+                <td>1976</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+            
+            <tr>
+                <td>6,906</td>
+                <td>
+                    <cite>
+                        <a href="https://dl.acm.org/citation.cfm?id=583200" 
+                            title=" J. Ross Quinlan. 1993. C4.5: Programs for Machine Learning. Morgan Kaufmann Publishers Inc., San Francisco, CA, USA.">
+                        C4.5: Programs for Machine Learning</a>
+                    </cite>
+                </td>
+                <td>1993</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+            <tr>
+                <td>42,508</td>
+                <td>
+                    <cite>
+                        <a title="Lowe, D. G. (2004). Distinctive image features from scale-invariant keypoints. International journal of computer vision, 60(2), 91-110."
+                            href="https://link.springer.com/article/10.1023/B:VISI.0000029664.99615.94">
+                            Distinctive Image Features from Scale-Invariant Keypoints
+                        </a>
+                    </cite>
+                </td>
+                <td>2004</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>18,861</td>
+                <td>
+                    <cite>
+                        <a href="https://apps.dtic.mil/dtic/tr/fulltext/u2/a606588.pdf" 
+                        title="Rivest, R. L., Shamir, A., & Adleman, L. (1978). A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2), 120-126.">
+                        A Method for Obtaining Digital Signatures and Public-Key Cryptosystems</a>
+                    </cite>
+                </td>
+                <td>1978</td>
+                <td><i class="far fa-fw fa-file"></i></td>
+            </tr>
+
+            <tr>
+                <td>20,878</td>
+                <td>
+                    <cite>
+                        <a href="https://dl.acm.org/citation.cfm?id=576628" 
+                        title="Salton, G., & McGill, M. J. (1986). Introduction to Modern Information Retrieval.">
+                        Introduction to Modern Information Retrieval</a>
+                    </cite>
+                </td>
+                <td>1986</td>
+                <td><i class="fas fa-fw fa-book"></i></td>
+            </tr>
+
+        </tbody>
+    </table>
+
 </section>
 
 <section>
-    <h2>Appendix</h2>
+    <h2>Notes</h2>
 
     <ul>
-        <li id="abstract-genetic-algorithms">
-            From the Publisher:#R##N#This book brings together - in an informal and 
-            tutorial fashion - the computer techniques, mathematical tools, and research 
-            results that will enable both students and practitioners to apply genetic 
-            algorithms to problems in many fields. #R##N##R##N#Major concepts are 
-            illustrated with running examples, and major algorithms are illustrated 
-            by Pascal computer programs. No prior knowledge of GAs or genetics is 
-            assumed, and only a minimum of computer programming and mathematics 
-            background is required.
-        </li>
-        <li id="abstract-distinctive-image-features">
-            This paper presents a method for extracting distinctive invariant 
-            features from images that can be used to perform reliable matching between 
-            different views of an object or scene. The features are invariant to image 
-            scale and rotation, and are shown to provide robust matching across a 
-            substantial range of affine distortion, change in 3D viewpoint, addition 
-            of noise, and change in illumination. The features are highly distinctive, 
-            in the sense that a single feature can be correctly matched with high 
-            probability against a large database of features from many images. 
-            This paper also describes an approach to using these features for object 
-            recognition. The recognition proceeds by matching individual features to 
-            a database of features from known objects using a fast nearest-neighbor 
-            algorithm, followed by a Hough transform to identify clusters belonging 
-            to a single object, and finally performing verification through 
-            least-squares solution for consistent pose parameters. This approach to 
-            recognition can robustly identify objects among clutter and occlusion 
-            while achieving near real-time performance.
-        </li>
-        <li id="abstract-bowling-alone">
-            BOWLING ALONE warns Americans that their stock of "social capital", 
-            the very fabric of their connections with each other, has been 
-            accelerating down. Putnam describes the resulting impoverishment of 
-            their lives and communities. Drawing on evidence that includes nearly 
-            half a million interviews conducted over a quarter of a century in 
-            America, Putnam shows how changes in work, family structure, age, 
-            suburban life, television, computers, women's roles and other 
-            factors are isolating Americans from each other in a trend whose 
-            reflection can clearly be seen in British society. We sign 30 
-            percent fewer petitions than we did ten years ago. Membership in 
-            organisations- from the Boy Scouts to political parties and the 
-            Church is falling. Ties with friends and relatives are fraying: 
-            we're 35 percent less likely to visit our neighbours or have dinner 
-            with our families than we were thirty years ago. We watch sport 
-            alone instead of with our friends. A century ago, American citizens' 
-            means of connecting were at a low point after decades of urbanisation, 
-            industrialisation and immigration uprooted them from families and 
-            friends. That generation demonstrated a capacity for renewal by 
-            creating the organisations that pulled Americans together. 
-            Putnam shows how we can learn from them and reinvent common enterprises 
-            that will make us secure, productive, happy and hopeful.
-        </li>
         <li id="fermat_note">
             On finding interesting papers to read, <a href="https://fermatslibrary.com/journal_club">
-            Fermat's Library Journal Club</a> usually has great weekly picks. The 
+                Fermat's Library Journal Club</a> usually has great weekly picks.
             <a href="https://getpolarized.io/2019/01/08/top-pdfs-of-2018-hackernews.html">
-            PDF submissions on Hacker News</a> also tend to be worth the time.
-        </li>
-    </ul>
-</section>
-
-<section>
-    <h2>References</h2>
-    <ul>
-        <li id="aminer-citation">
-            Jie Tang, Jing Zhang, Limin Yao, Juanzi Li, Li Zhang, and Zhong Su. 
-            ArnetMiner: Extraction and Mining of Academic Social Networks. In 
-            Proceedings of the Fourteenth ACM SIGKDD International Conference on 
-            Knowledge Discovery and Data Mining (SIGKDD'2008). pp.990-998. 
-            <a href="https://www.aminer.org/citation">https://www.aminer.org/citation</a> 
-            [PDF] [Slides] [System] [API] [Web]
-        </li>
-
-        <li id="lowry-citation">
-            Lowry, O. H., Rosebrough, N. J., Farr, A. L., & Randall, R. J. (1951). 
-            Protein measurement with the Folin phenol reagent. Journal of 
-            biological chemistry, 193, 265-275. <a href="http://www.jbc.org/content/193/1/265.full.pdf">
-            http://www.jbc.org/content/193/1/265.full.pdf</a>
-        </li>
-        <li id="senanayake_citation">
-            Senanayake U, Piraveenan M, Zomaya A (2015) The Pagerank-Index: 
-            Going beyond Citation Counts in Quantifying Scientific Impact of 
-            Researchers. PLOS ONE 10(8): e0134794. <a href="https://doi.org/10.1371/journal.pone.0134794">
-            https://doi.org/10.1371/journal.pone.0134794</a>
+                PDF submissions on Hacker News</a> also tend to be worth the time.
         </li>
     </ul>
 </section>
