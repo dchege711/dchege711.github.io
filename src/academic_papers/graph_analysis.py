@@ -4,6 +4,7 @@ from operator import itemgetter
 from cProfile import Profile
 from pstats import Stats
 import json
+from csv import DictWriter
 
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -128,13 +129,18 @@ def run_nx_analysis():
     print("Here is the pagerank analysis...\n")
     pr = [(paper_id, rank) for (paper_id, rank) in nx.pagerank(G).items()]
     pr.sort(key=itemgetter(1), reverse=True)
-    for paper_id, rank in pr[:15]:
-        G.nodes[paper_id]["pagerank"] = rank
-        print(
-            " ".join(
-                str(x) for x in G.nodes[paper_id].values()
-            )
+
+    with open("../../assets/pagerank_publications.txt", "w") as fp:
+        writer = DictWriter(
+            fp, extrasaction="ignore", dialect="excel-tab", 
+            fieldnames=["rank", "title", "author_name", "year", "n_citation"]
         )
+        writer.writeheader()
+        for i in range(3000):
+            paper_node = G.nodes[pr[i][0]]
+            paper_node["rank"] = i + 1
+            writer.writerow(paper_node)
+
     print("\n---------------------------------\n")
 
 if __name__ == "__main__":
