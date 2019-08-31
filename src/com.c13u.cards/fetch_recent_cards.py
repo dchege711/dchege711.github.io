@@ -33,7 +33,7 @@ def fetch_cards_by_date(earliest_datetime: datetime, min_num_cards=1):
     return cards_collection.find(query).sort("createdAt", DESCENDING)
 
 def draft_blog_post(cards, start_date):
-    if not cards: return
+    if cards is None: return
     
     today = datetime.now()
     draft_filepath = (
@@ -112,7 +112,7 @@ def main():
     draft_blog_post(cards, earliest_datetime)
 
     with open(DATE_RECORD_FILEPATH, "w") as fp:
-        fp.write(earliest_datetime.isoformat())
+        fp.write(datetime.today().isoformat())
 
 if __name__ == "__main__":
     main()
