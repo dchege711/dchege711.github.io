@@ -105,7 +105,9 @@ def main():
         earliest_datetime: datetime = datetime.now() - timedelta(days=14)
 
     cards = fetch_cards_by_date(earliest_datetime)
-    if cards is None: return
+    if cards is None: 
+        LOGGER.info("Did not find enough cards. Exiting...")
+        return
     
     draft_blog_post(cards, earliest_datetime)
 
