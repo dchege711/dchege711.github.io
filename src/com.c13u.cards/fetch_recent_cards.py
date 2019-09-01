@@ -46,9 +46,8 @@ def draft_blog_post(cards, start_date):
     with open(draft_filepath, "w") as fp:
         relevant_cards_query = urlencode({
             "createdById": 1, 
-            "createdAt": {
-                "$gt": start_date.isoformat(), "$lt": today.isoformat()
-            }
+            "creationStartDate": start_date.isoformat(), 
+            "creationEndDate": today.isoformat()
         })
 
         fp.write((
@@ -100,9 +99,9 @@ def main():
         with open(DATE_RECORD_FILEPATH, "r") as fp:
             datetime_str = fp.readline().strip()
             earliest_datetime = datetime.fromisoformat(datetime_str)
-    except FileNotFoundError:
-        # As a starting condition, I'll use the last 2 weeks
-        earliest_datetime: datetime = datetime.now() - timedelta(days=14)
+    except (FileNotFoundError, ValueError):
+        # As a starting condition, I'll use the last 4 weeks
+        earliest_datetime: datetime = datetime.now() - timedelta(days=28)
 
     cards = fetch_cards_by_date(earliest_datetime)
     if cards is None: 
