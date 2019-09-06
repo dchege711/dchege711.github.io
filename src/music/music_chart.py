@@ -79,13 +79,14 @@ def persist_tracks(tracks):
     today_str = date.today().strftime("%Y-%m-%d")
 
     for track in tracks:
-
-        try: image_url = track["image"][-1]["#text"]
-        except IndexError: image_url = ""
+        # Last FM discontinued this service
+        # https://getsatisfaction.com/lastfm/topics/api-announcement-dac8oefw5vrxq
+        # try: image_url = track["image"][-1]["#text"]
+        # except IndexError: image_url = ""
 
         track["track_id"] = track["url"].replace(LAST_FM_PREFIX, "")
         track["artist_id"] = track["artist"]["url"].replace(LAST_FM_PREFIX, "")
-        track["image_url"] = image_url
+        track["image_url"] = None
         track["track_name"] = track["name"]
         track["rank"] = track["@attr"]["rank"]
         track["music_brains_id"] = track["mbid"]
@@ -132,7 +133,7 @@ def dump_top_tracks(k=10):
     """Write the top ``k`` tracks to a JSON file."""
     res = conn.execute(
         (
-            "SELECT track_id, track_name, tracks.artist_id, artist_name, rank, rank_delta, image_url "
+            "SELECT track_id, track_name, tracks.artist_id, artist_name, rank, rank_delta "
             "FROM tracks, artists WHERE tracks.artist_id = artists.artist_id AND "
             "rank <= ? ORDER BY rank ASC;"
         ), [k]
