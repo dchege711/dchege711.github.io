@@ -11,7 +11,7 @@ from pymongo.collection import Collection
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger("com.c13u.cards")
 
-def fetch_cards_by_date(earliest_datetime: datetime, min_num_cards=1):
+def fetch_cards_by_date(earliest_datetime: datetime, min_num_cards=7):
     client = MongoClient(os.environ["STUDY_BUDDY_MLAB_MONGO_URI"])
     cards_collection: Collection = client["c13u"]["c13u_study_buddy"]
 
