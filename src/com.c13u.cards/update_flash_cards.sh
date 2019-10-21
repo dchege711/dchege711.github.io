@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Clean the log files
 > logs/stdout.txt
