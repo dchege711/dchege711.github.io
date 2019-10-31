@@ -7,13 +7,16 @@ Keeps track of my top songs as provided by LastFM
 """
 
 import os
+import sys
 import sqlite3
 import json
-from datetime import date
-import re
-import fileinput
+from datetime import date 
+
 
 import requests
+
+sys.path.insert(0, "/Users/dchege711/dchege711.github.io/src/")
+from generated_pages_utils import update_date_in_file
 
 BASE_URL = "http://ws.audioscrobbler.com/2.0/"
 APP_NAME = os.environ["LAST_FM_APP_NAME"]
@@ -148,15 +151,7 @@ def dump_top_tracks(k=10):
 
     # Write today's date on the .html file so that the blog updates
     # Don't change the name of the file though as that changes the permalink
-    date_regex = re.compile(r"date: \d{4}-\d{2}-\d{2}")
-    with fileinput.input(files=[OUTPUT_HTML_FILEPATH], inplace=True) as fp:
-        found_match = False
-        for line in fp:
-            if not found_match and date_regex.match(line):
-                print(f"date: {date.today().strftime('%Y-%m-%d')}\n", end="")
-                found_match = True
-            else:
-                print(line, end="")
+    update_date_in_file(OUTPUT_HTML_FILEPATH)
 
 if __name__ == "__main__":
     # Run this script at most once per day
