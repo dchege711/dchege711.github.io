@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+# Turn on the Wi-Fi
+networksetup -setairportpower en0 on
+
 # Clean the log files
 > logs/stdout.txt
 > logs/stderr.txt
