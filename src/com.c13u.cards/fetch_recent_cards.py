@@ -94,6 +94,7 @@ def draft_blog_post(cards, start_date):
         fp.write("</section>")
 
 def main():
+    print(datetime.now().strftime("%H:%M:%S %a, %b %Y\n"), file=sys.stderr)
     DATE_RECORD_FILEPATH = "/Users/dchege711/dchege711.github.io/src/com.c13u.cards/last_fetch_date.txt"
     try:
         with open(DATE_RECORD_FILEPATH, "r") as fp:
