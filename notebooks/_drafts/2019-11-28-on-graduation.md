@@ -6,22 +6,22 @@ date: 2019-11-30
 
 ---
 
-In 8 hours, family and friends will gather at our home to celebrate my graduation. It's a big deal - I left Kenya for Princeton in I'll probably need to say something at some point. Here's that *thing*.
+In 8 hours, family and friends will gather at our home to celebrate my graduation. It's a big deal - I left Kenya for Princeton, graduated and now work at Microsoft. I'll probably need to say something at some point. Here's that *thing*.
 
 I'm humbled, not because I'm striving to be virtuous, but from realizing that my current state is a series of non-deterministic yet compounding luck [[TRoL]](#TRoL), [[Housel]](#Housel). In my time counselling Kenyan students applying to US universities, I haven't been able to reliably help them gain admission [[KAtUS]](#KAtUS).
 
-I'm conflicted when people attribute my state to God's favor. Many people (in more urgent situations) unfruitfully beseeched God's favor. Be it plain favoritism or unfathomable infinite-dimensional chess, I'm not at peace with His favor being the determining factor [[MVoG]](#MVoG).
+I'm conflicted when people attribute my state to God's favor. Many people (in more urgent situations) have unfruitfully beseeched God's favor. Be it plain favoritism or unfathomable infinite-dimensional chess, I'm not at peace with His favor being the determining factor [[MVoG]](#MVoG).
 
 Granted, I worked hard and smart, but the thing is, *so did others*. Grit is a necessary but not sufficient condition for maxing out one's success. And I still have a long way to go ahead of me. I can't yet be CTO of a large company - I couldn't even configure a LevelDB database last week!
 
-The ugly thing with luck is its lack of repeatability and in some sense, my consolation that I was in control of my own ship. It sucks to feel powerless. Humbling, but sucks all the same. Also ugly is the implication that no one can be like me - I mean, how elitist is that?
+The ugly thing with luck is its lack of repeatability, which implies that I was not in full control of my own ship. It sucks to feel powerless. Humbling, but sucks all the same.
 
 My thanksgiving lunch is pegged on the wrong variable. As long as we're celebrating events that are in our control, then my work ethic and outside support are the real deal. Graduating from Princeton is a fortuitous occurrence. There are many instances of grit and support that don't have any to show for it. Those too deserve celebration.
 
 ### Notes
 
 * <a name="TRoL">[TRoL]</a>: Where do I begin on the lucky events that have led me here?
-  * Wanyoike went to the same primary school as me and was a year ahead of me. I followed in his footsteps - to Mang'u and to the US.
+  * Wanyoike went to the same primary school as me and was a year ahead of me. I followed in his footsteps - to Mang'u High School and to university abroad.
   * Simon transferred back to my primary school two years before the national exam. He challenged my academic position, riling me to work harder.
   * Brian Mwiti, Mang'u and Yale alumni, introduced the idea of studying abroad. The event was optional - I might as well not have attended it or dozed off in the back.
   * I was close to Bi Kuria, the de-facto college counsellor at Mang'u. I felt comfortable reaching out to her. She never taught me in class, but she trained me on performing solo-verses for music festivals.
