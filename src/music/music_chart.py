@@ -154,7 +154,7 @@ def dump_top_tracks(k=10):
 
 if __name__ == "__main__":
     # Run this script at most once per day
-    print(datetime.now().strftime("%H:%M:%S %a, %b %Y\n"), file=sys.stderr)
+    print(datetime.now().strftime("%H:%M:%S %a, %b %d, %Y\n"), file=sys.stderr)
     last_mod_date = date.fromtimestamp(os.path.getmtime(OUTPUT_HTML_FILEPATH))
     today = date.today()
     if last_mod_date < today:
