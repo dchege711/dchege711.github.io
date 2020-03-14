@@ -88,7 +88,7 @@
         
         Dated Feb 14, 2020; 
         
-        last modified on Sat, 22 Feb 2020
+        last modified on Sat, 14 Mar 2020
         
     </p>
     </header>
@@ -101,6 +101,7 @@
     <li><a href="#technical-hurdles">Technical Hurdles</a>
       <ul>
         <li><a href="#secure-value-recovery">Secure Value Recovery</a></li>
+        <li><a href="#intel-sgx-is-vulnerable-to-load-value-injection">Intel SGX is Vulnerable to Load Value Injection</a></li>
       </ul>
     </li>
   </ul>
@@ -171,6 +172,28 @@
 <p>Software Guard Extensions (SGX) is an Intel processor feature. The enclave runs code that the rest of the OS can't alter. This code is signed with a unique key controlled by Intel. The signature can be used to verify that the code in the enclave hasn't been tampered with.</p>
 <p>User shares contacts with Signal. In the secure enclave, Signal compiles a list of known Signal-using contacts. Signal's open-source server code is designed to immediately erase the address book info after processing it. Signal users can check that this code hasn't been changed to somehow store the data instead.</p>
 <p>HN: <em>Many cryptographers don't believe SGX will be technologically reliable anytime soon.</em></p>
+<h3 id="intel-sgx-is-vulnerable-to-load-value-injection">Intel SGX is Vulnerable to Load Value Injection</h3>
+<blockquote>
+    <cite><i>LVI - Hijacking Transient Execution with Load Value Injection</i></cite>.
+     Jo Van Bulck, et. al..
+    
+    
+    
+    <a href="https://lviattack.eu/"><i>https://lviattack.eu/</i></a>.
+    
+    
+    <a href="https://lviattack.eu/lvi.pdf"><i>https://lviattack.eu/lvi.pdf</i></a>.
+    
+    
+     2020-03-10.
+    
+    <br />
+</blockquote>
+
+<p>Poison a hidden processor buffer with attacker values.</p>
+<p>Induce a faulting or assisted load in the victim program.</p>
+<p>The attacker's value is transiently injected into code gadgets following the faulting load in the victim program. In this short period, an attacker can arbitrarily hijack the control and data flow.</p>
+<p>Side channels may leave secret-dependent traces, before the processor detects the mistake and rolls back all operations.</p>
 
         </article>
     </div>
