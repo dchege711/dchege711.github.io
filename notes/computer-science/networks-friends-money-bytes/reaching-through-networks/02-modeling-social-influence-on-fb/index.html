@@ -23,6 +23,9 @@
         <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
         </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
         
     </head>
 
@@ -239,101 +242,8 @@
 <p>$$ I&rsquo;(t) = \beta \left( 1 - I(t) \right) I(t) = \beta \left( I(t) - I^2(t) \right) $$</p>
 <p>The solution is:</p>
 <p>$$ I(t) = \frac{ I(0) e^{\beta t} }{ S(0) + I(0) e^{\beta t} },\ \ \ \ S(t) = \frac{ S(0) }{ S(0) + I(0) e^{\beta t} } $$</p>
-<script type="text/javascript" src="/js/d3/d3.min.js"></script>
-<div class="svg-holder">
-<svg id="si-model-demo"></svg>
-</div>
-<script type="text/javascript">
-    /**
-     * Adapted from [1] and [2]
-     * d
-     * [1]: https://observablehq.com/@d3/line-chart
-     * [2]: https://bl.ocks.org/d3noob/402dd382a51a4f6eea487f9a35566de0
-     */
-
-    // Set dimensions and margins of the graph
-    const height = 250;
-    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
-    const width = 250;
-
-    // Scale the range of the data
-    const xMax = 100;
-    let data = d3.range(0, xMax, 0.5);
-
-    // Set the ranges
-    let x = d3.scaleLinear()
-        .domain([0, xMax])
-        .range([margin.left, width - margin.right]);
-
-    let y = d3.scaleLinear()
-        .domain([0, 1])
-        .range([height - margin.bottom, margin.top]);
-
-    let yAxis = g => g
-        .attr("transform", `translate(${margin.left}, 0)`)
-        .call(d3.axisLeft(y))
-        .call(g => g.select(".domain").remove())
-        .call(g => g.select(".tick:last-of-type text").clone()
-                .attr("x", 3)
-                .attr("text-anchor", "start")
-                .text("Proportion of Population"));
-
-    let xAxis = g => g
-        .attr("transform", `translate(0, ${height - margin.bottom})`)
-        .call(d3.axisBottom(x))
-        .call(g => g.select(".tick:last-of-type text").clone()
-                .attr("y", -10)
-                .attr("text-anchor", "start")
-                .text("t"));
-
-    // Define the line
-    let infectionZero = 0.3;
-    let susceptibleZero = 1 - infectionZero;
-    let beta = 0.04;
-
-    let infectionLine = d3.line()
-        .defined((d) => { return !isNaN(d); })
-        .x((d) => { return x(d); })
-        .y((d) => {
-            let eToBetaTime = Math.exp(beta * d);
-            let val = infectionZero * eToBetaTime * 1.0 / (susceptibleZero + infectionZero * eToBetaTime);
-            return y(val);
-        });
-
-    let susceptibleLine = d3.line()
-        .defined((t) => { return !isNaN(t); })
-        .x((t) => { return x(t); })
-        .y((t) => {
-            let eToBetaTime = Math.exp(beta * t);
-            let val = susceptibleZero / (susceptibleZero + infectionZero * eToBetaTime);
-            return y(val);
-        });
-
-    const siModelSVG = d3.select("#si-model-demo");
-
-    siModelSVG
-        .attr("viewBox", [0, 0, width, height]);
-
-    siModelSVG.append("g")
-        .call(xAxis);
-
-    siModelSVG.append("g")
-        .call(yAxis);
-
-    // Add the value line path
-    siModelSVG.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "red")
-        .attr("d", infectionLine);
-
-    siModelSVG.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("d", susceptibleLine);
-
-</script>
+<div class="svg-holder"id="si-model-plot"></div>
+<script type="text/javascript" src="/js/content/notes/computer-science/networks-friends-money-bytes/reaching-through-networks/ModelingSocialInfluenceOnFB.js"></script>
 <h3 id="the-sis-model">The SIS Model</h3>
 <p>Assumes two possible transitions: \(S \to I \) with probability \(\beta\), and \(I \to S\) with probability \(\gamma\).</p>
 <p>$$ S&rsquo;(t) = \gamma I(t) - \beta S(t) I(t);\ \ \ \ I&rsquo;(t) = \beta S(t) I(t) - \gamma I(t) $$</p>
