@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Don&#39;t touch my clipboard [Alex Ellis] | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+        
+    </head>
+
+    <body>
+        
+        
+        <nav>
+            <a href="/notes/">Notes</a>
+            <a href="/">My Stuff</a>
+            <a href="/blog">Blog</a>
+            
+        </nav>
+
+        <div class="container" id="main_div">
+            
+            
+                <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/notes/">Notes</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/notes/computer-science/">Computer Science</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/notes/computer-science/2020-02-17-dont-touch-my-clipboard/">Don&#39;t touch my clipboard [Alex Ellis]</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+
+            
+<section>
+    <header>
+    <h1> Don&#39;t touch my clipboard [Alex Ellis]</h1>
+    <p class="meta">
+        
+        Dated Feb 6, 2020; 
+        
+        last modified on Sat, 14 Mar 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#how-much-is-too-much">How much is too much?</a></li>
+    <li><a href="#as-a-security-vulnerability-pastejacking">As a Security Vulnerability (Pastejacking)</a>
+      <ul>
+        <li><a href="#defenses">Defenses</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <blockquote>
+    <cite><i>Don&#39;t touch my clipboard: You can (but shouldn&#39;t) change how people copy text from your website.</i></cite>.
+    
+     Alex Ellis.
+    
+    
+    <a href="https://alexanderell.is/posts/taking-over-my-clipboard/"><i>https://alexanderell.is/posts/taking-over-my-clipboard/</i></a>.
+    
+    
+    <a href="https://news.ycombinator.com/item?id=22352674"><i>https://news.ycombinator.com/item?id=22352674</i></a>.
+    
+    
+     2020-02-17.
+    
+    <br />
+</blockquote>
+
+<h2 id="how-much-is-too-much">How much is too much?</h2>
+<p>Complaint: author selected &amp; copied an em dash ( - ) character from <a href="https://www.thepunctuationguide.com/em-dash.html">https://www.thepunctuationguide.com/em-dash.html</a>, but here's what the site put into the clipboard:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">—
+
+From https://www.thepunctuationguide.com/em-dash.html
+© 2020 thepunctuationguide.com
+</code></pre></div><p>There's a tradeoff between attribution and changing things outside a site's scope.</p>
+<p>Apple's iBooks does this too. It may be due to contractual agreements with publishers.</p>
+<h2 id="as-a-security-vulnerability-pastejacking">As a Security Vulnerability (Pastejacking)</h2>
+<p>Appending extra information can be used as an attack vector. Most terminals interpret the new line character as <em>&lsquo;execute all the preceding contents&rsquo;</em>.</p>
+<p>Imagine the user selects and copies <code>echo &quot;not evil&quot;</code>, but the website overrides the copy event to write this to the clipboard:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-zsh" data-lang="zsh">touch ~/.evil
+clear
+echo <span style="color:#e6db74">&#34;not evil&#34;</span>
+</code></pre></div><h3 id="defenses">Defenses</h3>
+<ul>
+<li>Extensions like <a href="http://underpassapp.com/StopTheMadness/">StopTheMadness</a>.</li>
+<li>Typing <code>#</code> before pasting to make the contents a comment.</li>
+<li>Verify commands in some text editor
+<ul>
+<li>Be careful about script-like editors, e.g. Vim macros can be exploited: <code>echo &quot;evil&quot;\n \x1b:!cat /etc/passwd\n</code></li>
+</ul>
+</li>
+<li>Some terminals add preview + confirmation for copy-pastes that include newlines.</li>
+<li>On Firefox, <code>dom.event.clipboardevents.enabled</code> can be unset in <code>about:config</code></li>
+</ul>
+<p>The tricky part is that clipboard access isn't guaranteed to be a dark pattern. It's an API that the browser supports.</p>
+
+        </article>
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/notes/computer-science/2020-02-06-deps-and-maintainers/">&laquo; Dependencies and Maintainers [Drew DeVault]</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+        </footer>
+
+    </body>
+
+</html>
