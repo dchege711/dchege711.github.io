@@ -4,7 +4,7 @@
     <head>
         <title>
              
-                Don&#39;t touch my clipboard [Alex Ellis] | c13u
+                Against &#39;Smart&#39; Clipboard Adjustments | c13u
             
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,6 +26,7 @@
 
         <script type="text/javascript" src="/js/d3/d3.min.js"></script>
         <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
         
     </head>
 
@@ -68,7 +69,7 @@
 
 
 <li class="active">
-  <a href="https://www.c13u.com/notes/computer-science/2020-02-17-dont-touch-my-clipboard/">Don&#39;t touch my clipboard [Alex Ellis]</a>
+  <a href="https://www.c13u.com/notes/computer-science/2020-02-17-dont-touch-my-clipboard/">Against &#39;Smart&#39; Clipboard Adjustments</a>
 </li>
 
     </ul>
@@ -80,12 +81,12 @@
             
 <section>
     <header>
-    <h1> Don&#39;t touch my clipboard [Alex Ellis]</h1>
+    <h1> Against &#39;Smart&#39; Clipboard Adjustments</h1>
     <p class="meta">
         
         Dated Feb 6, 2020; 
         
-        last modified on Sat, 21 Mar 2020
+        last modified on Sun, 12 Apr 2020
         
     </p>
     </header>
@@ -94,52 +95,37 @@
         <aside id="toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#how-much-is-too-much">How much is too much?</a></li>
+    <li><a href="#dont-touch-my-clipboard-alex-ellis">Don't touch my clipboard [Alex Ellis]</a></li>
     <li><a href="#as-a-security-vulnerability-pastejacking">As a Security Vulnerability (Pastejacking)</a>
       <ul>
         <li><a href="#defenses">Defenses</a></li>
       </ul>
     </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
 
         <article id="main-article">
-            <blockquote>
-    <cite><i>Don&#39;t touch my clipboard: You can (but shouldn&#39;t) change how people copy text from your website.</i></cite>.
-    
-     Alex Ellis.
-    
-    
-    <a href="https://alexanderell.is/posts/taking-over-my-clipboard/"><i>https://alexanderell.is/posts/taking-over-my-clipboard/</i></a>.
-    
-    
-    <a href="https://news.ycombinator.com/item?id=22352674"><i>https://news.ycombinator.com/item?id=22352674</i></a>.
-    
-    
-     2020-02-17.
-    
-    <br />
-</blockquote>
-
-<h2 id="how-much-is-too-much">How much is too much?</h2>
-<p>Complaint: author selected &amp; copied an em dash ( - ) character from <a href="https://www.thepunctuationguide.com/em-dash.html">https://www.thepunctuationguide.com/em-dash.html</a>, but here's what the site put into the clipboard:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">—
+            <h2 id="dont-touch-my-clipboard-alex-ellis">Don't touch my clipboard [Alex Ellis]</h2>
+<p>Complaint: Alex selected &amp; copied an em dash ( - ) character from <a href="https://www.thepunctuationguide.com/em-dash.html">https://www.thepunctuationguide.com/em-dash.html</a>, but here's what the site put into the clipboard <sup><a href="#ellisClipboard">[]</a></sup>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">—
 
 From https://www.thepunctuationguide.com/em-dash.html
 © 2020 thepunctuationguide.com
-</code></pre></div><p>There's a tradeoff between attribution and changing things outside a site's scope.</p>
-<p>Apple's iBooks does this too. It may be due to contractual agreements with publishers.</p>
+</code></pre></div><p>There's a tradeoff between attribution and changing things outside a site's scope <sup><a href="#ellisClipboard">[]</a></sup>.</p>
+<p>Apple's iBooks does this too. It may be due to contractual agreements with publishers. <sup><a href="#hnEllisClipboard">[]</a></sup></p>
 <h2 id="as-a-security-vulnerability-pastejacking">As a Security Vulnerability (Pastejacking)</h2>
+<sup><a href="#hnEllisClipboard">[]</a></sup>
 <p>Appending extra information can be used as an attack vector. Most terminals interpret the new line character as <em>&lsquo;execute all the preceding contents&rsquo;</em>.</p>
 <p>Imagine the user selects and copies <code>echo &quot;not evil&quot;</code>, but the website overrides the copy event to write this to the clipboard:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-zsh" data-lang="zsh">touch ~/.evil
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-zsh" data-lang="zsh">rm -rf ~
 clear
 echo <span style="color:#e6db74">&#34;not evil&#34;</span>
 </code></pre></div><h3 id="defenses">Defenses</h3>
 <ul>
 <li>Extensions like <a href="http://underpassapp.com/StopTheMadness/">StopTheMadness</a>.</li>
-<li>Typing <code>#</code> before pasting to make the contents a comment.</li>
+<li>Typing <code>#</code> before pasting only protects you for the first line.</li>
 <li>Verify commands in some text editor
 <ul>
 <li>Be careful about script-like editors, e.g. Vim macros can be exploited: <code>echo &quot;evil&quot;\n \x1b:!cat /etc/passwd\n</code></li>
@@ -148,7 +134,52 @@ echo <span style="color:#e6db74">&#34;not evil&#34;</span>
 <li>Some terminals add preview + confirmation for copy-pastes that include newlines.</li>
 <li>On Firefox, <code>dom.event.clipboardevents.enabled</code> can be unset in <code>about:config</code></li>
 </ul>
-<p>The tricky part is that clipboard access isn't guaranteed to be a dark pattern. It's an API that the browser supports.</p>
+<p>The tricky part is that clipboard access isn't guaranteed to be a dark pattern. It's an API that the browser supports. Funny enough, SaaS have formed for this: <a href="https://moz.com/ugc/copymagicpaste-a-script-and-easytouseguide-to-customize-the-copyevent-on-your-website">example 1</a>, <a href="https://web.archive.org/web/20140207123808/https://tynt.com/">example 2</a>.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='ellisClipboard'>
+        
+        <i>Don&#39;t touch my clipboard: You can (but shouldn&#39;t) change how people copy text from your website.</i>
+    
+    </cite>
+    
+     Alex Ellis.
+    
+    
+    <a href="https://alexanderell.is/posts/taking-over-my-clipboard/"><i>https://alexanderell.is/posts/taking-over-my-clipboard/</i></a>.
+    
+    
+    
+     Feb 17, 2020.
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='hnEllisClipboard'>
+        
+        <i>HN Discussion | Don&#39;t touch my clipboard.</i>
+    
+    </cite>
+     /u/stefco_, /u/cortesoft, /u/bzbarsky, /u/sigotirandolas, /u/danso, /u/otterley.
+    
+    
+    
+    <a href="https://news.ycombinator.com/item?id=22352674"><i>https://news.ycombinator.com/item?id=22352674</i></a>.
+    
+    
+    
+     Feb 17, 2020.
+    
+    <br />
+</div>
+
+</li>
+</ol>
 
         </article>
 
@@ -173,8 +204,10 @@ echo <span style="color:#e6db74">&#34;not evil&#34;</span>
         
 
         
-            <a href="https://www.c13u.com/notes/computer-science/2020-02-06-deps-and-maintainers/">&laquo; Dependencies and Maintainers [Drew DeVault]</a>
+            <a href="https://www.c13u.com/notes/computer-science/2020-02-14-signal-secure-messaging-to-the-masses/">&laquo; Signal Is Finally Bringing Its Secure Messaging To the Masses [Andy Greenberg]</a>
         
+        
+            <a href="https://www.c13u.com/notes/computer-science/2020-02-06-deps-and-maintainers/">Dependencies and Maintainers [Drew DeVault] &raquo;</a>
         
 
     </footer>
