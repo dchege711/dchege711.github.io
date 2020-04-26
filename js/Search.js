@@ -34,7 +34,9 @@ function queryProcessor(event) {
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/keyup_event
   if (event.isComposing || event.keyCode === 229) return;
 
-  if (event.code === "Enter") {
+  // `event.code === "Enter"` does not work on mobile. 13 should work on both.
+  // https://stackoverflow.com/a/16317389
+  if (event.keyCode === 13) {
     event.preventDefault();
     displaySearchResults(event.srcElement.innerText);
   }
@@ -42,7 +44,6 @@ function queryProcessor(event) {
 
 window.onload = () => {
   document.getElementById("searchQuery").addEventListener("keydown", queryProcessor);
-  displaySearchResults("math");
 }
 
 /**
