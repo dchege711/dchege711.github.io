@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                New grad vs senior dev [Eric Lipppert] | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/2020-03-27-new-grad-vs-senior-dev/">New grad vs senior dev [Eric Lipppert]</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> New grad vs senior dev [Eric Lipppert]</h1>
+    <p class="meta">
+        
+        Dated Mar 27, 2020; 
+        
+        last modified on Sat, 25 Apr 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#substring-search-in-visual-basic">Substring Search in Visual Basic</a></li>
+    <li><a href="#commentary-from-hackernews">Commentary from HackerNews</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <div class="citation">
+    <cite id=''>
+        
+        <i>New grad vs senior dev.</i>
+    
+    </cite>
+    
+     Eric Lipppert.
+     Fabulous adventures in coding.
+    
+    <a href="https://ericlippert.com/2020/03/27/new-grad-vs-senior-dev/"><i>https://ericlippert.com/2020/03/27/new-grad-vs-senior-dev/</i></a>.
+    
+    
+    <a href="https://news.ycombinator.com/item?id=22352674"><i>https://news.ycombinator.com/item?id=22352674</i></a>.
+    
+    
+     Mar 27, 2020.
+    
+    <br />
+</div>
+
+<h2 id="substring-search-in-visual-basic">Substring Search in Visual Basic</h2>
+<p>In CS, substring search is a foundational problem for which there are
+\(O(m + n)\) algorithms. But VB's implementation was \(O(mn)\). Suppose we
+have <code>InStr(&quot;apple banana orange&quot;, &quot;banana&quot;)</code>:</p>
+<ul>
+<li>Skip to the first <code>b</code>. Check if <code>banana</code> is a substring starting from that <code>b</code>.</li>
+<li>If <code>banana</code> was not found, skip to the next <code>b</code>. Try again, and so forth.</li>
+</ul>
+<p>In the worst case, we have no match, and a <code>query</code> that makes us do a lot of
+work before returning false, e.g. <code>InStr(&quot;aaaaaaaaaaaaaaaaaaaa&quot;, &quot;aaaab&quot;)</code>.</p>
+<p>Why would VB go with an \(O(mn)\) algorithm?</p>
+<ul>
+<li>The <code>skipto</code> function is a single x86 machine instruction.</li>
+<li>Most VB devs are querying normal strings, not DNA sequences.</li>
+</ul>
+<p>In practice, the brute force algorithm is mostly \(O(n + m)\). By the time
+preprocessing is done for asymptotic \(O(m + n)\) algorithms, the naive brute
+force algorithm will have given you the answer.</p>
+<h2 id="commentary-from-hackernews">Commentary from HackerNews</h2>
+<p>New grads tend to have exposure to new tools. However, change should be
+motivated by a clear benefit, e.g. python3 has file system improvements and
+f-strings are more readable. While the users may not benefit, devs will.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Similar arguments: TypeScript - safer JS; Rust - speed AND memory safety.</p>
+</div>
+</div>
+
+<p>Start with simple working implementations. Profile before you write fancier
+functions. But even with the working implementations, do the basics: cover DB
+queries with indexes, use maps/sets if frequently looking up, avoid re-renders
+of UI that doesn't change, etc.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>For all the talk about CS being out of touch with industry, this was pretty
+much hammered in COS 333.</p>
+</div>
+</div>
+
+<blockquote>
+<p>A <strong>galactic algorithm</strong> is one that runs faster than any other algorithm for
+problems that are sufficiently large, but where &ldquo;sufficiently large&rdquo; is so big
+that the algorithm is never used in practice.
+<a href="https://en.wikipedia.org/wiki/Galactic_algorithm">(en.wikipedia.org)</a></p>
+</blockquote>
+<p>Develop an understanding for real world data: caches, latencies, optimized
+instructions, etc. For small \(n\), the constants matter, e.g. how does your
+hash function fare against linearly searching a flat but contiguous array? What
+is the costly operation? Moving stuff around might be your undoing&hellip;</p>
+<p>Know which battles to fight. 50x improvement? If your algorithm now takes 2K ns,
+but hitting the file system takes billions of ns, then there's no perceivable
+benefit to the user. But if you're going from 50 min to 1 min, awesome!</p>
+
+        </article>
+
+        
+        <br />
+        <aside id="tags-holder" style="margin: 0 0 2% 0;">
+            Tags: 
+            
+                <a href="/tags/software-engineering">#software-engineering</a>
+            
+                <a href="/tags/computer-science">#computer-science</a>
+            
+        </aside>
+        <br />
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+            <a href="https://www.c13u.com/computer-science/2020-02-14-signal-secure-messaging-to-the-masses/">Signal Is Finally Bringing Its Secure Messaging To the Masses [Andy Greenberg] &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
