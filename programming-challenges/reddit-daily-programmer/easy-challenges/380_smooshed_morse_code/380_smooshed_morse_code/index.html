@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Smooshed Morse Code | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/programming-challenges/reddit-daily-programmer/">Reddit Daily Programmer</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/programming-challenges/reddit-daily-programmer/easy-challenges/">Easy Challenges</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/programming-challenges/reddit-daily-programmer/easy-challenges/380_smooshed_morse_code/380_smooshed_morse_code/">Smooshed Morse Code</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Smooshed Morse Code</h1>
+    <p class="meta">
+        
+        Dated Sep 22, 2019; 
+        
+        last modified on Sun, 22 Sep 2019
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a>
+      <ul>
+        <li><a href="#examples">Examples</a>
+          <ul>
+            <li><a href="#solution">Solution</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#bonus-challenges">Bonus Challenges</a>
+      <ul>
+        <li><a href="#bonus-challenge-1">Bonus Challenge #1</a></li>
+        <li><a href="#bonus-challenge-2">Bonus Challenge #2</a></li>
+        <li><a href="#bonus-challenge-3">Bonus Challenge #3</a></li>
+        <li><a href="#bonus-challenge-4">Bonus Challenge #4</a></li>
+        <li><a href="#bonus-challenge-5">Bonus Challenge #5</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="description">Description</h2>
+<p><a href="https://www.reddit.com/r/dailyprogrammer/comments/cmd1hb/20190805_challenge_380_easy_smooshed_morse_code_1/">Link to Reddit Post</a></p>
+<p>For the purpose of this challenge, Morse code represents every letter as a sequence of 1-4 characters, each of which is either <code>.</code> (dot) or <code>-</code> (dash). The code for the letter <code>a</code> is <code>.-</code>, for <code>b</code> is <code>-...</code>, etc. The codes for each letter <code>a</code> through <code>z</code> are:</p>
+<p><code>.- -... -.-. -.. . ..-. --. .... .. .--- -.- .-.. -- -. --- .--. --.- .-. ... - ..- ...- .-- -..- -.-- --..</code></p>
+<p>Normally, you would indicate where one letter ends and the next begins, for instance with a space between the letters&rsquo; codes, but for this challenge, just smoosh all the coded letters together into a single string consisting of only dashes and dots.</p>
+<h3 id="examples">Examples</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">smorse<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;sos&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;...---...&#34;</span>
+smorse<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;daily&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;-...-...-..-.--&#34;</span>
+smorse<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;programmer&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;.--..-.-----..-..-----..-.&#34;</span>
+smorse<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;bits&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;-.....-...&#34;</span>
+smorse<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;three&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;-.....-...&#34;</span>
+</code></pre></div><p>An obvious problem with this system is that decoding is ambiguous. For instance, both <code>bits</code> and <code>three</code> encode to the same string, so you can't tell which one you would decode to without more information.</p>
+<h4 id="solution">Solution</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{<span style="color:#f92672">%</span> include_relative <span style="color:#ae81ff">380</span>_smooshed_morse_code<span style="color:#f92672">/</span>_380_smooshed_morse_code<span style="color:#f92672">.</span>py <span style="color:#f92672">%</span>}
+</code></pre></div><p>Seemed reasonable for a beginner's challenge.</p>
+<hr>
+<h2 id="bonus-challenges">Bonus Challenges</h2>
+<p>For these challenges, use the <a href="https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt">enable1 word list</a>. It contains 172,823 words. If you encode them all, you would get a total of 2,499,157 dots and 1,565,081 dashes.</p>
+<h3 id="bonus-challenge-1">Bonus Challenge #1</h3>
+<blockquote>
+<p>The sequence <code>-...-....-.--.</code> is the code for four different words (<code>needing</code>, <code>nervate</code>, <code>niding</code>, <code>tiling</code>). Find the only sequence that's the code for 13 different words.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{<span style="color:#f92672">%</span> include_relative <span style="color:#ae81ff">380</span>_smooshed_morse_code<span style="color:#f92672">/</span>challenge_1<span style="color:#f92672">.</span>py <span style="color:#f92672">%</span>}
+</code></pre></div><p>My solution uses a prefix tree to use less memory(? assuming that a significant number of smorse representations share prefixes; after all, the alphabet has 2 characters, so why not). I didn't learn about prefix trees until my second CS class. Using a hash table could work as well, and that's not too involving.</p>
+<h3 id="bonus-challenge-2">Bonus Challenge #2</h3>
+<blockquote>
+<p><code>autotomous</code> encodes to <code>.-..--------------..-...</code>, which has 14 dashes in a row. Find the only word that has 15 dashes in a row.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{<span style="color:#f92672">%</span> include_relative <span style="color:#ae81ff">380</span>_smooshed_morse_code<span style="color:#f92672">/</span>challenge_2<span style="color:#f92672">.</span>py <span style="color:#f92672">%</span>}
+</code></pre></div><p>Using python is cheating at this point :-)</p>
+<h3 id="bonus-challenge-3">Bonus Challenge #3</h3>
+<blockquote>
+<p>Call a word perfectly balanced if its code has the same number of dots as dashes. <code>counterdemonstrations</code> is one of two 21-letter words that's perfectly balanced. Find the other one.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{<span style="color:#f92672">%</span> include_relative <span style="color:#ae81ff">380</span>_smooshed_morse_code<span style="color:#f92672">/</span>challenge_3<span style="color:#f92672">.</span>py <span style="color:#f92672">%</span>}
+</code></pre></div><p>Neat challenge. The most convenient properties were our alphabet having only two letters and the question being a decision query, e.g. is <code>word</code> perfectly balanced? These two qualities made an arithmetic approach feasible.</p>
+<h3 id="bonus-challenge-4">Bonus Challenge #4</h3>
+<blockquote>
+<p><code>protectorate</code> is 12 letters long and encodes to <code>.--..-.----.-.-.----.-..--.</code>, which is a palindrome (i.e. the string is the same when reversed). Find the only 13-letter word that encodes to a palindrome.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{<span style="color:#f92672">%</span> include_relative <span style="color:#ae81ff">380</span>_smooshed_morse_code<span style="color:#f92672">/</span>challenge_4<span style="color:#f92672">.</span>py <span style="color:#f92672">%</span>}
+</code></pre></div><p>Ah, the good old palindrome. If I had a shilling for every time an interviewer asked me this question&hellip;</p>
+<h3 id="bonus-challenge-5">Bonus Challenge #5</h3>
+<blockquote>
+<p><code>--.---.---.--</code> is one of five 13-character sequences that does not appear in the encoding of any word. Find the other four.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">{<span style="color:#f92672">%</span> include_relative <span style="color:#ae81ff">380</span>_smooshed_morse_code<span style="color:#f92672">/</span>challenge_5<span style="color:#f92672">.</span>py <span style="color:#f92672">%</span>}
+</code></pre></div><p>Not trivial, at least to me. The idea is intuitive: have a list of 13 character sequences and check if they appear in any decoding. Finding 13-character sequences is the coin change problem by another name. <a href="https://cards.c13u.com/browse/?cardID=5bb248d57c2b5b00046da685">I tried to solve it efficiently some time back but failed</a>. Chuck bless <a href="https://docs.python.org/3.7/library/itertools.html#itertools.product">itertools.product</a></p>
+<hr>
+<p>Thanks to <a href="https://www.reddit.com/u/Separate_Memory">u/Separate_Memory</a> for inspiring this challenge on <a href="https://www.reddit.com/r/dailyprogrammer_ideas">r/dailyprogrammer_ideas</a>!</p>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/programming-challenges/reddit-daily-programmer/easy-challenges/000_longest_two-character_substring/000_longest_two-character_substring/">&laquo; Longest Two Character Substring</a>
+        
+        
+            <a href="https://www.c13u.com/programming-challenges/reddit-daily-programmer/easy-challenges/_218_to-do_list_part_1/">To-Do List (Easy) &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

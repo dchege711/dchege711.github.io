@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Day 2: 1202 Program Alarm | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/programming-challenges/advent-of-code/2019/">2019</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/programming-challenges/advent-of-code/2019/02-1202-program-alarm/02-1202-program-alarm/">Day 2: 1202 Program Alarm</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Day 2: 1202 Program Alarm</h1>
+    <p class="meta">
+        
+        Dated Jan 8, 2019; 
+        
+        last modified on Tue, 08 Jan 2019
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="description">Description</h2>
+<p><a href="https://adventofcode.com/2019/day/2">Link to original challenge</a></p>
+<p>On the way to your gravity assist around the Moon, your ship computer beeps angrily about a &ldquo;1202 program alarm&rdquo;. On the radio, an Elf is already explaining how to handle the situation: &ldquo;Don't worry, that's perfectly norma&ndash;&rdquo; The ship computer bursts into flames.</p>
+<p>You notify the Elves that the computer's magic smoke seems to have escaped. &ldquo;That computer ran Intcode programs like the gravity assist program it was working on; surely there are enough spare parts up there to build a new Intcode computer!&rdquo;</p>
+<p>An Intcode program is a list of integers separated by commas (like <code>1,0,0,3,99</code>). To run one, start by looking at the first integer (called position <code>0</code>). Here, you will find an opcode - either <code>1</code>, <code>2</code>, or <code>99</code>. The opcode indicates what to do; for example, <code>99</code> means that the program is finished and should immediately halt. Encountering an unknown opcode means something went wrong.</p>
+<p>Opcode <code>1</code> adds together numbers read from two positions and stores the result in a third position. The three integers immediately after the opcode tell you these three positions - the first two indicate the positions from which you should read the input values, and the third indicates the position at which the output should be stored.</p>
+<p>For example, if your Intcode computer encounters <code>1,10,20,30</code>, it should read the values at positions <code>10</code> and <code>20</code>, add those values, and then overwrite the value at position <code>30</code> with their sum.</p>
+<p>Opcode <code>2</code> works exactly like opcode <code>1</code>, except it multiplies the two inputs instead of adding them. Again, the three integers after the opcode indicate where the inputs and outputs are, not their values.</p>
+<p>Once you're done processing an opcode, move to the next one by stepping forward 4 positions.</p>
+<p>For example, suppose you have the following program:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">1,9,10,3,2,3,11,0,99,30,40,50
+</code></pre></div><p>For the purposes of illustration, here is the same program split into multiple lines:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">1,9,10,3,
+2,3,11,0,
+99,
+30,40,50
+</code></pre></div><p>The first four integers, <code>1,9,10,3</code>, are at positions <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code>. Together, they represent the first opcode (<code>1</code>, addition), the positions of the two inputs (<code>9</code> and <code>10</code>), and the position of the output (<code>3</code>). To handle this opcode, you first need to get the values at the input positions: position <code>9</code> contains <code>30</code>, and position <code>10</code> contains <code>40</code>. Add these numbers together to get <code>70</code>. Then, store this value at the output position; here, the output position (<code>3</code>) is at position <code>3</code>, so it overwrites itself. Afterward, the program looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">1,9,10,70,
+2,3,11,0,
+99,
+30,40,50
+</code></pre></div><p>Step forward 4 positions to reach the next opcode, <code>2</code>. This opcode works just like the previous, but it multiplies instead of adding. The inputs are at positions <code>3</code> and <code>11</code>; these positions contain <code>70</code> and <code>50</code> respectively. Multiplying these produces <code>3500</code>; this is stored at position <code>0</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">3500,9,10,70,
+2,3,11,0,
+99,
+30,40,50
+</code></pre></div><p>Stepping forward 4 more positions arrives at opcode <code>99</code>, halting the program.</p>
+<p>Here are the initial and final states of a few more small programs:</p>
+<p><code>1,0,0,0,99</code> becomes <code>2,0,0,0,99` </code>(1 + 1 = 2)`.</p>
+<p><code>2,3,0,3,99</code> becomes <code>2,3,0,6,99` </code>(3 * 2 = 6)`.</p>
+<p><code>2,4,4,5,99,0</code> becomes <code>2,4,4,5,99,9801` </code>(99 * 99 = 9801)`.</p>
+<p><code>1,1,1,4,99,5,6,0,99</code> becomes <code>30,1,1,4,2,5,6,0,99</code>.</p>
+<p>Once you have a working computer, the first step is to restore the gravity assist program (your puzzle input) to the &ldquo;1202 program alarm&rdquo; state it had just before the last computer caught fire. To do this, before running the program, replace position <code>1</code> with the value <code>12</code> and replace position <code>2</code> with the value <code>2</code>. What value is left at position <code>0</code> after the program halts?</p>
+<pre><code>
+
+</code></pre>
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+            <a href="https://www.c13u.com/programming-challenges/advent-of-code/2019/01-tyranny-of-the-rocket-equation/01-tyranny-of-the-rocket-equation/">Day 1: The Tyranny of the Rocket Equation &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
