@@ -43,7 +43,14 @@ function queryProcessor(event) {
 }
 
 window.onload = () => {
-  document.getElementById("searchQuery").addEventListener("keydown", queryProcessor);
+  const searchQueryElement = document.getElementById("searchQuery");
+  searchQueryElement.addEventListener("keydown", queryProcessor);
+
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has("q")) {
+    searchQueryElement.innerText = searchParams.get("q");
+    displaySearchResults(searchParams.get("q"));
+  }
 }
 
 /**
@@ -87,6 +94,7 @@ function displaySearchResults(query) {
 
   document.getElementById("searchResults").innerHTML = 
     `${searchMetadataHTML}${searchResultsHTML}`;
+  document.title = `${query} | c13u Search`;
 }
 
 /**
