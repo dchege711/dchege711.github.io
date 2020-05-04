@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                380. Smooshed Morse Code | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/programming-challenges/reddit-daily-programmer/">Reddit Daily Programmer</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/">Easy Challenges</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/380_smooshed_morse_code/380_smooshed_morse_code/">380. Smooshed Morse Code</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> 380. Smooshed Morse Code</h1>
+    <p class="meta">
+        
+        Dated Sep 22, 2019; 
+        
+        last modified on Sun, 22 Sep 2019
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#bonus-challenges">Bonus Challenges</a>
+      <ul>
+        <li><a href="#bonus-challenge-1">Bonus Challenge #1</a></li>
+        <li><a href="#bonus-challenge-2">Bonus Challenge #2</a></li>
+        <li><a href="#bonus-challenge-3">Bonus Challenge #3</a></li>
+        <li><a href="#bonus-challenge-4">Bonus Challenge #4</a></li>
+        <li><a href="#bonus-challenge-5">Bonus Challenge #5</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="description">Description</h2>
+<p>Covert a string, e.g. <code>programmer</code> into Morse code, e.g. <code>.--..-.-----..-..-----..-.</code> <a href="https://www.reddit.com/r/dailyprogrammer/comments/cmd1hb/20190805_challenge_380_easy_smooshed_morse_code_1/">/r/dailyprogrammer thread</a></p>
+<h2 id="solution">Solution</h2>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">_380_smooshed_morse_code.py</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">Solve https://www.reddit.com/r/dailyprogrammer/comments/cmd1hb/20190805_challenge_380_easy_smooshed_morse_code_1/</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> List, Iterable
+<span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> defaultdict
+<span style="color:#f92672">import</span> os
+
+<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">A mapping of `[a...z]` to Morse code.</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+ALPHA_TO_MORSE <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">a</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.-</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-...</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">c</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-.-.</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">d</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-..</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">e</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#34;</span>,  
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">..-.</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">g</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">--.</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">h</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">....</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">i</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">..</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">j</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.---</span><span style="color:#e6db74">&#34;</span>, 
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">k</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-.-</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">l</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.-..</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">m</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">--</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">n</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-.</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">o</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">---</span><span style="color:#e6db74">&#34;</span>, 
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">p</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.--.</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">q</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">--.-</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.-.</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">s</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">...</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">t</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-</span><span style="color:#e6db74">&#34;</span>, 
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">u</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">..-</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">v</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">...-</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">w</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.--</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">x</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-..-</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">y</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-.--</span><span style="color:#e6db74">&#34;</span>, 
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">z</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">--..</span><span style="color:#e6db74">&#34;</span>
+}
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">smorse</span>(alpha_text: str) <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> str:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Args:</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">        alpha_text: The string whose characters are in `[a...z]`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns:</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">        The smooshed morse code representation of `alpha_text`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Raises:</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">        ValueError if any character in `alpha_text` is not in `[a...z]`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    smooshed_morse_text <span style="color:#f92672">=</span> [None] <span style="color:#f92672">*</span> len(alpha_text)
+    <span style="color:#66d9ef">for</span> idx, c <span style="color:#f92672">in</span> enumerate(alpha_text):
+        <span style="color:#66d9ef">if</span> c <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> ALPHA_TO_MORSE:
+            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(
+                f<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{c} is not a character in a...z (case-sensitive)</span><span style="color:#e6db74">&#34;</span>
+            )
+        smooshed_morse_text[idx] <span style="color:#f92672">=</span> ALPHA_TO_MORSE[c]
+    <span style="color:#66d9ef">return</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(smooshed_morse_text)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#66d9ef">assert</span> smorse(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">sos</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">...---...</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">assert</span> smorse(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">daily</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-...-...-..-.--</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">assert</span> smorse(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">programmer</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.--..-.-----..-..-----..-.</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">assert</span> smorse(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">bits</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-.....-...</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">assert</span> smorse(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">three</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-.....-...</span><span style="color:#e6db74">&#34;</span>
+    
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#34;</span>:
+    main()
+</code></pre></div>
+<h2 id="bonus-challenges">Bonus Challenges</h2>
+<h3 id="bonus-challenge-1">Bonus Challenge #1</h3>
+<blockquote>
+<p>The sequence <code>-...-....-.--.</code> is the code for four different words (<code>needing</code>, <code>nervate</code>, <code>niding</code>, <code>tiling</code>). Find the only sequence that's the code for 13 different words.</p>
+</blockquote>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">challenge_1.py</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> List
+
+<span style="color:#f92672">from</span> morse_trie <span style="color:#f92672">import</span> MorseTrie
+<span style="color:#f92672">from</span> smorse_utils <span style="color:#f92672">import</span> word_list
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">solution</span>() <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> str:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    The sequence `-...-....-.--.` is the code for four different words </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    (`needing`, `nervate`, `niding`, `tiling`). Find the only sequence that’s </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    the code for 13 different words.</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns: `-....--....`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    morse_trie <span style="color:#f92672">=</span> MorseTrie([<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">needing</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">nervate</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">niding</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">tiling</span><span style="color:#e6db74">&#34;</span>])
+    matching_codes <span style="color:#f92672">=</span> morse_trie<span style="color:#f92672">.</span>keys_with_count(<span style="color:#ae81ff">4</span>)
+    <span style="color:#66d9ef">assert</span> len(matching_codes) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">assert</span> matching_codes[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">-...-....-.--.</span><span style="color:#e6db74">&#34;</span>
+
+    morse_trie <span style="color:#f92672">=</span> MorseTrie(word_list)
+    <span style="color:#66d9ef">return</span> morse_trie<span style="color:#f92672">.</span>keys_with_count(<span style="color:#ae81ff">13</span>)[<span style="color:#ae81ff">0</span>]
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#34;</span>:
+    <span style="color:#66d9ef">print</span>(
+        f<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{solution()} encodes 13 different words</span><span style="color:#e6db74">&#34;</span>
+    )
+</code></pre></div>
+<p>My solution uses a prefix tree to use less memory(? assuming that a significant number of smorse representations share prefixes; after all, the alphabet has 2 characters, so why not). I didn't learn about prefix trees until my second CS class. Using a hash table could work as well, and that's not too involving.</p>
+<h3 id="bonus-challenge-2">Bonus Challenge #2</h3>
+<blockquote>
+<p><code>autotomous</code> encodes to <code>.-..--------------..-...</code>, which has 14 dashes in a row. Find the only word that has 15 dashes in a row.</p>
+</blockquote>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">challenge_2.py</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> smorse_utils <span style="color:#f92672">import</span> word_list
+<span style="color:#f92672">from</span> _380_smooshed_morse_code <span style="color:#f92672">import</span> smorse
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">solution</span>() <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> str:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    `autotomous` encodes to `.-..--------------..-...`, which has 14 dashes in </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    a row. Find the only word that has 15 dashes in a row.</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns: `bottommost` which encodes to `-...---------------...-`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> word_list:
+        smorsed_word <span style="color:#f92672">=</span> smorse(word)
+        <span style="color:#66d9ef">if</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">---------------</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">in</span> smorsed_word:
+            <span style="color:#66d9ef">return</span> word
+    <span style="color:#66d9ef">return</span> None
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#34;</span>:
+    word <span style="color:#f92672">=</span> solution()
+    <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{word} -&gt; {smorse(word)} has 15 dashes in a row</span><span style="color:#e6db74">&#34;</span>)
+
+
+
+<span style="color:#75715e"># Challenge: `--.---.---.--` is one of five 13-character sequences that </span>
+<span style="color:#75715e"># does not appear in the encoding of any word. Find the other four.</span>
+<span style="color:#75715e"># morse_trie = MorseTrie(alpha_words())</span>
+<span style="color:#75715e"># for idx, word in enumerate(alpha_words()):</span>
+<span style="color:#75715e">#     assert morse_trie.word_exists(word)</span>
+<span style="color:#75715e">#     if idx &gt; 10: break</span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_char_sequences_of_size_n</span>(n: int) <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> Iterable[str]:
+    morse_literals_lengths <span style="color:#f92672">=</span> {}
+    <span style="color:#66d9ef">for</span> morse_literal <span style="color:#f92672">in</span> ALPHA_TO_MORSE<span style="color:#f92672">.</span>values():
+        length <span style="color:#f92672">=</span> len(morse_literal) 
+        <span style="color:#66d9ef">if</span> length <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> morse_literals_lengths:
+            morse_literals_lengths[length] <span style="color:#f92672">=</span> []
+        morse_literals_lengths[length]<span style="color:#f92672">.</span>append(morse_literal)
+
+    available_lengths <span style="color:#f92672">=</span> list(morse_literals_lengths<span style="color:#f92672">.</span>keys())
+
+
+get_char_sequences_of_size_n(<span style="color:#ae81ff">13</span>)</code></pre></div>
+<p>Using python is cheating at this point :-)</p>
+<h3 id="bonus-challenge-3">Bonus Challenge #3</h3>
+<blockquote>
+<p>Call a word perfectly balanced if its code has the same number of dots as dashes. <code>counterdemonstrations</code> is one of two 21-letter words that's perfectly balanced. Find the other one.</p>
+</blockquote>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">challenge_3.py</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> smorse_utils <span style="color:#f92672">import</span> word_list
+<span style="color:#f92672">from</span> _380_smooshed_morse_code <span style="color:#f92672">import</span> smorse
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">solution</span>() <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> str:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Call a word perfectly balanced if its code has the same number of dots as </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    dashes. `counterdemonstrations` is one of two 21-letter words that’s </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    perfectly balanced. Find the other one.</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns: `overcommercialization`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+    valid_balanced_words <span style="color:#f92672">=</span> set()
+    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> word_list:
+        <span style="color:#66d9ef">if</span> len(word) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">21</span>: <span style="color:#66d9ef">continue</span>
+        
+        smorsed_word <span style="color:#f92672">=</span> smorse(word)
+        difference <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> smorsed_word:
+            <span style="color:#66d9ef">if</span> c <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#34;</span>: difference <span style="color:#f92672">+</span><span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+            <span style="color:#66d9ef">else</span>: difference <span style="color:#f92672">-</span><span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#66d9ef">if</span> difference <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>: valid_balanced_words<span style="color:#f92672">.</span>add(word)
+
+    <span style="color:#66d9ef">assert</span> len(valid_balanced_words) <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#66d9ef">assert</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">counterdemonstrations</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">in</span> valid_balanced_words
+    valid_balanced_words<span style="color:#f92672">.</span>discard(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">counterdemonstrations</span><span style="color:#e6db74">&#34;</span>)
+    
+    <span style="color:#66d9ef">return</span> valid_balanced_words<span style="color:#f92672">.</span>pop()
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#34;</span>:
+    <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">The other balanced 21-letter word is {solution()}</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div>
+<p>Neat challenge. The most convenient properties were our alphabet having only two letters and the question being a decision query, e.g. is <code>word</code> perfectly balanced? These two qualities made an arithmetic approach feasible.</p>
+<h3 id="bonus-challenge-4">Bonus Challenge #4</h3>
+<blockquote>
+<p><code>protectorate</code> is 12 letters long and encodes to <code>.--..-.----.-.-.----.-..--.</code>, which is a palindrome (i.e. the string is the same when reversed). Find the only 13-letter word that encodes to a palindrome.</p>
+</blockquote>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">challenge_4.py</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> _380_smooshed_morse_code <span style="color:#f92672">import</span> smorse
+<span style="color:#f92672">from</span> smorse_utils <span style="color:#f92672">import</span> word_list
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">solution</span>():
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    `protectorate` is 12 letters long and encodes to `.--..-.----.-.-.----.-..--.`, </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    which is a palindrome. Find the only 13-letter word that encodes to a </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    palindrome.</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns: `intransigence`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__is_palindrome</span>(text):
+        idx <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        max_idx <span style="color:#f92672">=</span> int(len(text) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
+        <span style="color:#66d9ef">while</span> idx <span style="color:#f92672">&lt;</span> max_idx <span style="color:#f92672">and</span> text[idx] <span style="color:#f92672">==</span> text[<span style="color:#f92672">-</span>(idx <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)]:
+            idx <span style="color:#f92672">+</span><span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#66d9ef">if</span> idx <span style="color:#f92672">==</span> max_idx: <span style="color:#66d9ef">return</span> True
+        <span style="color:#66d9ef">return</span> False
+
+    <span style="color:#66d9ef">assert</span> __is_palindrome(smorse(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">protectorate</span><span style="color:#e6db74">&#34;</span>))
+
+    valid_palindromes <span style="color:#f92672">=</span> set()
+    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> word_list:
+        <span style="color:#66d9ef">if</span> len(word) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">13</span>: <span style="color:#66d9ef">continue</span>
+        <span style="color:#66d9ef">if</span> __is_palindrome(smorse(word)): valid_palindromes<span style="color:#f92672">.</span>add(word)
+
+    <span style="color:#66d9ef">assert</span> len(valid_palindromes) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">return</span> valid_palindromes<span style="color:#f92672">.</span>pop()
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#34;</span>:
+    <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">The other 13-letter palindrome is {solution()}</span><span style="color:#e6db74">&#34;</span>)
+    </code></pre></div>
+<p>Ah, the good old palindrome. If I had a shilling for every time an interviewer asked me this question&hellip;</p>
+<h3 id="bonus-challenge-5">Bonus Challenge #5</h3>
+<blockquote>
+<p><code>--.---.---.--</code> is one of five 13-character sequences that does not appear in the encoding of any word. Find the other four.</p>
+</blockquote>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">challenge_5.py</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> List
+<span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> defaultdict
+<span style="color:#f92672">import</span> itertools
+
+<span style="color:#f92672">from</span> _380_smooshed_morse_code <span style="color:#f92672">import</span> smorse, ALPHA_TO_MORSE
+<span style="color:#f92672">from</span> morse_trie <span style="color:#f92672">import</span> MorseTrie
+<span style="color:#f92672">from</span> smorse_utils <span style="color:#f92672">import</span> word_list
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_coin_change</span>(desired_amount: int, available_coins: List[int]) <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> List[List[int]]:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Args:</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">        desired_amount: The amount of money that we wish to end up with</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">        available_coins: </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">            The coin denominations. We assume that there is an infinite # of </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">            each coin.</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">            </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns:</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">        A list of possible ways of getting `desired_amount` from `available_coins`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    available_coins<span style="color:#f92672">.</span>sort()
+    combinations_for_n <span style="color:#f92672">=</span> defaultdict(list)
+    <span style="color:#66d9ef">for</span> coin <span style="color:#f92672">in</span> available_coins:
+        combinations_for_n[coin] <span style="color:#f92672">=</span> [[coin]]
+
+    <span style="color:#66d9ef">for</span> coin <span style="color:#f92672">in</span> available_coins:
+        <span style="color:#66d9ef">for</span> amount <span style="color:#f92672">in</span> range(coin, desired_amount <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
+            deficit <span style="color:#f92672">=</span> amount <span style="color:#f92672">-</span> coin
+            <span style="color:#66d9ef">for</span> deficit_combo <span style="color:#f92672">in</span> combinations_for_n[deficit]:
+                combinations_for_n[amount]<span style="color:#f92672">.</span>append(
+                    deficit_combo <span style="color:#f92672">+</span> [coin]
+                )
+
+    <span style="color:#66d9ef">return</span> combinations_for_n[desired_amount]
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">morse_sequences_of_length_n</span>(n: int) <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> List[str]:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">Yields: Unique morse code sequences of length `n`</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    morse_characters_by_length <span style="color:#f92672">=</span> defaultdict(list)
+    <span style="color:#66d9ef">for</span> morse_literal <span style="color:#f92672">in</span> ALPHA_TO_MORSE<span style="color:#f92672">.</span>values():
+        morse_characters_by_length[len(morse_literal)]<span style="color:#f92672">.</span>append(morse_literal)
+
+    already_seen_sequences <span style="color:#f92672">=</span> set()
+    <span style="color:#66d9ef">for</span> length_combo <span style="color:#f92672">in</span> get_coin_change(n, list(morse_characters_by_length<span style="color:#f92672">.</span>keys())):
+        morse_literals_pool <span style="color:#f92672">=</span> []
+        <span style="color:#66d9ef">for</span> length <span style="color:#f92672">in</span> length_combo:
+            morse_literals_pool<span style="color:#f92672">.</span>append(morse_characters_by_length[length])
+
+        <span style="color:#66d9ef">for</span> permutation <span style="color:#f92672">in</span> itertools<span style="color:#f92672">.</span>product(<span style="color:#f92672">*</span>morse_literals_pool):
+            sequence <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(permutation)
+            <span style="color:#66d9ef">if</span> sequence <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> already_seen_sequences:
+                already_seen_sequences<span style="color:#f92672">.</span>add(sequence)
+                <span style="color:#66d9ef">yield</span> sequence
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">solution</span>() <span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span> List[str]:
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    `--.---.---.--` is one of five 13-character sequences that does not appear </span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    in the encoding of any word. Find the other four.</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    Returns: `[</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">---.---.-----</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">, </span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">--.---.------</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">, </span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">---.----.----</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">, </span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">---.---.---.-</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">]`</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"></span><span style="color:#e6db74">    </span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    valid_sequences <span style="color:#f92672">=</span> set()
+    search_space <span style="color:#f92672">=</span> []
+    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> word_list:
+        search_space<span style="color:#f92672">.</span>append(smorse(word))
+
+    search_space <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">+</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(search_space) <span style="color:#75715e"># Any char that&#39;s not &#39;-&#39; or &#39;.&#39;</span>
+
+    <span style="color:#66d9ef">for</span> sequence <span style="color:#f92672">in</span> morse_sequences_of_length_n(<span style="color:#ae81ff">13</span>):
+        <span style="color:#66d9ef">if</span> sequence <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> search_space:
+            valid_sequences<span style="color:#f92672">.</span>add(sequence)
+
+    <span style="color:#66d9ef">assert</span> len(valid_sequences) <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span>
+    <span style="color:#66d9ef">assert</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">--.---.---.--</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">in</span> valid_sequences
+
+    valid_sequences<span style="color:#f92672">.</span>remove(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">--.---.---.--</span><span style="color:#e6db74">&#34;</span>)
+    <span style="color:#66d9ef">return</span> list(valid_sequences)
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#34;</span>:
+    <span style="color:#66d9ef">print</span>(
+        f<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">These 13-character sequences do not appear in any decoding {solution()}</span><span style="color:#e6db74">&#34;</span>
+    )
+</code></pre></div>
+<p>Not trivial, at least to me. The idea is intuitive: have a list of 13 character sequences and check if they appear in any decoding. Finding 13-character sequences is the coin change problem by another name. <a href="https://cards.c13u.com/browse/?cardID=5bb248d57c2b5b00046da685">I tried to solve it efficiently some time back but failed</a>. Chuck bless <a href="https://docs.python.org/3.7/library/itertools.html#itertools.product">itertools.product</a></p>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/218-to-do-list-part-i/218-to-do-list-part-i/">&laquo; 218. To-Do List Pt. I</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
