@@ -14,6 +14,11 @@ function organizeCitations() {
     const listElement = listItem.parentElement;
     if (!listElement) return;
 
+    // Reduce the font-size of the citations. There's currently no way to select
+    // the parent via CSS.
+    // https://stackoverflow.com/questions/1014861/is-there-a-css-parent-selector
+    listElement.style.fontSize = "smaller";
+
     // Match the citation IDs to their position on the list
     let citationIDToNum = {};
     for (let i = 0; i < listElement.children.length; i++) {
