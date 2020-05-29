@@ -129,9 +129,9 @@
 <li>Users posting tweets: \(4.6k\) requests/sec on average, \(12k+\) requests/sec at peak.</li>
 <li>Users viewing timelines: \(300k\) requests/sec.</li>
 </ul>
-<p>Twitter's scaling challenge is the fan-out: <em>each user follows many people and each user is followed by many people.</em></p>
+<p>Twitter&rsquo;s scaling challenge is the fan-out: <em>each user follows many people and each user is followed by many people.</em></p>
 <p>Intially, when a user tweeted, the tweet was put in a global collection. When a user requested their timeline, some nasty SQL went down. But the systems choked.</p>
-<p>Now, each user's timeline is cached like a mailbox. When a user tweets, the tweet is &lsquo;mailed&rsquo; to all of the tweeter's caches. Viewing the timeline is then cheap.</p>
+<p>Now, each user&rsquo;s timeline is cached like a mailbox. When a user tweets, the tweet is &lsquo;mailed&rsquo; to all of the tweeter&rsquo;s caches. Viewing the timeline is then cheap.</p>
 
 
 
@@ -143,9 +143,9 @@
 <p>However, tweets from celebrities are fetched when a user loads their timeline. Otherwise, too many writes would need to be done when highly followed accounts tweet.</p>
 <h2 id="describing-performance">Describing Performance</h2>
 <p><em>Response time</em>: time between a client sending a request and receiving a response. Think of it as a distribution because there are random factors, e.g. context switching, packet loss, garbage collection, page fault, etc.</p>
-<p>The mean is not a good metric because it doesn't say how many users experienced a certain response time. Better to use percentiles.</p>
+<p>The mean is not a good metric because it doesn&rsquo;t say how many users experienced a certain response time. Better to use percentiles.</p>
 <p>The high percentiles are usually important because these are probably the most valuable customers, e.g. the ones storing lots of data on your cloud. However, the higher the percentile, the more pronounced random events are.</p>
-<p>It's important to measure the response times on the client side. Say client A and client B both send requests, but A's in 100x slower and lands first on the server. Both A and B will perceive similar delay times!</p>
+<p>It&rsquo;s important to measure the response times on the client side. Say client A and client B both send requests, but A&rsquo;s in 100x slower and lands first on the server. Both A and B will perceive similar delay times!</p>
 <p>Even when server calls are made in parallel, the end-user request still needs to wait for the slowest call.</p>
 <h2 id="approaches-for-coping-with-load">Approaches for Coping with Load</h2>
 <p>Scaling up means moving to a more powerful machine, while scaling out means distributing the load across multiple smaller machines.</p>

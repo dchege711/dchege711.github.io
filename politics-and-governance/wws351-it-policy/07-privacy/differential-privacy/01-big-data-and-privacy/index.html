@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Motivation for Differential Privacy in Datasets | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/">Politics and Governance</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/">Information and Technology Policy [WWS 351]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/">07. Privacy</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/">Differential Privacy</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/01-big-data-and-privacy/">Motivation for Differential Privacy in Datasets</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Motivation for Differential Privacy in Datasets</h1>
+    <p class="meta">
+        
+        Dated Mar 25, 2019; 
+        
+        last modified on Sun, 10 May 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sanitize-and-transfer-model">Sanitize and Transfer Model</a></li>
+    <li><a href="#the-query-model-differential-privacy">The Query Model (Differential Privacy)</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <p>The goal is to make large datasets safe, i.e. no harm to you from having your data included.</p>
+<h2 id="sanitize-and-transfer-model">Sanitize and Transfer Model</h2>
+<p>Remove all PII, _e.g. name, SSN, mobile number, etc, before releasing the dataset.</p>
+<p>However, the list of PII is not necessarily complete. Furthermore, combinations of seemingly non-PII data can be jointly identifying.</p>
+<p>Using an auxilliary dataset is a common re-identification method, e.g. 
+<a href="/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/2010-narayanan-myths-and-fallacies-of-pii/#reidentification-without-pii"
+    
+    
+    
+    >
+    Narayanan and Shmatikov [2010]
+    
+</a> combined IMDB ratings and comments to deanonymize a Netflix dataset.</p>
+<h2 id="the-query-model-differential-privacy">The Query Model (Differential Privacy)</h2>
+<p>Keep the dataset, but provide a gateway through which analysts can query the data and get a response.</p>
+<p>In general, it&rsquo;s impossible to disallow anything to be learned about you, e.g. <em>if a dataset indicates that smoking causes cancer, then the dataset allows us to infer that if you smoke, you have increased cancer risk</em>.</p>
+<p>If anything learnable from the dataset including your data is also learnable from the dataset without your data, then the dataset is useless.</p>
+<p>However, we can aim for the property that <em>the result of any series of queries is very close to the result if your data were not present</em>. The differential privacy parameter \(\epsilon\) allows to specify how close.</p>
+<p>Two consequences of differential privacy:</p>
+<ul>
+<li>
+<p>We can&rsquo;t ruin privacy during post-processing. No auxilliary dataset will help gain more information.</p>
+</li>
+<li>
+<p>We can have a privacy budget, because the combination of \(Q_1(.)\) and \(Q_2(.)\) has privacy \( \epsilon_1 + \epsilon_2 \).</p>
+</li>
+</ul>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+            <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/2010-narayanan-myths-and-fallacies-of-pii/">Myths and Fallacies of &#39;Personally Identifiable Information&#39; &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

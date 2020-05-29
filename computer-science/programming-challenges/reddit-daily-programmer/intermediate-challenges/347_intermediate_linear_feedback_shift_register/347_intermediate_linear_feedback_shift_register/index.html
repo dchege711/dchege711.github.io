@@ -122,7 +122,7 @@
         <li><a href="#my-solution">My Solution</a></li>
         <li><a href="#further-reading">Further Reading</a></li>
         <li><a href="#bonus">Bonus</a></li>
-        <li><a href="#postmortem">Post-Mortem</a></li>
+        <li><a href="#post-mortem">Post-Mortem</a></li>
       </ul>
     </li>
   </ul>
@@ -131,16 +131,53 @@
 
         <article id="main-article">
             <h3 id="description">Description</h3>
-<p><a href="https://www.reddit.com/r/dailyprogrammer/comments/7r17qr/20180117_challenge_347_intermediate_linear/">Link to original problem</a></p>
-<p>In computing, a <a href="https://en.wikipedia.org/wiki/Linear-feedback_shift_register">linear-feedback shift register (LFSR)</a> is a shift register whose input bit is a linear function of its previous state. The most commonly used linear function of single bits is exclusive-or (XOR). Thus, an LFSR is most often a shift register whose input bit is driven by the XOR of some bits of the overall shift register value.</p>
+<p>
+<a href="https://www.reddit.com/r/dailyprogrammer/comments/7r17qr/20180117_challenge_347_intermediate_linear/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Link to original problem
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a></p>
+<p>In computing, a 
+<a href="https://en.wikipedia.org/wiki/Linear-feedback_shift_register"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    linear-feedback shift register (LFSR)
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a> is a shift register whose input bit is a linear function of its previous state. The most commonly used linear function of single bits is exclusive-or (XOR). Thus, an LFSR is most often a shift register whose input bit is driven by the XOR of some bits of the overall shift register value.</p>
 <p>The initial value of the LFSR is called the seed, and because the operation of the register is deterministic, the stream of values produced by the register is completely determined by its current (or previous) state. Likewise, because the register has a finite number of possible states, it must eventually enter a repeating cycle.</p>
 <p>Your challenge today is to implement an LFSR in software.</p>
 <h4 id="example-input">Example Input</h4>
-<p>You'll be given a LFSR input on one line specifying the tap positions (0-indexed), the feedback function (XOR or XNOR), the initial value with leading 0s as needed to show you the bit width, and the number of clock steps to output. Example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[0,2] XOR 001 7
-</code></pre></div><h4 id="example-output">Example Output</h4>
+<p>You&rsquo;ll be given a LFSR input on one line specifying the tap positions (0-indexed), the feedback function (XOR or XNOR), the initial value with leading 0s as needed to show you the bit width, and the number of clock steps to output. Example:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">[0,2] XOR 001 7
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="example-output">Example Output</h4>
 <p>Your program should emit the clock step and the registers (with leading 0s) for the input LFSR. From our above example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">0 001
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">0 001
 1 100
 2 110
 3 111
@@ -148,14 +185,38 @@
 5 101
 6 010
 7 001
-</code></pre></div><h4 id="challenge-input">Challenge Input</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[1,2] XOR 001 7
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="challenge-input">Challenge Input</h4>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">[1,2] XOR 001 7
 [0,2] XNOR 001 7
 [1,2,3,7] XOR 00000001 16
 [1,5,6,31] XOR 00000000000000000000000000000001 16
-</code></pre></div><h4 id="challenge-output">Challenge Output</h4>
-<p>(Only showing the first two for brevity's sake.)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">0 001
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="challenge-output">Challenge Output</h4>
+<p>(Only showing the first two for brevity&rsquo;s sake.)</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">0 001
 1 100
 2 010
 3 101
@@ -163,7 +224,21 @@
 5 111
 6 011
 7 001
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">0 001
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">0 001
 1 000
 2 100
 3 010
@@ -171,21 +246,57 @@
 5 110
 6 011
 7 001
-</code></pre></div><h3 id="my-solution">My Solution</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">{</span><span style="color:#f92672">%</span> include_relative 347_intermediate_linear_feedback_shift_register<span style="color:#f92672">/</span>LFSR347Hack<span style="color:#f92672">.</span><span style="color:#a6e22e">java</span> <span style="color:#f92672">%</span><span style="color:#f92672">}</span>
-</code></pre></div><h3 id="further-reading">Further Reading</h3>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="my-solution">My Solution</h3>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-java" data-lang="java"><span style="color:#f92672">{%</span> <span style="color:#111">include_relative</span> <span style="color:#111">347_intermediate_linear_feedback_shift_register</span><span style="color:#f92672">/</span><span style="color:#111">LFSR347Hack</span><span style="color:#f92672">.</span><span style="color:#75af00">java</span> <span style="color:#f92672">%}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="further-reading">Further Reading</h3>
 <ul>
-<li><a href="https://www.eetimes.com/document.asp?doc_id=1274550">Implementing LFSR using Logic</a></li>
-<li><a href="http://homepages.cae.wisc.edu/%7Eece553/handouts/LFSR-notes.PDF">LFSR: Theory and Applications</a></li>
+<li>
+<a href="https://www.eetimes.com/document.asp?doc_id=1274550"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Implementing LFSR using Logic
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a></li>
+<li>
+<a href="http://homepages.cae.wisc.edu/%7Eece553/handouts/LFSR-notes.PDF"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    LFSR: Theory and Applications
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a></li>
 </ul>
 <h3 id="bonus">Bonus</h3>
 <p>Write a function that detects the periodicity of the LFSR configuration.</p>
-<h3 id="postmortem">Post-Mortem</h3>
+<h3 id="post-mortem">Post-Mortem</h3>
 <p>I wrote this solution 20 months ago; a post-mortem is in order:</p>
 <ul>
 <li>I left print statements inside functions.</li>
-<li>I didn't close my <code>java.io.BufferedReader</code></li>
-<li>I couldn't get <a href="https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html">java.util.BitSet</a> working.</li>
+<li>I didn&rsquo;t close my <code>java.io.BufferedReader</code></li>
+<li>I couldn&rsquo;t get 
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    java.util.BitSet
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a> working.</li>
 </ul>
 
         </article>

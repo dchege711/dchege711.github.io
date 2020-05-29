@@ -114,7 +114,7 @@ function createAnnotatedSearchResult(docIdx, matchInfo) {
     let annotatedContent = "";
     let startIdx = 0;
     relevantMatchInfo.forEach((matchPos) => {
-      annotatedContent += originalMarkup.substr(startIdx, matchPos[0]);
+      annotatedContent += originalMarkup.substr(startIdx, matchPos[0] - startIdx);
       annotatedContent += `<span class="search-hit">`;
       annotatedContent += originalMarkup.substr(matchPos[0], matchPos[1]);
       annotatedContent += "</span>";
@@ -124,9 +124,13 @@ function createAnnotatedSearchResult(docIdx, matchInfo) {
     return annotatedContent;
   }
 
-  // For the title, we want to create a hyperlink to the document with the whole
-  // title.
+  // Annotate the matches in the title
   let annotatedTitle = annotateEntireContent(doc.title, matchInfo.title);
+
+  // If the document does not exist in multiple places, hyperlink the title too
+  if (!doc.equivalent_urls) {
+    annotatedTitle = `<a href="${doc.url}">${annotatedTitle}</a>`;
+  }
   
   // If the body matched, we want to show the results in context...
   let originalBody = doc.body;
@@ -158,13 +162,23 @@ function createAnnotatedSearchResult(docIdx, matchInfo) {
     });
     annotatedTags = `Tags: ${annotatedContent}`;
   }
+
+  // Display all URLs for the search result
+  let urlMarkup = "";
+  if (doc.equivalent_urls) {
+    doc.equivalent_urls.forEach((url) => {
+      // <p></p> to make the URLs appear on separate lines.
+      urlMarkup += `<p class="meta"><a href="${url}">${url}</a></p>`; });
+  } else {
+    urlMarkup = `<a href="${doc.url}">${doc.url}</a>`;
+  }
   
   return `<div>
-    <a href="${doc.url}">${annotatedTitle}</a>
+    ${annotatedTitle}
     <p class="meta">
       ${DATE_FORMATTER.format((new Date(doc.date)))}; ${annotatedTags}
     </p>
-    <p class="meta">${doc.url}</p>
+    <p class="meta">${urlMarkup}</p>
     <p class="snippet">${annotatedBody}</p>
   </div>`;
 }

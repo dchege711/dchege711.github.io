@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Tracking and Data Collection | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/">Information Security [COS 432]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/14-privacy/">14. Privacy</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/14-privacy/02-tracking-and-data-collection/">Tracking and Data Collection</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Tracking and Data Collection</h1>
+    <p class="meta">
+        
+        Dated Jan 22, 2019; 
+        
+        last modified on Tue, 19 May 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#tracking-on-the-internet">Tracking on the Internet</a></li>
+    <li><a href="#the-industry">The Industry</a></li>
+    <li><a href="#web-tracking-methods">Web Tracking Methods</a>
+      <ul>
+        <li><a href="#placing-data-in-the-browser">Placing data in the browser</a></li>
+        <li><a href="#fingerprinting">Fingerprinting</a></li>
+        <li><a href="#cross-device-tracking">Cross-device tracking</a></li>
+        <li><a href="#ultrasound-beacons">Ultrasound beacons</a></li>
+        <li><a href="#merging-online-and-offline-databases">Merging online and offline databases</a></li>
+        <li><a href="#machine-learning-and-inference">Machine Learning and Inference</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="tracking-on-the-internet">Tracking on the Internet</h2>
+<figure>
+    <img src="/img/computer-science/cos432-information-security/14-privacy/third-party-online-tracking-2012.png"
+         alt="Screenshot from a 2012 study of third-party online tracking. The red boxes show content (at least the visible ones) served by third parties."/> <figcaption>
+            <p>Screenshot from a <a href="#mayerMitchellThirdPartyWebTracking">2012 study of third-party online tracking</a>. The red boxes show content (at least the visible ones) served by third parties.</p>
+        </figcaption>
+</figure>
+
+<p>When the browser requests a third-party resource embedded on a web page, the snippet below is a subset of the HTTP headers sent by the browser to the third party.</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">GET         http://youtube.com/watch?v=gHStnhGx1P
+Cookie:     id=35c192bcfe0000b1...
+Referer:    http://www.nytimes.com/
+</code></pre></td></tr></table>
+</div>
+</div><p>The combination of the cookie and the referrer makes third-party tracking possible. Incidentally, the HTTP protocol specification misspells &lsquo;referrer&rsquo;</p>
+<h2 id="the-industry">The Industry</h2>
+<figure>
+    <img src="/img/computer-science/cos432-information-security/14-privacy/luma-display-landscape.png"
+         alt="Display Advertising Technology Landscape. Source: LUMA Partners LLC"/> <figcaption>
+            <p>Display Advertising Technology Landscape. Source: <a href="#displayLUMAscape">LUMA Partners LLC</a></p>
+        </figcaption>
+</figure>
+
+<p>Third party online tracking: sites <em>other than</em> the one you&rsquo;re visiting (typically invisible) compiling profiles of your browsing history.</p>
+<p>Behavioral targeting: profiles based on user&rsquo;s past activity help ad exchanges serve targeted ads based on real-time ad auctions.</p>
+<h2 id="web-tracking-methods">Web Tracking Methods</h2>
+<h3 id="placing-data-in-the-browser">Placing data in the browser</h3>
+<p>Options: HTTP cookies, HTTP auth, HTTP etags, content cache, IE userdata, HTML5 protocol &amp; content handlers, HTML5 storage, Flash cookies, Silverlight storage, TLS session ID &amp; resume, Browsing history, <code>window.name</code>, HTTP STS, DNS cache, &hellip;</p>
+<p>Numerous web APIs allow placing data in the browser (directly or indirectly) and all of these can be used for uniquely identifying the user and hence tracking their browsing.</p>
+<h3 id="fingerprinting">Fingerprinting</h3>
+<p>Involves observing the browser&rsquo;s behavior, e.g. user-agent, browser plugins, clock skew, list of installed fonts, cookies enabled?, browser add-ons, screen resolution, &hellip;</p>
+<p>When these attributes are combined, different devices/browsers will have different fingerprints. Fingerprinting leaves no trace that the user is being tracked. Unlike cookies, users can&rsquo;t see or control fingerprinting.</p>
+<p>Example: Canvas fingerprinting: <em>draw invisible text, then read it back as a sequence of bits</em>. Because of the tiny differences between devices, the bit string acts as a device identifiers. <sup><a href="#moweryPixelPerfect">[]</a></sup></p>
+<h3 id="cross-device-tracking">Cross-device tracking</h3>
+<p>Two devices can be linked to the same user if:</p>
+<ul>
+<li>User logs in with the same credentials from both devices</li>
+<li>User visits the same/similar set of websites on both devices</li>
+<li>User travels with two portable devices</li>
+</ul>
+<sup><a href="#brookmanEtAlCrossDeviceTracking">[]</a></sup>
+<h3 id="ultrasound-beacons">Ultrasound beacons</h3>
+<ol>
+<li>TV ad emits ultrasound (inaudible) binary signal that encodes a unique ID</li>
+<li>Viewer&rsquo;s smartphone app listens in the background</li>
+<li>When ultrasound ID is detected, reports that ad has been watched.</li>
+</ol>
+<p>Beacon-based tracking is not as widespread as fingerprinting and cross-device tracking. It was implemented by SilverPush and incorporated in a small number of apps.</p>
+<p>In recent versions of iOS/Android, apps can&rsquo;t record audio in the background without user awareness/consent.</p>
+<h3 id="merging-online-and-offline-databases">Merging online and offline databases</h3>
+<p>Scenario: retailer wants to target shoppers with ads when they browse online</p>
+<ol>
+<li>Consumer shops at retail store, provides email address</li>
+<li>Store uploads list of consumer IDs to online advertiser</li>
+<li>Consumer logs in to (say) news website using email address</li>
+<li>Third-party tracker links the user to retail DB</li>
+<li>Ads are served via a cookie that follows the user around</li>
+</ol>
+<h3 id="machine-learning-and-inference">Machine Learning and Inference</h3>
+<p>Target infamously predicted that a girl was pregnant before her father was aware. <sup><a href="#duhiggStatsPatternsAndConsumers">[]</a></sup></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The piece itself is even more interesting:</p>
+<p>In major life events, e.g. graduating college, moving to new town, arrival of a baby, consumers change their shopping habits. Bring in a consumer to buy diapers, they&rsquo;ll probably buy other stuff too. Once birth records are updated, there&rsquo;s no edge.</p>
+<p>So Target built a model to assign the likelihood of pregancy, and it was so good that there was public outcry. Target mixes in other coupons to be less creepy. <sup><a href="#duhiggStatsPatternsAndConsumers">[]</a></sup></p>
+</div>
+</div>
+
+<p>Using Facebook likes, one can meaningfully predict sexual orientation, ethnicity, religious and political views, personality traits, intelligence, happiness, use of addictive substances, parental separation, age and gender. <sup><a href="#kosinskiEtAlPredictingPrivateTraits">[]</a></sup></p>
+<p>Deep neural networks do better than humans at detecting sexual orientation from facial images. <sup><a href="#wangDeepLearningSexualOrientation">[]</a></sup></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='mayerMitchellThirdPartyWebTracking'>
+        
+        <i>Third-Party Web Tracking: Policy and Technology.</i>
+    
+    </cite>
+     Mayer, Jonathan; Mitchell, John.
+    
+    
+    
+    <a href="http://cyberlaw.stanford.edu/files/publication/files/trackingsurvey12.pdf" target="_blank" rel="noopener"><i>http://cyberlaw.stanford.edu/files/publication/files/trackingsurvey12.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+     2012.
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='displayLUMAscape'>
+        
+        <i>Display LUMAscape.</i>
+    
+    </cite>
+    
+     LUMA Partners LLC.
+    
+    
+    <a href="https://lumapartners.com/content/lumascapes/display-ad-tech-lumascape/" target="_blank" rel="noopener"><i>https://lumapartners.com/content/lumascapes/display-ad-tech-lumascape/</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='moweryPixelPerfect'>
+        
+        <i>Pixel perfect: Fingerprinting canvas in HTML5.</i>
+    
+    </cite>
+     Mowery, Keaton; Shacham, Hovav.
+    
+    
+    
+    <a href="https://hovav.net/ucsd/dist/canvas.pdf" target="_blank" rel="noopener"><i>https://hovav.net/ucsd/dist/canvas.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+     2012.
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='brookmanEtAlCrossDeviceTracking'>
+        
+        <i>Cross-Device Tracking: Measurement and Disclosures.</i>
+    
+    </cite>
+     Brookman, Justin; Rouge, Phoebe; Alva, Aaron; Yeung, Christina.
+    
+    
+    
+    <a href="https://petsymposium.org/2017/papers/issue2/paper29-2017-2-source.pdf" target="_blank" rel="noopener"><i>https://petsymposium.org/2017/papers/issue2/paper29-2017-2-source.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+     2017.
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='duhiggStatsPatternsAndConsumers'>
+        
+        <i>How Companies Learn Your Secrets.</i>
+    
+    </cite>
+    
+     Charles Duhigg.
+     New York Times.
+    
+    <a href="https://www.nytimes.com/2012/02/19/magazine/shopping-habits.html" target="_blank" rel="noopener"><i>https://www.nytimes.com/2012/02/19/magazine/shopping-habits.html</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://www.forbes.com/sites/kashmirhill/2012/02/16/how-target-figured-out-a-teen-girl-was-pregnant-before-her-father-did" target="_blank" rel="noopener"><i>https://www.forbes.com/sites/kashmirhill/2012/02/16/how-target-figured-out-a-teen-girl-was-pregnant-before-her-father-did</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+     Feb 16, 2012.
+    
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='kosinskiEtAlPredictingPrivateTraits'>
+        
+        <i>Private traits and attributes are predictable from digital records of human behavior.</i>
+    
+    </cite>
+     Michal Kosinski; David Stillwell; Thore Graepel.
+    
+    
+    
+    <a href="https://www.pnas.org/content/pnas/110/15/5802.full.pdf" target="_blank" rel="noopener"><i>https://www.pnas.org/content/pnas/110/15/5802.full.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     Feb 13, 2013.
+    
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='wangDeepLearningSexualOrientation'>
+        
+        <i>Deep neural networks are more accurate than humans at detecting sexual orientation from facial images.</i>
+    
+    </cite>
+     Yilun Wang; Michal Kosinski.
+    
+    
+    
+    <a href="https://www.semanticscholar.org/paper/Deep-Neural-Networks-Can-Detect-Sexual-Orientation-Wang-Kosinski/af30a2394c620132884bb98c78b6b9e46c791482" target="_blank" rel="noopener"><i>https://www.semanticscholar.org/paper/Deep-Neural-Networks-Can-Detect-Sexual-Orientation-Wang-Kosinski/af30a2394c620132884bb98c78b6b9e46c791482</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+     2017.
+    
+    <br />
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        
+        <br />
+        <aside id="tags-holder" style="margin: 0 0 2% 0;">
+            Tags: 
+            
+                <a href="/tags/web-development">#web-development</a>
+            
+        </aside>
+        <br />
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/14-privacy/01-privacy-in-cs-and-in-the-law/">&laquo; Privacy in CS and in the Law</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Secure Multiparty Computation | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/">Information Security [COS 432]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/14-privacy/">14. Privacy</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/14-privacy/privacy-enhancing-tech/">Privacy Enhancing Techniques</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/14-privacy/privacy-enhancing-tech/secure-multiparty-computation/">Secure Multiparty Computation</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Secure Multiparty Computation</h1>
+    <p class="meta">
+        
+        Dated Jan 22, 2019; 
+        
+        last modified on Sat, 09 May 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#private-set-intersection">Private Set Intersection</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="examples">Examples</h2>
+<ul>
+<li>
+<p>Multiple hospitals come together to run genetic study using combined patient records but <em>without</em> revealing records to each other.</p>
+</li>
+<li>
+<p>Web browser and ad server execute protocol by which browser downloads ads relevant to user but <em>does not</em> leak user&rsquo;s browsing history to server.</p>
+</li>
+</ul>
+<h2 id="private-set-intersection">Private Set Intersection</h2>
+<p>A typical scenario:</p>
+<ul>
+<li>Firm has a list, \([a_1, a_2, &hellip;, a_n]\), of IP addresses of attack attempts</li>
+<li>FBI has a list, \([b_1, b_2, &hellip;, b_n]\), of IP addresses of investigation suspects</li>
+<li>Both parties want to learn the intersection</li>
+<li>Neither wants the other to learn IPs <em>it doesn&rsquo;t already know</em></li>
+</ul>
+<p>Hashing doesn&rsquo;t work because IP addresses, especially IPv4, can be enumerated by brute force and/or other guessing strategies in reasonable time.</p>
+<p>Here&rsquo;s a scheme that works:</p>
+<ul>
+<li>
+<p>Fix a prime \(p\). Let Alice pick their own \(x\), and Bob pick their own \(y\)</p>
+</li>
+<li>
+<p>Alice sends \([a_1^x \pmod p, a_2^x \pmod p, &hellip; ]\), while Bob sends \([b_1^y \pmod p, b_2^y \pmod p, &hellip; ]\)</p>
+</li>
+<li>
+<p>Alice computes and sends \([ b_1^{yx} \pmod p, b_2^{yx} \pmod p, &hellip; ]\). Bob computes and sends \([ a_1^{xy} \pmod p, a_2^{xy} \pmod p, &hellip; ]\)</p>
+</li>
+</ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>One trick for solving privacy puzzles is to exploit associative properties.</p>
+</div>
+</div>
+
+<ul>
+<li>To compute the intersection:</li>
+</ul>
+<p>$$ a_i == b_j \iff a_i^{xy} \pmod p == b_j^{yx} \pmod p $$</p>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

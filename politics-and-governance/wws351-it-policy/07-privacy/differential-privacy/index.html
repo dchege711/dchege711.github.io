@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Differential Privacy | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/">Politics and Governance</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/">Information and Technology Policy [WWS 351]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/">07. Privacy</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/">Differential Privacy</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<main>
+    <article>
+        <header>
+            <h1>Differential Privacy</h1>
+            <p class="meta">
+                
+                Dated Jan 22, 2019; 
+                
+                last modified on Sun, 17 May 2020
+                
+            </p>
+        </header>
+        
+        <p>A data release mechanism is differentially private if any computation performed on the released data yields essentially the same result if a single data point is added/removed.</p>
+<p>More specifically, let \(Q\) be any (probabilistic) query function. \(Q\) is \(\epsilon\)-differentially private if for all databases \(B\), \(B&rsquo;\) that differ in one item, and for all functions \(F\), and all values \(y\):</p>
+<p>$$ \mathbb{P}\{F(Q(B)) = y\} \le e^{\epsilon} \cdot \mathbb{P}\{F(Q(B&rsquo;)) = y\} $$</p>
+<p>\(\epsilon\) is a privacy parameter. Increasing \(\epsilon\) improves accuracy, but reduces privacy.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Cynthia Dwork, the pioneer of Differential Privacy, 
+<a href="http://www.sigact.org/prizes/knuth/citation2020.pdf"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    has just won the 2020 Knuth Prize
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a>.</p>
+</div>
+</div>
+
+
+    </article>
+
+    
+    <table border="0">
+        <tr class="no-decoration">
+            <td class="no-decoration"></td>
+            <td class="no-decoration"></td>
+            <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
+        </tr>
+        
+        
+            
+                
+                    
+    <tr class="no-decoration">
+        
+        <td class="no-decoration">May 10, 2020</td>
+        
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration"><a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/01-big-data-and-privacy/">Motivation for Differential Privacy in Datasets</a></td>
+    </tr>
+
+                
+            
+                
+                    
+    <tr class="no-decoration">
+        
+        <td class="no-decoration">May 25, 2020</td>
+        
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration"><a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/2010-narayanan-myths-and-fallacies-of-pii/">Myths and Fallacies of &#39;Personally Identifiable Information&#39;</a></td>
+    </tr>
+
+                
+            
+                
+                    
+    <tr class="no-decoration">
+        
+        <td class="no-decoration">May 16, 2020</td>
+        
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration"><a href="https://www.c13u.com/politics-and-governance/wws351-it-policy/07-privacy/differential-privacy/2017-05-07-dp-primer-nontechnical/">Differential Privacy: A Primer for a Non-technical Audience</a></td>
+    </tr>
+
+                
+            
+        
+    </table>
+
+    <script>
+    
+
+    function getOnPageLink(targetPagePermalink) {
+        let listPagePermalink = "https:\/\/www.c13u.com\/politics-and-governance\/wws351-it-policy\/07-privacy\/differential-privacy\/";
+
+        let relativeLinkToPage = targetPagePermalink.split(listPagePermalink)[1];
+        if (!relativeLinkToPage) return null;
+
+        return relativeLinkToPage.split("/")[0];
+    }
+
+    
+
+    
+    
+    
+
+    let pageURLs = [];
+    let pageURL = null;
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/politics-and-governance\/wws351-it-policy\/07-privacy\/differential-privacy\/01-big-data-and-privacy\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/politics-and-governance\/wws351-it-policy\/07-privacy\/differential-privacy\/2010-narayanan-myths-and-fallacies-of-pii\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/politics-and-governance\/wws351-it-policy\/07-privacy\/differential-privacy\/2017-05-07-dp-primer-nontechnical\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+
+    function goToRandomPage() {
+        
+        
+        let idx = Math.floor(Math.random() * (pageURLs.length));
+        window.open(pageURLs[idx], "_self");
+    }
+</script>
+    
+</main>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

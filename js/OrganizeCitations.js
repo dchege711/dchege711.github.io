@@ -20,10 +20,13 @@ function organizeCitations() {
     listElement.style.fontSize = "smaller";
 
     // Match the citation IDs to their position on the list
-    let citationIDToNum = {};
+    let citationIDToDetails = {};
     for (let i = 0; i < listElement.children.length; i++) {
         let citationElement = listElement.children[i].getElementsByTagName("cite")[0];
-        citationIDToNum[citationElement.id] = i + 1;
+        citationIDToDetails[citationElement.id] = {
+            numToDisplay: i + 1,
+            hoverText: citationElement.parentElement.innerText
+        };
     }
 
     // Fill in the missing references
@@ -31,8 +34,9 @@ function organizeCitations() {
     for (let i = 0; i < incompleteAnchors.length; i++) {
         let anchor = incompleteAnchors[i];
         let citationID = anchor.href.split("#")[1];
-        if (citationIDToNum[citationID]) {
-            anchor.innerText = `[${citationIDToNum[citationID]}]`;
+        if (citationIDToDetails[citationID]) {
+            anchor.innerText = `[${citationIDToDetails[citationID].numToDisplay}]`;
+            anchor.title = citationIDToDetails[citationID].hoverText;
         }        
     }
 }

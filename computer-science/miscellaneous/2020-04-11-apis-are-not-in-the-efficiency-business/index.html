@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                APIs Are Not In the Efficiency Business | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/miscellaneous/">Miscellanous</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/miscellaneous/2020-04-11-apis-are-not-in-the-efficiency-business/">APIs Are Not In the Efficiency Business</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> APIs Are Not In the Efficiency Business</h1>
+    <p class="meta">
+        
+        Dated Apr 11, 2020; 
+        
+        last modified on Tue, 19 May 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#cityflo-reduces-google-maps-api-bill-by-94-supa-hrefcityflowasup">CityFlo Reduces Google Maps API Bill by 94% <sup><a href="#CityFlow">[]</a></sup></a></li>
+    <li><a href="#all-the-restrictions-have-been-on-display-in-the-tos-dont-make-a-fuss-now">All the Restrictions Have Been On Display in the ToS; Don&rsquo;t Make a Fuss Now</a></li>
+    <li><a href="#open-source-to-the-rescue">Open-Source to the Rescue?</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="cityflo-reduces-google-maps-api-bill-by-94-supa-hrefcityflowasup">CityFlo Reduces Google Maps API Bill by 94% <sup><a href="#CityFlow">[]</a></sup></h2>
+<p>Google Directions API 
+<a href="https://ppc.land/google-increases-prices-of-google-maps-api-and-developers-are-not-happy/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    limited their free tier
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a>. CityFlo uses this API to calculate ETAs. Initially, CityFlo queried the API every time a stop was registered.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>This was the problem. The number of API calls should be dependent on the stops themselves, not the buses. For an MVP, sure - make that query - but if you&rsquo;re running a growing business, those calls add up!</p>
+</div>
+</div>
+
+<p>With some pre-processing, one can reduce the number of API calls. Because the stops, \(S\), are well-defined, we can enumerate ordered pairs \((a, b)\) where \(a, b \in S \) and stop \(a\) is adjacent to stop \(b\). Any trip in the system can be expressed as the sum of several pairs.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>CityFlo&rsquo;s solution was similar to the construction above. Additionally, CityFlo used linear interpolation to give ETAs for locations that are not in \(S\).</p>
+</div>
+</div>
+
+<p>However, a linear extrapolation may not always be correct, e.g. a traffic accident. <sup><a href="#CityFlowHN">[]</a></sup></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>If such a change slashes API usage by 94%, what incentive does Google have to promote efficient API calls?</p>
+</div>
+</div>
+
+<h2 id="all-the-restrictions-have-been-on-display-in-the-tos-dont-make-a-fuss-now">All the Restrictions Have Been On Display in the ToS; Don&rsquo;t Make a Fuss Now</h2>
+<p>Having a pool of free-tier API keys reads like textbook fraud. But smart caching is looks a bit more nuanced.</p>
+<p>The general terms prohibit scraping, caching, derivative content, use with non-Google maps, circumventing fees, use in embedded vehicle systems, etc. The more specific terms allow caching of latitude/longitude data <sup><a href="#GoogleMapsAPIToS">[]</a></sup>.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The meat is in the ETA estimates though, so I don&rsquo;t know how much caching will help. Furthermore, if one could cache ETA estimates, then one <em>could</em> somewhat get enough trend data to not need Google Maps.</p>
+</div>
+</div>
+
+<h2 id="open-source-to-the-rescue">Open-Source to the Rescue?</h2>
+<p>To turn latitude/longitude pairs into place names, 
+<a href="https://github.com/AReallyGoodName/OfflineReverseGeocode"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    OfflineReverseGeocode
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a> used a creative commons placename database provided by 
+<a href="https://www.geonames.org/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    GeoNames
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a>. <sup><a href="#CityFlowHN">[]</a></sup></p>
+<p>The 
+<a href="https://github.com/Project-OSRM/osrm-backend/wiki/Traffic"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Open Source Routing Machine (OSRM)
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a> could use more data. With a good Kalman filter, one can get achieve ETAs. However, how can fancy statistics on historical data match up to Google&rsquo;s live feed of Android devices? Furthermore, OSRM is running short on maintainers. <sup><a href="#CityFlowHN">[]</a></sup></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Android is designed such that keeping the location services running is the easier thing to do (dark pattern?). This data ends up making Google hard to beat.</p>
+</div>
+</div>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Kalman filtering takes in a series of measurements observed over time and produces estimates of unknown variables that tend to be more accurate than those based on a single measurement. The increased accuracy results from estimating a joint probability distribution over the variables for each timeframe. 
+<a href="https://en.wikipedia.org/wiki/Kalman_filter"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Kalman filter - Wikipedia
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a></p>
+</div>
+</div>
+
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='CityFlow'>
+        
+        <i>How we reduced our Google Maps API cost by 94%.</i>
+    
+    </cite>
+    
+     Sudhanshu Mishra (Engineering Manager).
+    
+    
+    <a href="https://blog.cityflo.com/how-we-reduced-our-google-maps-api-cost/" target="_blank" rel="noopener"><i>https://blog.cityflo.com/how-we-reduced-our-google-maps-api-cost/</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     Apr 2, 2020.
+    
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='CityFlowHN'>
+        
+        <i>HN Discussion: How we reduced our Google Maps API cost by 94%.</i>
+    
+    </cite>
+    
+     /u/DeathArrow, ​​/u/AnotherGoodName, ​​/u/superpermutat0r, /u/cookie_monsta, /u/Doctor_Fegg.
+    
+    
+    <a href="https://news.ycombinator.com/item?id=22767581" target="_blank" rel="noopener"><i>https://news.ycombinator.com/item?id=22767581</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     Apr 4, 2020.
+    
+    
+    <br />
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='GoogleMapsAPIToS'>
+        
+        <i>Google Maps Platform Terms of Service | Google Cloud.</i>
+    
+    </cite>
+    
+    
+    
+    
+    <a href="https://cloud.google.com/maps-platform/terms" target="_blank" rel="noopener"><i>https://cloud.google.com/maps-platform/terms</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://cloud.google.com/maps-platform/terms/maps-service-terms" target="_blank" rel="noopener"><i>https://cloud.google.com/maps-platform/terms/maps-service-terms</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    <br />
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        
+        <br />
+        <aside id="tags-holder" style="margin: 0 0 2% 0;">
+            Tags: 
+            
+                <a href="/tags/business">#business</a>
+            
+                <a href="/tags/open-source">#open-source</a>
+            
+                <a href="/tags/competition">#competition</a>
+            
+                <a href="/tags/big-tech">#big-tech</a>
+            
+        </aside>
+        <br />
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/computer-science/miscellaneous/2018-10-01-digital-humanities-with-kernighan/">&laquo; Kernighan&#39;s Remarks on the Digital Humanities</a>
+        
+        
+            <a href="https://www.c13u.com/computer-science/miscellaneous/2018-09-21-boston-public-school-equity-algorithm/">Computers Can Solve Your Problem. You May Not Like the Answer. [Boston Globe] &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
