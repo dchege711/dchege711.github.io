@@ -1,4 +1,4 @@
-window.onload = organizeCitations;
+window.addEventListener("load", organizeCitations);
 
 function organizeCitations() {
     // Get the ordered list element if any.
