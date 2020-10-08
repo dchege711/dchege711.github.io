@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                The Binomial Random Variable | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/">Mathematics</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/probability/">Probability</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/probability/probability-and-stochastic-systems/">Probability and Stochastic Systems [ORF 309]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/probability/probability-and-stochastic-systems/02-bernoulli-processes/">Bernoulli Processes</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/mathematics/probability/probability-and-stochastic-systems/02-bernoulli-processes/02-binomial-random-variable/">The Binomial Random Variable</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> The Binomial Random Variable</h1>
+    <p class="meta">
+        
+        Dated Oct 2, 2017; 
+        
+        last modified on Sun, 26 Jul 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sanity-check-do-the-probabilities-sum-to-1">Sanity Check: Do the probabilities sum to 1?</a></li>
+    <li><a href="#the-expectation-of-the-binomial-random-variable">The Expectation of the Binomial Random Variable</a>
+      <ul>
+        <li><a href="#naïve-solution">Naïve Solution</a></li>
+        <li><a href="#clever-solution">Clever Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <p>\(X\) is a binomial random variable if it takes the values \(0, 1, 2, &hellip;, n\) and</p>
+<p>$$ \mathbb{P}\{X = k\} = { n \choose k } \cdot p^k \cdot (1 - p)^{n-k} $$</p>
+<h2 id="sanity-check-do-the-probabilities-sum-to-1">Sanity Check: Do the probabilities sum to 1?</h2>
+<p>$$ \sum_{k=0}^{n} \mathbb{P}\{X = k\} = \sum_{k=0}^{n} { n \choose k } p^k (1 - p)^{n-k} = \left( p + (1 - p) \right)^n = 1 $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I totally didn&rsquo;t understand how we got to \(\left( p + (1 - p) \right)^n\). In my notes, I simply noted &ldquo;Calculus Theorem&rdquo; and that was it. ლ(ಠ_ಠ ლ)</p>
+<p>From Wikipedia <sup><a href="#wikipediaBinomialTheorem">[]</a></sup>:</p>
+<p>$$ (x + y)^n = {n \choose 0} x^n y^0 + {n \choose 1} x^{n-1} y^1 + {n \choose 2} x^{n-1} y^2 + &hellip; + {n \choose n - 1} x^1 y^{n-1} + {n \choose n} x^0 y^n $$</p>
+<p>where \(n \ge 0\) is an integer, and each \( {n \choose k} \) is a positive integer known as a binomial coefficient. \( {n \choose 0} \) is defined as equal to 1.</p>
+<p>So much for recalling stuff from freshman math&hellip;</p>
+</div>
+</div>
+
+<h2 id="the-expectation-of-the-binomial-random-variable">The Expectation of the Binomial Random Variable</h2>
+<h3 id="naïve-solution">Naïve Solution</h3>
+<p>Using the definition of expectation:</p>
+<p>$$ \mathbb{E}[X] = \sum_{k=0}^{n} \mathbb{P\{X = k\}} k = \sum_{k=0}^{n} { n \choose k } p^k (1 - p)^{n-k} \cdot k $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Because \( { n \choose k } = \frac{n!}{k! (n-k)!} \), we can simplify further.</p>
+<p>Also, note that when \(k = 0\), the summation term is \(0\), and we can therefore exclude it from the summation.</p>
+</div>
+</div>
+
+<p>$$ = \sum_{k=1}^{n} \frac{n!}{(k-1)! (n-k)!} p^k (1-p)^{n-k} $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Let&rsquo;s massage the summation such that we can invoke the binomial formula&hellip;</p>
+</div>
+</div>
+
+<p>$$ = n \cdot \sum_{k=1}^{n} \frac{(n - 1)!}{(k-1)! (n-k)!} p^k (1-p)^{n-k} $$
+$$ = np \cdot \sum_{k=1}^{n} \frac{(n - 1)!}{(k-1)! (n-k)!} p^{k-1} (1-p)^{n-k} $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>We&rsquo;re gonna do what is called a pro gamer move. Change of variables. Let \(i = k - 1\), equivalently \( k = i + 1\)</p>
+</div>
+</div>
+
+<p>$$ = np \cdot \sum_{i=0}^{n-1} \frac{(n - 1)!}{i! (n - i - 1)!} p^i (1-p)^{n-i-1} $$
+$$ = np \cdot \sum_{i=0}^{n-1} \frac{(n - 1)!}{i! ((n - 1) - i)!} p^i (1-p)^{((n-1)-i)} $$
+$$ = np \sum_{i=0}^{n-1} {n - 1 \choose i} p^i (1-p)^{((n-1) - i)} $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>And now applying the binomial formula&hellip;</p>
+</div>
+</div>
+
+<p>$$ = np (p + (1 - p))^{n-1} = np $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Tbh, I didn&rsquo;t see that coming. Too many tricks and eurekas.</p>
+</div>
+</div>
+
+<h3 id="clever-solution">Clever Solution</h3>
+<p>Where \(X_i = 1\) if \(i\)-th toss is heads, and \(X_i = 0\) otherwise:</p>
+<p>$$ \mathbb{E}[X] = \mathbb{E}[X_1 + X_2 + &hellip; + X_n] $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Not quite certain why this is so. Maybe it&rsquo;s because the \(X_i\)&lsquo;s are disjoint?</p>
+</div>
+</div>
+
+<p>$$ = \mathbb{E}[X_1] + \mathbb{E}[X_2] + &hellip;. + \mathbb{E}[X_n] $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><strong>Linearity of Expectation</strong> is the property that for any random variables \(X\) and \(Y\), and a constant \(a\),</p>
+<p>$$ \mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y] $$
+$$ \mathbb{E}[aX] = a \mathbb{E}[X] $$</p>
+<p>whenever the right-hand side is well defined (finite?). It doesn&rsquo;t matter whether \(X\) and \(Y\) are independent. <sup><a href="#wikipediaExpectedValueLinearity">[]</a></sup></p>
+</div>
+</div>
+
+<p>$$ = n \left( p \cdot 1 + (1-p) \cdot 0 \right) = np $$</p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='wikipediaBinomialTheorem'>
+        
+        <i>The Binomial Theorem.</i>
+    
+    </cite>
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Binomial_theorem#Theorem_statement" target="_blank" rel="noopener"><i>https://en.wikipedia.org/wiki/Binomial_theorem#Theorem_statement</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='wikipediaExpectedValueLinearity'>
+        
+        <i>Expected Value: Basic Properties.</i>
+    
+    </cite>
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Expected_value#Basic_properties" target="_blank" rel="noopener"><i>https://en.wikipedia.org/wiki/Expected_value#Basic_properties</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/mathematics/probability/probability-and-stochastic-systems/02-bernoulli-processes/01-bernoulli-process-and-binomial-rv/">&laquo; Bernoulli Processes</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

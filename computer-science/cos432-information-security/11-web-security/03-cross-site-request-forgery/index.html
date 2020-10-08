@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                03. Cross-Site Request Forgery (XSRF) | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/">Information Security [COS 432]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/">11. Web Security</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/03-cross-site-request-forgery/">03. Cross-Site Request Forgery (XSRF)</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> 03. Cross-Site Request Forgery (XSRF)</h1>
+    <p class="meta">
+        
+        Dated Nov 21, 2018; 
+        
+        last modified on Sun, 19 Jul 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#cross-site-request-forgery-xsrf">Cross-site Request Forgery (XSRF)</a></li>
+    <li><a href="#xsrf-defense">XSRF Defense</a></li>
+    <li><a href="#same-origin-policy-sop">Same-Origin Policy (SOP)</a>
+      <ul>
+        <li><a href="#problems-with-sop">Problems with SOP</a></li>
+        <li><a href="#solution-html5-postmessage">Solution: HTML5 postMessage</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="cross-site-request-forgery-xsrf">Cross-site Request Forgery (XSRF)</h2>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">img</span> <span style="color:#75af00">src</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;http://bank.com/transfer?from=from_ID&amp;to=to_ID&amp;value=1000&#34;</span><span style="color:#111">&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Because the user is logged in and has a cookie, the victim site trusts the user&rsquo;s browser.</p>
+<p>The attacker gets user/browser to execute command on victim site, e.g. request a link, post a form. The command has permanent effects.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>A frame can navigate its immediate children. Why is it designed such that it can&rsquo;t navigate its children too?</p>
+<p><em>Consider a website with a login frame, where the user inputs passwords. The attacker can put this website inside a frame and navigate to the login frame and steal passwords.</em></p>
+</div>
+</div>
+
+<h2 id="xsrf-defense">XSRF Defense</h2>
+<p>Classify URLs as public and non-public. Non-public URLs should contain an unpredictable user-specific secret. Even better, scope the secret to a session.</p>
+<h2 id="same-origin-policy-sop">Same-Origin Policy (SOP)</h2>
+<p>Here&rsquo;s a potential attack: <code>https://attacker.com</code> loads <code>https://mail.google.com</code> in an invisible page element and reads the user&rsquo;s email.</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">//  Script on https://attacker.com....
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">var</span> <span style="color:#75af00">xhttp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#75af00">XMLHttpRequest</span><span style="color:#111">();</span>
+<span style="color:#75af00">xhttp</span><span style="color:#111">.</span><span style="color:#75af00">open</span><span style="color:#111">(</span><span style="color:#d88200">&#34;GET&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;https://mail.google.com/...&#34;</span><span style="color:#111">);</span>
+<span style="color:#75af00">xhttp</span><span style="color:#111">.</span><span style="color:#75af00">send</span><span style="color:#111">();</span>
+
+<span style="color:#75af00">xhttp</span><span style="color:#111">.</span><span style="color:#75af00">onreadystatechange</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">function</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+    <span style="color:#75715e">// Send response back to attacker.com
+</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Scripts on different pages are allowed to access each other if and only if the pages they originate from share the same protocol, port and origin.</p>
+<ul>
+<li>Note that <a href="https://example.com/">https://example.com/</a> has a different origin from <a href="https://www.example.com/a/">https://www.example.com/a/</a></li>
+</ul>
+<p>Note that SOP doesn&rsquo;t prevent example.com loads an externally hosted script, e.g. <code>&lt;script src=&quot;https://third-party.com/lib/d3.js&gt;&lt;/script&gt;</code></p>
+<ul>
+<li>In this case, the origin of this script is still example.com because it was loaded on example.com</li>
+</ul>
+<h3 id="problems-with-sop">Problems with SOP</h3>
+<ul>
+<li>Subtly different policies for cookies, HTML5 storage, plugins</li>
+<li>Ambiguities: different browsers, extensions, IP addresses&hellip;</li>
+<li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> &amp; <code>login.example.com</code> vs <code>payments.example.com</code>
+<ul>
+<li>Alice can read Bob&rsquo;s cookies, including CSRF tokens.</li>
+</ul>
+</li>
+</ul>
+<h3 id="solution-html5-postmessage">Solution: HTML5 postMessage</h3>
+<ul>
+<li>Message-passing API that allows security checks</li>
+<li>Browser reports origin of message</li>
+<li>JS code must enforce access control</li>
+</ul>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/02-threat-models/">&laquo; 02. Threat Models for Web Security</a>
+        
+        
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/05-sql-injection/">SQL Injection &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

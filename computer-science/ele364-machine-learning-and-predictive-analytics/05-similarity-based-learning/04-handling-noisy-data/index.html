@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Handling Noisy Data in Nearest Neighbors | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/">Machine Learning &amp; Predictive Analytics [ELE 364]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/">Similarity Based Learning</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/04-handling-noisy-data/">Handling Noisy Data in Nearest Neighbors</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Handling Noisy Data in Nearest Neighbors</h1>
+    <p class="meta">
+        
+        Dated Oct 17, 2017; 
+        
+        last modified on Sun, 06 Sep 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#majority-voting">Majority Voting</a></li>
+    <li><a href="#distance-weighting">Distance Weighting</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="majority-voting">Majority Voting</h2>
+<p>The <strong>\(k\) nearest neighbors</strong> model predicts the target level from the majority vote from the set of the \(k\) nearest neighbors to the query \(q\).</p>
+<p>Where \(\delta\) is an indicator function such that \(\delta(t_i, l) = 1 \iff t_i = l\):</p>
+<p>$$ \mathbb{M}_{k} (q) = argmax_{l \in levels(t)} \left( \sum_{i=1}^{k} \delta(t_i, l) \right) $$</p>
+<p>For categorical features, \(k\) should be odd to avoid ties.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>This doesn&rsquo;t read right. If there are 3 possible categories, \(k = 3\) can result in a tie. &ldquo;\(k \mod |categories| \ne 0 \)&rdquo; seems like an alternative choice, but \(k = 4\) could result in \(\{2, 2, 0\}\) votes for 3 possible categories.</p>
+</div>
+</div>
+
+<h2 id="distance-weighting">Distance Weighting</h2>
+<p>An <strong>imbalanced dataset</strong> is one that contains significantly more of one target level than another. As \(k\) increases, the prediction will be dominated by the majority target value.</p>
+<p>Distance-weighted \(k-NN\) presents a mitigation to imbalanced datasets:</p>
+<p>$$ \mathbb{M}_{k} (q) = argmax_{l \in levels(t)} \left( \sum_{i=1}^{k} \frac{1}{dist(q, d_i)^2} \cdot \delta(t_i, l) \right) $$</p>
+<p>That said, weighted \( k-NN \) is not a silver bullet for imbalanced datasets. Also, computing \( \frac{1}{dist(q, d_i)^2} \) for all \(N\) may be expensive.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I don&rsquo;t follow. Why are we doing work for \(N\)? Aren&rsquo;t we interested in \(k\) instances?</p>
+</div>
+</div>
+
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/03-caveats-on-similarity-learning/">&laquo; Caveats on Similarity Learning</a>
+        
+        
+            <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/05-the-case-for-range-normalization/">The Case for Range Normalization &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

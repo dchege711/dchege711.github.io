@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Frequentist Approach vs. Bayesian Approach | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/">Mathematics</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/statistics/">Statistics</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/statistics/statistics-for-applications/">Statistics for Applications [18.650]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/mathematics/statistics/statistics-for-applications/08-bayesian-statistics/">Bayesian Statistics</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/mathematics/statistics/statistics-for-applications/08-bayesian-statistics/01-frequentists-vs-bayesian/">Frequentist Approach vs. Bayesian Approach</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Frequentist Approach vs. Bayesian Approach</h1>
+    <p class="meta">
+        
+        Dated Jul 26, 2020; 
+        
+        last modified on Tue, 28 Jul 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-frequentist-approach">The Frequentist Approach</a></li>
+    <li><a href="#the-bayesian-approach">The Bayesian Approach</a></li>
+    <li><a href="#example-of-the-bayesian-approach">Example of the Bayesian Approach</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="the-frequentist-approach">The Frequentist Approach</h2>
+<ul>
+<li>Observe data.</li>
+<li>Assume the data were generated randomly, <em>e.g. by nature, by designing a survey, etc.</em></li>
+<li>Make assumptions on the generating process, <em>e.g. i.i.d., Gaussian, etc.</em></li>
+<li>Associate the generating process to some object of interest, <em>e.g. a parameter, a density, etc.</em></li>
+<li>Assuming that the object is unknown but fixed, try to find it, <em>e.g. estimate it, test a hypothesis about it, etc.</em></li>
+</ul>
+<h2 id="the-bayesian-approach">The Bayesian Approach</h2>
+<ul>
+<li>Observe data.</li>
+<li>Assume the data are generated randomly by some process.</li>
+<li>Under some assumptions, e.g. parametric distribution, associate the process with some fixed object.</li>
+<li>We have a <strong>prior belief</strong> about the object.</li>
+<li>Using the data, we want to update that belief into a <strong>posterior belief</strong>.</li>
+</ul>
+<h2 id="example-of-the-bayesian-approach">Example of the Bayesian Approach</h2>
+<p>Let \(p\) be the proportion of women in the population.</p>
+<p>Sample \(n\) people randomly with replacement in the population. Denote their gender by \(X_1, X_2, &hellip;, X_n\) (1 for woman, 0 otherwise).</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>A frequentist would have estimated \(p\), probably using the MLE, constructed some confidence interval for \(p\) and did some hypothesis testing.</p>
+</div>
+</div>
+
+<p>Before analyzing the data, we may believe that \(p\) is likely to be close to \( \frac{1}{2} \). We can quantify how close, e.g. \(90\%\) sure that \( .4 \le p \le .6 \), \(95\%\) sure that \( .3 \le p \le .8 \), etc.</p>
+<p>Therefore, we can model our prior belief using a distribution for \(p\) as if it were random (even though in reality, the true parameter is not random).</p>
+<p>Suppose we model \( p \approx \mathrm{B}(a, a) \) for some \(a &gt; 0\). This distribution is called the prior distribution.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>It&rsquo;s common to use the beta distribution as a probability distribution of probabilities. This is especially helpful when we have prior assumptions. For example, if a player&rsquo;s typical batting average is usually \(.27\), but could reasonably range from \(.21\) to \(.35\), then \( \mathrm{B}(81, 219) \) is a good estimate because the mean of \( \mathrm{B}(\alpha, \beta)\) is \(\frac{\alpha}{\alpha + \beta} = \frac{81}{81 + 219} = .27 \) and:</p>
+<figure>
+    <img src="/img/mathematics/statistics/statistics-for-applications/08-bayesian-statistics/beta_81_219.png"
+         alt="Notice how the distribution lies mostly within \([.2, .35]\). Credits: David Robinson"/> <figcaption>
+            <p>Notice how the distribution lies mostly within \([.2, .35]\). Credits: <a href="#stackExchangeBetaDistribution">David Robinson</a></p>
+        </figcaption>
+</figure>
+<p><sup><a href="#stackExchangeBetaDistribution">[]</a></sup></p>
+</div>
+</div>
+
+<p>We assume that \(X_1, &hellip;, X_n\) are i.i.d \(Bernoulli(p)\) <strong>conditionally on</strong> \(p\).</p>
+<p>After observing the available sample \(X_1, &hellip;, X_n\), we can update our belief about \(p\) by taking its distribution conditionally on the data. The resulting distribution is called <strong>posterior distribution</strong>.</p>
+<p>In our experiment, the posterior distribution is:</p>
+<p>$$ \mathrm{B}\left(a + \sum_{i=1}^{n} X_i \ ,\ \ a + n - \sum_{i=1}^{n} X_i \right) $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>In general, given more evidence of the number of successes and the number of failures, the updated (posterior) beta distribution is \( \mathrm{B}(\alpha_{0} + successes \ , \ \ \beta_0 + misses) \)</p>
+</div>
+</div>
+
+<h2 id="references">References</h2>
+<ol>
+<li><div class="citation">
+    <cite id='stackExchangeBetaDistribution'>
+        
+        <i>What is the intuition behind beta distribution?</i>
+    
+    </cite>
+    
+     David Robinson.
+    
+    
+    <a href="https://stats.stackexchange.com/a/47782" target="_blank" rel="noopener"><i>https://stats.stackexchange.com/a/47782</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     Jan 15, 2013.
+    
+    
+    
+</div>
+</li>
+</ol>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

