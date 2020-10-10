@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Similarity Measures | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/">Machine Learning &amp; Predictive Analytics [ELE 364]</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/">Similarity Based Learning</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/01-similarity-measures/">Similarity Measures</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Similarity Measures</h1>
+    <p class="meta">
+        
+        Dated Oct 10, 2020; 
+        
+        last modified on Tue, 08 Sep 2020
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#fundamentals-feature-space--similarity-metrics">Fundamentals: Feature Space &amp; Similarity Metrics</a></li>
+    <li><a href="#the-similarity-metric">The Similarity Metric</a></li>
+    <li><a href="#the-minkowski-distance">The Minkowski Distance</a>
+      <ul>
+        <li><a href="#the-manhattan-or-taxi-cab-distance--p--1">The Manhattan (or Taxi-Cab) Distance (\( p = 1\))</a></li>
+        <li><a href="#the-euclidean-distance--p--2">The Euclidean Distance (\( p = 2\))</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <p>To classify something, find things that are similar and label it with the same class as the most similar thing.</p>
+<h2 id="fundamentals-feature-space--similarity-metrics">Fundamentals: Feature Space &amp; Similarity Metrics</h2>
+<p>The feature space is \(N-d\), where \(N\) is the number of features.</p>
+<p>Each instance is mapped to a point. The descriptive features become the axes.</p>
+<p>For example:</p>
+<figure>
+    <img src="/img/computer-science/ele-364-ml-and-predictive-analytics/05-similarity-based-learning/speed-agility-and-draft-status.png"
+         alt="Speed and agility ratings for college athletes and draft status. Source: JBA (ELE 364)"/> <figcaption>
+            <p>Speed and agility ratings for college athletes and draft status. Source: JBA (ELE 364)</p>
+        </figcaption>
+</figure>
+
+<h2 id="the-similarity-metric">The Similarity Metric</h2>
+<p>Mathematically, it must conform to these 4 criteria:</p>
+<ul>
+<li>Non-negative: \(f(a, b) \ge 0\)</li>
+<li>Identity: \( f(a, b) = 0 \iff a = b \)</li>
+<li>Symmetry: \( f(a, b) = f(b, a) \)</li>
+<li>Triangular inequality: \( f(a, b) \le f(a, c) + f(c, b) \)</li>
+</ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Why are non-negativity and triangular inequality important? It seems that we should think of the similarity metric as a measure of &ldquo;distance&rdquo;. Distance between two instances obeys the non-negativity &amp; triangular inequality conditions.</p>
+</div>
+</div>
+
+<h2 id="the-minkowski-distance">The Minkowski Distance</h2>
+<p>Where \(a\) and \(b\) are the instances being compared. \(m\) is the number of descriptive features:</p>
+<p>$$ f(a, b) = \left( \sum_{i=1}^{m} abs(a[i] - b[i])^{p} \right)^{1/p} $$</p>
+<p>Because the differences are raised to the \(p\)&lsquo;th power, higher \(p\) emphasizes features with big differences.</p>
+<p>As \( p \to \infty \), we get the biggest absolute difference since it dominates the other sums. \(p = \infty \) is referred to as the Chebyshev (or Chessboard) Distance.</p>
+<h3 id="the-manhattan-or-taxi-cab-distance--p--1">The Manhattan (or Taxi-Cab) Distance (\( p = 1\))</h3>
+<p>$$ f(a, b) = \sum_{i=1}^{m} |a[i] - b[i]| $$</p>
+<h3 id="the-euclidean-distance--p--2">The Euclidean Distance (\( p = 2\))</h3>
+<p>$$ f(a, b) = \sqrt{ \sum_{i=1}^{m} (a[i] - b[i])^2 } $$</p>
+<p>If you don&rsquo;t care about computational resources, Euclidean is the default.</p>
+<p>Note that the Euclidean distance is more influenced by a single large difference in one feature than a lot of small differences across a set of features. The opposite is true of the Manhattan Distance.</p>
+
+        </article>
+
+        
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+            <a href="https://www.c13u.com/computer-science/ele364-machine-learning-and-predictive-analytics/05-similarity-based-learning/02-the-nearest-neighbor-algorithm/">The Nearest Neighbor Algorithm &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
