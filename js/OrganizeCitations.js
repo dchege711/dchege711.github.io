@@ -13,16 +13,23 @@ function organizeCitations() {
 
     const listElement = listItem.parentElement;
     if (!listElement) return;
-
-    // Reduce the font-size of the citations. There's currently no way to select
-    // the parent via CSS.
+    
+    // The font-size for citations is set globally. Make the list markers share
+    // the same font-size. There's currently no way to select the parent via CSS
     // https://stackoverflow.com/questions/1014861/is-there-a-css-parent-selector
+    //
+    // `citationElements[0].style.fontSize` is empty at this point, so we can't
+    // use it. So we reduce the size of the whole thing so as to capture the
+    // list marker... (1 of 2)
     listElement.style.fontSize = "smaller";
 
     // Match the citation IDs to their position on the list
     let citationIDToDetails = {};
     for (let i = 0; i < listElement.children.length; i++) {
         let citationElement = listElement.children[i].getElementsByTagName("cite")[0];
+        // ... and force the citation element to inherit the size we set above,
+        // instead of getting it from the global CSS file. (2 of 2)
+        listElement.children[i].getElementsByClassName("citation")[0].style.fontSize = "inherit";
         citationIDToDetails[citationElement.id] = {
             numToDisplay: i + 1,
             hoverText: citationElement.parentElement.innerText

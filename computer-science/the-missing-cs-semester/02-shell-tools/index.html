@@ -87,7 +87,7 @@
         
         Dated Feb 11, 2020; 
         
-        last modified on Sat, 06 Jun 2020
+        last modified on Tue, 13 Oct 2020
         
     </p>
     </header>
@@ -107,15 +107,6 @@
     <li><a href="#differences-between-shell-functions-and-scripts">Differences Between Shell Functions and Scripts</a></li>
     <li><a href="#finding-files">Finding Files</a></li>
     <li><a href="#shell-history">Shell History</a></li>
-    <li><a href="#exercises">Exercises</a>
-      <ul>
-        <li><a href="#rtfm-for-ls">RTFM for <code>ls</code></a></li>
-        <li><a href="#marco-polo">Marco! Polo!</a></li>
-        <li><a href="#once-in-a-100-runs">Once in a 100 Runs</a></li>
-        <li><a href="#zip-them-up">Zip Them Up</a></li>
-        <li><a href="#advanced-tag-youre-it">(Advanced) Tag, You&rsquo;re It</a></li>
-      </ul>
-    </li>
   </ul>
 </nav>
         </aside>
@@ -334,43 +325,6 @@ find . -name <span style="color:#d88200">&#39;*.png&#39;</span> -exec convert <s
 <h2 id="shell-history">Shell History</h2>
 <p>Tried of pressing the up arrow a 1,000 times for that terminal command? <code>Ctrl + R</code> allows you to perform backwards search through your history!</p>
 <p>If you start a command with a leading space it won’t be added to you shell history. If you forgot the space, edit your <code>~/.bash_history</code> or <code>~/.zhistory</code> file.</p>
-<h2 id="exercises">Exercises</h2>
-<h3 id="rtfm-for-ls">RTFM for <code>ls</code></h3>
-<p>Read man ls and write an ls command that lists files in the following manner</p>
-<ul>
-<li>Includes all files, including hidden files</li>
-<li>Sizes are listed in human readable format (e.g. 454M instead of 454279954)</li>
-<li>Files are ordered by recency</li>
-<li>Output is colorized</li>
-</ul>
-<h3 id="marco-polo">Marco! Polo!</h3>
-<p>Write bash functions <code>marco</code> and <code>polo</code> that do the following. Whenever you execute <code>marco</code> the current working directory should be saved in some manner, then when you execute <code>polo</code>, no matter what directory you are in, <code>polo</code> should <code>cd</code> you back to the directory where you executed <code>marco</code>.</p>
-<p>For ease of debugging you can write the code in a file <code>marco.sh</code> and (re)load the definitions to your shell by executing <code>source marco.sh</code>.</p>
-<h3 id="once-in-a-100-runs">Once in a 100 Runs</h3>
-<p>Say you have a command that fails rarely. In order to debug it you need to capture its output but it can be time consuming to get a failure run.</p>
-<p>Write a bash script that runs the following script until it fails and captures its standard output and error streams to files and prints everything at the end. Bonus points if you can also report how many runs it took for the script to fail.</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-zsh" data-lang="zsh">
-#!/usr/bin/env bash
-n=$(( RANDOM % 100 ))
-if [[ n -eq 42 ]]; then
-   echo "Something went wrong"
-   >&2 echo "The error was using magic numbers"
-   exit 1
-fi
-echo "Everything went according to plan"
-
-</code></pre></td></tr></table>
-</div>
-</div><h3 id="zip-them-up">Zip Them Up</h3>
-<p>As we covered in lecture <code>find</code>'s <code>-exec</code> can be very powerful for performing operations over the files we are searching for. However, what if we want to do something with all the files, like creating a zip file? As you have seen so far commands will take input from both arguments and <code>STDIN</code>. When piping commands, we are connecting <code>STDOUT</code> to <code>STDIN</code>, but some commands like <code>tar</code> take inputs from arguments. To bridge this disconnect there’s the <code>xargs</code> command which will execute a command using <code>STDIN</code> as arguments. For example <code>ls | xargs rm</code> will delete the files in the current directory.</p>
-<p>Your task is to write a command that recursively finds all HTML files in the folder and makes a zip with them. Note that your command should work even if the files have spaces (hint: check <code>-d</code> flag for <code>xargs</code>)</p>
-<h3 id="advanced-tag-youre-it">(Advanced) Tag, You&rsquo;re It</h3>
-<p>Write a command or script to recursively find the most recently modified file in a directory. More generally, can you list all files by recency?</p>
 
         </article>
 
@@ -385,7 +339,7 @@ echo "Everything went according to plan"
 
         
         
-            <a href="https://www.c13u.com/computer-science/the-missing-cs-semester/99-miscellaneous-shell-tips/">Miscellaneous Topics &raquo;</a>
+            <a href="https://www.c13u.com/computer-science/the-missing-cs-semester/06-version-control-git/">06. Version Control (Git) &raquo;</a>
         
 
     </footer>
