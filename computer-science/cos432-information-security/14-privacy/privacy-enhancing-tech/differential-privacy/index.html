@@ -30,7 +30,8 @@
         <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
 
         
-        
+    <script type="text/javascript" src="/js/ListPageUtils.js"></script>
+
     </head>
 
     <body>
@@ -108,8 +109,8 @@
         </header>
         
         <p>A data release mechanism is differentially private if any computation performed on the released data yields essentially the same result if a single data point is added/removed.</p>
-<p>More specifically, let \(Q\) be any (probabilistic) query function. \(Q\) is \(\epsilon\)-differentially private if for all databases \(B\), \(B&rsquo;\) that differ in one item, and for all functions \(F\), and all values \(y\):</p>
-<p>$$ \mathbb{P}\{F(Q(B)) = y\} \le e^{\epsilon} \cdot \mathbb{P}\{F(Q(B&rsquo;)) = y\} $$</p>
+<p>More specifically, let \(Q\) be any (probabilistic) query function. \(Q\) is \(\epsilon\)-differentially private if for all databases \(B\), \(B'\) that differ in one item, and for all functions \(F\), and all values \(y\):</p>
+<p>$$ \mathbb{P}\{F(Q(B)) = y\} \le e^{\epsilon} \cdot \mathbb{P}\{F(Q(B')) = y\} $$</p>
 <p>\(\epsilon\) is a privacy parameter. Increasing \(\epsilon\) improves accuracy, but reduces privacy.</p>
 
 
@@ -151,9 +152,14 @@
             
                 
                     <span class="meta">
-                    1 min; updated May 9, 2020
+                    1 min; updated May 9, 2020 
+                    <button 
+                        id="32c7c81c4d116dbabd84e92cfdc9fa33-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
                     </span>
-                    <p class="meta">
+                    <p class="meta" id="32c7c81c4d116dbabd84e92cfdc9fa33-summary" style="display: none;">
                         DP in the 2020 US Census Scenario:
  Census bureau releases mean household income by block \(N - 1\) households in a block can work together to infer the outcome of household \(N\)  Solution:
   Define \(i_{max}\), the hypothetical maximum income
@@ -164,6 +170,7 @@
             
         </td>
     </tr>
+
 
                 
             
@@ -177,9 +184,14 @@
             
                 
                     <span class="meta">
-                    1 min; updated May 10, 2020
+                    1 min; updated May 10, 2020 
+                    <button 
+                        id="9e07ad0e4172ebc574ebd74150825f95-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
                     </span>
-                    <p class="meta">
+                    <p class="meta" id="9e07ad0e4172ebc574ebd74150825f95-summary" style="display: none;">
                         Scenario  Researcher wants to estimate percentage of HIV positive individuals. Survey respondents don&rsquo;t want to disclose HIV status  DP Solution Each respondent flips answer with probability \(p\).
 Exercise: show that respondent privacy is protected
 Exercise: show that researcher can accurately estimate the quantity of interest
@@ -189,6 +201,7 @@ Let \(x_i = 1\) if the \(i\)&lsquo;th respondent is HIV positive, and zero other
             
         </td>
     </tr>
+
 
                 
             
@@ -1105,6 +1118,11 @@ Let \(x_i = 1\) if the \(i\)&lsquo;th respondent is HIV positive, and zero other
             
                 pageURL = getOnPageLink("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/14-privacy\/privacy-enhancing-tech\/differential-privacy\/01-exercise\/");
             
+        
+        
+        if (pageURL) pageURLs.push(pageURL);
+    
+        pageURL = null;
         
         
         if (pageURL) pageURLs.push(pageURL);
