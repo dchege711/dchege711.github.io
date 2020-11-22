@@ -87,13 +87,43 @@
 
     
     <table border="0">
-        <tr class="no-decoration">
+        <tr class="no-decoration" id="randomSelectorContainer">
             <td class="no-decoration"></td>
             <td class="no-decoration"></td>
             <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
         </tr>
         
         
+        
+            
+                
+    <tr class="no-decoration">
+        <td class="no-decoration">Nov 14, 2020</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/computer-science/2020-11-14-vulnerabilities-through-deps/">Software Vulnerabilities Introduced by Dependencies</a>
+            
+                
+                    <span class="meta">
+                    1 min; updated Nov 14, 2020 
+                    <button 
+                        id="9538e217b25752dea5d36a7dadf2434a-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="9538e217b25752dea5d36a7dadf2434a-summary" style="display: none;">
+                        Identifying Vulnerabilities No matter the obfuscation in the source code, the malicious package will have to make system calls in order to do anything interesting. These system calls are easier to analyze. []
+Suggestions Know your dependencies by heart. Know the maintainers. Be aware of problems going on in the project and help, e.g. patches, funding sources, etc. []
+References   Hunting for Malicious Packages on PyPI.  Jordan Wright....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
         
             
                 
@@ -124,62 +154,53 @@ This was the problem. The number of API calls should be dependent on the stops t
 
             
         
-            
-                
-    <tr class="no-decoration">
-        <td class="no-decoration">Feb 6, 2020</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.c13u.com/computer-science/2020-02-06-deps-and-maintainers/">Dependencies and Maintainers [Drew DeVault]</a>
-            
-                
-                    <span class="meta">
-                    1 min; updated Jun 6, 2020 
-                    <button 
-                        id="14c01f9324e5bc791b2964e4eeba8c4d-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="14c01f9324e5bc791b2964e4eeba8c4d-summary" style="display: none;">
-                        Dependencies and Maintainers.  Drew DeVault. https://drewdevault.com/2020/02/06/Dependencies-and-maintainers.html . Feb 6, 2020.  Sample Crises in OSS left-pad: trivial library that was removed from npm and was unknowingly present in thousands of dependency graphs.
-event-stream: maintainer transferred ownership to an unknown individual who added crypto mining
-heartbleed, in which a bug in a critical security library caused mass upgrades and panic
-DeVault&rsquo;s Take Asking how to prioritize attention, donations &amp; patches for thousands of OSS library dependencies shouldn&rsquo;t be a problem....
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-            
-        
         
     </table>
 
-    
-    
-
-<script>
+    <script>
     let pageURLs = [];
-    let includeMetaLink = false;
-    
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/2020-02-06-deps-and-maintainers\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/miscellaneous\/2020-04-11-apis-are-not-in-the-efficiency-business\/");
-        
-    
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
 
     function goToRandomPage() {
         
@@ -188,6 +209,7 @@ DeVault&rsquo;s Take Asking how to prioritize attention, donations &amp; patches
         window.open(pageURLs[idx], "_self");
     }
 </script>
+
     
 </main>
 

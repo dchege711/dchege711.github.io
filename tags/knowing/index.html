@@ -86,7 +86,7 @@
 
     
     <table border="0">
-        <tr class="no-decoration">
+        <tr class="no-decoration" id="randomSelectorContainer">
             <td class="no-decoration"></td>
             <td class="no-decoration"></td>
             <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
@@ -418,112 +418,50 @@ Role of Ergodicity in Human Inference  A newspaper has previously printed some i
         
     </table>
 
-    
-    
-
-<script>
+    <script>
     let pageURLs = [];
-    let includeMetaLink = false;
-    
-    
-        
-        
-        
-        
-            if (includeMetaLink) pageURLs.push("https:\/\/www.c13u.com\/knowing\/yudkowsky-rationality\/");
-        
-    
-        
-        
-        
-        
-            if (includeMetaLink) pageURLs.push("https:\/\/www.c13u.com\/knowing\/swain-how-to-study\/");
-        
-    
-        
-        
-        
-        
-            if (includeMetaLink) pageURLs.push("https:\/\/www.c13u.com\/knowing\/rosling-factfulness\/");
-        
-    
-        
-        
-        
-        
-            if (includeMetaLink) pageURLs.push("https:\/\/www.c13u.com\/knowing\/almossawi-bad-arguments\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/machine-learning\/ele364-machine-learning-and-predictive-analytics\/05-similarity-based-learning\/03-caveats-on-similarity-learning\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/machine-learning\/similarity-based-learning\/caveats-on-similarity-learning\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/knowing\/2020-05-02-reading-and-writing-to-know\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/knowing\/2020-01-08-theory-about-theories\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/personal_growth\/an_outlook_on_life\/2018-07-01-housel-immeasurably-important\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/knowing\/2018-05-26-azeria-labs-importance-of-deep-work\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/physical-science\/biology\/2016-12-21-brainless-slime-that-can-learn-by-fusing\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/knowing\/2016-11-23-syll-what-is-ergodicity\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/knowing\/2016-02-17-how-to-read-a-paper\/");
-        
-    
-        
-        
-        
-        
-            if (includeMetaLink) pageURLs.push("https:\/\/www.c13u.com\/trading-and-investing\/taleb-the-black-swan\/");
-        
-    
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
 
     function goToRandomPage() {
         
@@ -532,6 +470,7 @@ Role of Ergodicity in Human Inference  A newspaper has previously printed some i
         window.open(pageURLs[idx], "_self");
     }
 </script>
+
     
 </main>
 

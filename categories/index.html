@@ -85,13 +85,13 @@
         
     </article>
 
-    <div style="margin: 1%;">
+    <div style="margin: 1%;" id="randomSelectorContainer">
         <span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span>
     </div>
 
     <div id="tags-holder">
     
-        <a href="https://www.c13u.com/categories/articles/">Articles (60)</a>
+        <a href="https://www.c13u.com/categories/articles/">Articles (59)</a>
     
         <a href="https://www.c13u.com/categories/books/">Books (13)</a>
     
@@ -103,51 +103,50 @@
     
     </div>
 
-    
-    
-
-<script>
+    <script>
     let pageURLs = [];
-    let includeMetaLink = false;
-    
-    includeMetaLink = true;
-    
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/categories\/articles\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/categories\/books\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/categories\/course-notes\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/categories\/my-research\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/categories\/papers\/");
-        
-    
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
 
     function goToRandomPage() {
         
@@ -156,6 +155,7 @@
         window.open(pageURLs[idx], "_self");
     }
 </script>
+
 
 </main>
 

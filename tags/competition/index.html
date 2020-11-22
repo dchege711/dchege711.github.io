@@ -87,13 +87,42 @@
 
     
     <table border="0">
-        <tr class="no-decoration">
+        <tr class="no-decoration" id="randomSelectorContainer">
             <td class="no-decoration"></td>
             <td class="no-decoration"></td>
             <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
         </tr>
         
         
+        
+            
+                
+    <tr class="no-decoration">
+        <td class="no-decoration">May 20, 2020</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.c13u.com/business/on-starting-a-business/2020-05-20-unorthodox-startups/">Unorthodox Startups</a>
+            
+                
+                    <span class="meta">
+                    2 min; updated Nov 14, 2020 
+                    <button 
+                        id="b6ef8e506872f0af7a22ce2b42e40c5f-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="b6ef8e506872f0af7a22ce2b42e40c5f-summary" style="display: none;">
+                        The Food Delivery Mafia Google allows certain booking and ordering services from third-party providers (e.g. Doordash) to automatically appear with business listings. To edit such links, the business has to contact the third party. Complaints by restaurants: Doordash has poor service that reflects on the restaurant; sometimes owners have their own delivery service which is circumvented; Doordash charges the restaurant for orders made through them. []
+It&rsquo;s more likely that Doordash and Grubhub will have more technical expertise to navigate online listings - they have deep money-losing, but user-growth-fueling pockets (e....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
         
             
                 
@@ -144,35 +173,6 @@ India&rsquo;s Foreign Exchange Act of 1973 gave Coca-Cola an ultimatum: hand ove
                     <p class="meta" id="5ec453b2224f288bcf6a3d45d578d69f-summary" style="display: none;">
                         CityFlo Reduces Google Maps API Bill by 94% [] Google Directions API limited their free tier  . CityFlo uses this API to calculate ETAs. Initially, CityFlo queried the API every time a stop was registered.
 This was the problem. The number of API calls should be dependent on the stops themselves, not the buses. For an MVP, sure - make that query - but if you&rsquo;re running a growing business, those calls add up!...
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-            
-        
-            
-                
-    <tr class="no-decoration">
-        <td class="no-decoration">May 20, 2020</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.c13u.com/business/on-starting-a-business/2020-05-20-unorthodox-startups/">Unorthodox Startups</a>
-            
-                
-                    <span class="meta">
-                    2 min; updated Jun 7, 2020 
-                    <button 
-                        id="b6ef8e506872f0af7a22ce2b42e40c5f-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="b6ef8e506872f0af7a22ce2b42e40c5f-summary" style="display: none;">
-                        The Food Delivery Mafia Google allows certain booking and ordering services from third-party providers (e.g. Doordash) to automatically appear with business listings. To edit such links, the business has to contact the third party. Complaints by restaurants: Doordash has poor service that reflects on the restaurant; sometimes owners have their own delivery service which is circumvented; Doordash charges the restaurant for orders made through them. []
-It&rsquo;s more likely that Doordash and Grubhub will have more technical expertise to navigate online listings - they have deep money-losing, but user-growth-fueling pockets (e....
                     </p>
                 
             
@@ -360,77 +360,50 @@ I get the analogy that Housel is trying to paint, but this seems like an oversim
         
     </table>
 
-    
-    
-
-<script>
+    <script>
     let pageURLs = [];
-    let includeMetaLink = false;
-    
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/business\/on-starting-a-business\/2020-05-20-unorthodox-startups\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/business\/2020-04-18-econ-101-real-world-edition\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/miscellaneous\/2020-04-11-apis-are-not-in-the-efficiency-business\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/business\/on-starting-a-business\/2019-03-13-counterintuitive-competitive-advantages\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/health-and-medicine\/2019-01-22-why-are-glasses-so-expensive\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/business\/optimism_and_deception\/2018-10-01-the-wolf-that-tried-to-play-nice\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/business\/on-starting-a-business\/2018-08-14-trajectory-of-great-ideas\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/business\/on-starting-a-business\/2018-02-08-why-competitive-edges-die\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/trading-and-investing\/2017-07-20-betting-on-things-that-never-change\/");
-        
-    
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
 
     function goToRandomPage() {
         
@@ -439,6 +412,7 @@ I get the analogy that Housel is trying to paint, but this seems like an oversim
         window.open(pageURLs[idx], "_self");
     }
 </script>
+
     
 </main>
 

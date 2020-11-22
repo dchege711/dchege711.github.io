@@ -86,7 +86,7 @@
 
     
     <table border="0">
-        <tr class="no-decoration">
+        <tr class="no-decoration" id="randomSelectorContainer">
             <td class="no-decoration"></td>
             <td class="no-decoration"></td>
             <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
@@ -368,77 +368,50 @@ Italy&rsquo;s Luxottica also runs EyeMed Vision Care, LensCrafters, Pearle Visio
         
     </table>
 
-    
-    
-
-<script>
+    <script>
     let pageURLs = [];
-    let includeMetaLink = false;
-    
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/social-science\/sociology\/gladwell-tipping-point\/00-introduction\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/knowing\/calling-bullshit\/01-intro-to-bullshit\/01-brandolinis-law\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/cos432-information-security\/14-privacy\/01-privacy-in-cs-and-in-the-law\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/mathematics\/probability\/probability-and-stochastic-systems\/02-bernoulli-processes\/02-binomial-random-variable\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/social-science\/sociology\/gladwell-tipping-point\/01-the-3-rules-of-epidemics\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/computer-science\/the-missing-cs-semester\/06-version-control-git\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/health-and-medicine\/2020-05-06-contact-tracing-for-covid-19\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/health-and-medicine\/2019-01-22-why-are-glasses-so-expensive\/");
-        
-    
-        
-        
-        
-        
-            pageURLs.push("https:\/\/www.c13u.com\/health-and-medicine\/2018-09-18-on-dna-testing\/");
-        
-    
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
 
     function goToRandomPage() {
         
@@ -447,6 +420,7 @@ Italy&rsquo;s Luxottica also runs EyeMed Vision Care, LensCrafters, Pearle Visio
         window.open(pageURLs[idx], "_self");
     }
 </script>
+
     
 </main>
 
