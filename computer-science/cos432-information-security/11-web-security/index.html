@@ -273,6 +273,7 @@ Error 404! `path` not found. An attacker can then lead a user to opening http://
                 if (!subpath) return;
                 node = node[subpath];
             });
+            if (!node) return;
 
             function populateRelevantURLs(partialURL, currentNode) {
                 const currentNodeKeys = Object.keys(currentNode);
@@ -297,7 +298,8 @@ Error 404! `path` not found. An attacker can then lead a user to opening http://
                 }
             }
             populateRelevantURLs("", node);
-
+        })
+        .then(() => {
             
             
             

@@ -101,7 +101,7 @@
         
         Dated Oct 10, 2020; 
         
-        last modified on Sat, 24 Oct 2020
+        last modified on Fri, 18 Dec 2020
         
     </p>
     </header>
@@ -110,7 +110,6 @@
         <aside id="toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#fundamentals-feature-space--similarity-metrics">Fundamentals: Feature Space &amp; Similarity Metrics</a></li>
     <li><a href="#the-similarity-metric">The Similarity Metric</a></li>
     <li><a href="#the-minkowski-distance">The Minkowski Distance</a>
       <ul>
@@ -118,23 +117,16 @@
         <li><a href="#the-euclidean-distance--p--2">The Euclidean Distance (\( p = 2\))</a></li>
       </ul>
     </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
 
         <article id="main-article">
-            <p>To classify something, find things that are similar and label it with the same class as the most similar thing.</p>
-<h2 id="fundamentals-feature-space--similarity-metrics">Fundamentals: Feature Space &amp; Similarity Metrics</h2>
-<p>The feature space is \(N-d\), where \(N\) is the number of features.</p>
-<p>Each instance is mapped to a point. The descriptive features become the axes.</p>
-<p>For example:</p>
-<figure>
-    <img src="/img/computer-science/ele-364-ml-and-predictive-analytics/05-similarity-based-learning/speed-agility-and-draft-status.png"
-         alt="Speed and agility ratings for college athletes and draft status. Source: JBA (ELE 364)"/> <figcaption>
-            <p>Speed and agility ratings for college athletes and draft status. Source: JBA (ELE 364)</p>
-        </figcaption>
-</figure>
-
+            <p>To classify something, find things that are similar and label it with the same
+class as the most similar thing.</p>
+<p>The feature space is \(N-d\), where \(N\) is the number of features.
+Each instance is mapped to a point. The descriptive features become the axes.</p>
 <h2 id="the-similarity-metric">The Similarity Metric</h2>
 <p>Mathematically, it must conform to these 4 criteria:</p>
 <ul>
@@ -151,6 +143,7 @@
 </div>
 </div>
 
+
 <h2 id="the-minkowski-distance">The Minkowski Distance</h2>
 <p>Where \(a\) and \(b\) are the instances being compared. \(m\) is the number of descriptive features:</p>
 <p>$$ f(a, b) = \left( \sum_{i=1}^{m} abs(a[i] - b[i])^{p} \right)^{1/p} $$</p>
@@ -159,9 +152,55 @@
 <h3 id="the-manhattan-or-taxi-cab-distance--p--1">The Manhattan (or Taxi-Cab) Distance (\( p = 1\))</h3>
 <p>$$ f(a, b) = \sum_{i=1}^{m} |a[i] - b[i]| $$</p>
 <h3 id="the-euclidean-distance--p--2">The Euclidean Distance (\( p = 2\))</h3>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Interesting to note that &ldquo;Euclidean Distance&rdquo; is somewhat a misnomer. Given that
+Minkowski distances satisfy metrics criteria, they seem to assume a Euclidean
+(flat) geometry. In that sense, the Manhattan Distance is not, strictly
+speaking, a non-euclidean distance.</p>
+<p><sup><a href="#mlInNonEuclideanSpaces">[]</a></sup> Euclidean space is the de-facto
+geometry in ML for convenience/tradition rather than by design, which limits us.
+For example, hyperbolic space offers a better model for embedding a tree in a
+way that maintains the distance of nodes, i.e. the volume grows exponentially in
+the tree depth.</p>
+</div>
+</div>
+
+
 <p>$$ f(a, b) = \sqrt{ \sum_{i=1}^{m} (a[i] - b[i])^2 } $$</p>
-<p>If you don&rsquo;t care about computational resources, Euclidean is the default.</p>
+<p>Euclidean is the default, unless one is constrained by computational resources.</p>
 <p>Note that the Euclidean distance is more influenced by a single large difference in one feature than a lot of small differences across a set of features. The opposite is true of the Manhattan Distance.</p>
+<h2 id="references">References</h2>
+<ol>
+<li><div class="citation">
+    <cite id='mlInNonEuclideanSpaces'>
+        
+        <i>Into the Wild: Machine Learning In Non-Euclidean Spaces.</i>
+    
+    </cite>
+     Fred Sala; Ines Chami; Adva Wolf; Albert Gu; Beliz Gunel; Chris Ré.
+    
+    
+     Stanford University.
+    
+    
+    <a href="https://dawn.cs.stanford.edu/2019/10/10/noneuclidean/" target="_blank" rel="noopener"><i>https://dawn.cs.stanford.edu/2019/10/10/noneuclidean/</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     Oct 10, 2019.
+    
+    
+    
+    
+    <i class="far fa-fw fa-file-alt" aria-hidden="true"></i>
+    
+    
+</div>
+</li>
+</ol>
 
         </article>
 
