@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                Contact Tracing for COVID-19 | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/health-and-medicine/">Health and Medicine</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/health-and-medicine/2020-05-06-contact-tracing-for-covid-19/">Contact Tracing for COVID-19</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> Contact Tracing for COVID-19</h1>
+    <p class="meta">
+        
+        Dated May 6, 2020; 
+        
+        last modified on Mon, 22 Feb 2021
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#big-picture">Big Picture</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#did-it-work">Did it work?</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+
+
+<div class="comment-holder">
+    <div class="comment"><p>&ldquo;Apps&rdquo; in this context means contact tracing apps released by public health authorities to do contact tracing. The APIs are limited to them.</p>
+</div>
+</div>
+
+
+<h2 id="big-picture">Big Picture</h2>
+<ul>
+<li>Release APIs to enable apps to interoperate between Android and iOS devices. <sup><a href="#appleGoogleContactTracingAnnouncement">[]</a></sup></li>
+<li>Bluetooth-based contact tracing baked into Android and iOS, such that no app is needed for broadcasting/listening. <sup><a href="#appleGoogleContactTracingAnnouncement">[]</a></sup> This ensures broad adoption, but will be on an opt-in basis. <sup><a href="#appleGoogleExposureNotificationFAQ">[]</a></sup></li>
+</ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Interesting debate for privacy, ethics and public health. Public health officials have a duty to warn, but patients risk stigma. <sup><a href="#wikipediaContactTracing">[]</a></sup> If you know you have COVID-19 but opt-out, what does that make you?</p>
+</div>
+</div>
+
+
+<h2 id="how-it-works">How It Works</h2>
+<p>Users must opt in. Via Bluetooth, devices regularly broadcast and listen to random identifiers (beacons). The beacons change every 10-20 minutes. <sup><a href="#appleGoogleExposureNotificationFAQ">[]</a></sup></p>
+<p>If a user is diagnosed with COVID-19, they report this on the app, and consent to their most recent beacons going into the [central] positive diagnosis list.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>This list is touted to be privacy preserving and opaque to Apple and Google. Don&rsquo;t know how yet, but probably something to do with differential privacy.</p>
+</div>
+</div>
+
+
+<p>Each device stores the received identifiers. At least once a day, the device downloads the positive diagnosis list and notifies the user of any exposure (day + exposure length). Exposure is calculated from time spent within range of an infected person. The beacons&rsquo;s Bluetooth signal strength is an okay estimate for proximity. <sup><a href="#appleGoogleExposureNotificationFAQ">[]</a></sup></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>There are edge-cases in the tradeoff between privacy and health. For example, if the app knows that the user has only been in contact with one person, and therefore the user can pretty much determine who gave them COVID-19, then what?</p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>One of the privacy arguments is that the exposure notification system will be disabled on a regional basis when it&rsquo;s no longer needed. <sup><a href="#appleGoogleExposureNotificationFAQ">[]</a></sup> Okay, I&rsquo;ll bite. If the system is all positive and privacy-preserving, why ever turn it off? Server costs? Battery life?</p>
+</div>
+</div>
+
+
+<h2 id="did-it-work">Did it work?</h2>
+<p>Mostly no. Adoption rates have been lower than the recommended +60%. The decentralized model also makes it hard to analyze how many false positives and false negatives were encountered. <sup><a href="#bbcContactTracingAppsInPractice">[]</a></sup></p>
+<p>South Korea flattened its COVID-19 curve in 20 days. However, their approach is more privacy invasive, e.g. an app that alerts users if they&rsquo;re within 100m of a place visited by a confirmed COVID-19 patient based on data released by the KCDC. Inbound travellers must also download an app and report health conditions for 14 days. Google Timeline on Google Maps was also found useful for contact tracing. <sup><a href="#southKoreaFlatteningTheCurvePlaybook">[]</a></sup></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='appleGoogleContactTracingAnnouncement'>
+        
+        <i>Apple and Google partner on COVID-19 contact tracing technology.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.apple.com/newsroom/2020/04/apple-and-google-partner-on-covid-19-contact-tracing-technology/" target="_blank" rel="noopener"><i>https://www.apple.com/newsroom/2020/04/apple-and-google-partner-on-covid-19-contact-tracing-technology/</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://www.blog.google/inside-google/company-announcements/apple-and-google-partner-covid-19-contact-tracing-technology/" target="_blank" rel="noopener"><i>https://www.blog.google/inside-google/company-announcements/apple-and-google-partner-covid-19-contact-tracing-technology/</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='wikipediaContactTracing'>
+        
+        <i>Contact tracing.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Contact_tracing" target="_blank" rel="noopener"><i>https://en.wikipedia.org/wiki/Contact_tracing</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='appleGoogleExposureNotificationFAQ'>
+        
+        <i>Exposure Notification | Frequently Asked Questions.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-FAQv1.1.pdf" target="_blank" rel="noopener"><i>https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-FAQv1.1.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://www.blog.google/documents/73/Exposure_Notification_-_FAQ_v1.1.pdf" target="_blank" rel="noopener"><i>https://www.blog.google/documents/73/Exposure_Notification_-_FAQ_v1.1.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='appleGoogleBluetoothSpecsForExposureNotification'>
+        
+        <i>Exposure Notification - Bluetooth Specification.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-BluetoothSpecificationv1.2.pdf" target="_blank" rel="noopener"><i>https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-BluetoothSpecificationv1.2.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://www.blog.google/documents/70/Exposure_Notification_-_Bluetooth_Specification_v1.2.2.pdf" target="_blank" rel="noopener"><i>https://www.blog.google/documents/70/Exposure_Notification_-_Bluetooth_Specification_v1.2.2.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='appleGoogleCryptographySpecsForExposureNotification'>
+        
+        <i>Exposure Notification - Cryptography Specification.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-CryptographySpecificationv1.2.pdf" target="_blank" rel="noopener"><i>https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-CryptographySpecificationv1.2.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://www.blog.google/documents/69/Exposure_Notification_-_Cryptography_Specification_v1.2.1.pdf" target="_blank" rel="noopener"><i>https://www.blog.google/documents/69/Exposure_Notification_-_Cryptography_Specification_v1.2.1.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='exposureNotificationAPI'>
+        
+        <i>Exposure Notification API.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://developer.apple.com/documentation/exposurenotification" target="_blank" rel="noopener"><i>https://developer.apple.com/documentation/exposurenotification</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    <a href="https://www.blog.google/documents/68/Android_Exposure_Notification_API_documentation_v1.2.pdf" target="_blank" rel="noopener"><i>https://www.blog.google/documents/68/Android_Exposure_Notification_API_documentation_v1.2.pdf</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='bbcContactTracingAppsInPractice'>
+        
+        <i>Coronavirus: The great contact-tracing apps mystery.</i>
+    
+    </cite>
+     Rory Cellan-Jones; Leo Kelion.
+    
+    
+    
+    
+    
+    <a href="https://www.bbc.com/news/technology-53485569" target="_blank" rel="noopener"><i>https://www.bbc.com/news/technology-53485569</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     Jul 22, 2020.
+    
+    
+    
+    
+    <i class="far fa-fw fa-newspaper" aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='southKoreaFlatteningTheCurvePlaybook'>
+        
+        <i>How Korea responded to a pandemic using ICT: Flattening the curve on COVID-19.</i>
+    
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="http://www.moef.go.kr/com/cmm/fms/FileDown.do?atchFileId=ATCH_000000000013739&amp;fileSn=2" target="_blank" rel="noopener"><i>http://www.moef.go.kr/com/cmm/fms/FileDown.do?atchFileId=ATCH_000000000013739&amp;fileSn=2</i> <i class="fas fa-fw fa-external-link-alt"></i></a>.
+    
+    
+    
+     May 11, 2020.
+    
+    
+    
+    
+    <i class="far fa-fw fa-file-alt" aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags: 
+    
+        <a href="/tags/health-tech">#health-tech</a>
+    
+        <a href="/tags/privacy">#privacy</a>
+    
+</aside>
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Authors: 
+    
+        <a href='/authors/cellan-jones-rory'>Cellan-Jones, Rory</a> 
+    
+        <a href='/authors/kelion-leo'>Kelion, Leo</a> 
+    
+</aside>
+
+
+<aside id="categories-holder" style="margin: 0 0 2% 0;">
+    
+    Category: 
+    
+        <a href='/categories/articles'>articles</a> 
+    
+</aside>
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Domains: 
+    
+        <a href='/domains/covid19-static.cdn-apple.com'>covid19-static.cdn-apple.com</a> 
+    
+        <a href='/domains/developer.apple.com'>developer.apple.com</a> 
+    
+        <a href='/domains/en.wikipedia.org'>en.wikipedia.org</a> 
+    
+        <a href='/domains/www.apple.com'>www.apple.com</a> 
+    
+        <a href='/domains/www.bbc.com'>www.bbc.com</a> 
+    
+        <a href='/domains/www.blog.google'>www.blog.google</a> 
+    
+        <a href='/domains/www.moef.go.kr'>www.moef.go.kr</a> 
+    
+</aside>
+
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/health-and-medicine/1997-02-01-how-dentists-rip-us-off/">&laquo; How Dentists Rip Us Off [William Ecenbarger]</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

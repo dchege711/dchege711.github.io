@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Similarity Based Learning on c13u&#39;s Blog</title>
+    <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/</link>
+    <description>Recent content in Similarity Based Learning on c13u&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 24 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Similarity Measures</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/similarity-measures/</link>
+      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/similarity-measures/</guid>
+      <description>To classify something, find things that are similar and label it with the same class as the most similar thing.
+The feature space is \(N-d\), where \(N\) is the number of features. Each instance is mapped to a point. The descriptive features become the axes.
+The Similarity Metric Mathematically, it must conform to these 4 criteria:
+ Non-negative: \(f(a, b) \ge 0\) Identity: \( f(a, b) = 0 \iff a = b \) Symmetry: \( f(a, b) = f(b, a) \) Triangular inequality: \( f(a, b) \le f(a, c) + f(c, b) \)  Why are non-negativity and triangular inequality important?</description>
+    </item>
+    
+    <item>
+      <title>The Nearest Neighbor Algorithm</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/nearest-neighbor-algorithm/</link>
+      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/nearest-neighbor-algorithm/</guid>
+      <description>The Algorithm  Iterate across the instances in memory. Find the instance that has the shortest distance from the query.  Doing this naively is computationally expensive. That&amp;rsquo;s why there are faster lookup methods, e.g. k-d trees.
+  Make a prediction for the query equal to the value of the target feature of the nearest neighbor    The Voronoi Tessellation is a partition of the feature space such that each partition is the &amp;lsquo;adoptive-radius&amp;rsquo; of the instance that &amp;lsquo;owns&amp;rsquo; that partition.</description>
+    </item>
+    
+    <item>
+      <title>Caveats on Similarity Learning</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/caveats-on-similarity-learning/</link>
+      <pubDate>Tue, 10 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/caveats-on-similarity-learning/</guid>
+      <description>Similarity-based learning is intuitive and gives people confidence in the model.
+There is an inductive bias that instances that have similar descriptive features belong to the same class.
+Remarkably so. When I think of classifying things, my mind immediately goes to NN.
+  Similarity learning has a stationary assumption, i.e. the joint PDF of the data doesn&amp;rsquo;t change (new classifications do not come up). This assumption is shared by supervised ML.</description>
+    </item>
+    
+    <item>
+      <title>Handling Noisy Data in Nearest Neighbors</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/handling-noisy-data/</link>
+      <pubDate>Tue, 17 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/handling-noisy-data/</guid>
+      <description>Majority Voting The \(k\) nearest neighbors model predicts the target level from the majority vote from the set of the \(k\) nearest neighbors to the query \(q\).
+Where \(\delta\) is an indicator function such that \(\delta(t_i, l) = 1 \iff t_i = l\):
+$$ \mathbb{M}_{k} (q) = argmax_{l \in levels(t)} \left( \sum_{i=1}^{k} \delta(t_i, l) \right) $$
+For categorical features, \(k\) should be odd to avoid ties.
+This doesn&amp;rsquo;t read right. If there are 3 possible categories, \(k = 3\) can result in a tie.</description>
+    </item>
+    
+    <item>
+      <title>The Case for Range Normalization</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/the-case-for-range-normalization/</link>
+      <pubDate>Tue, 17 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/the-case-for-range-normalization/</guid>
+      <description>When you have features taking different range if values, you may have odd predictions.
+For example, if \(f_1 \in [0, 100]\) and \(f_2 \in [0, 1]\), \(f_1\) will always be penalized more than \(f_2\) when computing the distance.
+  To mitigate this, normalize the feature&amp;rsquo;s ranges to \([r_{low}, r_{high}]\):
+$$ a&#39;_i = \frac{a_i - a_{min}}{ a_{max} - a_{min}} \cdot (r_{high} - r_{low}) + r_{low} $$
+Typically, the range is normalized to \([r_{low}, r_{high}] = [0, 1]\), so range normalization simplifies to:</description>
+    </item>
+    
+    <item>
+      <title>Predicting Continuous Targets Using NN</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/predicting-continuous-targets/</link>
+      <pubDate>Tue, 17 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/predicting-continuous-targets/</guid>
+      <description>Return the Average Value One possible solution is to return the average value in the neighborhood, i.e.
+$$ \mathbb{M}_{k}(q) = \frac{1}{k} \sum_{i=1}^{k} t_i $$
+We can improve this by using weighted \(k-NN\):
+$$ \mathbb{M}_{k}(q) = \frac{ \sum_{i=1}^{k} \left( \frac{1}{dist(q, d_i)^2} \cdot t_i \right) }{ \sum_{i=1}^{k} \frac{1}{dist(q, d_i)^2} } $$
+The formula looks new. However, if \(x_1\) is weighted by \(w_1\) and \(x_2\) by \(w_2\), then the weighted average is:
+$$ \frac{w_1 x_1 + w_2 x_2 }{w_1 + w_2} $$</description>
+    </item>
+    
+    <item>
+      <title>Other Measures of Similarity in NN</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/other-measures-of-similarity/</link>
+      <pubDate>Tue, 17 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/other-measures-of-similarity/</guid>
+      <description>Note: similarity indexes may not specify the 4 NIST specifications of a similarity metric .
+Consider these two instances:
+    \(f_1\) \(f_2\) \(f_3\) \(f_4\) \(f_5\)     d 0 1 1 0 1   q 0 0 1 1 1    \(CP(q, d)\), the number of the co-presences of binary features, is \(2\) because of \(f_3\) and \(f_4\).
+\(CA(q, d)\), the number of co-absences, is \(1\) because of \(f_1\).</description>
+    </item>
+    
+    <item>
+      <title>The Curse of Dimensionality and Feature Selection</title>
+      <link>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/curse-of-dimensionality-and-feature-selection/</link>
+      <pubDate>Thu, 09 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.c13u.com/computer-science/machine-learning/similarity-based-learning/curse-of-dimensionality-and-feature-selection/</guid>
+      <description>The Curse of Dimensionality The predictive power of an induced model is based either on:
+  Partitioning the feature space into regions based on clusters of training instances and assigning a query located in region \(X\) the target value of the training instances in that cluster.
+  Interpolating a target value from the target values of individual training instances that are near the query in the feature space.</description>
+    </item>
+    
+  </channel>
+</rss>
