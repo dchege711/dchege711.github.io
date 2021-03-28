@@ -37,13 +37,14 @@ function organizeCitations() {
     }
 
     // Fill in the missing references
-    let incompleteAnchors = document.querySelectorAll("sup > a");
+    let incompleteAnchors = document.querySelectorAll("span > a");
     for (let i = 0; i < incompleteAnchors.length; i++) {
         let anchor = incompleteAnchors[i];
         let citationID = anchor.href.split("#")[1];
         if (citationIDToDetails[citationID]) {
-            anchor.innerText = `[${citationIDToDetails[citationID].numToDisplay}]`;
+            anchor.innerText = `${citationIDToDetails[citationID].numToDisplay}`;
             anchor.title = citationIDToDetails[citationID].hoverText;
+            anchor.parentElement.classList.add("citation-ref-processed");
         }        
     }
 }
