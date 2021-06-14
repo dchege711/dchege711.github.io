@@ -80,7 +80,7 @@
         
         Dated Jan 3, 2021; 
         
-        last modified on Sun, 14 Mar 2021
+        last modified on Fri, 23 Apr 2021
         
     </p>
     </header>
@@ -90,6 +90,11 @@
             <nav id="TableOfContents">
   <ul>
     <li><a href="#pagination-with-relative-cursors-span-classcitation-refa-hrefmartinpaginationwithrelativecursorsaspan">Pagination with Relative Cursors <span class="citation-ref"><a href="#martinPaginationWithRelativeCursors"></a></span></a></li>
+    <li><a href="#substring-search-in-visual-basic-span-classcitation-refa-hreflippertnewgradvsseniordevaspan">Substring Search in Visual Basic <span class="citation-ref"><a href="#lippertNewGradVsSeniorDev"></a></span></a>
+      <ul>
+        <li><a href="#commentary-from-hackernews">Commentary from HackerNews</a></li>
+      </ul>
+    </li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -110,9 +115,77 @@ not a primary key, then a URL like <em>example.com/items?limit=50&amp;lastTitle=
 will skip/replay records whose title is <code>XXX</code> but whose relative order is higher
 than 50. Combining the title with a primary key is enough to disambiguate such
 cases.</p>
+<h2 id="substring-search-in-visual-basic-span-classcitation-refa-hreflippertnewgradvsseniordevaspan">Substring Search in Visual Basic <span class="citation-ref"><a href="#lippertNewGradVsSeniorDev"></a></span></h2>
+<p>In CS, substring search is a foundational problem for which there are
+\(O(m + n)\) algorithms. But VB&rsquo;s implementation was \(O(mn)\). Suppose we
+have <code>InStr(&quot;apple banana orange&quot;, &quot;banana&quot;)</code>:</p>
+<ul>
+<li>Skip to the first <code>b</code>. Check if <code>banana</code> is a substring starting from that <code>b</code>.</li>
+<li>If <code>banana</code> was not found, skip to the next <code>b</code>. Try again, and so forth.</li>
+</ul>
+<p>In the worst case, we have no match, and a <code>query</code> that makes us do a lot of
+work before returning false, e.g. <code>InStr(&quot;aaaaaaaaaaaaaaaaaaaa&quot;, &quot;aaaab&quot;)</code>.</p>
+<p>Why would VB go with an \(O(mn)\) algorithm?</p>
+<ul>
+<li>The <code>skipto</code> function is a single x86 machine instruction.</li>
+<li>Most VB devs are querying normal strings, not DNA sequences.</li>
+</ul>
+<p>In practice, the brute force algorithm is mostly \(O(n + m)\). By the time
+preprocessing is done for asymptotic \(O(m + n)\) algorithms, the naive brute
+force algorithm will have given you the answer.</p>
+<h3 id="commentary-from-hackernews">Commentary from HackerNews</h3>
+<p>New grads tend to have exposure to new tools. However, change should be
+motivated by a clear benefit, e.g. python3 has file system improvements and
+f-strings are more readable. While the users may not benefit, devs will.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Similar arguments: TypeScript - safer JS; Rust - speed AND memory safety.</p>
+</div>
+</div>
+
+
+<p>Start with simple working implementations. Profile before you write fancier
+functions. But even with the working implementations, do the basics: cover DB
+queries with indexes, use maps/sets if frequently looking up, avoid re-renders
+of UI that doesn&rsquo;t change, etc.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>For all the talk about CS being out of touch with industry, this was pretty
+much hammered in COS 333.</p>
+</div>
+</div>
+
+
+<blockquote>
+<p>A <strong>galactic algorithm</strong> is one that runs faster than any other algorithm for
+problems that are sufficiently large, but where &ldquo;sufficiently large&rdquo; is so big
+that the algorithm is never used in practice.
+
+<a href="https://en.wikipedia.org/wiki/Galactic_algorithm"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    (en.wikipedia.org)
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a></p>
+</blockquote>
+<p>Develop an understanding for real world data: caches, latencies, optimized
+instructions, etc. For small \(n\), the constants matter, e.g. how does your
+hash function fare against linearly searching a flat but contiguous array? What
+is the costly operation? Moving stuff around might be your undoing&hellip;</p>
+<p>Know which battles to fight. 50x improvement? If your algorithm now takes 2K ns,
+but hitting the file system takes billions of ns, then there&rsquo;s no perceivable
+benefit to the user. But if you&rsquo;re going from 50 min to 1 min, awesome!</p>
 <h2 id="references">References</h2>
 <ol>
-<li><div class="citation">
+<li>
+<div class="citation">
     <cite id='martinPaginationWithRelativeCursors'>
         
         <i>Pagination with Relative Cursors.</i>
@@ -140,6 +213,39 @@ cases.</p>
     
     
 </div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='lippertNewGradVsSeniorDev'>
+        
+        <i>New grad vs senior dev.</i>
+    </cite>
+    
+     Eric Lipppert.
+     Fabulous adventures in coding.
+    
+    
+    
+    <a href="https://ericlippert.com/2020/03/27/new-grad-vs-senior-dev/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=ericlippert.com" loading="lazy">
+        <i>https://ericlippert.com/2020/03/27/new-grad-vs-senior-dev/</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    <a href="https://news.ycombinator.com/item?id=22352674" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy">
+        <i>https://news.ycombinator.com/item?id=22352674</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+     Mar 27, 2020.
+    
+    
+    
+    
+</div>
+
 </li>
 </ol>
 
@@ -153,11 +259,15 @@ cases.</p>
     
         <a href="/tags/information-retrieval">#information-retrieval</a>
     
+        <a href="/tags/software-engineering">#software-engineering</a>
+    
 </aside>
 
 
 <aside id="authors-holder" style="margin: 0 0 2% 0;">
     Authors: 
+    
+        <a href='/authors/lipppert-eric'>Lipppert, Eric</a> 
     
         <a href='/authors/martin-drew'>Martin, Drew</a> 
     
@@ -167,6 +277,16 @@ cases.</p>
 
 <aside id="domains-holder" style="margin: 0 0 2% 0;">
     Domains: 
+    
+        <a href='/domains/ericlippert.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=ericlippert.com" loading="lazy">
+            ericlippert.com
+        </a>
+    
+        <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy">
+            news.ycombinator.com
+        </a>
     
         <a href='/domains/shopify.engineering' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=shopify.engineering" loading="lazy">
@@ -185,10 +305,8 @@ cases.</p>
         
 
         
-            <a href="https://www.c13u.com/computer-science/computer-graphics/2021-01-03-potpourri/">&laquo; Computer Graphics Potpourri</a>
+            <a href="https://www.c13u.com/computer-science/2021-04-12-interest-areas/">&laquo; Areas of Interest in Computer Science</a>
         
-        
-            <a href="https://www.c13u.com/computer-science/2020-11-21-on-systems-programming/">On Systems Programming &raquo;</a>
         
 
     </footer>
