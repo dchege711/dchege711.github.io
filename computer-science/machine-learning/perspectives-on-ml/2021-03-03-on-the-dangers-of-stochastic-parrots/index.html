@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+             
+                On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜 | c13u
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+            
+            
+            
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.c13u.com/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/machine-learning/">Machine Learning &amp; Its Applications</a>
+</li>
+
+
+<li>
+  <a href="https://www.c13u.com/computer-science/machine-learning/perspectives-on-ml/">Perspectives on ML</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.c13u.com/computer-science/machine-learning/perspectives-on-ml/2021-03-03-on-the-dangers-of-stochastic-parrots/">On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜</a>
+</li>
+
+    </ul>
+</nav>
+
+
+            
+            
+<section>
+    <header>
+    <h1> On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜</h1>
+    <p class="meta">
+        
+        Dated Mar 3, 2021; 
+        
+        last modified on Thu, 15 Jul 2021
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#environmental-risks">Environmental Risks</a></li>
+    <li><a href="#non-inclusive-lms">Non-Inclusive LMs</a></li>
+    <li><a href="#lms-misbehaving-in-the-town-square">LMs Misbehaving in the Town Square</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The paper is written in a period when NLP practitioners are producing bigger
+(# of parameters; size of training data) language models (LMs), and pushing the
+top scores on benchmarks.</p>
+</div>
+</div>
+
+
+<h2 id="environmental-risks">Environmental Risks</h2>
+<p>Large LMs consume a lot of resources, e.g. training a single BERT base model on
+GPUs was estimated to use as much energy as a trans-American flight.</p>
+<p>Marginalized communities are doubly punished. They are least likely to benefit
+from LMs, e.g. 90% of the world&rsquo;s languages have little LM-support; most LM
+applications serve needs of the privileged, e.g. Google Home, Alexa &amp; Siri. They
+are also more likely to be harmed by negative effects of climate change.</p>
+<p>Practitioners should report the resources (e.g. time and compute) consumed used.
+Governments should invest in compute clouds to provide equitable access to
+researchers.</p>
+<h2 id="non-inclusive-lms">Non-Inclusive LMs</h2>
+<p>Large datasets from the internet overrepresent hegemonic viewpoints and encode
+biases that can damage marginalized populations.</p>
+<p>User-generated content sites have skewed demographics, e.g. in 2016, 67% of
+Redditors in the US were men, and 64% between ages 18 and 29; between 8.8 - 15%
+of Wikipedians are female. Furthermore, these sites have structural factors that
+make them less welcoming to marginalized groups, e.g. harassment on Twitter.</p>
+<p>Sometimes excluded populations assume different fora, e.g. older adults with
+blogging, but the LMs are less likely to source from these non-mainstream
+alternatives.</p>
+<p>Filtering (&ldquo;Cleaning&rdquo;) of training data may suppress the voice of marginalized
+groups, e.g. suppressing LGBTQ spaces in the name of purging pornographic
+content.</p>
+<p>While social movements produce new norms, LMs might be stuck on older,
+less-inclusive understandings, e.g. social movements that do not receive
+significant media attention; LM retraining being expensive, etc.</p>
+<p>LMs may encode biases, e.g. gun violence, homelessness and drug addiction are
+overrepresented in texts discussing mental illness; women doctors; both genders;
+illegal immigrants.</p>
+<p>Even auditing LMs for biases requires an <em>a priori</em> understanding of the
+society, which tends to fall back to US protected attributes like race and
+gender.</p>
+<p>Researchers should budget for documentation as part of the cost of dataset
+creation. Without documentation, it&rsquo;s hard to investigate and mitigate such
+non-inclusivity.</p>
+<h2 id="lms-misbehaving-in-the-town-square">LMs Misbehaving in the Town Square</h2>
+<p>Some people mistakenly impute meaning to the LM-generated texts. LMs are not
+performing natural language understanding (NLU). Misplaced hype can mislead the
+public and dissuade research directions that don&rsquo;t depend on the ever-larger-LM
+train.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>
+<a href="https://www.reddit.com/r/SubSimulatorGPT2/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    /r/SubSimulatorGPT2/
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a> is an
+entertaining sub full of GPT-2 bots.
+
+<a href="https://www.reddit.com/r/SubSimulatorGPT2Meta/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    /r/SubSimulatorGPT2Meta/
+     <i class="fas fa-fw fa-external-link-alt"></i>
+</a> has
+the human commentary.</p>
+</div>
+</div>
+
+
+<p>The texts are not grounded in communicative intent, or any model of the world,
+or any model of the reader&rsquo;s state of mind. An LM is a system for haphazardly
+stitching together sequences of linguistic forms it has observed in its vast
+training data, according to probabilistic information about how they combine,
+but without reference to meaning: a stochastic parrot.</p>
+<p>Bad actors can take advantage of LMs to produce large quantities of seemingly
+coherent propaganda.</p>
+<p>Biases in LMs can manifest as reputational harms that are invisible to users.
+Biases in LMs used for query expansion could influence search results.</p>
+<h2 id="references">References</h2>
+<ol>
+<li><div class="citation">
+    <cite id='benderStochasticParrots'>
+        
+        <i>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜.</i>
+    </cite>
+     Emily M. Bender; Timnit Gebru; Angelina McMillan-Major; Shmargaret Shmitchell.
+    
+     Proceedings of the 2021 ACM Conference on Fairness, Accountability, and Transparency.
+    
+     University of Washington; Black in AI; The Aether.
+    
+    <a href="https://doi.org/10.1145/3442188.3445922" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>https://doi.org/10.1145/3442188.3445922</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+     Mar 3, 2021.
+    
+    
+    
+    
+    <i class="far fa-fw fa-file-alt" aria-hidden="true"></i>
+    
+    
+    
+</div>
+</li>
+</ol>
+
+        </article>
+
+        
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags: 
+    
+        <a href="/tags/fairness">#fairness</a>
+    
+        <a href="/tags/technology">#technology</a>
+    
+        <a href="/tags/inequality">#inequality</a>
+    
+        <a href="/tags/natural-language-processing">#natural-language-processing</a>
+    
+</aside>
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Authors: 
+    
+        <a href='/authors/bender-emily-m.'>Bender, Emily M.</a> 
+    
+        <a href='/authors/gebru-timnit'>Gebru, Timnit</a> 
+    
+        <a href='/authors/mcmillan-major-angelina'>McMillan-Major, Angelina</a> 
+    
+        <a href='/authors/shmitchell-shmargaret'>Shmitchell, Shmargaret</a> 
+    
+</aside>
+
+
+<aside id="categories-holder" style="margin: 0 0 2% 0;">
+    
+    Category: 
+    
+        <a href='/categories/papers'>papers</a> 
+    
+</aside>
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Domains: 
+    
+        <a href='/domains/doi.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+            doi.org
+        </a>
+    
+</aside>
+
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.c13u.com/computer-science/machine-learning/perspectives-on-ml/gdev-intro-to-ml/">&laquo; ML Usefulness to a Dev</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
