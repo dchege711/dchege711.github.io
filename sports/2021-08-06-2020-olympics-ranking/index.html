@@ -80,7 +80,7 @@
         
         Dated Aug 6, 2021; 
         
-        last modified on Fri, 06 Aug 2021
+        last modified on Sun, 08 Aug 2021
         
     </p>
     </header>
@@ -92,6 +92,16 @@
 
         <article id="main-article">
             
+<p>
+    Weighted sum is calculated as \(3 \cdot gold + 2 \cdot silver + 1 \cdot
+    bronze\). The number of athletes per country at the Tokyo Olympics sourced
+    from
+    <a href="https://www.businessinsider.in/sports/news/ranked-every-nation-at-the-tokyo-olympics-by-the-number-of-athletes-they-have-taken-to-japan/slidelist/84690956.cms">
+    Business Insider</a>. Medal standings fetched from
+    <a href="https://olympics.com/tokyo-2020/olympic-games/en/results/all-sports/medal-standings.htm">
+    olympics.com</a>. Raw data at <a href="" id="linkToTextFile"></a>.
+</p>
+
 <small>
     <p>Medal count last updated at <span id="lastMedalStandingsFetch"></span></p>.
 </small>
@@ -117,6 +127,7 @@
 <script>
     const tableBodyElem = document.getElementById("standingsTBody");
     const lastMedalFetchElem = document.getElementById("lastMedalStandingsFetch");
+    const textFileAnchorElem = document.getElementById("linkToTextFile");
 
     function updateLastMedalFetchTime(pathToStandingsCSV) {
         // e.g. 2020-tokyo-olympics-2021-08-06-10-07+0000.csv
@@ -132,7 +143,11 @@
 
     async function loadMedalStandings() {
         const pathToStandingsCSV = await d3.text("/text/updated_2020_olympics.txt");
-        let standingsData = await d3.csv(`/text/${pathToStandingsCSV}`, (d) => {
+        const absolutePathToCSV = `/text/${pathToStandingsCSV}`;
+        textFileAnchorElem.href = absolutePathToCSV;
+        textFileAnchorElem.innerText = absolutePathToCSV;
+
+        let standingsData = await d3.csv(absolutePathToCSV, (d) => {
             const numAthletes = Number(d.num_athletes);
             const numGold =  Number(d.num_gold);
             const numSilver = Number(d.num_silver);
