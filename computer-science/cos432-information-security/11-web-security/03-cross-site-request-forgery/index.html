@@ -94,7 +94,7 @@
         
         Dated Nov 21, 2018; 
         
-        last modified on Sun, 14 Mar 2021
+        last modified on Wed, 18 Aug 2021
         
     </p>
     </header>
@@ -111,6 +111,7 @@
         <li><a href="#solution-html5-postmessage">Solution: HTML5 postMessage</a></li>
       </ul>
     </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
@@ -125,22 +126,30 @@
 <pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">img</span> <span style="color:#75af00">src</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;http://bank.com/transfer?from=from_ID&amp;to=to_ID&amp;value=1000&#34;</span><span style="color:#111">&gt;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>Because the user is logged in and has a cookie, the victim site trusts the user&rsquo;s browser.</p>
-<p>The attacker gets user/browser to execute command on victim site, e.g. request a link, post a form. The command has permanent effects.</p>
+</div><p>Because the user is logged in and has a cookie, the victim site trusts the
+user&rsquo;s browser.</p>
+<p>The attacker gets user/browser to execute command on victim site, e.g. request a
+link, post a form. The command has permanent effects.</p>
 
 
 
 <div class="comment-holder">
-    <div class="comment"><p>A frame can navigate its immediate children. Why is it designed such that it can&rsquo;t navigate its children too?</p>
-<p><em>Consider a website with a login frame, where the user inputs passwords. The attacker can put this website inside a frame and navigate to the login frame and steal passwords.</em></p>
+    <div class="comment"><p>A frame can navigate its immediate children. Why is it designed such that it
+can&rsquo;t navigate its children too?</p>
+<p><em>Consider a website with a login frame, where the user inputs passwords. The
+attacker can put this website inside a frame and navigate to the login frame and
+steal passwords.</em></p>
 </div>
 </div>
 
 
 <h2 id="xsrf-defense">XSRF Defense</h2>
-<p>Classify URLs as public and non-public. Non-public URLs should contain an unpredictable user-specific secret. Even better, scope the secret to a session.</p>
+<p>Classify URLs as public and non-public. Non-public URLs should contain an
+unpredictable user-specific secret. Even better, scope the secret to a session.</p>
 <h2 id="same-origin-policy-sop">Same-Origin Policy (SOP)</h2>
-<p>Here&rsquo;s a potential attack: <code>https://attacker.com</code> loads <code>https://mail.google.com</code> in an invisible page element and reads the user&rsquo;s email.</p>
+<p>Here&rsquo;s a potential attack: <code>https://attacker.com</code> loads
+<code>https://mail.google.com</code> in an invisible page element and reads the user&rsquo;s
+email.</p>
 <div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -165,30 +174,146 @@
 </span><span style="color:#75715e"></span><span style="color:#111">};</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>Scripts on different pages are allowed to access each other if and only if the pages they originate from share the same protocol, port and origin.</p>
-<ul>
-<li>Note that <a href="https://example.com/">https://example.com/</a> has a different origin from <a href="https://www.example.com/a/">https://www.example.com/a/</a></li>
-</ul>
-<p>Note that SOP doesn&rsquo;t prevent example.com loads an externally hosted script, e.g. <code>&lt;script src=&quot;https://third-party.com/lib/d3.js&gt;&lt;/script&gt;</code></p>
-<ul>
-<li>In this case, the origin of this script is still example.com because it was loaded on example.com</li>
-</ul>
+</div><p>Scripts on different pages are allowed to access each other if and only if the
+pages they originate from share the same protocol, port and origin.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><a href="https://example.com/">https://example.com/</a> has a different origin from <a href="https://www.example.com/">https://www.example.com/</a>. That
+said, websites tend to redirect the naked domain to the www domain for user
+convenience.</p>
+</div>
+</div>
+
+
+<p>Note that SOP doesn&rsquo;t prevent example.com loads an externally hosted script,
+e.g. <code>&lt;script src=&quot;https://third-party.com/lib/d3.js&gt;&lt;/script&gt;</code>. In this case,
+the origin of this script is still example.com because it was loaded on
+example.com</p>
 <h3 id="problems-with-sop">Problems with SOP</h3>
 <ul>
 <li>Subtly different policies for cookies, HTML5 storage, plugins</li>
 <li>Ambiguities: different browsers, extensions, IP addresses&hellip;</li>
-<li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> &amp; <code>login.example.com</code> vs <code>payments.example.com</code>
-<ul>
-<li>Alice can read Bob&rsquo;s cookies, including CSRF tokens.</li>
+<li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> &amp; <code>login.example.com</code> vs <code>payments.example.com</code></li>
 </ul>
-</li>
-</ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I&rsquo;ve mostly seen the <code>example.com/~username</code> pattern in universities, but that
+technique comes with security disclaimers. Web hosters that still intend to use
+the technique are advised to allow only static content. <span class="citation-ref"><a href="#tildeUsernamesForgoSOP"></a></span></p>
+<p>Modern web hosters go the subdomain route, e.g. <code>username.github.io</code>, which
+complicates the <code>login.example.com</code> vs. <code>payments.example.com</code>. One mitigation
+is Mozilla&rsquo;s Public Suffix List (PSL) <span class="citation-ref"><a href="#mozillaPSL"></a></span>.</p>
+<p>The PSL has shortcomings, e.g. its opt-in model is default insecure; some
+providers don&rsquo;t know about it; delays in reviewing PRs to the list and
+propagating the changes; entries growing stale and proving tricky to delete. <span class="citation-ref"><a href="#shortcomingsPSL"></a></span></p>
+</div>
+</div>
+
+
 <h3 id="solution-html5-postmessage">Solution: HTML5 postMessage</h3>
 <ul>
 <li>Message-passing API that allows security checks</li>
 <li>Browser reports origin of message</li>
 <li>JS code must enforce access control</li>
 </ul>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='tildeUsernamesForgoSOP'>
+        
+        <i>mod_userdir - Apache HTTP Server Version 2.4.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://httpd.apache.org/docs/2.4/mod/mod_userdir.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading="lazy">
+        <i>https://httpd.apache.org/docs/2.4/mod/mod_userdir.html</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    <a href="https://blog.hboeck.de/archives/899-Userdir-URLs-like-httpsexample.orgusername-are-dangerous.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading="lazy">
+        <i>https://blog.hboeck.de/archives/899-Userdir-URLs-like-httpsexample.orgusername-are-dangerous.html</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+     Accessed Aug 18, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='mozillaPSL'>
+        
+        <i>list/public_suffix_list.dat at master.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://github.com/publicsuffix/list/blob/master/public_suffix_list.dat" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+        <i>https://github.com/publicsuffix/list/blob/master/public_suffix_list.dat</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    <a href="https://publicsuffix.org/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading="lazy">
+        <i>https://publicsuffix.org/</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+     Accessed Aug 18, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='shortcomingsPSL'>
+        
+        <i>GitHub - sleevi/psl-problems.</i>
+    </cite>
+    
+     Ryan Sleevi.
+    
+    
+    
+    
+    <a href="https://github.com/sleevi/psl-problems" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+        <i>https://github.com/sleevi/psl-problems</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Aug 18, 2021.
+</div>
+
+</li>
+</ol>
 
         </article>
 

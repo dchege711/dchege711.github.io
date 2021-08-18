@@ -177,7 +177,7 @@
             
                 
                     <span class="meta">
-                    2 min; updated Mar 14, 2021 
+                    3 min; updated Aug 18, 2021 
                     <button 
                         id="02b1f5c79fb8569a323839cf6f511805-summary-controller"
                         onclick="toggleSummaryDisplay(this);">
@@ -264,6 +264,8 @@ Error 404! `path` not found. An attacker can then lead a user to opening http://
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -280,6 +282,14 @@ Error 404! `path` not found. An attacker can then lead a user to opening http://
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -307,6 +317,7 @@ Error 404! `path` not found. An attacker can then lead a user to opening http://
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

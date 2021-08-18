@@ -104,7 +104,7 @@
             
                 
                     <span class="meta">
-                    1 min; updated Jun 19, 2021 
+                    2 min; updated Aug 15, 2021 
                     <button 
                         id="5a33c014f3f237474d91ad90f8d5e39e-summary-controller"
                         onclick="toggleSummaryDisplay(this);">
@@ -128,6 +128,8 @@ Slots are increasingly designed for addiction, e.g. quick simple games, adding &
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -144,6 +146,14 @@ Slots are increasingly designed for addiction, e.g. quick simple games, adding &
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -171,6 +181,7 @@ Slots are increasingly designed for addiction, e.g. quick simple games, adding &
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

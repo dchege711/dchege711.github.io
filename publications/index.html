@@ -104,13 +104,29 @@ practitioners of a field probably know.
 
     <div id="tags-holder">
     
+        <a href="https://www.curiosities.dev/publications/atrium/">Atrium (1)</a>
+    
         <a href="https://www.curiosities.dev/publications/bloomberg-new-economy/">Bloomberg New Economy (1)</a>
+    
+        <a href="https://www.curiosities.dev/publications/buzzfeed-news/">Buzzfeed News (1)</a>
     
         <a href="https://www.curiosities.dev/publications/cognitive-psychology/">Cognitive Psychology (1)</a>
     
+        <a href="https://www.curiosities.dev/publications/collaborative-fund/">Collaborative Fund (1)</a>
+    
+        <a href="https://www.curiosities.dev/publications/harvard-business-review/">Harvard Business Review (1)</a>
+    
         <a href="https://www.curiosities.dev/publications/journal-of-sport-and-exercise-psychology/">Journal of Sport and Exercise Psychology (1)</a>
     
+        <a href="https://www.curiosities.dev/publications/margins/">Margins (1)</a>
+    
         <a href="https://www.curiosities.dev/publications/psychological-review/">Psychological Review (1)</a>
+    
+        <a href="https://www.curiosities.dev/publications/slate-star-codex/">Slate Star Codex (1)</a>
+    
+        <a href="https://www.curiosities.dev/publications/talks-at-the-keller-center/">Talks at The Keller Center (1)</a>
+    
+        <a href="https://www.curiosities.dev/publications/techcrunch/">TechCrunch (1)</a>
     
         <a href="https://www.curiosities.dev/publications/the-american-mathematical-monthly/">The American Mathematical Monthly (1)</a>
     
@@ -122,6 +138,8 @@ practitioners of a field probably know.
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -138,6 +156,14 @@ practitioners of a field probably know.
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -165,6 +191,7 @@ practitioners of a field probably know.
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

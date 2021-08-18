@@ -104,7 +104,7 @@
             
                 
                     <span class="meta">
-                    1 min; updated Mar 14, 2021 
+                    1 min; updated Aug 15, 2021 
                     <button 
                         id="e545f1e407a218b2385cbab8b10b2334-summary-controller"
                         onclick="toggleSummaryDisplay(this);">
@@ -113,7 +113,7 @@
                     </span>
                     <p class="meta" id="e545f1e407a218b2385cbab8b10b2334-summary" style="display: none;">
                         Consultants are not well suited for strategy (you probably have a deeper understanding). They are also an expensive way of proving your point to management. However, they are good for emergency horsepower, e.g. data analysis, and for primary research within your industry (they probably have a broader understanding). 
- When not to hire strategy consultants - notes from ex-BCG consultant.  Arjun Moorthy. https://www.curiousjuice.com/blog-0/bid/146227/When-not-to-hire-strategy-consultants-notes-from-ex-BCG-consultant  . Apr 10, 2013.     
+Having a competitive advantage may reduce the incentive to explore other ideas, especially ones that conflict with your chosen [successful] strategy. Additionally, having to maintain/exceed quarterly numbers dissuade incumbents from risk taking....
                     </p>
                 
             
@@ -128,6 +128,8 @@
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -144,6 +146,14 @@
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -171,6 +181,7 @@
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

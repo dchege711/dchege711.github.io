@@ -228,6 +228,8 @@ References  The Wrong Abstraction.  Sandi Metz. https://www.sandimetz.com/blog/2
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -244,6 +246,14 @@ References  The Wrong Abstraction.  Sandi Metz. https://www.sandimetz.com/blog/2
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -271,6 +281,7 @@ References  The Wrong Abstraction.  Sandi Metz. https://www.sandimetz.com/blog/2
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

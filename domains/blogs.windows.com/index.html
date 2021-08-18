@@ -159,6 +159,8 @@ Hunspell is the most popular OSS , and it was being used by Chromium , but on Ch
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -175,6 +177,14 @@ Hunspell is the most popular OSS , and it was being used by Chromium , but on Ch
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -202,6 +212,7 @@ Hunspell is the most popular OSS , and it was being used by Chromium , but on Ch
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

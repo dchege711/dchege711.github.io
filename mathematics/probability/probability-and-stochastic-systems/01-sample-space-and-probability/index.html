@@ -185,6 +185,8 @@ Axiom 2: Non-negativity Because \(A \cap B \subseteq B \), then \( 0 \le \mathbb
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -201,6 +203,14 @@ Axiom 2: Non-negativity Because \(A \cap B \subseteq B \), then \( 0 \le \mathbb
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -228,6 +238,7 @@ Axiom 2: Non-negativity Because \(A \cap B \subseteq B \), then \( 0 \le \mathbb
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

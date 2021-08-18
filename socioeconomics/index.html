@@ -104,7 +104,7 @@
             
                 
                     <span class="meta">
-                    2 min; updated Jul 24, 2021 
+                    3 min; updated Aug 15, 2021 
                     <button 
                         id="33897912e18d7b2e4527aa838d4afeb6-summary-controller"
                         onclick="toggleSummaryDisplay(this);">
@@ -113,8 +113,8 @@
                     </span>
                     <p class="meta" id="33897912e18d7b2e4527aa838d4afeb6-summary" style="display: none;">
                         Criticism/Defense Of Billionaire Philanthropy  Taxes will probably not go to the same causes, e.g. reforming the bail system, grassroot efforts for migrants, etc.
-Foundations are more effective than governments as they do their due diligence, e.g. Bill Gates. Reforming the government is a long battle.
-Jack Dorsey (Twitter), set up $1B of his Square stock (28% of net worth) in an LLC to fund efforts for Covid-19, Girl&rsquo;s Health and Education, and Universal Basic Income....
+Admittedly, these are things that the government should be doing, but it seems that the government doesn&rsquo;t do enough. Furthermore, some of these issues so politicized, e.g. immigrants, that government support can be fickle.
+  Foundations are more effective than governments as they do their due diligence, e....
                     </p>
                 
             
@@ -216,6 +216,8 @@ Monzo, a UK-based digital-first mobile baking app, supports IFTTT recipes. This 
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -232,6 +234,14 @@ Monzo, a UK-based digital-first mobile baking app, supports IFTTT recipes. This 
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -259,6 +269,7 @@ Monzo, a UK-based digital-first mobile baking app, supports IFTTT recipes. This 
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

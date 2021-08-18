@@ -217,6 +217,8 @@ References  Start all of your commands with a comma.  Brandon Rhodes. https://rh
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -233,6 +235,14 @@ References  Start all of your commands with a comma.  Brandon Rhodes. https://rh
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -260,6 +270,7 @@ References  Start all of your commands with a comma.  Brandon Rhodes. https://rh
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

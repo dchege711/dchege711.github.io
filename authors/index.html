@@ -91,11 +91,11 @@
 
     <div id="tags-holder">
     
-        <a href="https://www.curiosities.dev/authors/graham-paul/">Graham, Paul (6)</a>
-    
         <a href="https://www.curiosities.dev/authors/housel-morgan/">Housel, Morgan (6)</a>
     
         <a href="https://www.curiosities.dev/authors/almossawi-ali/">Almossawi, Ali (5)</a>
+    
+        <a href="https://www.curiosities.dev/authors/graham-paul/">Graham, Paul (5)</a>
     
         <a href="https://www.curiosities.dev/authors/sagan-carl/">Sagan, Carl (5)</a>
     
@@ -135,6 +135,8 @@
     
         <a href="https://www.curiosities.dev/authors/aguirre-jessica-camille/">Aguirre, Jessica Camille (1)</a>
     
+        <a href="https://www.curiosities.dev/authors/alexander-sophie/">Alexander, Sophie (1)</a>
+    
         <a href="https://www.curiosities.dev/authors/allard-fran/">Allard, Fran (1)</a>
     
         <a href="https://www.curiosities.dev/authors/altman-micah/">Altman, Micah (1)</a>
@@ -144,6 +146,8 @@
         <a href="https://www.curiosities.dev/authors/ambenje-peter/">Ambenje, Peter (1)</a>
     
         <a href="https://www.curiosities.dev/authors/auther-john/">Auther, John (1)</a>
+    
+        <a href="https://www.curiosities.dev/authors/avi-yonah-shera/">Avi-Yonah, Shera (1)</a>
     
         <a href="https://www.curiosities.dev/authors/bandler-james/">Bandler, James (1)</a>
     
@@ -186,6 +190,8 @@
         <a href="https://www.curiosities.dev/authors/chatterjee-rahul/">Chatterjee, Rahul (1)</a>
     
         <a href="https://www.curiosities.dev/authors/chen-raymond/">Chen, Raymond (1)</a>
+    
+        <a href="https://www.curiosities.dev/authors/chen-szu-yu/">Chen, Szu Yu (1)</a>
     
         <a href="https://www.curiosities.dev/authors/cimons-marlene/">Cimons, Marlene (1)</a>
     
@@ -501,6 +507,8 @@
     
         <a href="https://www.curiosities.dev/authors/schelling-thomas-c/">Schelling, Thomas C (1)</a>
     
+        <a href="https://www.curiosities.dev/authors/scott-mackenzie/">Scott, MacKenzie (1)</a>
+    
         <a href="https://www.curiosities.dev/authors/shacham-hovav/">Shacham, Hovav (1)</a>
     
         <a href="https://www.curiosities.dev/authors/shiferaw-bekele/">Shiferaw, Bekele (1)</a>
@@ -601,6 +609,8 @@
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -617,6 +627,14 @@
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -644,6 +662,7 @@
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

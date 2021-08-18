@@ -271,6 +271,8 @@ Sears bet the Internet changed nothing. Beenz bet the Internet changed everythin
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -287,6 +289,14 @@ Sears bet the Internet changed nothing. Beenz bet the Internet changed everythin
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -314,6 +324,7 @@ Sears bet the Internet changed nothing. Beenz bet the Internet changed everythin
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

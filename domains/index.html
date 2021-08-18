@@ -103,7 +103,7 @@
     
         <a href="https://www.curiosities.dev/domains/www.bloomberg.com/">
             <img src="https://www.google.com/s2/favicons?domain=www.bloomberg.com" loading="lazy">
-            www.bloomberg.com (6)
+            www.bloomberg.com (7)
         </a>
     
         <a href="https://www.curiosities.dev/domains/www.collaborativefund.com/">
@@ -119,11 +119,6 @@
         <a href="https://www.curiosities.dev/domains/www.inf.fu-berlin.de/">
             <img src="https://www.google.com/s2/favicons?domain=www.inf.fu-berlin.de" loading="lazy">
             www.inf.fu-berlin.de (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.paulgraham.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.paulgraham.com" loading="lazy">
-            www.paulgraham.com (5)
         </a>
     
         <a href="https://www.curiosities.dev/domains/doi.org/">
@@ -149,6 +144,11 @@
         <a href="https://www.curiosities.dev/domains/www.nytimes.com/">
             <img src="https://www.google.com/s2/favicons?domain=www.nytimes.com" loading="lazy">
             www.nytimes.com (4)
+        </a>
+    
+        <a href="https://www.curiosities.dev/domains/www.paulgraham.com/">
+            <img src="https://www.google.com/s2/favicons?domain=www.paulgraham.com" loading="lazy">
+            www.paulgraham.com (4)
         </a>
     
         <a href="https://www.curiosities.dev/domains/techcrunch.com/">
@@ -529,6 +529,11 @@
         <a href="https://www.curiosities.dev/domains/m.signalvnoise.com/">
             <img src="https://www.google.com/s2/favicons?domain=m.signalvnoise.com" loading="lazy">
             m.signalvnoise.com (1)
+        </a>
+    
+        <a href="https://www.curiosities.dev/domains/mackenzie-scott.medium.com/">
+            <img src="https://www.google.com/s2/favicons?domain=mackenzie-scott.medium.com" loading="lazy">
+            mackenzie-scott.medium.com (1)
         </a>
     
         <a href="https://www.curiosities.dev/domains/marvel.fandom.com/">
@@ -1045,6 +1050,8 @@
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -1061,6 +1068,14 @@
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -1088,6 +1103,7 @@
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

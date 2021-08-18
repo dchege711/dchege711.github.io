@@ -91,7 +91,7 @@
 
     <div id="tags-holder">
     
-        <a href="https://www.curiosities.dev/tags/business/">Business (22)</a>
+        <a href="https://www.curiosities.dev/tags/business/">Business (18)</a>
     
         <a href="https://www.curiosities.dev/tags/knowing/">Knowing (16)</a>
     
@@ -100,8 +100,6 @@
         <a href="https://www.curiosities.dev/tags/computer-science/">Computer Science (13)</a>
     
         <a href="https://www.curiosities.dev/tags/privacy/">Privacy (13)</a>
-    
-        <a href="https://www.curiosities.dev/tags/startups/">Startups (10)</a>
     
         <a href="https://www.curiosities.dev/tags/software-engineering/">Software Engineering (9)</a>
     
@@ -113,7 +111,7 @@
     
         <a href="https://www.curiosities.dev/tags/big-tech/">Big Tech (7)</a>
     
-        <a href="https://www.curiosities.dev/tags/competition/">Competition (7)</a>
+        <a href="https://www.curiosities.dev/tags/competition/">Competition (6)</a>
     
         <a href="https://www.curiosities.dev/tags/health-tech/">Health Tech (6)</a>
     
@@ -123,6 +121,8 @@
     
         <a href="https://www.curiosities.dev/tags/socioeconomics/">Socio-Economics (6)</a>
     
+        <a href="https://www.curiosities.dev/tags/startups/">Startups (6)</a>
+    
         <a href="https://www.curiosities.dev/tags/investing/">Investing (5)</a>
     
         <a href="https://www.curiosities.dev/tags/letting-go/">Letting Go (5)</a>
@@ -130,8 +130,6 @@
         <a href="https://www.curiosities.dev/tags/memetics/">Memetics (5)</a>
     
         <a href="https://www.curiosities.dev/tags/writing/">Writing (5)</a>
-    
-        <a href="https://www.curiosities.dev/tags/creativity/">Creativity (4)</a>
     
         <a href="https://www.curiosities.dev/tags/free-speech/">Free Speech (4)</a>
     
@@ -147,6 +145,8 @@
     
         <a href="https://www.curiosities.dev/tags/biology/">Biology (3)</a>
     
+        <a href="https://www.curiosities.dev/tags/creativity/">Creativity (3)</a>
+    
         <a href="https://www.curiosities.dev/tags/fairness/">Fairness (3)</a>
     
         <a href="https://www.curiosities.dev/tags/machine-learning/">machine-learning (3)</a>
@@ -154,8 +154,6 @@
         <a href="https://www.curiosities.dev/tags/medicine/">medicine (3)</a>
     
         <a href="https://www.curiosities.dev/tags/politics/">Politics (3)</a>
-    
-        <a href="https://www.curiosities.dev/tags/shutting-down/">Companies Shutting Down (3)</a>
     
         <a href="https://www.curiosities.dev/tags/www/">www (3)</a>
     
@@ -170,6 +168,8 @@
         <a href="https://www.curiosities.dev/tags/rationalism/">Rationalism (2)</a>
     
         <a href="https://www.curiosities.dev/tags/science/">Science (2)</a>
+    
+        <a href="https://www.curiosities.dev/tags/shutting-down/">Companies Shutting Down (2)</a>
     
         <a href="https://www.curiosities.dev/tags/technology/">Technology (2)</a>
     
@@ -235,6 +235,8 @@
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -251,6 +253,14 @@
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -278,6 +288,7 @@
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

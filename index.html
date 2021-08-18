@@ -71,8 +71,7 @@ div#home-links > a {
 
 <section>
     <article>
-    <p>A collection of information on various topics. A personal Wikipedia, if you will.</p>
-<p>Alternate organizations: 
+    <p>Alternate organizations: 
 <a href="/tags/"
     
     
@@ -199,7 +198,7 @@ div#home-links > a {
 
     
         <a href="https://www.curiosities.dev/business/">
-            Business (17)
+            Business (13)
         </a>
     
 
@@ -235,6 +234,8 @@ div#home-links > a {
 
 <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -251,6 +252,14 @@ div#home-links > a {
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -278,6 +287,7 @@ div#home-links > a {
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

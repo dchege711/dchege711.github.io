@@ -97,6 +97,36 @@
             
                 
     <tr class="no-decoration">
+        <td class="no-decoration">Apr 26, 2020</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.curiosities.dev/socioeconomics/2020-04-26-on-philanthropy/">Philanthropy</a>
+            
+                
+                    <span class="meta">
+                    3 min; updated Aug 15, 2021 
+                    <button 
+                        id="33897912e18d7b2e4527aa838d4afeb6-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="33897912e18d7b2e4527aa838d4afeb6-summary" style="display: none;">
+                        Criticism/Defense Of Billionaire Philanthropy  Taxes will probably not go to the same causes, e.g. reforming the bail system, grassroot efforts for migrants, etc.
+Admittedly, these are things that the government should be doing, but it seems that the government doesn&rsquo;t do enough. Furthermore, some of these issues so politicized, e.g. immigrants, that government support can be fickle.
+  Foundations are more effective than governments as they do their due diligence, e....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
+        
+            
+                
+    <tr class="no-decoration">
         <td class="no-decoration">Feb 12, 2020</td>
         <td class="no-decoration">&raquo; </td>
         <td class="no-decoration">
@@ -274,6 +304,8 @@ They renamed to quibi.com/  . At least that makes them more searchable on Google
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -290,6 +322,14 @@ They renamed to quibi.com/  . At least that makes them more searchable on Google
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -317,6 +357,7 @@ They renamed to quibi.com/  . At least that makes them more searchable on Google
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

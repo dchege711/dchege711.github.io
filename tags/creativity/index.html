@@ -98,6 +98,36 @@
             
                 
     <tr class="no-decoration">
+        <td class="no-decoration">Jul 5, 2020</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.curiosities.dev/business/on-starting-a-business/2020-07-05-startup-ideation/">Startup Ideation</a>
+            
+                
+                    <span class="meta">
+                    4 min; updated Aug 15, 2021 
+                    <button 
+                        id="3b91d1d0b1b7971cfb905ea89512ea64-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="3b91d1d0b1b7971cfb905ea89512ea64-summary" style="display: none;">
+                        How to Get Startup Ideas  Err on the side of having competitors, but make sure that you have a thesis that everyone else is overlooking, e.g. Google wasn&rsquo;t averse to users leaving google.com ASAP.
+The Startup Idea Matrix, ( B2B Edition  , B2C Edition  ) is a good start for knowing who to google.
+  Big companies tend to be slow at changing their approach. You&rsquo;d think that Yahoo!...
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
+        
+            
+                
+    <tr class="no-decoration">
         <td class="no-decoration">Feb 26, 2015</td>
         <td class="no-decoration">&raquo; </td>
         <td class="no-decoration">
@@ -151,71 +181,13 @@ When reading, annotate connections from previous knowledge, unanswered questions
 
             
         
-            
-                
-    <tr class="no-decoration">
-        <td class="no-decoration">Jul 5, 2020</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/business/on-starting-a-business/2020-07-05-startup-ideation/">Getting Startup Ideas</a>
-            
-                
-                    <span class="meta">
-                    2 min; updated Mar 14, 2021 
-                    <button 
-                        id="3b91d1d0b1b7971cfb905ea89512ea64-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="3b91d1d0b1b7971cfb905ea89512ea64-summary" style="display: none;">
-                        How to Get Startup Ideas  Err on the side of having competitors, but make sure that you have a thesis that everyone else is overlooking, e.g. Google wasn&rsquo;t averse to users leaving google.com ASAP.
-The Startup Idea Matrix, ( B2B Edition  , B2C Edition  ) is a good start for knowing who to google.
-  Big companies tend to be slow at changing their approach. You&rsquo;d think that Yahoo!...
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-            
-        
-            
-                
-    <tr class="no-decoration">
-        <td class="no-decoration">Nov 28, 2020</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/business/on-starting-a-business/2020-11-28-on-competition/">On Competition</a>
-            
-                
-                    <span class="meta">
-                    1 min; updated Mar 14, 2021 
-                    <button 
-                        id="675bf31ad53c7c466b7079e7500b6ede-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="675bf31ad53c7c466b7079e7500b6ede-summary" style="display: none;">
-                        Startups vs. Incumbents  Why Do Competitive Edges Die?
- Having a competitive advantage reduces the incentive to explore other ideas, especially ones that conflict with your chosen [successful] strategy. Additionally, having to maintain/exceed quarterly numbers dissuade incumbents from risk taking. 
-References  Why Competitive Edges Die.  Morgan Housel. Collaborative Fund. https://www.collaborativefund.com/blog/why-competitive-advantages-die/  . Feb 8, 2018.     
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-            
-        
         
     </table>
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -232,6 +204,14 @@ References  Why Competitive Edges Die.  Morgan Housel. Collaborative Fund. https
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -259,6 +239,7 @@ References  Why Competitive Edges Die.  Morgan Housel. Collaborative Fund. https
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

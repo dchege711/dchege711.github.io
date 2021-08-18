@@ -91,7 +91,7 @@
 
     <div id="tags-holder">
     
-        <a href="https://www.curiosities.dev/categories/articles/">Articles (50)</a>
+        <a href="https://www.curiosities.dev/categories/articles/">Articles (47)</a>
     
         <a href="https://www.curiosities.dev/categories/books/">Books (13)</a>
     
@@ -105,6 +105,8 @@
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -121,6 +123,14 @@
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -148,6 +158,7 @@
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

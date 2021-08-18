@@ -97,23 +97,23 @@
             
                 
     <tr class="no-decoration">
-        <td class="no-decoration">May 20, 2020</td>
+        <td class="no-decoration">Oct 7, 2020</td>
         <td class="no-decoration">&raquo; </td>
         <td class="no-decoration">
-            <a href="https://www.curiosities.dev/business/on-starting-a-business/2020-05-20-unorthodox-startups/">Unorthodox Startups</a>
+            <a href="https://www.curiosities.dev/business/optimism_and_deception/not-a-story-the-capitalists-would-tell-you/">Fables in Service of Capitalism</a>
             
                 
                     <span class="meta">
-                    2 min; updated Mar 14, 2021 
+                    2 min; updated Aug 15, 2021 
                     <button 
-                        id="b6ef8e506872f0af7a22ce2b42e40c5f-summary-controller"
+                        id="5a33c014f3f237474d91ad90f8d5e39e-summary-controller"
                         onclick="toggleSummaryDisplay(this);">
                             <i class="fas fa-chevron-down"></i>
                     </button>
                     </span>
-                    <p class="meta" id="b6ef8e506872f0af7a22ce2b42e40c5f-summary" style="display: none;">
-                        The Food Delivery Mafia Google allows certain booking and ordering services from third-party providers (e.g. Doordash) to automatically appear with business listings. To edit such links, the business has to contact the third party. Complaints by restaurants: Doordash has poor service that reflects on the restaurant; sometimes owners have their own delivery service which is circumvented; Doordash charges the restaurant for orders made through them. 
-It&rsquo;s more likely that Doordash and Grubhub will have more technical expertise to navigate online listings - they have deep money-losing, but user-growth-fueling pockets (e....
+                    <p class="meta" id="5a33c014f3f237474d91ad90f8d5e39e-summary" style="display: none;">
+                        Over the last 70 years, less than 10% of plastic waste has been recycled - it&rsquo;s uneconomical. Recycling shifts attention from the environmental impact of plastics and their overproduction to the consumer&rsquo;s willingness to recycle. Reducing and reusing is a much better environmental strategy. 
+Slots are increasingly designed for addiction, e.g. quick simple games, adding &ldquo;near misses&rdquo;, more ways to win (and therefore more &ldquo;near misses&rdquo; if one doesn&rsquo;t bet on the additional ways), losses disguised as wins, random but weighted outcomes....
                     </p>
                 
             
@@ -128,6 +128,8 @@ It&rsquo;s more likely that Doordash and Grubhub will have more technical expert
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -144,6 +146,14 @@ It&rsquo;s more likely that Doordash and Grubhub will have more technical expert
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -171,6 +181,7 @@ It&rsquo;s more likely that Doordash and Grubhub will have more technical expert
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

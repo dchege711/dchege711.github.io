@@ -97,6 +97,37 @@
             
                 
     <tr class="no-decoration">
+        <td class="no-decoration">May 20, 2020</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.curiosities.dev/business/on-starting-a-business/2020-05-20-unorthodox-startups/">Unorthodox Startups</a>
+            
+                
+                    <span class="meta">
+                    1 min; updated Aug 15, 2021 
+                    <button 
+                        id="b6ef8e506872f0af7a22ce2b42e40c5f-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="b6ef8e506872f0af7a22ce2b42e40c5f-summary" style="display: none;">
+                        Innovation Africa &amp; Water Availability  Bring in Israeli solar panels and drip irrigation. Pump water from the large reservoirs below. Cost $7,000.
+Adapting to community: 6-8 weeks on committees, bank accounts; mobile charging stations and barbershops using solar panels for sustainability. Can&rsquo;t sell the water, but you can subsidize it with complementary products.
+Set up remote monitoring with real time stats in order to schedule maintenance.
+Honorable Mentions Push Party by MSCHF is valued at $200m, led by The Founders Fund....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
+        
+            
+                
+    <tr class="no-decoration">
         <td class="no-decoration">Feb 12, 2020</td>
         <td class="no-decoration">&raquo; </td>
         <td class="no-decoration">
@@ -123,40 +154,13 @@ If only \(x\%\) of people pay you back, then \(\frac{x}{100}(1 + r) \ge 1 \) sug
 
             
         
-            
-                
-    <tr class="no-decoration">
-        <td class="no-decoration">May 20, 2020</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/business/on-starting-a-business/2020-05-20-unorthodox-startups/">Unorthodox Startups</a>
-            
-                
-                    <span class="meta">
-                    2 min; updated Mar 14, 2021 
-                    <button 
-                        id="b6ef8e506872f0af7a22ce2b42e40c5f-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="b6ef8e506872f0af7a22ce2b42e40c5f-summary" style="display: none;">
-                        The Food Delivery Mafia Google allows certain booking and ordering services from third-party providers (e.g. Doordash) to automatically appear with business listings. To edit such links, the business has to contact the third party. Complaints by restaurants: Doordash has poor service that reflects on the restaurant; sometimes owners have their own delivery service which is circumvented; Doordash charges the restaurant for orders made through them. 
-It&rsquo;s more likely that Doordash and Grubhub will have more technical expertise to navigate online listings - they have deep money-losing, but user-growth-fueling pockets (e....
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-            
-        
         
     </table>
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -173,6 +177,14 @@ It&rsquo;s more likely that Doordash and Grubhub will have more technical expert
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -200,6 +212,7 @@ It&rsquo;s more likely that Doordash and Grubhub will have more technical expert
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {

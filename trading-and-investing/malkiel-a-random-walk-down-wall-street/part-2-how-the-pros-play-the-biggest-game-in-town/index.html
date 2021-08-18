@@ -201,6 +201,8 @@ Why is the Crystal Ball So Clouded?  Many of the influential changes that affect
 
     <script>
     let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
     fetch("/json/site_tree.json")
         .then(response => response.json())
         .then(siteTree => {
@@ -217,6 +219,14 @@ Why is the Crystal Ball So Clouded?  Many of the influential changes that affect
                 currentNodeKeys.forEach((key) => {
                     
                     if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
 
                     
                     
@@ -244,6 +254,7 @@ Why is the Crystal Ball So Clouded?  Many of the influential changes that affect
             if (pageURLs.length === 0) {
                 document.getElementById("randomSelectorContainer").style.display = "none";
             }
+            console.log(pageURLs);
         });
 
     function goToRandomPage() {
