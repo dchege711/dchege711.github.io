@@ -13,7 +13,7 @@ function organizeCitations() {
 
     const listElement = listItem.parentElement;
     if (!listElement) return;
-    
+
     // The font-size for citations is set globally. Make the list markers share
     // the same font-size. There's currently no way to select the parent via CSS
     // https://stackoverflow.com/questions/1014861/is-there-a-css-parent-selector
@@ -31,7 +31,6 @@ function organizeCitations() {
         // instead of getting it from the global CSS file. (2 of 2)
         listElement.children[i].getElementsByClassName("citation")[0].style.fontSize = "inherit";
         citationIDToDetails[citationElement.id] = {
-            numToDisplay: i + 1,
             hoverText: citationElement.parentElement.innerText
         };
     }
@@ -42,9 +41,9 @@ function organizeCitations() {
         let anchor = incompleteAnchors[i];
         let citationID = anchor.href.split("#")[1];
         if (citationIDToDetails[citationID]) {
-            anchor.innerText = `${citationIDToDetails[citationID].numToDisplay}`;
+            anchor.innerText = `${citationID}`;
             anchor.title = citationIDToDetails[citationID].hoverText;
             anchor.parentElement.classList.add("citation-ref-processed");
-        }        
+        }
     }
 }
