@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+            
+                Observer | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/gang-of-four-design-patterns/">Design Patterns: Elements of Reusable Object-Oriented Software</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/gang-of-four-design-patterns/behavioral-patterns/">Behavioral Patterns</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/gang-of-four-design-patterns/behavioral-patterns/07-observer/">Observer</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Observer</h1>
+    <p class="meta">
+        
+        Dated Sep 28, 2021; 
+        
+        last modified on Wed, 29 Sep 2021
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#intent">Intent</a></li>
+    <li><a href="#sample-code">Sample Code</a></li>
+    <li><a href="#commentary-on-design-decisions">Commentary on Design Decisions</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="intent">Intent</h2>
+<p>A one-to-many dependency between object so that when one object (subject)
+changes, all its dependents (observers) are notified and update automatically.</p>
+<p>A meta-point is that while we could achieve consistency by making the classes
+tightly coupled, we don&rsquo;t want to do that because tight coupling reduces
+reusability.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>What are the tradeoffs between the observer design pattern, and having the
+<code>observer</code> pass callbacks to the <code>subject</code>?</p>
+</div>
+</div>
+
+
+<h2 id="sample-code">Sample Code</h2>
+<p>An abstract class defines the <code>Observer</code> interface:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Subject</span><span style="color:#111">;</span>
+
+<span style="color:#00a8c8">class</span> <span style="color:#75af00">Observer</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">Observer</span><span style="color:#111">();</span>
+
+  <span style="color:#75715e">// To support multiple subjects for each observer, we pass
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// `changed_subject`.
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">Update</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span> <span style="color:#111">changed_subject</span><span style="color:#111">);</span>
+
+ <span style="color:#00a8c8">protected</span><span style="color:#f92672">:</span>
+  <span style="color:#111">Observer</span><span style="color:#111">();</span>
+<span style="color:#111">};</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>An abstract class defines the <code>Subject</code> interface:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Subject</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">Subject</span><span style="color:#111">();</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">Attach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">Detach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">Notify</span><span style="color:#111">();</span>
+
+ <span style="color:#00a8c8">protected</span><span style="color:#f92672">:</span>
+  <span style="color:#111">Subject</span><span style="color:#111">();</span>
+
+ <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
+  <span style="color:#75715e">// Notice that we do not make assumptions on the number of observers.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// We also do not make assumptions on the concrete classes. As long as
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// the class implements the Observer interface, we&#39;re good! The
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// coupling is abstract and minimal.
+</span><span style="color:#75715e"></span>  <span style="color:#111">List</span><span style="color:#f92672">&lt;</span><span style="color:#111">Observer</span><span style="color:#f92672">*&gt;</span> <span style="color:#111">observers_</span><span style="color:#111">;</span>
+<span style="color:#111">};</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Attach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span> <span style="color:#111">observer</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">observers_</span><span style="color:#111">.</span><span style="color:#111">Append</span><span style="color:#111">(</span><span style="color:#111">observer</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Detach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span> <span style="color:#111">observer</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">observers_</span><span style="color:#111">.</span><span style="color:#111">Remove</span><span style="color:#111">(</span><span style="color:#111">observer</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Notify</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#75715e">// In this design (pull model), we do not tell the observers what
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// exactly changed in `this`. It is up to the concrete observer to
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// query the concrete subject. The concrete observer can also choose
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// to ignore the notification.
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span> <span style="color:#111">observer</span> <span style="color:#111">:</span> <span style="color:#111">observers_</span><span style="color:#111">)</span> <span style="color:#111">observer</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Update</span><span style="color:#111">(</span><span style="color:#00a8c8">this</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>An example concrete <code>Subject</code>, <code>ClockTimer</code>, that stores and maintains the time
+of day:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">ClockTimer</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Subject</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#111">ClockTimer</span><span style="color:#111">();</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">GetHour</span><span style="color:#111">();</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">GetMinute</span><span style="color:#111">();</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">GetSecond</span><span style="color:#111">();</span>
+
+  <span style="color:#75715e">// Methods that eventually call `Notify()` should be labelled as such,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// so that callers can be aware of the cost of a seemingly innocuous
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// operation.
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">void</span> <span style="color:#75af00">Tick</span><span style="color:#111">();</span>
+<span style="color:#111">};</span>
+
+<span style="color:#75715e">// Called by an internal timer at regular intervals.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">void</span> <span style="color:#111">ClockTimer</span><span style="color:#f92672">::</span><span style="color:#111">Tick</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#75715e">// Update internal-time keeping state.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>  <span style="color:#111">Notify</span><span style="color:#111">();</span>
+<span style="color:#111">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>An example concrete <code>Observer</code>, <code>DigitalClock</code>, that displays the time of day.</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">DigitalClock</span><span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Widget</span><span style="color:#111">,</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Observer</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#111">DigitalClock</span><span style="color:#111">(</span><span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
+  <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">DigitalClock</span><span style="color:#111">();</span>
+
+  <span style="color:#75715e">// From Observer
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">void</span> <span style="color:#75af00">Update</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span><span style="color:#111">)</span> <span style="color:#00a8c8">override</span><span style="color:#111">;</span>
+
+  <span style="color:#75715e">// Widget
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">void</span> <span style="color:#75af00">Draw</span><span style="color:#111">()</span> <span style="color:#00a8c8">override</span><span style="color:#111">;</span>
+
+ <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
+  <span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span> <span style="color:#111">subject_</span><span style="color:#111">;</span>
+<span style="color:#111">};</span>
+
+<span style="color:#111">DigitalClock</span><span style="color:#f92672">::</span><span style="color:#111">DigitalClock</span><span style="color:#111">(</span><span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span> <span style="color:#111">subject</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">subject_</span> <span style="color:#f92672">=</span> <span style="color:#111">subject</span><span style="color:#111">;</span>
+  <span style="color:#111">subject_</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Attach</span><span style="color:#111">(</span><span style="color:#00a8c8">this</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+
+<span style="color:#111">DigitalClock</span><span style="color:#f92672">::~</span><span style="color:#111">DigitalClock</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#111">subject_</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Detach</span><span style="color:#111">(</span><span style="color:#00a8c8">this</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">DigitalClock</span><span style="color:#f92672">::</span><span style="color:#111">Update</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span> <span style="color:#111">changed_subject</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">changed_subject</span> <span style="color:#f92672">==</span> <span style="color:#111">subject_</span><span style="color:#111">)</span> <span style="color:#111">Draw</span><span style="color:#111">();</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">DigitalClock</span><span style="color:#f92672">::</span><span style="color:#111">Draw</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#75715e">// Get the new values from the subject.
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">int</span> <span style="color:#111">hour</span> <span style="color:#f92672">=</span> <span style="color:#111">subject_</span><span style="color:#f92672">-&gt;</span><span style="color:#111">GetHour</span><span style="color:#111">();</span>
+  <span style="color:#00a8c8">int</span> <span style="color:#111">minute</span> <span style="color:#f92672">=</span> <span style="color:#111">subject_</span><span style="color:#f92672">-&gt;</span><span style="color:#111">GetMinute</span><span style="color:#111">();</span>
+  <span style="color:#00a8c8">int</span> <span style="color:#111">second</span> <span style="color:#f92672">=</span> <span style="color:#111">subject</span><span style="color:#f92672">-&gt;</span><span style="color:#111">GetSecond</span><span style="color:#111">();</span>
+
+  <span style="color:#75715e">// Draw the digital clock.
+</span><span style="color:#75715e"></span><span style="color:#111">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Usage:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span> <span style="color:#111">timer</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">ClockTimer</span><span style="color:#111">();</span>
+<span style="color:#111">DigitalClock</span> <span style="color:#111">digital_clock</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">DigitalClock</span><span style="color:#111">(</span><span style="color:#111">timer</span><span style="color:#111">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="commentary-on-design-decisions">Commentary on Design Decisions</h2>
+<p>If <code>concrete_observer</code> calls <code>concrete_subject-&gt;SetState(new_state)</code>, then
+<code>concrete_observer</code> should hold off making any internal updates until it
+receives an update notification from <code>concrete_subject</code>. This deferral is
+important because there may be other objects that call
+<code>concrete_subject-&gt;SetState(new_state)</code>.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>We also don&rsquo;t want to do two internal updates in <code>concrete_observer</code> as the
+first one is jumping the gun. Also, what if <code>concrete_subject</code> rejects the
+<code>new_state</code>? Overly eager updates could make <code>concrete_observer</code> inconsistent.</p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Sure, but this design feels weird. Why would an observer be modifying the state
+of the subject? When I think of the relationship between a subject and an
+observer, I think of the observer being more or less passive.</p>
+</div>
+</div>
+
+
+<p>Who calls <code>Subject::Notify</code>? If state-setting ops on <code>Subject</code> call <code>Notify</code>,
+we might have several consecutive ops cause several consecutive updates, which
+may be inefficient. If clients are responsible, then errors are likely since
+some clients might forget to do it.</p>
+<p>Deleting a subject should not produce dangling references in its observers. One
+solution is have the subject notify its observers when as it is deleted, so that
+observers can reset their reference to it. Deleting the observers is not a
+solution because the observers might be referenced elsewhere, e.g. listening to other subjects.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Why did Chromium opt for a <code>base::ScopedObservation</code> that doesn&rsquo;t expose the
+subject?</p>
+</div>
+</div>
+
+
+<p>We also need to ensure that the subject is self-consistent before notification.
+For example, this code is buggy:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">MySubject</span><span style="color:#f92672">::</span><span style="color:#111">Operation</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">new_value</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">BaseClassSubject</span><span style="color:#f92672">::</span><span style="color:#111">Operation</span><span style="color:#111">(</span><span style="color:#111">new_value</span><span style="color:#111">);</span>
+  <span style="color:#75715e">// Trigger notification.
+</span><span style="color:#75715e"></span>  <span style="color:#111">my_internal_value_</span> <span style="color:#f92672">+=</span> <span style="color:#111">new_value</span><span style="color:#111">;</span>
+  <span style="color:#75715e">// Update subclass state (too late!)
+</span><span style="color:#75715e"></span><span style="color:#111">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>One solution is to send notifications from template methods in the abstract
+<code>Subject</code> class, e.g.</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Text</span><span style="color:#f92672">::</span><span style="color:#111">Cut</span><span style="color:#111">(</span><span style="color:#111">TextRange</span> <span style="color:#111">r</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">ReplaceRange</span><span style="color:#111">(</span><span style="color:#111">r</span><span style="color:#111">);</span>  <span style="color:#75715e">// Redefined in subclasses.
+</span><span style="color:#75715e"></span>  <span style="color:#111">Notify</span><span style="color:#111">();</span>
+<span style="color:#111">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>There&rsquo;s a tradeoff on the specificity of <code>Update</code> protocols. In the push model,
+the subject sends detailed information about the change, while in the pull
+model, the subject sends out the most minimal notification, and the observers
+must explicitly ask for details. The push model makes observers less re-usable,
+while the pull method may be inefficient.</p>
+<p>Allowing observers to register for specific events of interest can improve
+update efficiency. An API like this one is a possible solution:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Attach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">,</span> <span style="color:#111">Aspect</span><span style="color:#f92672">&amp;</span> <span style="color:#111">interest</span><span style="color:#111">);</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">Observer</span><span style="color:#f92672">::</span><span style="color:#111">Update</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span><span style="color:#111">,</span> <span style="color:#111">Aspect</span><span style="color:#f92672">&amp;</span> <span style="color:#111">interest</span><span style="color:#111">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>A further step could be the <code>Subject</code> only sending notifications to observers
+that are interested in the <code>Aspect</code> that has been affected by the subject&rsquo;s
+state change.</p>
+<p>Alternatively, a common pattern that I see in Chromium is subclassing the base
+<code>Observer</code> interface, and providing more specific APIs, e.g.
+<code>ClockTimerObserver::OnHourChanged(ClockTimer* timer, int new_hour)</code>.</p>
+</div>
+</div>
+
+
+
+        </article>
+
+        
+
+
+
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
