@@ -105,13 +105,35 @@
   <ul>
     <li><a href="#intent">Intent</a></li>
     <li><a href="#sample-code">Sample Code</a></li>
-    <li><a href="#commentary-on-design-decisions">Commentary on Design Decisions</a></li>
+    <li><a href="#commentary-on-design-decisions">Commentary on Design Decisions</a>
+      <ul>
+        <li><a href="#communication-flow">Communication Flow</a></li>
+        <li><a href="#avoiding-dangling-references">Avoiding Dangling References</a></li>
+        <li><a href="#maintaining-consistency-of-the-subject">Maintaining Consistency of the <code>Subject</code></a></li>
+        <li><a href="#specificityefficiency-of-update-protocols">Specificity/Efficiency of <code>Update</code> Protocols</a></li>
+        <li><a href="#orchestrating-complex-relationships-between-subjects-and-observers">Orchestrating Complex Relationships Between Subjects and Observers</a></li>
+        <li><a href="#combining-subject-and-observer-interfaces-in-the-same-class">Combining <code>Subject</code> and <code>Observer</code> Interfaces in the Same Class</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
 
         <article id="main-article">
-            <h2 id="intent">Intent</h2>
+            
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#WikiObserverPattern"></a></span> notes that <span class="citation-ref"><a href="#GangOfFour1994"></a></span>, the
+primary source, glosses over nitty-gritties. e.g. the &ldquo;message queue&rdquo; server.
+Maybe reading through these will provide a larger perspective to design
+decisions made in Chromium regarding observers.</p>
+</div>
+</div>
+
+
+<h2 id="intent">Intent</h2>
 <p>A one-to-many dependency between object so that when one object (subject)
 changes, all its dependents (observers) are notified and update automatically.</p>
 <p>A meta-point is that while we could achieve consistency by making the classes
@@ -121,8 +143,24 @@ reusability.</p>
 
 
 <div class="comment-holder">
+    <div class="comment"><p>An advantage of tight coupling (e.g. adding would-be-observers as member
+variables) is that the compiler can detect errors at compile time and optimize
+the code at the CPU instruction level. So for performance-senitive code, the
+observer design pattern may not be apt. <span class="citation-ref"><a href="#WikiObserverPattern"></a></span></p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
     <div class="comment open-comment"><p>What are the tradeoffs between the observer design pattern, and having the
-<code>observer</code> pass callbacks to the <code>subject</code>?</p>
+observer pass callbacks to the subject?</p>
+<p><span class="citation-ref"><a href="#SOverflowObserverVsCallback"></a></span> posits that callback patterns are more
+tightly coupled than a subject/observer pattern. Furthermore, callbacks are
+typically meant to be short-lived.</p>
+<p>Need to think about this some more. Not totally sold.</p>
 </div>
 </div>
 
@@ -236,7 +274,23 @@ reusability.</p>
 <span style="color:#111">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>An example concrete <code>Subject</code>, <code>ClockTimer</code>, that stores and maintains the time
+</div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Another design gotcha is <code>observers_</code> is <code>observers_</code> getting modified while it
+is being looped over in <code>Subject::Notify</code>. For some operations, the iterator
+may get invalidated. <span class="citation-ref"><a href="#SOverflowCppContainerInvalidation"></a></span></p>
+<p>In Chromium, <span class="citation-ref"><a href="#ChromiumObserverList"></a></span> is designed to be resistant to
+same-thread modifications of the underlying <code>std::vector</code>. <span class="citation-ref"><a href="#ChromiumObserverListThreadSafe"></a></span> approaches the problem in a multi-threaded
+context, with the tradeoff being that notifications get silently dropped if an
+observer is removed on one thread, while another thread is notifying observers.</p>
+<p>At the very least, be aware that the problem exists.</p>
+</div>
+</div>
+
+
+<p>An example concrete <code>Subject</code>, <code>ClockTimer</code>, that stores and maintains the time
 of day:</p>
 <div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -361,7 +415,44 @@ of day:</p>
 </span><span style="color:#75715e"></span><span style="color:#111">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>Usage:</p>
+</div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>A possible source of bugs is an observer that gets destroyed without removing
+itself from its subjects' observer lists. A subject will then try to notify an
+observer that has already been destroyed, leading to a use-after-free (UAF) bug.
+In Chromium, a couple of safeguards exist to avoid this UAF.</p>
+<ol>
+<li>
+<p>Observers subclass from <code>CheckedObserver</code>, and subjects store the observers
+in an <code>ObserverList</code>. Iterating over a destroyed <code>Observer</code> in an
+<code>ObserverList</code> leads to a crash, which avoids the more severe UAF. <span class="citation-ref"><a href="#ChromiumCheckedObserver"></a></span> <span class="citation-ref"><a href="#ChromiumObserverList"></a></span></p>
+</li>
+<li>
+<p>Concrete observers hold a member variable, <code>ScopedObservation</code> or
+<code>ScopedMultiSourceObservation</code>, that removes registered observation(s), if
+any, when the observer is destroyed. <span class="citation-ref"><a href="#ChromiumScopedObservation"></a></span>
+<span class="citation-ref"><a href="#ChromiumScopedMultiSourceObservation"></a></span> That way, observers need
+not explicitly remove themselves from the subject(s)&rsquo;s observer list.</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#WikiObserverPattern"></a></span> suggests that the subject hold weak references.
+Why is this not the case in Chromium with <span class="citation-ref"><a href="#ChromiumCheckedObserver"></a></span>?
+Performance reasons? Too many observers that don&rsquo;t pass <code>WeakPtr</code>?</p>
+</div>
+</div>
+
+
+<p>Usage:</p>
 <div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -372,7 +463,15 @@ of day:</p>
 <span style="color:#111">DigitalClock</span> <span style="color:#111">digital_clock</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">DigitalClock</span><span style="color:#111">(</span><span style="color:#111">timer</span><span style="color:#111">);</span>
 </code></pre></td></tr></table>
 </div>
-</div><h2 id="commentary-on-design-decisions">Commentary on Design Decisions</h2>
+</div><figure>
+    <img src="/img/computer-science/gang-of-4/observer_design_pattern.jpg"
+         alt="A sample UML class and sequence diagram for the Observer design pattern. Courtesy: Wikipedia."/> <figcaption>
+            <p>A sample UML class and sequence diagram for the Observer design pattern. Courtesy: Wikipedia.</p>
+        </figcaption>
+</figure>
+
+<h2 id="commentary-on-design-decisions">Commentary on Design Decisions</h2>
+<h3 id="communication-flow">Communication Flow</h3>
 <p>If <code>concrete_observer</code> calls <code>concrete_subject-&gt;SetState(new_state)</code>, then
 <code>concrete_observer</code> should hold off making any internal updates until it
 receives an update notification from <code>concrete_subject</code>. This deferral is
@@ -395,7 +494,8 @@ first one is jumping the gun. Also, what if <code>concrete_subject</code> reject
 <div class="comment-holder">
     <div class="comment"><p>Sure, but this design feels weird. Why would an observer be modifying the state
 of the subject? When I think of the relationship between a subject and an
-observer, I think of the observer being more or less passive.</p>
+observer, I think of the observer being more or less passive. <span class="citation-ref"><a href="#WikiObserverPattern"></a></span> seems to hold the
+observer-is-passive-with-regard-to-updates idea too.</p>
 </div>
 </div>
 
@@ -404,20 +504,23 @@ observer, I think of the observer being more or less passive.</p>
 we might have several consecutive ops cause several consecutive updates, which
 may be inefficient. If clients are responsible, then errors are likely since
 some clients might forget to do it.</p>
+<h3 id="avoiding-dangling-references">Avoiding Dangling References</h3>
 <p>Deleting a subject should not produce dangling references in its observers. One
 solution is have the subject notify its observers when as it is deleted, so that
 observers can reset their reference to it. Deleting the observers is not a
-solution because the observers might be referenced elsewhere, e.g. listening to other subjects.</p>
+solution because the observers might be referenced elsewhere, e.g. listening to
+other subjects.</p>
 
 
 
 <div class="comment-holder">
-    <div class="comment open-comment"><p>Why did Chromium opt for a <code>base::ScopedObservation</code> that doesn&rsquo;t expose the
-subject?</p>
+    <div class="comment open-comment"><p>Why did Chromium opt for a <code>ScopedObservation</code> and
+<code>ScopedMultiSourceObservation</code> that don&rsquo;t expose the subject(s)? <span class="citation-ref"><a href="#ChromiumScopedObservation"></a></span> <span class="citation-ref"><a href="#ChromiumScopedMultiSourceObservation"></a></span></p>
 </div>
 </div>
 
 
+<h3 id="maintaining-consistency-of-the-subject">Maintaining Consistency of the <code>Subject</code></h3>
 <p>We also need to ensure that the subject is self-consistent before notification.
 For example, this code is buggy:</p>
 <div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
@@ -454,7 +557,8 @@ For example, this code is buggy:</p>
 <span style="color:#111">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>There&rsquo;s a tradeoff on the specificity of <code>Update</code> protocols. In the push model,
+</div><h3 id="specificityefficiency-of-update-protocols">Specificity/Efficiency of <code>Update</code> Protocols</h3>
+<p>There&rsquo;s a tradeoff on the specificity of <code>Update</code> protocols. In the push model,
 the subject sends detailed information about the change, while in the pull
 model, the subject sends out the most minimal notification, and the observers
 must explicitly ask for details. The push model makes observers less re-usable,
@@ -487,12 +591,412 @@ state change.</p>
 </div>
 
 
+<p>In some cases, the updates may inundate the observer, e.g. the subject&rsquo;s
+changing state several times a second. The observer may incorporate a timer to
+represent the approximate state of the model at a regular interval. <span class="citation-ref"><a href="#WikiObserverPattern"></a></span></p>
+<h3 id="orchestrating-complex-relationships-between-subjects-and-observers">Orchestrating Complex Relationships Between Subjects and Observers</h3>
+<p>The dependency relationships between subjects and observers may be complex, e.g.
+an operation that involves changes to several interdependent subjects, and there
+is a need to ensure that observers are notified only after all subjects have
+been modified, that a <code>ChangeManager</code> is useful:</p>
+<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Notify</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#111">change_manager_</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Notify</span><span style="color:#111">();</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">class</span> <span style="color:#75af00">ChangeManager</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#111">Register</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span><span style="color:#111">,</span> <span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
+  <span style="color:#111">Unregister</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span> <span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
+  <span style="color:#111">Notify</span><span style="color:#111">();</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#111">ChangeManager</span><span style="color:#f92672">::</span><span style="color:#111">Notify</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#75715e">// A naive implementation that sends notifications to all observers.
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span> <span style="color:#111">s</span> <span style="color:#111">:</span> <span style="color:#111">subjects_</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+    <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span> <span style="color:#111">o</span> <span style="color:#111">:</span> <span style="color:#111">s</span><span style="color:#f92672">-&gt;</span><span style="color:#111">observers</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+      <span style="color:#111">o</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Update</span><span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">);</span>
+    <span style="color:#111">}</span>
+  <span style="color:#111">}</span>
+<span style="color:#111">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>ChangeManager::Notify</code> can be smarter, e.g. maintaining a DAG such that if an
+<code>Observer* o</code> observes multiple subjects, then <code>o-&gt;Update(s)</code> will only be
+called once to avoid redundant updates.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The <code>ChangeManager</code> is an instance of the <code>Mediator</code> pattern.</p>
+</div>
+</div>
+
+
+<h3 id="combining-subject-and-observer-interfaces-in-the-same-class">Combining <code>Subject</code> and <code>Observer</code> Interfaces in the Same Class</h3>
+<p>Note that some languages, e.g. Smalltalk, lack multiple inheritance (MI). In
+such cases, it makes sense to combine the <code>Observer</code> and <code>Subject</code> interface in
+the same class.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The lack of MI is not an anomaly. C++ got MI because it is a hybrid (contains
+primitives and objects) language that couldn&rsquo;t enforce a single monolithic class
+hierarchy, unlike Smalltalk.</p>
+<p>MI&rsquo;s most famous drawback is the diamond problem being the most prominent con.
+For example: <code>D</code> inherits from both <code>C</code> and <code>B</code>, who both inherit from <code>A</code>. Both
+<code>B</code> and <code>C</code> override <code>A::Foo</code>, but <code>D</code> does not; if <code>d-&gt;Foo()</code> is called, which
+<code>Foo</code> gets called?</p>
+<p>A good Occam&rsquo;s Razor is, &ldquo;If you don&rsquo;t need to upcast to all of the base
+classes, prefer composition to multiple inheritance.&rdquo;</p>
+<p><span class="citation-ref"><a href="#Eckel1999"></a></span></p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='GangOfFour1994'>
+        
+        <i>Design Patterns &gt; Behavioral Patterns &gt; 7. Observer.</i>
+    </cite>
+     Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides.
+    
+    
+    
+    
+    
+    
+    
+     Oct 21, 1994.
+    
+    
+    
+    
+    <i class="fas fa-fw fa-book" aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='Eckel1999'>
+        
+        <i>Thinking in C&#43;&#43;, 2nd Ed, Vol. 2. Chapter 10: Multiple inheritance.</i>
+    </cite>
+     Bruce Eckel; Chuck Allison.
+    
+    
+    
+    
+    
+    <a href="http://www.cs.cmu.edu/~gregjor/project/eckelbook/volume2/Chap10.htm" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.cs.cmu.edu" loading="lazy">
+        <i>http://www.cs.cmu.edu/~gregjor/project/eckelbook/volume2/Chap10.htm</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+     1999.
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='SOverflowObserverVsCallback'>
+        
+        <i>ruby on rails - Observers vs. Callbacks.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://stackoverflow.com/questions/1531514/observers-vs-callbacks" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy">
+        <i>https://stackoverflow.com/questions/1531514/observers-vs-callbacks</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+     2009.
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='ChromiumCheckedObserver'>
+        
+        <i>base/observer_list_types.h - chromium/src - Git at Google.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list_types.h" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list_types.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='ChromiumObserverList'>
+        
+        <i>base/observer_list.h - chromium/src - Git at Google.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list.h" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='SOverflowCppContainerInvalidation'>
+        
+        <i>Iterator invalidation rules for C&#43;&#43; containers.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://stackoverflow.com/questions/6438086/iterator-invalidation-rules-for-c-containers" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy">
+        <i>https://stackoverflow.com/questions/6438086/iterator-invalidation-rules-for-c-containers</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='ChromiumObserverListThreadSafe'>
+        
+        <i>base/observer_list_threadsafe.h - chromium/src - Git at Google.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://chromium.googlesource.com/chromium/src/&#43;/refs/heads/main/base/observer_list_threadsafe.h" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/refs/heads/main/base/observer_list_threadsafe.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='ChromiumScopedObservation'>
+        
+        <i>base/scoped_observation.h - chromium/src - Git at Google.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_observation.h" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_observation.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='ChromiumScopedMultiSourceObservation'>
+        
+        <i>base/scoped_multi_source_observation.h - chromium/src - Git at Google.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_multi_source_observation.h" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_multi_source_observation.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='WikiObserverPattern'>
+        
+        <i>Observer pattern.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Observer_pattern" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <i>https://en.wikipedia.org/wiki/Observer_pattern</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 29, 2021.
+</div>
+
+</li>
+</ol>
 
         </article>
 
         
 
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Authors: 
+    
+        <a href='/authors/allison-chuck'>Allison, Chuck</a> 
+    
+        <a href='/authors/eckel-bruce'>Eckel, Bruce</a> 
+    
+        <a href='/authors/gamma-erich'>Gamma, Erich</a> 
+    
+        <a href='/authors/helm-richard'>Helm, Richard</a> 
+    
+        <a href='/authors/johnson-ralph'>Johnson, Ralph</a> 
+    
+        <a href='/authors/vlissides-john'>Vlissides, John</a> 
+    
+</aside>
 
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Domains: 
+    
+        <a href='/domains/chromium.googlesource.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
+            chromium.googlesource.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/stackoverflow.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy">
+            stackoverflow.com
+        </a>
+    
+        <a href='/domains/www.cs.cmu.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.cs.cmu.edu" loading="lazy">
+            www.cs.cmu.edu
+        </a>
+    
+</aside>
 
 
     </div>
