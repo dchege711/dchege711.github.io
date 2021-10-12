@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+            
+                Chrome vs. Everybody | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/www/">The World Wide Web</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/www/2020-05-19-chrome-vs-everybody/">Chrome vs. Everybody</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Chrome vs. Everybody</h1>
+    <p class="meta">
+        
+        Dated May 19, 2020; 
+        
+        last modified on Tue, 12 Oct 2021
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#stability-testing-and-the-multi-process-architecture-span-classcitation-refa-hrefchromestabilitytestingandmultiprocessaspan">Stability, Testing and the Multi-Process Architecture <span class="citation-ref"><a href="#chromeStabilityTestingAndMultiProcess"></a></span></a></li>
+    <li><a href="#speed-webkit-and-v8-span-classcitation-refa-hrefchromewebkitandv8aspan">Speed: WebKit and V8 <span class="citation-ref"><a href="#chromeWebKitAndV8"></a></span></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <figure>
+    <img src="/img/computer-science/www/stat-counter-browser-share-2009-2020.png"
+         alt="Browser Market Share Worldwide (2009 - 2020). Source: statcounter | GlobalStats"/> <figcaption>
+            <p>Browser Market Share Worldwide (2009 - 2020). Source: <a href="#browserShare20092020">statcounter | GlobalStats</a></p>
+        </figcaption>
+</figure>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>At the very least, Chrome is worth studying. <em>Something</em> worked out. I&rsquo;m biased, I only plan to deeply explore Chromium-based browsers and Firefox.</p>
+</div>
+</div>
+
+
+<h2 id="stability-testing-and-the-multi-process-architecture-span-classcitation-refa-hrefchromestabilitytestingandmultiprocessaspan">Stability, Testing and the Multi-Process Architecture <span class="citation-ref"><a href="#chromeStabilityTestingAndMultiProcess"></a></span></h2>
+<p>In a single-threaded browser, devs use asynchronous APIs - which may sometimes hold the browser up. Instead of multiple threads, Chromium chose multiple processes: isolation, independent crashes, better asymptotic memory management, identifying expensive sites, etc.</p>
+<p>Google indexes a lot of web pages. The chrome bots test out millions of the most popular pages, reporting breaks before the builds reach users.</p>
+<p>Firefox has been moving towards a more multi-process architecture. The main push seems to be security improvements by limiting the blast area. <span class="citation-ref"><a href="#firefoxProcessIsolation"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Firefox Containers have gotten more PR, e.g. <em>the Facebook Container as a line of defence against Big Bad Zuck!</em> Data supported by <code>originAttributes</code> is fair game for containerization, e.g. cookies, localStorage, indexedDB, HTTP data cache, image cache (and in the future, history, bookmarks, and security exceptions). Passwords, search &amp; form data, HSTS flags and OCSP responses will still be accessible cross-container. Admittedly, containers are more public facing and user-oriented, but they seem to offer no protection against process-wide attacks. Furthermore, containers <em>can</em> be added to Chromium, but will they?</p>
+</div>
+</div>
+
+
+<p>In 2019, Chrome implemented Site Isolation, an architecture that locks each renderer process to documents from a single site and filters certain cross-site data from each [renderer] process. Previously, <code>evil.com</code> could load an iframe for <code>bank.com</code> and exploit vulnerabilities in the renderer process to steal sensitive information. <span class="citation-ref"><a href="#reisSiteIsolationInBrowser"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Interesting that in the &ldquo;one-site-per-process&rdquo; policy, <code>site</code> refers to the public suffix, ignoring subdomains. For instance, <code>https://google.com</code> and <code>https://mail.google.com</code> will probably land in the same process. <span class="citation-ref"><a href="#reisSiteIsolationInBrowser"></a></span></p>
+</div>
+</div>
+
+
+<h2 id="speed-webkit-and-v8-span-classcitation-refa-hrefchromewebkitandv8aspan">Speed: WebKit and V8 <span class="citation-ref"><a href="#chromeWebKitAndV8"></a></span></h2>
+<p>The WebKit Project is an OSS project by Apple composed of a rendering engine for HTML and CSS, a JS engine, and a high-level API for embedding the engine into browsers). Google forked it to create Blink, citing different multi-process architecture. <span class="citation-ref"><a href="#brightGoogleForksWebkit"></a></span> <span class="citation-ref"><a href="#blinkForkFAQ"></a></span> Browsers on iOS are still required to use WebKit as their rendering engine. <span class="citation-ref"><a href="#wikiBrowserEngines"></a></span></p>
+<p>V8 is the OSS JavaScript virtual machine by Google. It beats other JS engines by using hidden classes for [classless] objects that end up with the same properties, generating machine code instead of being interpreted, and exercising incremental garbage collection.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<div class="citation">
+    <cite id='browserShare20092020'>
+        
+        <i>Browser Market Share Worldwide (2009 - 2020).</i>
+    </cite>
+    
+     statcounter | GlobalStats.
+    
+    
+    
+    
+    <a href="https://gs.statcounter.com/browser-market-share#yearly-2009-2020" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=gs.statcounter.com" loading="lazy">
+        <i>https://gs.statcounter.com/browser-market-share#yearly-2009-2020</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='chromeStabilityTestingAndMultiProcess'>
+        
+        <i>Google Chrome: I. Stability, Testing and the Multi-Process Architecture.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.google.com/googlebooks/chrome/small_02.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.google.com" loading="lazy">
+        <i>https://www.google.com/googlebooks/chrome/small_02.html</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='firefoxProcessIsolation'>
+        
+        <i>Process Isolation in Firefox.</i>
+    </cite>
+    
+     Randell Jesup.
+    
+    
+    
+    
+    <a href="https://mozilla.github.io/firefox-browser-architecture/text/0012-process-isolation-in-firefox.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=mozilla.github.io" loading="lazy">
+        <i>https://mozilla.github.io/firefox-browser-architecture/text/0012-process-isolation-in-firefox.html</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='reisSiteIsolationInBrowser'>
+        
+        <i>Site Isolation: Process Separation for Web Sites within the Browser.</i>
+    </cite>
+     Charles Reis; Alexander Moshchuk; Nasko Oskov.
+    
+    
+    
+    
+    
+    <a href="https://www.usenix.org/conference/usenixsecurity19/presentation/reis" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.usenix.org" loading="lazy">
+        <i>https://www.usenix.org/conference/usenixsecurity19/presentation/reis</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    <a href="#ZgotmplZ" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading="lazy">
+        <i>hhttps://www.chromium.org/developers/design-documents/site-isolation</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+     2019.
+     ISBN: 978-1-939133-06-9.
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='firefoxContextualIdentityContainers'>
+        
+        <i>Security/Contextual Identity Project/Containers.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.mozilla.org/Security/Contextual_Identity_Project/Containers" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.mozilla.org" loading="lazy">
+        <i>https://wiki.mozilla.org/Security/Contextual_Identity_Project/Containers</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='chromeWebKitAndV8'>
+        
+        <i>Google Chrome: Speed: WebKit and V8.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.google.com/googlebooks/chrome/small_12.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.google.com" loading="lazy">
+        <i>https://www.google.com/googlebooks/chrome/small_12.html</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='wikiBrowserEngines'>
+        
+        <i>Comparison of Browser Engines.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Comparison_of_browser_engines" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <i>https://en.wikipedia.org/wiki/Comparison_of_browser_engines</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='brightGoogleForksWebkit'>
+        
+        <i>Google going its own way, forking WebKit rendering engine.</i>
+    </cite>
+    
+     Peter Bright.
+    
+    
+    
+    
+    <a href="https://arstechnica.com/information-technology/2013/04/google-going-its-own-way-forking-webkit-rendering-engine/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=arstechnica.com" loading="lazy">
+        <i>https://arstechnica.com/information-technology/2013/04/google-going-its-own-way-forking-webkit-rendering-engine/</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+     Apr 13, 2013.
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+<div class="citation">
+    <cite id='blinkForkFAQ'>
+        
+        <i>The Chromium Projects: Blink - Developer FAQ.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="http://www.chromium.org/blink/developer-faq" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading="lazy">
+        <i>http://www.chromium.org/blink/developer-faq</i> <i class="fas fa-fw fa-external-link-alt"></i>
+    </a>.
+    
+    
+    
+    
+     2013.
+    
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Authors:
+    
+        <a href='/authors/bright-peter'>Bright, Peter</a>
+    
+        <a href='/authors/globalstats-statcounter-%7c'>GlobalStats, statcounter |</a>
+    
+        <a href='/authors/jesup-randell'>Jesup, Randell</a>
+    
+        <a href='/authors/moshchuk-alexander'>Moshchuk, Alexander</a>
+    
+        <a href='/authors/oskov-nasko'>Oskov, Nasko</a>
+    
+        <a href='/authors/reis-charles'>Reis, Charles</a>
+    
+</aside>
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Domains:
+    
+        <a href='/domains/arstechnica.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=arstechnica.com" loading="lazy">
+            arstechnica.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/gs.statcounter.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=gs.statcounter.com" loading="lazy">
+            gs.statcounter.com
+        </a>
+    
+        <a href='/domains/mozilla.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=mozilla.github.io" loading="lazy">
+            mozilla.github.io
+        </a>
+    
+        <a href='/domains/wiki.mozilla.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=wiki.mozilla.org" loading="lazy">
+            wiki.mozilla.org
+        </a>
+    
+        <a href='/domains/www.chromium.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading="lazy">
+            www.chromium.org
+        </a>
+    
+        <a href='/domains/www.google.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.google.com" loading="lazy">
+            www.google.com
+        </a>
+    
+        <a href='/domains/www.usenix.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.usenix.org" loading="lazy">
+            www.usenix.org
+        </a>
+    
+</aside>
+
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/www/2021-10-12-reviews-of-www-proceedings/">&laquo; Reviews of WWW Proceedings</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/www/1996-11-05-a-zooming-browser/">A Zooming Web Browser &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
