@@ -125,7 +125,7 @@
         target="_blank" rel="noopener"
     >
     Link to original challenge
-     <i class="fas fa-fw fa-external-link-alt"></i>
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
 </a>
 </p>
 <p>On the way to your gravity assist around the Moon, your ship computer beeps angrily about a &ldquo;1202 program alarm&rdquo;. On the radio, an Elf is already explaining how to handle the situation: &ldquo;Don&rsquo;t worry, that&rsquo;s perfectly norma&ndash;&rdquo; The ship computer bursts into flames.</p>
@@ -136,60 +136,23 @@
 <p>Opcode <code>2</code> works exactly like opcode <code>1</code>, except it multiplies the two inputs instead of adding them. Again, the three integers after the opcode indicate where the inputs and outputs are, not their values.</p>
 <p>Once you&rsquo;re done processing an opcode, move to the next one by stepping forward 4 positions.</p>
 <p>For example, suppose you have the following program:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">1,9,10,3,2,3,11,0,99,30,40,50
-</code></pre></td></tr></table>
-</div>
-</div><p>For the purposes of illustration, here is the same program split into multiple lines:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">1,9,10,3,
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">1,9,10,3,2,3,11,0,99,30,40,50
+</code></pre></div><p>For the purposes of illustration, here is the same program split into multiple lines:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">1,9,10,3,
 2,3,11,0,
 99,
 30,40,50
-</code></pre></td></tr></table>
-</div>
-</div><p>The first four integers, <code>1,9,10,3</code>, are at positions <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code>. Together, they represent the first opcode (<code>1</code>, addition), the positions of the two inputs (<code>9</code> and <code>10</code>), and the position of the output (<code>3</code>). To handle this opcode, you first need to get the values at the input positions: position <code>9</code> contains <code>30</code>, and position <code>10</code> contains <code>40</code>. Add these numbers together to get <code>70</code>. Then, store this value at the output position; here, the output position (<code>3</code>) is at position <code>3</code>, so it overwrites itself. Afterward, the program looks like this:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">1,9,10,70,
+</code></pre></div><p>The first four integers, <code>1,9,10,3</code>, are at positions <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code>. Together, they represent the first opcode (<code>1</code>, addition), the positions of the two inputs (<code>9</code> and <code>10</code>), and the position of the output (<code>3</code>). To handle this opcode, you first need to get the values at the input positions: position <code>9</code> contains <code>30</code>, and position <code>10</code> contains <code>40</code>. Add these numbers together to get <code>70</code>. Then, store this value at the output position; here, the output position (<code>3</code>) is at position <code>3</code>, so it overwrites itself. Afterward, the program looks like this:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">1,9,10,70,
 2,3,11,0,
 99,
 30,40,50
-</code></pre></td></tr></table>
-</div>
-</div><p>Step forward 4 positions to reach the next opcode, <code>2</code>. This opcode works just like the previous, but it multiplies instead of adding. The inputs are at positions <code>3</code> and <code>11</code>; these positions contain <code>70</code> and <code>50</code> respectively. Multiplying these produces <code>3500</code>; this is stored at position <code>0</code>:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">3500,9,10,70,
+</code></pre></div><p>Step forward 4 positions to reach the next opcode, <code>2</code>. This opcode works just like the previous, but it multiplies instead of adding. The inputs are at positions <code>3</code> and <code>11</code>; these positions contain <code>70</code> and <code>50</code> respectively. Multiplying these produces <code>3500</code>; this is stored at position <code>0</code>:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-markdown" data-lang="markdown">3500,9,10,70,
 2,3,11,0,
 99,
 30,40,50
-</code></pre></td></tr></table>
-</div>
-</div><p>Stepping forward 4 more positions arrives at opcode <code>99</code>, halting the program.</p>
+</code></pre></div><p>Stepping forward 4 more positions arrives at opcode <code>99</code>, halting the program.</p>
 <p>Here are the initial and final states of a few more small programs:</p>
 <p><code>1,0,0,0,99</code> becomes <code>2,0,0,0,99</code> <code>(1 + 1 = 2)</code>.</p>
 <p><code>2,3,0,3,99</code> becomes <code>2,3,0,6,99</code> <code>(3 * 2 = 6)</code>.</p>
@@ -197,15 +160,8 @@
 <p><code>1,1,1,4,99,5,6,0,99</code> becomes <code>30,1,1,4,2,5,6,0,99</code>.</p>
 <p>Once you have a working computer, the first step is to restore the gravity assist program (your puzzle input) to the &ldquo;1202 program alarm&rdquo; state it had just before the last computer caught fire. To do this, before running the program, replace position <code>1</code> with the value <code>12</code> and replace position <code>2</code> with the value <code>2</code>. What value is left at position <code>0</code> after the program halts?</p>
 
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-rust" data-lang="rust">
-</code></pre></td></tr></table>
-</div>
-</div>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-rust" data-lang="rust">
+</code></pre></div>
 
         </article>
 

@@ -101,7 +101,7 @@
         
         Dated Jan 22, 2019; 
         
-        last modified on Sun, 14 Mar 2021
+        last modified on Wed, 27 Oct 2021
         
     </p>
     </header>
@@ -112,12 +112,48 @@
   <ul>
     <li><a href="#examples">Examples</a></li>
     <li><a href="#private-set-intersection">Private Set Intersection</a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
 
         <article id="main-article">
-            <h2 id="examples">Examples</h2>
+            
+
+
+<div class="comment-holder">
+    <div class="comment"><h3 id="timeline-of-secure-multi-party-communication-span-classcitation-refa-hrefwikimpcaspan">Timeline of Secure Multi-Party Communication <span class="citation-ref"><a href="#WikiMPC"></a></span></h3>
+<p>In 1982, secure two-party computation (2PC) was introduced for problems that are
+boolean predicates, e.g. 
+<a href="https://en.wikipedia.org/wiki/Yao%27s_Millionaires%27_problem"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Yao&rsquo;s Millionaires'
+Problem
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ that
+asks whether \(a \ge b\) is true without revealing the actual values of
+\(a\) and \(b\).</p>
+<p>Andrew Yao generalized 2PC for any feasible computation in 1986. Goldreich,
+Micali and Wigderson later generalized it to secure multiparty communication.</p>
+<p>Yao-based protocols requires that the function to be securely evaluated be
+represented as a circuit, but an efficient transformation is not trivial. The
+Fairplay system transforms a program in a high-level language into a boolean
+circuit representation, garbles that circuit and then executes a protocol to
+evaluate the garbled circuit. AES&rsquo;s circuit has \(\approx 50K\) gates, while
+the 4095-bit edit distance function has \(\approx 6B\) gates.</p>
+<p>Additionally, Pinker et al. showed that the bottleneck of the protocols lie in
+the consistency checks. Recent research has been on highly parallel
+implementations to speed things up.</p>
+</div>
+</div>
+
+
+<h2 id="examples">Examples</h2>
 <ul>
 <li>
 <p>Multiple hospitals come together to run genetic study using combined patient records but <em>without</em> revealing records to each other.</p>
@@ -126,6 +162,25 @@
 <p>Web browser and ad server execute protocol by which browser downloads ads relevant to user but <em>does not</em> leak user&rsquo;s browsing history to server.</p>
 </li>
 </ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>
+<a href="https://www.curiosities.dev/computer-science/www/2021-01-05-privacy-on-the-web/"
+    
+    
+    
+    >
+    Google&rsquo;s FLoC
+    
+</a>
+ was designed to achieve something similar, but I don&rsquo;t think it has strong
+privacy guarantees.</p>
+</div>
+</div>
+
+
 <h2 id="private-set-intersection">Private Set Intersection</h2>
 <p>A typical scenario:</p>
 <ul>
@@ -135,6 +190,22 @@
 <li>Neither wants the other to learn IPs <em>it doesn&rsquo;t already know</em></li>
 </ul>
 <p>Hashing doesn&rsquo;t work because IP addresses, especially IPv4, can be enumerated by brute force and/or other guessing strategies in reasonable time.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>IPv4 is a 32-bit address space, so \(2^{32} = 4,294,967,296 \) unique
+addresses. How fast can one compute a SHA-256 hash? I can&rsquo;t find a definite
+answer in terms of hashes/sec.</p>
+<p><span class="citation-ref"><a href="#CryptoppBenchmarks"></a></span> appears top search results, and their results
+for SHA-256 are \(111 MiB/s\) and 15.8 cycles per byte.</p>
+<p>IPv4 has 4 bytes, so \(15.8 \cdot 4 = 63.2 \) cycles per IPv4. \(1 MiB = 2^{20}B \therefore 1MiB = 2^{18} IPv4 \), and therefore we have \(111 \cdot 2^{18}\) IPv4s per second? That seems pretty fast. We&rsquo;d get through the entire
+IPv4 space in \(\frac{2^32}{111 \cdot 2^18} = 147.60s\). Is this math right?
+Seems too fast; I expected &ldquo;reasonable time&rdquo; in the order of 30min, not 2min&hellip;</p>
+</div>
+</div>
+
+
 <p>Here&rsquo;s a scheme that works:</p>
 <ul>
 <li>
@@ -160,6 +231,73 @@
 <li>To compute the intersection:</li>
 </ul>
 <p>$$ a_i == b_j \iff a_i^{xy} \pmod p == b_j^{yx} \pmod p $$</p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
+    <cite id='WikiMPC'>
+        
+        <i>Secure Multi-Party Computation.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Secure_multi-party_computation" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <i>https://en.wikipedia.org/wiki/Secure_multi-party_computation</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Oct 27, 2021.
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
+    <cite id='CryptoppBenchmarks'>
+        
+        <i>Speed Comparison of Popular Crypto Algorithms.</i>
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://cryptopp.com/benchmarks.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=cryptopp.com" loading="lazy">
+        <i>https://cryptopp.com/benchmarks.html</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Oct 27, 2021.
+</div>
+
+</li>
+</ol>
 
         </article>
 
@@ -167,6 +305,21 @@
 
 
 
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Domains:
+    
+        <a href='/domains/cryptopp.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=cryptopp.com" loading="lazy">
+            cryptopp.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+            en.wikipedia.org
+        </a>
+    
+</aside>
 
 
     </div>

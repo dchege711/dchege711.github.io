@@ -35,8 +35,15 @@ function organizeCitations() {
             citationElement.parentElement.parentElement.tagName.toLowerCase() === "li") {
             citationElement.parentElement.style.fontSize = "inherit";
         }
+
+        const citationIconClass = citationElement.parentElement.getAttribute(
+            "citation-icon-class");
+
         citationIDToDetails[citationElement.id] = {
-            hoverText: citationElement.parentElement.innerText
+            hoverText: citationElement.parentElement.innerText,
+            iconHTML: (citationIconClass
+                ? `<i class="${citationIconClass}" style="margin-left:3px; margin-right:3px;" aria-hidden="true"></i>`
+                : "")
         };
     }
 
@@ -46,7 +53,7 @@ function organizeCitations() {
         let anchor = incompleteAnchors[i];
         let citationID = anchor.href.split("#")[1];
         if (citationIDToDetails[citationID]) {
-            anchor.innerText = `${citationID}`;
+            anchor.innerHTML = `${citationID}${citationIDToDetails[citationID].iconHTML}`;
             anchor.title = citationIDToDetails[citationID].hoverText;
             anchor.parentElement.classList.add("citation-ref-processed");
         }

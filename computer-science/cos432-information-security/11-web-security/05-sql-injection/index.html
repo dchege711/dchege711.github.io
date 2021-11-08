@@ -113,34 +113,15 @@
 <p>Outcomes may include data deletion, bypassing access control, etc.</p>
 <h2 id="sample-buggy-login">Sample Buggy Login</h2>
 <p>Server side code:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-python" data-lang="python"><span style="color:#111">results</span> <span style="color:#f92672">=</span> <span style="color:#111">db</span><span style="color:#f92672">.</span><span style="color:#111">execute</span><span style="color:#111">(</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-python" data-lang="python"><span style="color:#111">results</span> <span style="color:#f92672">=</span> <span style="color:#111">db</span><span style="color:#f92672">.</span><span style="color:#111">execute</span><span style="color:#111">(</span>
   <span style="color:#d88200">&#34;SELECT * FROM Users WHERE user=&#39;&#34;</span> <span style="color:#f92672">+</span> <span style="color:#111">form</span><span style="color:#111">[</span><span style="color:#d88200">&#34;user&#34;</span><span style="color:#111">]</span> <span style="color:#f92672">+</span> <span style="color:#d88200">&#34;&#39; &#34;</span> <span style="color:#f92672">+</span>
   <span style="color:#d88200">&#34;AND pwd=&#39;&#34;</span> <span style="color:#f92672">+</span> <span style="color:#111">form</span><span style="color:#111">[</span><span style="color:#d88200">&#34;pwd&#34;</span><span style="color:#111">]</span> <span style="color:#f92672">+</span> <span style="color:#d88200">&#34;&#39;&#34;</span><span style="color:#111">)</span>
 
 <span style="color:#00a8c8">if</span> <span style="color:#111">results</span><span style="color:#111">:</span> <span style="color:#111">login</span><span style="color:#111">(</span><span style="color:#111">results</span><span style="color:#111">)</span>
 <span style="color:#00a8c8">else</span><span style="color:#111">:</span> <span style="color:#111">login_failed</span><span style="color:#111">(</span><span style="color:#111">form</span><span style="color:#111">)</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>An attacker can supply <code>' or 1=1 --</code> as the value for <code>user</code>. This will make the effective code be:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-python" data-lang="python"><span style="color:#111">results</span> <span style="color:#f92672">=</span> <span style="color:#111">db</span><span style="color:#f92672">.</span><span style="color:#111">execute</span><span style="color:#111">(</span><span style="color:#d88200">&#34;SELECT * FROM Users WHERE user=&#39;&#39; OR 1=1 -- &#39; AND pwd=&#39;&#39;)</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>--</code> is a comment, which makes the rest of the command be ignored. The expression always returns true and thus the adversary bypasses the authorization check.</p>
+</code></pre></div><p>An attacker can supply <code>' or 1=1 --</code> as the value for <code>user</code>. This will make the effective code be:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-python" data-lang="python"><span style="color:#111">results</span> <span style="color:#f92672">=</span> <span style="color:#111">db</span><span style="color:#f92672">.</span><span style="color:#111">execute</span><span style="color:#111">(</span><span style="color:#d88200">&#34;SELECT * FROM Users WHERE user=&#39;&#39; OR 1=1 -- &#39; AND pwd=&#39;&#39;)</span>
+</code></pre></div><p><code>--</code> is a comment, which makes the rest of the command be ignored. The expression always returns true and thus the adversary bypasses the authorization check.</p>
 
         </article>
 

