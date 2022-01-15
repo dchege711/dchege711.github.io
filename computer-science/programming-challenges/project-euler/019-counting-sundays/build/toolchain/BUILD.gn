@@ -1,0 +1,32 @@
+toolchain("gcc") {
+
+    tool("cxx") {
+        depfile = "{{output}}.d"
+        command = "g++ -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
+        depsformat = "gcc"
+        description = "CXX {{output}} cflags={{cflags}}"
+        outputs =
+            [ "{{source_out_dir}}/{{target_output_name}}.{{source_name_part}}.o" ]
+    }
+
+    # Without this tool, the error message is:
+    #
+    #   ERROR at //BUILD.gn:1:1: This target uses an undefined tool.
+    #   executable("counting_sundays") {
+    #   ^-------------------------------
+    #   The target //:counting_sundays
+    #   of type "executable"
+    #   uses toolchain //build/toolchain:gcc
+    #   which doesn't have the tool "link" defined.
+    tool("link") {
+        outfile = "{{target_output_name}}{{output_extension}}"
+        rspfile = "$outfile.rsp"
+        if (is_mac) {
+            command = "g++ {{ldflags}} -o $outfile @$rspfile {{solibs}} {{libs}}"
+        }
+        description = "LINK $outfile"
+        default_output_dir = "{{root_out_dir}}"
+        rspfile_content = "{{inputs}}"
+        outputs = [ outfile ]
+    }
+}

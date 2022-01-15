@@ -1,4 +1,5 @@
 window.addEventListener("load", organizeCitations);
+window.addEventListener("load", inlineDefinitions);
 
 function organizeCitations() {
     // Get the ordered list element if any.
@@ -43,7 +44,8 @@ function organizeCitations() {
             hoverText: citationElement.parentElement.innerText,
             iconHTML: (citationIconClass
                 ? `<i class="${citationIconClass}" style="margin-left:3px; margin-right:3px;" aria-hidden="true"></i>`
-                : "")
+                : ""),
+            citationRefIds: [],
         };
     }
 
@@ -56,6 +58,44 @@ function organizeCitations() {
             anchor.innerHTML = `${citationID}${citationIDToDetails[citationID].iconHTML}`;
             anchor.title = citationIDToDetails[citationID].hoverText;
             anchor.parentElement.classList.add("citation-ref-processed");
+            const citationRefId = `citation-ref-${i}`;
+            anchor.parentElement.id = citationRefId;
+            citationIDToDetails[citationID].citationRefIds.push(citationRefId);
+        }
+    }
+
+    // Add references to go back to the content from a citation.
+    for (let i = 0; i < citationElements.length; i++) {
+        const citationElement = citationElements[i];
+        for (let citationRefId of citationIDToDetails[citationElement.id].citationRefIds) {
+            let citationRefElem = document.createElement("a");
+            citationRefElem.href = `#${citationRefId}`;
+            citationRefElem.innerText = "^";
+            citationRefElem.title = `Jump up to ${citationRefId}`;
+            citationRefElem.classList.add("citation-ref-backlink");
+            citationElement.parentElement.insertAdjacentElement("beforeend", citationRefElem);
+        }
+    }
+}
+
+function inlineDefinitions() {
+    // Build a lookup table for the definitions.
+    const descListElements = document.getElementsByTagName("dl");
+    if (!descListElements || descListElements.length === 0) return;
+
+    const termIDToDefinitionText = {};
+    for (let i = 0; i < descListElements.length; i++) {
+        const elem = descListElements[i];
+        let termID = elem.getElementsByTagName("dt")[0].id;
+        let definitionText = elem.innerText;
+        termIDToDefinitionText[termID] = definitionText;
+    }
+
+    // Populate the title attribute of all anchors that reference definitions.
+    for (const [termID, definitionText] of Object.entries(termIDToDefinitionText)) {
+        const matchingAnchorElements = document.querySelectorAll(`a[href="#${termID}"]`);
+        for (let i = 0; i < matchingAnchorElements.length; i++) {
+            matchingAnchorElements[i].title = definitionText;
         }
     }
 }
