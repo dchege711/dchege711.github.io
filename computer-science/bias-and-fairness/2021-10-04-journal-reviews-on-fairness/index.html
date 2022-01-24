@@ -87,7 +87,7 @@
         
         Dated Oct 4, 2021; 
         
-        last modified on Fri, 07 Jan 2022
+        last modified on Sun, 23 Jan 2022
         
     </p>
     </header>
@@ -96,152 +96,402 @@
         <aside id="toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#www-21-the-web-conference-2021">WWW &lsquo;21: The Web Conference 2021</a>
-      <ul>
-        <li><a href="#user-oriented-fairness-in-recommendation-span-classcitation-refa-hrefyunqi2021aspan">User-oriented Fairness in Recommendation <span class="citation-ref"><a href="#Yunqi2021"></a></span></a></li>
-        <li><a href="#mitigating-gender-bias-in-captioning-systems-span-classcitation-refa-hreftang2021aspan">Mitigating Gender Bias in Captioning Systems <span class="citation-ref"><a href="#Tang2021"></a></span></a></li>
-        <li><a href="#redrawing-district-boundary-to-minimize-spatial-inequality-in-school-funding-span-classcitation-refa-hrefmota2021aspan">Redrawing District Boundary to Minimize Spatial Inequality in School Funding <span class="citation-ref"><a href="#Mota2021"></a></span></a></li>
-        <li><a href="#understanding-user-sensemaking-in-machine-learning-fairness-assessment-systems-span-classcitation-refa-hrefgu2021aspan">Understanding User Sensemaking in Machine Learning Fairness Assessment Systems <span class="citation-ref"><a href="#Gu2021"></a></span></a></li>
-        <li><a href="#discovering-essential-features-for-preserving-prediction-privacy-span-classcitation-refa-hrefmireshghallah21aspan">Discovering Essential Features for Preserving Prediction Privacy <span class="citation-ref"><a href="#Mireshghallah21"></a></span></a></li>
-      </ul>
-    </li>
+    <li><a href="#meta">Meta</a></li>
+    <li><a href="#sense-making">Sense-making</a></li>
+    <li><a href="#gender-bias">Gender Bias</a></li>
+    <li><a href="#recommendation-systems">Recommendation Systems</a></li>
+    <li><a href="#policy">Policy</a></li>
+    <li><a href="#glossary">Glossary</a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
 
         <article id="main-article">
-            <h2 id="www-21-the-web-conference-2021">WWW &lsquo;21: The Web Conference 2021</h2>
-<h3 id="user-oriented-fairness-in-recommendation-span-classcitation-refa-hrefyunqi2021aspan">User-oriented Fairness in Recommendation <span class="citation-ref"><a href="#Yunqi2021"></a></span></h3>
-<p>Showed that active users who only account for a small proportion enjoy much
-higher recommendation quality than the majority inactive users. They propose a
-re-ranking approach by adding constraints over the evaluation metrics.</p>
+            <h2 id="meta">Meta</h2>
+<p>Instead of changing the data or learners in multiple ways and then see if
+fairness improves, <span class="citation-ref"><a href="#Chakraborty2021"></a></span> postulate that the root causes
+of bias are the prior decisions that generated the training data. These affect
+(a) what data was selected, and (b) the labels assigned to the examples. They
+propose the \(\text{Fair-SMOTE}\) (Fair Synthetic Minority Over Sampling
+Technique) algorithm which (1) removes biased labels (via <strong>situation testing:</strong>
+if the model&rsquo;s prediction for a data point changes once all of the data points'
+
+<a href="#%28#ProtectedAttributes%29"
+    
+    
+    
+    >
+    protected attributes
+    
+</a>
+ are flipped, then that label is
+biased and the data point is discarded), and (2) rebalances internal
+distributions such that based on a protected attribute, examples are equal in
+both positive and negative classes. The method is just as effective in reducing
+bias as prior approaches, <em>and</em> its models achieve higher recall and F1
+performance. Furthermore, \(\text{Fair-SMOTE}\) can simultaneously reduce bias
+for more than one protected attribute.</p>
 
 
 
 <div class="comment-holder">
-    <div class="comment open-comment"><p>There&rsquo;s a subtlety here. Although the active users are the minority, the
+    <div class="comment"><p><span class="citation-ref"><a href="#Chakraborty2021"></a></span> also claim that they are one of the largest studies
+on bias mitigation yet presented. Data sets considered: 
+<a href="https://archive.ics.uci.edu/ml/datasets/adult"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    UCI
+Adult
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+
+<a href="https://github.com/propublica/compas-analysis"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Compas
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, 
+<a href="https://archive.ics.uci.edu/ml/datasets/statlog&#43;%28german&#43;credit&#43;data%29"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Statlog (German Credit
+Data)
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+
+<a href="https://archive.ics.uci.edu/ml/datasets/default&#43;of&#43;credit&#43;card&#43;clients"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Default of Credit Card
+Clients
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+
+<a href="https://archive.ics.uci.edu/ml/datasets/Heart&#43;Disease"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Heart Disease
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, 
+<a href="https://www.kaggle.com/c/bank-marketing-uci"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Bank
+Marketing UCI
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, 
+<a href="https://www.kaggle.com/c/home-credit-default-risk"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Home Credit
+Default Risk
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, 
+<a href="https://archive.ics.uci.edu/ml/datasets/Student&#43;Performance"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Student
+Performance
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, and
+
+<a href="https://meps.ahrq.gov/mepsweb/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Medical Expenditure Panel Survey
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.</p>
+</div>
+</div>
+
+
+<p>To overcome the &ldquo;It is impossible to achieve fairness and high performance
+simultaneously (except in trivial cases)&rdquo; truism, <span class="citation-ref"><a href="#Chakraborty2021"></a></span>
+propose that extrapolating all variables by the same amount allows bias
+mitigation while maintaining/improving performance.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Chakraborty2021"></a></span> is quite bold in their claims. Watch this space!</p>
+</div>
+</div>
+
+
+<h2 id="sense-making">Sense-making</h2>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Gu2021"></a></span> define sense-making as the process that humans employ to
+construct meaning from raw data.</p>
+</div>
+</div>
+
+
+<p><a id="SilvaDiscussion"></a><span class="citation-ref"><a href="#Yan2020"></a></span> introduce Silva, an interactive
+system that helps users reason about unfairness in ML applications. Silva
+integrates a causality viewer to help identify the influence of potential bias,
+multi-group comparisons to help users compare subsets of data, and a
+visualization of metrics to quantify potential bias.</p>
+<figure>
+    <img src="/img/computer-science/bias-and-fairness/yan-silva.jpg"
+         alt="Silva&amp;rsquo;s main interface. Credits: Yan2020"/> <figcaption>
+            <p>Silva&rsquo;s main interface. Credits: Yan2020</p>
+        </figcaption>
+</figure>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Time spent lurking HN makes me think that a theory for causality is yet to
+achieve consensus, e.g. 
+<a href="https://news.ycombinator.com/item?id=24487135"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    The Book of Why: The New Science of Cause and Effect
+[pdf] | Hacker News
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.</p>
+<p><span class="citation-ref"><a href="#Yan2020"></a></span> are in the &ldquo;causality expressed as directed acyclic graph
+(DAG)&rdquo; camp. They define causal fairness as there being no path from sensitive /
+protected attributes to outcome variables in the DAG.</p>
+</div>
+</div>
+
+
+<p>Through logs, think-aloud data and semi-structured interviews, <span class="citation-ref"><a href="#Gu2021"></a></span> explore how various interactive de-biasing tool affordances affect
+sense-making. Tools should test and account for the skill level of their users,
+e.g. users who didn&rsquo;t understand 
+<a href="#SilvaDiscussion"
+    
+    
+    
+    >
+    Silva&rsquo;s
+    
+</a>
+ causal graph
+reported it not being useful, while users who were presented with
+recommendations may be subject to bias if untrained. Although combining
+exploration and recommendation risks choice overload, a hybrid approach may be
+useful, e.g. reducing switching costs, connecting individual UI components, and
+strategically offering recommendation when bootstrapping is involved. Exposing
+more model parameters, e.g. in 
+<a href="https://pair-code.github.io/what-if-tool/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Google&rsquo;s
+What-If
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, distracted users from the
+de-biasing task.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Of Silva&rsquo;s usability and effectiveness, <span class="citation-ref"><a href="#Yan2020"></a></span> claimed that it was
+not dependent on practitioners' skills and therefore potentially more widely
+applicable. However, their tone changed in <span class="citation-ref"><a href="#Gu2021"></a></span> (similar
+authors).</p>
+</div>
+</div>
+
+
+<h2 id="gender-bias">Gender Bias</h2>
+<p><a id="Buolamwini2018Discussion"></a><span class="citation-ref"><a href="#Buolamwini2018"></a></span> found two
+prominent facial analysis benchmarks being overwhelmingly composed of
+lighter-skinned faces. They then evaluated 3 commercial gender classification
+systems on a new facial analysis dataset that is balanced by gender and skin
+type. Darker-skinned females are the most misclassified (error-rates up to
+34.7%), while the maximum error rate for lighter-skinned males was 0.8%.</p>
+<p><span class="citation-ref"><a href="#Tang2021"></a></span> Image captioning datasets, e.g. COCO, contain gender bias
+found in web corpora. They provide gender labels and split the COCO dataset to
+expose biased models. Models that rely on contextual cues (e.g. motorcycles tend
+to appear with men) fail more on the anti-stereotypical test data. They propose
+a model that provides self-guidance on visual attention to encourage the model
+to capture correct gender visual evidence.</p>
+<figure>
+    <img src="/img/computer-science/bias-and-fairness/tang-2021.jpg"
+         alt="Tang2021&amp;rsquo;s qualitative comparison of baseline and their proposed
+models"/> <figcaption>
+            <p>Tang2021&rsquo;s qualitative comparison of baseline and their proposed
+models</p>
+        </figcaption>
+</figure>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Tang2021"></a></span> propose a framework that teaches the model to look at the
+correct part of the picture. That said, 
+<a href="#Buolamwini2018Discussion"
+    
+    
+    
+    >
+    facial recognition software has its
+woes
+    
+</a>
+.</p>
+</div>
+</div>
+
+
+<h2 id="recommendation-systems">Recommendation Systems</h2>
+<p><span class="citation-ref"><a href="#Yunqi2021"></a></span> show that active users, who are the minority, enjoy much
+higher recommendation quality than the majority inactive users. They propose a
+re-ranking approach by adding a fairness constraint. They group users into two
+groups in accordance with their activity levels, and aim to have the same
+recommendation quality for each group. This approach reduces the unfairness
+between advantaged and disadvantaged groups, and also improves overall
+recommendation quality, at the cost of sacrificing the recommendation
+performance of the advantaged group.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>There&rsquo;s a subtlety here. Although the active users are the minority, the
 recommender considers them the majority as they are the ones providing a lot of
 the training data.</p>
 <p>Maybe recommendations based on collaborative filtering should also divide the
 user base into similar cohorts, and learning can take place within these
 cohorts? Hold up, doesn&rsquo;t that happen by definition? If I watch movie A and
-someone else watched movies A and B, then the recommender can recommend B to me.</p>
-<p>It&rsquo;d be helpful to actually read <span class="citation-ref"><a href="#Yunqi2021"></a></span> to see what sort of
-constraints were added.</p>
+someone else watched movies A and B, then the recommender can recommend B to me.
+<span class="citation-ref"><a href="#Yunqi2021"></a></span> argues that my perception is inaccurate. \(\Delta\)</p>
 </div>
 </div>
 
 
-<h3 id="mitigating-gender-bias-in-captioning-systems-span-classcitation-refa-hreftang2021aspan">Mitigating Gender Bias in Captioning Systems <span class="citation-ref"><a href="#Tang2021"></a></span></h3>
-<p>Captioning datasets, e.g. COCO, contain gender bias found in web corpora.
-Authors split the COCO dataset into two where the train and test sets have
-different gender-context joint distribution. Models that rely on contextual cues
-fail more on the anti-stereotypical test data. Authors propose a model that
-provides self-guidance on visual attention to encourage the model to capture
-correct gender visual evidence.</p>
+<h2 id="policy">Policy</h2>
+<p><span class="citation-ref"><a href="#Mota2021"></a></span> Primary source of school district revenue in the US is
+public money. Existing school district boundaries promote financial segregation,
+with highly-funded school districts surrounded by lesser-funded districts and
+vice-versa. Authors propose the \({\rm F{\small AIR}\ P{\small ARTITIONING}}\)
+problem to divide a given set of nodes (e.g. schools) into \(k\) partitions
+(e.g. districts) such that the spatial inequality in a partition-level property
+(e.g. funding) is minimized. They show that \({\rm F{\small AIR}\ P{\small
+ARTITIONING}}\) is strongly NP-complete, and provide a reasonably effective
+greedy algorithm. They further provide 
+<a href="https://redistricting.mpi-sws.org/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    an interactive
+website
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ for exploring the impact of school
+redistricting.</p>
 
 
 
 <div class="comment-holder">
-    <div class="comment open-comment"><p>I don&rsquo;t understand the specifics of this paper from the abstract. What is
-&ldquo;visual attention&rdquo; and &ldquo;correct gender visual evidence&rdquo;?</p>
-</div>
-</div>
-
-
-<h3 id="redrawing-district-boundary-to-minimize-spatial-inequality-in-school-funding-span-classcitation-refa-hrefmota2021aspan">Redrawing District Boundary to Minimize Spatial Inequality in School Funding <span class="citation-ref"><a href="#Mota2021"></a></span></h3>
-<p>Primary source of school district revenue is public money. Authors found that
-existing school district boundaries promote financial segregation, with
-highly-funded school districts surrounded by lesser-funded districts and
-vice-versa. Authors propose the Fair Partitioning problem to divide a set of
-schools into \(k\) districts such that the spatial inequality in the
-district-level funding is minimized. Authors show that the problem is strongly
--complete, and provide a reasonably effective greedy algorithm.</p>
-<h3 id="understanding-user-sensemaking-in-machine-learning-fairness-assessment-systems-span-classcitation-refa-hrefgu2021aspan">Understanding User Sensemaking in Machine Learning Fairness Assessment Systems <span class="citation-ref"><a href="#Gu2021"></a></span></h3>
-<p>Considers the tension between de-biasing recommendations which are quick but may
-lack nuance, and &lsquo;what-if&rsquo; style exploration which is time-consuming, but may
-lead to deeper understanding anf transferable insights. Highlights design
-requirements and tradeoffs in the design of ML fairness systems.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Neat that ML fairness assessment systems exist in the first place!</p>
-</div>
-</div>
-
-
-<h3 id="discovering-essential-features-for-preserving-prediction-privacy-span-classcitation-refa-hrefmireshghallah21aspan">Discovering Essential Features for Preserving Prediction Privacy <span class="citation-ref"><a href="#Mireshghallah21"></a></span></h3>
-<p>Aims to discern a subset of features necessary for a target prediction task.
-Formulates the problem as a gradient-based perturbation maximization method that
-discovers the subset with respect to the functionality of the prediction model
-used by the provider. The rest of the features are suppressed using
-utility-preserving constant values that are discovered through a separate
-gradient-based optimization process. The service provider&rsquo;s model can be treated
-like a black box. The framework&rsquo;s optimizations reduce the upper bound of the
-mutual information between the actual data, and the sifted representations that
-get sent out.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>What is &ldquo;perturbation&rdquo; in the context of ML?</p>
-<p>Perturbation Theory comprises methods for finding an approximate solution to a
-problem, by starting from the exact solution of a related, simpler problem, i.e.
-\(A = A_0 + \epsilon^1 A_1 + \epsilon^2 A_2 + &hellip;\), where \(A\) is the full
-solution, \(A_0\) is the known solution to the exactly solvable initial
-problem, and \(A_1, A_2, &hellip;\) represent the first-order, second-order and
-higher-order terms. <span class="citation-ref"><a href="#WikiPerturbation"></a></span></p>
-<p>In deep neural network training, perturbation is used to solve various issues,
-e.g. perturbing gradients to tackle the vanishing gradient problem; perturbing
-weights to escape the saddle point; perturbing inputs to defend against malicious
-attacks.
-<span class="citation-ref"><a href="#Prakash2020"></a></span></p>
-<p><span class="citation-ref"><a href="#WikiAdversarialML"></a></span> features cases of researchers perturbing inputs to
-fool ML systems, e.g. perturbing the appearance of a stop sign such that an
-autonomous vehicle classified it as a merge or speed limit sign.</p>
-</div>
-</div>
-
-
-
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p>
-<a href="https://www.curiosities.dev/computer-science/machine-learning/similarity-based-learning/curse-of-dimensionality-and-feature-selection/"
+    <div class="comment"><p>Surprised that the authors of <span class="citation-ref"><a href="#Mota2021"></a></span> are affiliated with non-US
+institutions, but address a US problem. Fairness in the US school system is a
+gnarly problem, e.g. 
+<a href="https://www.curiosities.dev/computer-science/bias-and-fairness/2021-07-04-rage-against-the-algo/#computers-can-solve-your-problem-you-may-not-like-the-answer-span-classcitation-refa-hrefbostonschoolsalgorithmaspan"
     
     
     
     >
-    The Curse of Dimensionality and Feature Selection
+    Boston Public Schools trying for equity with an
+algorithm
     
 </a>
- is a related concept. However, <span class="citation-ref"><a href="#Mireshghallah21"></a></span> seems to
-suggest that they can pick a relevant subset of the features without ever
-sending them to the server. How can that be?</p>
+.</p>
 </div>
 </div>
 
 
+<h2 id="glossary">Glossary</h2>
+<dl>
+    <dt id='GroupFairness' style="font-weight: bolder;">Group Fairness</dt>
+    <dd>
+        The goal that based on the protected attribute, privileged and
+	unprivileged groups will be treated similarly.
+         <span class="citation-ref"><a href="#"></a></span> 
+    </dd>
+</dl>
+<dl>
+    <dt id='ProtectedAttributes' style="font-weight: bolder;">Protected Attributes</dt>
+    <dd>
+        Features that may not be used as the basis for decisions, e.g. gender
+  (and reassignment), race, religion, nationality, age, marital status,
+  disability, socioeconomic status, pregnancy, sexual orientation. In an unfair
+	ML system, the protected attribute divides the population into two groups
+	(privileged and unprivileged) that have differences in terms of receiving
+	benefits
+         <span class="citation-ref"><a href="#EHRProtectedXtics"></a></span>  <span class="citation-ref"><a href="#OCWProtectedAttributes"></a></span>  <span class="citation-ref"><a href="#Chakraborty2021"></a></span> 
+    </dd>
+</dl>
 <h2 id="references">References</h2>
 <ol>
 <li>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap'>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='16'>
     <cite id='Yunqi2021'>
         
         User-Oriented Fairness in Recommendation<i>.</i>
         
     </cite>
-    
      Li, Yunqi; Chen, Hanxiong; Fu, Zuohui; Ge, Yingqiang; Zhang, Yongfeng.
+    
      The Web Conference, 2021.
     
-    
+     Rutgers University.
     
     <a href="https://doi.org/10.1145/3442381.3449866" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
@@ -249,13 +499,21 @@ sending them to the server. How can that be?</p>
     </a>.
     
     
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Ayunqi&#43;User-Oriented&#43;Fairness&#43;in&#43;Recommendation&#43;WWW&#43;2021&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
     
      Apr 19, 2021.
     
-     <a href="https://openlibrary.org/search?isbn=9781450383127">ISBN: 9781450383127</a>.
+    
     
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
+    
+    
+    Cited 16 times as of Jan 23, 2022.
     
 </div>
 
@@ -264,17 +522,17 @@ sending them to the server. How can that be?</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap'>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='4'>
     <cite id='Tang2021'>
         
         Mitigating Gender Bias in Captioning Systems<i>.</i>
         
     </cite>
-    
      Tang, Ruixiang; Du, Mengnan; Li, Yuening; Liu, Zirui; Zou, Na; Hu, Xia.
+    
      The Web Conference, 2021.
     
-    
+     Texas A&amp;M University.
     
     <a href="https://doi.org/10.1145/3442381.3449950" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
@@ -282,13 +540,21 @@ sending them to the server. How can that be?</p>
     </a>.
     
     
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Atang&#43;Mitigating&#43;Gender&#43;Bias&#43;in&#43;Captioning&#43;Systems&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
     
     
      2021.
-     <a href="https://openlibrary.org/search?isbn=9781450383127">ISBN: 9781450383127</a>.
+    
     
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
+    
+    
+    Cited 4 times as of Jan 23, 2022.
     
 </div>
 
@@ -297,17 +563,17 @@ sending them to the server. How can that be?</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap'>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='0'>
     <cite id='Mota2021'>
         
         Fair Partitioning of Public Resources: Redrawing District Boundary to Minimize Spatial Inequality in School Funding<i>.</i>
         
     </cite>
-    
      Mota, Nuno; Mohammadi, Negar; Dey, Palash; Gummadi, Krishna P.; Chakraborty, Abhijnan.
+    
      The Web Conference, 2021.
     
-    
+     Max Planck Institute for Software Systems; Tehran Institute for Advanced Studies; Indian Institute of Technology.
     
     <a href="https://doi.org/10.1145/3442381.3450041" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
@@ -315,13 +581,21 @@ sending them to the server. How can that be?</p>
     </a>.
     
     
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Amota&#43;Fair&#43;Partitioning&#43;of&#43;Public&#43;Resources%3A&#43;Redrawing&#43;District&#43;Boundary&#43;to&#43;Minimize&#43;Spatial&#43;Inequality&#43;in&#43;School&#43;Funding&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
     
     
      2021.
-     <a href="https://openlibrary.org/search?isbn=9781450383127">ISBN: 9781450383127</a>.
+    
     
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
+    
+    
+    Cited 0 times as of Jan 23, 2022.
     
 </div>
 
@@ -330,17 +604,17 @@ sending them to the server. How can that be?</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap'>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='0'>
     <cite id='Gu2021'>
         
-        Understanding User Sensemaking in Machine Learning Fairness Assessment Systems<i>.</i>
+        Understanding User Sense-making in Machine Learning Fairness Assessment Systems<i>.</i>
         
     </cite>
      Gu, Ziwei; Yan, Jing Nathan; Rzeszotarski, Jeffrey M..
     
      The Web Conference, 2021.
     
-    
+     Cornell University.
     
     <a href="https://doi.org/10.1145/3442381.3450092" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
@@ -348,13 +622,21 @@ sending them to the server. How can that be?</p>
     </a>.
     
     
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Agu&#43;Understanding&#43;User&#43;Sense-making&#43;in&#43;Machine&#43;Learning&#43;Fairness&#43;Assessment&#43;Systems&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
     
     
      2021.
-     <a href="https://openlibrary.org/search?isbn=9781450383127">ISBN: 9781450383127</a>.
+    
     
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
+    
+    
+    Cited 0 times as of Jan 23, 2022.
     
 </div>
 
@@ -363,32 +645,81 @@ sending them to the server. How can that be?</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap'>
-    <cite id='Mireshghallah21'>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='2282'>
+    <cite id='Buolamwini2018'>
         
-        Not All Features Are Equal: Discovering Essential Features for Preserving Prediction Privacy<i>.</i>
+        Gender shades: Intersectional accuracy disparities in commercial gender classification.<i></i>
         
     </cite>
+     Buolamwini, Joy; Timnit Gebru.
     
-     Mireshghallah, Fatemehsadat; Taram, Mohammadkazem; Jalali, Ali; Elthakeb, Ahmed Taha Taha; Tullsen, Dean; Esmaeilzadeh, Hadi.
-     The Web Conference, 2021.
+     Machine Learning Research: Fairness, Accountability and Transparency, Vol 1, pp. 77-91, 2018.
+    
+     Massachusetts Institute of Technology; Microsoft Research.
+    
+    <a href="https://proceedings.mlr.press/v81/buolamwini18a.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=proceedings.mlr.press" loading="lazy">
+        <i>proceedings.mlr.press</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3A&#43;Buolamwini&#43;Gender&#43;shades%3A&#43;Intersectional&#43;accuracy&#43;disparities&#43;in&#43;commercial&#43;gender&#43;classification.&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
     
     
     
-    <a href="https://doi.org/10.1145/3442381.3449965" target="_blank" rel="noopener">
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 2282 times as of Jan 23, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='11'>
+    <cite id='Yan2020'>
+        
+        Silva: Interactively Assessing Machine Learning Fairness Using Causality<i>.</i>
+        
+    </cite>
+     Jing Nathan Yan; Ziwei Gu; Hubert Lin; Jeffrey M. Rzeszotarski.
+    
+     Human Factors in Computing Systems, 2020.
+    
+     Cornell University.
+    
+    <a href="https://doi.org/10.1145/3313831.3376447" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
         <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Ayan&#43;Silva%3A&#43;Interactively&#43;Assessing&#43;Machine&#43;Learning&#43;Fairness&#43;Using&#43;Causality&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
     
     
-     2021.
-     <a href="https://openlibrary.org/search?isbn=9781450383127">ISBN: 9781450383127</a>.
+    
+    
+    
     
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
     
+    
+    Cited 11 times as of Jan 23, 2022.
+    
 </div>
 
 </li>
@@ -396,10 +727,56 @@ sending them to the server. How can that be?</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
-    <cite id='WikiPerturbation'>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='8'>
+    <cite id='Chakraborty2021'>
         
-        Perturbation Theory<i>.</i>
+        Bias in Machine Learning Software: Why? How? What to Do?<i></i>
+        
+    </cite>
+     Chakraborty, Joymallya; Suvodeep Majumder; Tim Menzies.
+    
+     European Software Engineering Conference and Symposium on the Foundations of Software Engineering, Proceedings of the 29th, August 2021, pp. 429–440.
+    
+     North Carolina State University.
+    
+    <a href="https://doi.org/10.1145/3468264.3468537" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Achakraborty&#43;Bias&#43;in&#43;machine&#43;learning&#43;software%3A&#43;why%3F&#43;how%3F&#43;what&#43;to&#43;do%3F&amp;btnG=#d=gs_cit&amp;u=%2Fscholar%3Fq%3Dinfo%3APeMEkQyQzV8J%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://github.com/joymallyac/Fair-SMOTE" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 8 times as of Jan 23, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='OCWProtectedAttributes'>
+        
+        Protected Attributes and &#39;Fairness through Unawareness&#39; | Module 3: Pedagogical Framework for Addressing Ethical Challenges | Exploring Fairness in Machine Learning for International Development | MIT OpenCourseWare<i>.</i>
         
     </cite>
     
@@ -408,9 +785,9 @@ sending them to the server. How can that be?</p>
     
     
     
-    <a href="https://en.wikipedia.org/wiki/Perturbation_theory" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    <a href="https://ocw.mit.edu/resources/res-ec-001-exploring-fairness-in-machine-learning-for-international-development-spring-2020/module-three-framework/protected-attributes/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=ocw.mit.edu" loading="lazy">
+        <i>ocw.mit.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -421,7 +798,8 @@ sending them to the server. How can that be?</p>
     
     <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
     
-     Accessed Oct 11, 2021.
+     Accessed Jan 23, 2022.
+    
 </div>
 
 </li>
@@ -429,43 +807,10 @@ sending them to the server. How can that be?</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
-    <cite id='Prakash2020'>
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='EHRProtectedXtics'>
         
-        Perturbation Theory in Deep Neural Network (DNN) Training<i>.</i>
-        
-    </cite>
-    
-     Prem Prakash.
-    
-    
-    
-    
-    <a href="https://towardsdatascience.com/perturbation-theory-in-deep-neural-network-dnn-training-adb4c20cab1b" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=towardsdatascience.com" loading="lazy">
-        <i>towardsdatascience.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-     Mar 20, 2020.
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Oct 11, 2021.
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe'>
-    <cite id='WikiAdversarialML'>
-        
-        Adversarial Machine Learning<i>.</i>
+        Protected characteristics | Equality and Human Rights Commission<i>.</i>
         
     </cite>
     
@@ -474,9 +819,9 @@ sending them to the server. How can that be?</p>
     
     
     
-    <a href="https://en.wikipedia.org/wiki/Adversarial_machine_learning" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    <a href="https://www.equalityhumanrights.com/en/equality-act/protected-characteristics" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.equalityhumanrights.com" loading="lazy">
+        <i>www.equalityhumanrights.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
     
@@ -487,7 +832,8 @@ sending them to the server. How can that be?</p>
     
     <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
     
-     Accessed Oct 11, 2021.
+     Accessed Jan 23, 2022.
+    
 </div>
 
 </li>
@@ -516,7 +862,11 @@ sending them to the server. How can that be?</p>
 <aside id="authors-holder" style="margin: 0 0 2% 0;">
     Cited Authors:
     
+        <a href='/authors/buolamwini-joy'>Buolamwini, Joy</a>
+    
         <a href='/authors/chakraborty-abhijnan'>Chakraborty, Abhijnan</a>
+    
+        <a href='/authors/chakraborty-joymallya'>Chakraborty, Joymallya</a>
     
         <a href='/authors/chen-hanxiong'>Chen, Hanxiong</a>
     
@@ -524,13 +874,11 @@ sending them to the server. How can that be?</p>
     
         <a href='/authors/du-mengnan'>Du, Mengnan</a>
     
-        <a href='/authors/elthakeb-ahmed-taha-taha'>Elthakeb, Ahmed Taha Taha</a>
-    
-        <a href='/authors/esmaeilzadeh-hadi'>Esmaeilzadeh, Hadi</a>
-    
         <a href='/authors/fu-zuohui'>Fu, Zuohui</a>
     
         <a href='/authors/ge-yingqiang'>Ge, Yingqiang</a>
+    
+        <a href='/authors/gebru-timnit'>Gebru, Timnit</a>
     
         <a href='/authors/gu-ziwei'>Gu, Ziwei</a>
     
@@ -538,29 +886,25 @@ sending them to the server. How can that be?</p>
     
         <a href='/authors/hu-xia'>Hu, Xia</a>
     
-        <a href='/authors/jalali-ali'>Jalali, Ali</a>
-    
         <a href='/authors/li-yuening'>Li, Yuening</a>
     
         <a href='/authors/li-yunqi'>Li, Yunqi</a>
     
+        <a href='/authors/lin-hubert'>Lin, Hubert</a>
+    
         <a href='/authors/liu-zirui'>Liu, Zirui</a>
     
-        <a href='/authors/mireshghallah-fatemehsadat'>Mireshghallah, Fatemehsadat</a>
+        <a href='/authors/majumder-suvodeep'>Majumder, Suvodeep</a>
+    
+        <a href='/authors/menzies-tim'>Menzies, Tim</a>
     
         <a href='/authors/mohammadi-negar'>Mohammadi, Negar</a>
     
         <a href='/authors/mota-nuno'>Mota, Nuno</a>
     
-        <a href='/authors/prakash-prem'>Prakash, Prem</a>
-    
         <a href='/authors/rzeszotarski-jeffrey-m.'>Rzeszotarski, Jeffrey M.</a>
     
         <a href='/authors/tang-ruixiang'>Tang, Ruixiang</a>
-    
-        <a href='/authors/taram-mohammadkazem'>Taram, Mohammadkazem</a>
-    
-        <a href='/authors/tullsen-dean'>Tullsen, Dean</a>
     
         <a href='/authors/yan-jing-nathan'>Yan, Jing Nathan</a>
     
@@ -575,7 +919,37 @@ sending them to the server. How can that be?</p>
 <aside id="publications-holder" style="margin: 0 0 2% 0;">
     Cited Publications:
     
+        <a href='/publications/european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
+    
+        <a href='/publications/human-factors-in-computing-systems'>Human Factors in Computing Systems</a>
+    
+        <a href='/publications/machine-learning-research:-fairness-accountability-and-transparency'>Machine Learning Research: Fairness, Accountability and Transparency</a>
+    
         <a href='/publications/the-web-conference'>The Web Conference</a>
+    
+</aside>
+
+
+<aside id="affiliations-holder" style="margin: 0 0 2% 0;">
+    Cited Authors' Affiliations:
+    
+        <a href='/affiliations/cornell-university'>Cornell University</a>
+    
+        <a href='/affiliations/indian-institute-of-technology'>Indian Institute of Technology</a>
+    
+        <a href='/affiliations/massachusetts-institute-of-technology'>Massachusetts Institute of Technology</a>
+    
+        <a href='/affiliations/max-planck-institute-for-software-systems'>Max Planck Institute for Software Systems</a>
+    
+        <a href='/affiliations/microsoft-research'>Microsoft Research</a>
+    
+        <a href='/affiliations/north-carolina-state-university'>North Carolina State University</a>
+    
+        <a href='/affiliations/rutgers-university'>Rutgers University</a>
+    
+        <a href='/affiliations/tehran-institute-for-advanced-studies'>Tehran Institute for Advanced Studies</a>
+    
+        <a href='/affiliations/texas-a&amp;m-university'>Texas A&amp;M University</a>
     
 </aside>
 
@@ -588,14 +962,29 @@ sending them to the server. How can that be?</p>
             doi.org
         </a>
     
-        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
-            en.wikipedia.org
+        <a href='/domains/github.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+            github.com
         </a>
     
-        <a href='/domains/towardsdatascience.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=towardsdatascience.com" loading="lazy">
-            towardsdatascience.com
+        <a href='/domains/ocw.mit.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=ocw.mit.edu" loading="lazy">
+            ocw.mit.edu
+        </a>
+    
+        <a href='/domains/proceedings.mlr.press' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=proceedings.mlr.press" loading="lazy">
+            proceedings.mlr.press
+        </a>
+    
+        <a href='/domains/scholar.google.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+            scholar.google.com
+        </a>
+    
+        <a href='/domains/www.equalityhumanrights.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.equalityhumanrights.com" loading="lazy">
+            www.equalityhumanrights.com
         </a>
     
 </aside>

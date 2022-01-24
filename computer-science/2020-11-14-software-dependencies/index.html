@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+            
+                Software Vulnerabilities Introduced by Dependencies | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">Software Vulnerabilities Introduced by Dependencies</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Software Vulnerabilities Introduced by Dependencies</h1>
+    <p class="meta">
+        
+        Dated Nov 14, 2020; 
+        
+        last modified on Sat, 22 Jan 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bloated-dependencies">Bloated Dependencies</a></li>
+    <li><a href="#vulnerabilities-in-dependencies">Vulnerabilities in Dependencies</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="bloated-dependencies">Bloated Dependencies</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>A bloated dependency is one which is packaged in the application binary, but is
+not needed to run the application.</p>
+<p><a id="LevelsOfDebloating"></a>There are two levels to this: (1) a source file
+declares a dependency on <code>foo</code> but never actually uses <code>foo</code>, and (2) the
+application as a whole never uses <code>foo</code>. An optimal de-bloating solution would
+first address (1) and then tackle (2).</p>
+<p>Some languages may have better tooling than others when it comes to
+automatically de-bloating their dependencies.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#SotoValero2021DepClean"></a></span> propose DepClean, a tool for de-bloating
+Java/Maven dependency trees. Of 9,639 Java artifacts, which include a total of
+723k dependency relationships, they found 2.7% of directly declared dependencies
+are bloated, 15.4% of inherited dependencies are bloated, and 57% of transitive
+dependencies are bloated. In principle, it&rsquo;s feasible to reduce the total number
+of dependencies of the studied artifacts to \(1/4\) of its current count.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Languages have their de-facto (or rather most popular) package managers. Table
+compiled from <span class="citation-ref"><a href="#WikiPackageManagers"></a></span></p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Popular Package Manager(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java</td>
+<td>Apache Maven, Apache Ivy</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>Pip, Conda, EasyInstall</td>
+</tr>
+<tr>
+<td>Node.js, JavaScript</td>
+<td>NPM, Yarn</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td>RubyGems, Bundler</td>
+</tr>
+<tr>
+<td>.NET, Xamarin</td>
+<td>NuGet</td>
+</tr>
+<tr>
+<td>C++</td>
+<td>CMake</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>Go</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>Cargo</td>
+</tr>
+<tr>
+<td>Lisp</td>
+<td>Quicklisp</td>
+</tr>
+<tr>
+<td>Swift, Objective-C</td>
+<td>CocoaPods</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<p>Java developers using Maven declare their dependencies in a POM file. Given an
+application and its POM file, <span class="citation-ref"><a href="#SotoValero2021DepClean"></a></span> collects the
+dependencies declared in the POM file and their transitive dependencies,
+analyzes the byte-code of the artifact and all its dependencies to determine the
+presence of bloated dependencies.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>With regard to 
+<a href="#LevelsOfDebloating"
+    
+    
+    
+    >
+    the two-step de-bloating approach
+    
+</a>
+, it
+seems that <span class="citation-ref"><a href="#SotoValero2021DepClean"></a></span> misses step (1). Or is that an
+declared but unused import in a Java source file does not add byte-code in
+the final artifact? Passing</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> <span style="color:#111">java.awt.Image</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> <span style="color:#111">java.math.BigDecimal</span><span style="color:#f92672">;</span>
+
+<span style="color:#00a8c8">public</span> <span style="color:#00a8c8">class</span> <span style="color:#75af00">HelloWorld</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#00a8c8">public</span> <span style="color:#00a8c8">static</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">main</span><span style="color:#f92672">(</span><span style="color:#111">String</span><span style="color:#f92672">[]</span> <span style="color:#111">args</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#111">BigDecimal</span> <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">BigDecimal</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;1.0&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// `a` is unused.
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// Prints &#34;Hello, World&#34; to the terminal window.
+</span><span style="color:#75715e"></span>        <span style="color:#111">System</span><span style="color:#f92672">.</span><span style="color:#75af00">out</span><span style="color:#f92672">.</span><span style="color:#75af00">println</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;Hello, World&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>through the Procyon decompiler at 
+<a href="http://www.javadecompilers.com/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Java decompiler
+online
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ gives back:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> <span style="color:#111">java.math.BigDecimal</span><span style="color:#f92672">;</span>
+
+<span style="color:#75715e">//
+</span><span style="color:#75715e">// Decompiled by Procyon v0.5.36
+</span><span style="color:#75715e">//
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">public</span> <span style="color:#00a8c8">class</span> <span style="color:#75af00">HelloWorld</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#00a8c8">public</span> <span style="color:#00a8c8">static</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">main</span><span style="color:#f92672">(</span><span style="color:#00a8c8">final</span> <span style="color:#111">String</span><span style="color:#f92672">[]</span> <span style="color:#111">array</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#00a8c8">final</span> <span style="color:#111">BigDecimal</span> <span style="color:#111">bigDecimal</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">BigDecimal</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;1.0&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#111">System</span><span style="color:#f92672">.</span><span style="color:#75af00">out</span><span style="color:#f92672">.</span><span style="color:#75af00">println</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;Hello, World&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The unused <code>java.awt.Image</code> seems not to make it to the .class file. So <span class="citation-ref"><a href="#SotoValero2021DepClean"></a></span> does not lose anything by skipping step 1. Working
+backwards from the .class file would prune out the unused import statements.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#SotoValero2021LongAnalysis"></a></span> study the evolution and impact of
+bloated dependencies in the Java/Maven ecosystem. Bloated dependencies steadily
+increase over time, and 89.2% of the direct dependencies that are bloated remain
+bloated. 22% of dependency updates performed by developers were made on bloated
+dependencies.</p>
+<h2 id="vulnerabilities-in-dependencies">Vulnerabilities in Dependencies</h2>
+<p>No matter the obfuscation in the source code, the malicious package will have to
+make system calls in order to do anything interesting. These system calls are
+easier to analyze. <span class="citation-ref"><a href="#Wright2020"></a></span></p>
+<p>Know your dependencies by heart. Know the maintainers. Be aware of problems
+going on in the project and help, e.g. patches, funding sources, etc.
+<span class="citation-ref"><a href="#DeVault2020"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='far fa-fw fa-newspaper' cited-by-count=''>
+    <cite id='Wright2020'>
+        
+        Hunting for Malicious Packages on PyPI<i>.</i>
+        
+    </cite>
+    
+     Jordan Wright.
+    
+    
+    
+    
+    <a href="https://jordan-wright.com/blog/post/2020-11-12-hunting-for-malicious-packages-on-pypi/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jordan-wright.com" loading="lazy">
+        <i>jordan-wright.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     Nov 12, 2020.
+    
+    
+    
+    <i class='far fa-fw fa-newspaper' aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='far fa-fw fa-newspaper' cited-by-count=''>
+    <cite id='DeVault2020'>
+        
+        Dependencies and Maintainers<i>.</i>
+        
+    </cite>
+    
+     Drew DeVault.
+    
+    
+    
+    
+    <a href="https://drewdevault.com/2020/02/06/Dependencies-and-maintainers.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=drewdevault.com" loading="lazy">
+        <i>drewdevault.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     Feb 6, 2020.
+    
+    
+    
+    <i class='far fa-fw fa-newspaper' aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
+    <cite id='SotoValero2021LongAnalysis'>
+        
+        A Longitudinal Analysis of Bloated Java Dependencies.<i></i>
+        
+    </cite>
+     Soto-Valero, César; Thomas Durieux; Benoit Baudry.
+    
+     European Software Engineering Conference and Symposium on the Foundations of Software Engineering, Proceedings of the 29th ACM Joint Meeting, Aug 2021, pp. 1021 - 1031.
+    
+     KTH Royal Institute of Technology.
+    
+    <a href="https://doi.org/10.1145/3468264.3468589" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Asoto&#43;A&#43;longitudinal&#43;analysis&#43;of&#43;bloated&#43;Java&#43;dependencies&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
+    <cite id='SotoValero2021DepClean'>
+        
+        A Comprehensive Study of Bloated Dependencies in the Maven Ecosystem<i>.</i>
+        
+    </cite>
+     Soto-Valero, César; Harrand, Nicolas; Monperrus, Martin; Baudry, Benoit.
+    
+     Empirical Software Engineering, Vol 26, No. 3.
+    
+    
+    
+    <a href="https://doi.org/10.1007/s10664-020-09914-8" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Asoto-valero&#43;A&#43;Comprehensive&#43;Study&#43;of&#43;Bloated&#43;Dependencies&#43;in&#43;the&#43;Maven&#43;Ecosystem&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://github.com/castor-software/depclean" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+     2021.
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiPackageManagers'>
+        
+        List of software package management systems - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/List_of_software_package_management_systems#Application-level_package_managers" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 22, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags:
+    
+        <a href="/tags/open-source">#open-source</a>
+    
+        <a href="/tags/software-engineering">#software-engineering</a>
+    
+</aside>
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/baudry-benoit'>Baudry, Benoit</a>
+    
+        <a href='/authors/devault-drew'>DeVault, Drew</a>
+    
+        <a href='/authors/durieux-thomas'>Durieux, Thomas</a>
+    
+        <a href='/authors/harrand-nicolas'>Harrand, Nicolas</a>
+    
+        <a href='/authors/monperrus-martin'>Monperrus, Martin</a>
+    
+        <a href='/authors/soto-valero-c%c3%a9sar'>Soto-Valero, César</a>
+    
+        <a href='/authors/wright-jordan'>Wright, Jordan</a>
+    
+</aside>
+
+
+
+<aside id="publications-holder" style="margin: 0 0 2% 0;">
+    Cited Publications:
+    
+        <a href='/publications/empirical-software-engineering'>Empirical Software Engineering</a>
+    
+        <a href='/publications/european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
+    
+</aside>
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/doi.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+            doi.org
+        </a>
+    
+        <a href='/domains/drewdevault.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=drewdevault.com" loading="lazy">
+            drewdevault.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/github.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+            github.com
+        </a>
+    
+        <a href='/domains/jordan-wright.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=jordan-wright.com" loading="lazy">
+            jordan-wright.com
+        </a>
+    
+        <a href='/domains/scholar.google.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+            scholar.google.com
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/2020-11-21-on-systems-programming/">&laquo; On Systems Programming</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/2022-01-16-swe-journal-reviews/">Software Engineering Journal Reviews &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

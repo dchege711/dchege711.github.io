@@ -40,12 +40,15 @@ function organizeCitations() {
         const citationIconClass = citationElement.parentElement.getAttribute(
             "citation-icon-class");
 
+        const citedByCount = citationElement.parentElement.getAttribute( "cited-by-count")
+
         citationIDToDetails[citationElement.id] = {
             hoverText: citationElement.parentElement.innerText,
             iconHTML: (citationIconClass
                 ? `<i class="${citationIconClass}" style="margin-left:3px; margin-right:3px;" aria-hidden="true"></i>`
                 : ""),
             citationRefIds: [],
+            citedByCountHTML: (citedByCount ? `<sup>${citedByCount}</sup>` : "")
         };
     }
 
@@ -55,7 +58,8 @@ function organizeCitations() {
         let anchor = incompleteAnchors[i];
         let citationID = anchor.href.split("#")[1];
         if (citationIDToDetails[citationID]) {
-            anchor.innerHTML = `${citationID}${citationIDToDetails[citationID].iconHTML}`;
+            anchor.innerHTML =
+                `${citationID}${citationIDToDetails[citationID].iconHTML}${citationIDToDetails[citationID].citedByCountHTML}`;
             anchor.title = citationIDToDetails[citationID].hoverText;
             anchor.parentElement.classList.add("citation-ref-processed");
             const citationRefId = `citation-ref-${i}`;

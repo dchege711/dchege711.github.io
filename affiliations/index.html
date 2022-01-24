@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+            
+                Cited Authors&#39; Affiliations | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/affiliations/">Cited Authors&#39; Affiliations</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<main>
+    <style>
+    div#tags-holder {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+    div#tags-holder > a {
+        margin: 1% 2%;
+    }
+    </style>
+    <article>
+        <header>
+            <h1>Cited Authors&#39; Affiliations</h1>
+        </header>
+        
+        
+    </article>
+
+    <div style="margin: 1%;" id="randomSelectorContainer">
+        <span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span>
+    </div>
+
+    <div id="tags-holder">
+    
+        
+    
+    
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/amazon/">Amazon (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/carnegie-mellon-university/">Carnegie Mellon University (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/cornell-university/">Cornell University (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/indian-institute-of-technology/">Indian Institute of Technology (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/massachusetts-institute-of-technology/">Massachusetts Institute of Technology (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/max-planck-institute-for-software-systems/">Max Planck Institute for Software Systems (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/microsoft-research/">Microsoft Research (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/north-carolina-state-university/">North Carolina State University (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/northumbria-university/">Northumbria University (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/rutgers-university/">Rutgers University (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/samsung-electronics/">Samsung Electronics (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/tehran-institute-for-advanced-studies/">Tehran Institute for Advanced Studies (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/texas-am-university/">Texas A&amp;M University (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/universidade-de-lisboa/">Universidade de Lisboa (1)</a>
+        
+    
+        
+            <a href="https://www.curiosities.dev/affiliations/university-of-california-san-diego/">University of California, San Diego (1)</a>
+        
+    
+    </div>
+
+    <script>
+    let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+            if (!node) return;
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+        })
+        .then(() => {
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
+
+    function goToRandomPage() {
+        
+        
+        let idx = Math.floor(Math.random() * (pageURLs.length));
+        window.open(pageURLs[idx], "_self");
+    }
+</script>
+
+
+</main>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
