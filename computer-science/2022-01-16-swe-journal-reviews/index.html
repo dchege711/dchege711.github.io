@@ -80,7 +80,7 @@
         
         Dated Jan 15, 2022; 
         
-        last modified on Sat, 22 Jan 2022
+        last modified on Tue, 25 Jan 2022
         
     </p>
     </header>
@@ -90,6 +90,8 @@
             <nav id="TableOfContents">
   <ul>
     <li><a href="#formal-software-design">Formal Software Design</a></li>
+    <li><a href="#dynamic-program-analysis">Dynamic Program Analysis</a></li>
+    <li><a href="#glossary">Glossary</a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -102,6 +104,9 @@ model is a collection of constraints that describe a set of structures, e.g. all
 possible security configurations of a web application. Alloy&rsquo;s tool, the Alloy
 Analyzer is a solver that takes the constraints of a model and finds structures
 that satisfy them. <span class="citation-ref"><a href="#Alloy"></a></span></p>
+
+<div class="flashcard">
+    <p><span id="card-61f02753a31a800004e5889f"></span></p>
 <p>The Alloy Analyzer leverages a SAT solver, and this precludes Alloy from
 analyzing optimization problems. <span class="citation-ref"><a href="#Zhang2021"></a></span> propose
 Alloy<sup>Max</sup>, an extension of Alloy that can analyze problems with
@@ -110,6 +115,9 @@ language constructs for specifying optimization problems, and uses an analysis
 engine that leverages a Maximum Satisfiability (MaxSAT) solver. <span class="citation-ref"><a href="#Zhang2021"></a></span> also provide a translation mechanism from a first-order relational
 logic into a weighted conjunctive normal form (WCNF) that the MaxSAT solver
 expects.</p>
+
+</div>
+
 
 
 
@@ -165,13 +173,68 @@ Design
 </div>
 
 
+<h2 id="dynamic-program-analysis">Dynamic Program Analysis</h2>
+<p>Dynamic program analysis is a technique for monitoring, understanding, and
+potentially intervening in program behavior during its execution <span class="citation-ref"><a href="#Vasilakis2021"></a></span>. Types of dynamic program analysis include code coverage,
+memory error detection, fault localization, invariant inference, concurrency
+errors, program slicing, and performance analysis. Most techniques involve code
+instrumentation, which incurs runtime overhead. <span class="citation-ref"><a href="#WikiDynamicProgramAnalysis"></a></span></p>
+
+<div class="flashcard">
+    <p><span id="card-61f02753a31a800004e588a0"></span></p>
+<p><a id="VasilakisModuleRecontextualization"></a><span class="citation-ref"><a href="#Vasilakis2021"></a></span>
+propose <em>module recontextualization</em>, a dynamic program analysis approach for
+
+<a href="#DynamicProgrammingLanguage"
+    
+    
+    
+    >
+    dynamic languages
+    
+</a>
+. Dynamic languages feature a
+module-import mechanism that loads the code at runtime as a string. The approach
+uses lightweight transformations on the module&rsquo;s string representation to insert
+developer-provided, analysis-specific code into the module before it is loaded.
+This allows the developer to capture all interactions around the module in
+unmodified production language runtime environments. Analysis via module
+recontextualization is coarse (module-level vs. instruction-level), but has low
+runtime overhead (\(\approx 4\%\)). The authors further provide 
+<a href="https://github.com/andromeda/lya"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    an
+implementation for JavaScript and Racket
+ecosystems
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.</p>
+
+</div>
+
+<h2 id="glossary">Glossary</h2>
+<dl>
+    <dt id='DynamicProgrammingLanguage' style="font-weight: bolder;">Dynamic Programming Language</dt>
+    <dd>
+        A high-level programming language, which at runtime executes many common
+  programming behaviors that static programming languages perform during
+  compilation, e.g. adding new code, extending objects and definitions,
+  modifying the type system, etc. Examples: JavaScript, Python, Ruby, PHP, Perl,
+  Common Lisp, R, Objective-C, etc..
+         <span class="citation-ref"><a href="#WikiDynamicProgrammingLanguage"></a></span> 
+    </dd>
+</dl>
 <h2 id="references">References</h2>
 <ol>
 <li>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='0'>
     <cite id='Zhang2021'>
         
         AlloyMax: bringing maximum satisfaction to relational specifications.<i></i>
@@ -202,6 +265,8 @@ Design
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
     
+    
+    Cited 0 times as of Jan 24, 2022.
     
 </div>
 
@@ -274,6 +339,115 @@ Design
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='2'>
+    <cite id='Vasilakis2021'>
+        
+        Efficient Module-level Dynamic Analysis for Dynamic Languages with Module Recontextualization<i>.</i>
+        
+    </cite>
+     Nikos Vasilakis; Grigoris Ntousakis; Veit Heller; Martin C. Rinard.
+    
+     European Software Engineering Conference and Symposium on the Foundations of Software Engineering, Proceedings of the 29th ACM Joint Meeting, Aug 2021, pp. 1202–1213.
+    
+     Massachusetts Institute of Technology; Technical University of Crete; Unaffiliated.
+    
+    <a href="https://doi.org/10.1145/3468264.3468574" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3AVasilakis&#43;Efficient&#43;Module-level&#43;Dynamic&#43;Analysis&#43;for&#43;Dynamic&#43;Languages&#43;with&#43;Module&#43;Recontextualization&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 2 times as of Jan 24, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiDynamicProgramAnalysis'>
+        
+        Dynamic program analysis - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Dynamic_program_analysis" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 24, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiDynamicProgrammingLanguage'>
+        
+        Dynamic programming language - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Dynamic_programming_language" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 24, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -286,13 +460,21 @@ Design
     
         <a href='/authors/garlan-david'>Garlan, David</a>
     
+        <a href='/authors/heller-veit'>Heller, Veit</a>
+    
         <a href='/authors/kang-eunsuk'>Kang, Eunsuk</a>
     
         <a href='/authors/manquinho-vasco'>Manquinho, Vasco</a>
     
         <a href='/authors/martins-ruben'>Martins, Ruben</a>
     
+        <a href='/authors/ntousakis-grigoris'>Ntousakis, Grigoris</a>
+    
         <a href='/authors/orvalho-pedro'>Orvalho, Pedro</a>
+    
+        <a href='/authors/rinard-martin-c.'>Rinard, Martin C.</a>
+    
+        <a href='/authors/vasilakis-nikos'>Vasilakis, Nikos</a>
     
         <a href='/authors/wagner-ryan'>Wagner, Ryan</a>
     
@@ -314,6 +496,12 @@ Design
     Cited Authors' Affiliations:
     
         <a href='/affiliations/carnegie-mellon-university'>Carnegie Mellon University</a>
+    
+        <a href='/affiliations/massachusetts-institute-of-technology'>Massachusetts Institute of Technology</a>
+    
+        <a href='/affiliations/technical-university-of-crete'>Technical University of Crete</a>
+    
+        <a href='/affiliations/unaffiliated'>Unaffiliated</a>
     
         <a href='/affiliations/universidade-de-lisboa'>Universidade de Lisboa</a>
     
@@ -356,8 +544,10 @@ Design
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">&laquo; Software Vulnerabilities Introduced by Dependencies</a>
+            <a href="https://www.curiosities.dev/computer-science/2020-11-21-on-systems-programming/">&laquo; On Systems Programming</a>
         
+        
+            <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">Software Dependencies &raquo;</a>
         
 
     </footer>
