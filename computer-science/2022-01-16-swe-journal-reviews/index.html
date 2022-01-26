@@ -80,7 +80,7 @@
         
         Dated Jan 15, 2022; 
         
-        last modified on Tue, 25 Jan 2022
+        last modified on Wed, 26 Jan 2022
         
     </p>
     </header>
@@ -91,6 +91,11 @@
   <ul>
     <li><a href="#formal-software-design">Formal Software Design</a></li>
     <li><a href="#dynamic-program-analysis">Dynamic Program Analysis</a></li>
+    <li><a href="#software-debugging">Software Debugging</a>
+      <ul>
+        <li><a href="#delta-debugging">Delta Debugging</a></li>
+      </ul>
+    </li>
     <li><a href="#glossary">Glossary</a></li>
     <li><a href="#references">References</a></li>
   </ul>
@@ -215,6 +220,76 @@ ecosystems
 .</p>
 
 </div>
+
+<h2 id="software-debugging">Software Debugging</h2>
+<h3 id="delta-debugging">Delta Debugging</h3>
+<p>In delta debugging, we want to reduce an object while preserving a certain
+property. More formally, let \(\mathbb{X}\) be a universe of all objects of
+interest, \(\phi: \mathbb{X} \to \{ \text{TRUE}, \text{FALSE} \} \) be a
+test function that determines whether an object \(X \in \mathbb{X}\) exhibits
+a given property or not, and \(|X|\) be the size of \(X\). The goal is to
+find an object \(X'\) such that \(|X'|\) is as small as possible, and
+\(\phi(X') = \text{TRUE}\). <span class="citation-ref"><a href="#Wang2021"></a></span></p>
+
+<div class="flashcard">
+    <p><span id="card-61f16bba26dc320004be391c"></span></p>
+<p><span class="citation-ref"><a href="#Wang2021"></a></span> propose a probabilistic delta debugging algorithm (ProbDD)
+to improve on <span class="citation-ref"><a href="#Zeller2002"></a></span>&rsquo;s widely-used <em>ddmin</em> algorithm. The
+<em>ddmin</em> algorithm follows a predefined sequence of steps to remove items from a
+sequence, while ProbDD learns a probabilistic model to select which items to
+remove in the next iteration. The worst-case asymptotic number of tests while
+using ProDD is \(O(n)\), while that of <em>ddmin</em> is \(O(n^2)\). ProbDD also
+tends to produce smaller final artifacts than those produced by <em>ddmin</em>.</p>
+
+</div>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>In the space of probabilistic algorithms, ProbDD is probabilistic in running
+time, but not in the answer produced. <span class="citation-ref"><a href="#Wang2021"></a></span> provide a proof of
+correctness.</p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Delta debugging reminds me of 
+<a href="https://git-scm.com/docs/git-bisect"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    git-bisect
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+which uses binary search to find the commit that introduced a bug. <span class="citation-ref"><a href="#Wang2021"></a></span> do not mention git-bisect. Assuming that at each each commit, the
+code is in a state that provides a useful answer<sup>1</sup>, git-bisect takes
+at most \(O(lg N)\) steps. ProbDD looks useful where git history is absent or
+not useful (e.g. finding the fault within a commit that changed a lot of
+things).</p>
+<p><sup>1</sup> For example, if we&rsquo;re looking for a feature bug, then the code must
+be buildable at each commit. Otherwise, we won&rsquo;t know whether that commit broke
+the feature.</p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Read <span class="citation-ref"><a href="#Zeller2002"></a></span>. There are mentions of binary search, so maybe
+that&rsquo;s why <span class="citation-ref"><a href="#Wang2021"></a></span> did not concern themselves with it.</p>
+</div>
+</div>
+
 
 <h2 id="glossary">Glossary</h2>
 <dl>
@@ -448,19 +523,117 @@ ecosystems
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='1'>
+    <cite id='Wang2021'>
+        
+        Probabilistic Delta debugging<i>.</i>
+        
+    </cite>
+     Guancheng Wang; Ruobing Shen; Junjie Chen; Yingfei Xiong; Lu Zhang.
+    
+     European Software Engineering Conference and Symposium on the Foundations of Software Engineering, Proceedings of the 29th, Aug 2021, pp. 881-892.
+    
+     Peking University; Tianjin University.
+    
+    <a href="https://doi.org/10.1145/3468264.3468625" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Awang%2Cshen&#43;Probabilistic&#43;Delta&#43;debugging&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://github.com/Amocy-Wang/ProbDD" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 1 times as of Jan 26, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='1100'>
+    <cite id='Zeller2002'>
+        
+        Simplifying and Isolating Failure-Inducing Input<i>.</i>
+        
+    </cite>
+     Andreas Zeller; Ralf Hildebrandt.
+    
+     IEEE Transactions on Software Engineering, vol. 28, no. 2, pp. 183-200, Feb. 2002.
+    
+     Univeristät des Saarlandes; DeTeLine - Deutsche Telekom Kommunikationsnetze.
+    
+    <a href="https://doi.org/10.1109/32.988498" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Azeller&#43;Simplifying&#43;and&#43;isolating&#43;failure-inducing&#43;input&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 1100 times as of Jan 26, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
 
         <div style="font-size: smaller;">
 
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags:
+    
+        <a href="/tags/probability">#probability</a>
+    
+</aside>
+
 
 <aside id="authors-holder" style="margin: 0 0 2% 0;">
     Cited Authors:
     
+        <a href='/authors/chen-junjie'>Chen, Junjie</a>
+    
         <a href='/authors/garlan-david'>Garlan, David</a>
     
         <a href='/authors/heller-veit'>Heller, Veit</a>
+    
+        <a href='/authors/hildebrandt-ralf'>Hildebrandt, Ralf</a>
     
         <a href='/authors/kang-eunsuk'>Kang, Eunsuk</a>
     
@@ -474,11 +647,21 @@ ecosystems
     
         <a href='/authors/rinard-martin-c.'>Rinard, Martin C.</a>
     
+        <a href='/authors/shen-ruobing'>Shen, Ruobing</a>
+    
         <a href='/authors/vasilakis-nikos'>Vasilakis, Nikos</a>
     
         <a href='/authors/wagner-ryan'>Wagner, Ryan</a>
     
+        <a href='/authors/wang-guancheng'>Wang, Guancheng</a>
+    
+        <a href='/authors/xiong-yingfei'>Xiong, Yingfei</a>
+    
+        <a href='/authors/zeller-andreas'>Zeller, Andreas</a>
+    
         <a href='/authors/zhang-changjian'>Zhang, Changjian</a>
+    
+        <a href='/authors/zhang-lu'>Zhang, Lu</a>
     
 </aside>
 
@@ -489,6 +672,8 @@ ecosystems
     
         <a href='/publications/european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
     
+        <a href='/publications/ieee-transactions-on-software-engineering'>IEEE Transactions on Software Engineering</a>
+    
 </aside>
 
 
@@ -497,11 +682,19 @@ ecosystems
     
         <a href='/affiliations/carnegie-mellon-university'>Carnegie Mellon University</a>
     
+        <a href='/affiliations/deteline---deutsche-telekom-kommunikationsnetze'>DeTeLine - Deutsche Telekom Kommunikationsnetze</a>
+    
         <a href='/affiliations/massachusetts-institute-of-technology'>Massachusetts Institute of Technology</a>
+    
+        <a href='/affiliations/peking-university'>Peking University</a>
     
         <a href='/affiliations/technical-university-of-crete'>Technical University of Crete</a>
     
+        <a href='/affiliations/tianjin-university'>Tianjin University</a>
+    
         <a href='/affiliations/unaffiliated'>Unaffiliated</a>
+    
+        <a href='/affiliations/univerist%c3%a4t-des-saarlandes'>Univeristät des Saarlandes</a>
     
         <a href='/affiliations/universidade-de-lisboa'>Universidade de Lisboa</a>
     
@@ -526,6 +719,11 @@ ecosystems
             en.wikipedia.org
         </a>
     
+        <a href='/domains/github.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+            github.com
+        </a>
+    
         <a href='/domains/scholar.google.com' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
             scholar.google.com
@@ -544,10 +742,8 @@ ecosystems
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/2020-11-21-on-systems-programming/">&laquo; On Systems Programming</a>
+            <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">&laquo; Software Dependencies</a>
         
-        
-            <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">Software Dependencies &raquo;</a>
         
 
     </footer>
