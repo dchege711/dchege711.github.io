@@ -80,7 +80,7 @@
         
         Dated Jan 15, 2022; 
         
-        last modified on Wed, 26 Jan 2022
+        last modified on Wed, 02 Feb 2022
         
     </p>
     </header>
@@ -96,6 +96,7 @@
         <li><a href="#delta-debugging">Delta Debugging</a></li>
       </ul>
     </li>
+    <li><a href="#probabilistic-programming">Probabilistic Programming</a></li>
     <li><a href="#glossary">Glossary</a></li>
     <li><a href="#references">References</a></li>
   </ul>
@@ -111,7 +112,11 @@ Analyzer is a solver that takes the constraints of a model and finds structures
 that satisfy them. <span class="citation-ref"><a href="#Alloy"></a></span></p>
 
 <div class="flashcard">
-    <p><span id="card-61f02753a31a800004e5889f"></span></p>
+    <div class="flashcard-link-holder" id='card-61f02753a31a800004e5889f'>
+    <a href='https://cards.c13u.com/browse/?cardID=61f02753a31a800004e5889f' title='Flashcard: At its current state, Alloy cannot solve optimization problems. Why is that, and how did Zhang2021 solve it?' target="_blank">
+        <span aria-hidden="true"> 📑 </span>
+    </a>
+</div>
 <p>The Alloy Analyzer leverages a SAT solver, and this precludes Alloy from
 analyzing optimization problems. <span class="citation-ref"><a href="#Zhang2021"></a></span> propose
 Alloy<sup>Max</sup>, an extension of Alloy that can analyze problems with
@@ -186,7 +191,11 @@ errors, program slicing, and performance analysis. Most techniques involve code
 instrumentation, which incurs runtime overhead. <span class="citation-ref"><a href="#WikiDynamicProgramAnalysis"></a></span></p>
 
 <div class="flashcard">
-    <p><span id="card-61f02753a31a800004e588a0"></span></p>
+    <div class="flashcard-link-holder" id='card-61f02753a31a800004e588a0'>
+    <a href='https://cards.c13u.com/browse/?cardID=61f02753a31a800004e588a0' title='Flashcard: What does module recontextualization entail? What granularity-overhead tradeoffs does it make?' target="_blank">
+        <span aria-hidden="true"> 📑 </span>
+    </a>
+</div>
 <p><a id="VasilakisModuleRecontextualization"></a><span class="citation-ref"><a href="#Vasilakis2021"></a></span>
 propose <em>module recontextualization</em>, a dynamic program analysis approach for
 
@@ -232,7 +241,11 @@ find an object \(X'\) such that \(|X'|\) is as small as possible, and
 \(\phi(X') = \text{TRUE}\). <span class="citation-ref"><a href="#Wang2021"></a></span></p>
 
 <div class="flashcard">
-    <p><span id="card-61f16bba26dc320004be391c"></span></p>
+    <div class="flashcard-link-holder" id='card-61f16bba26dc320004be391c'>
+    <a href='https://cards.c13u.com/browse/?cardID=61f16bba26dc320004be391c' title='Flashcard: In delta debugging, we want to reduce an object while preserving a certain property. How can we use probabilistic techniques to be more efficient?' target="_blank">
+        <span aria-hidden="true"> 📑 </span>
+    </a>
+</div>
 <p><span class="citation-ref"><a href="#Wang2021"></a></span> propose a probabilistic delta debugging algorithm (ProbDD)
 to improve on <span class="citation-ref"><a href="#Zeller2002"></a></span>&rsquo;s widely-used <em>ddmin</em> algorithm. The
 <em>ddmin</em> algorithm follows a predefined sequence of steps to remove items from a
@@ -291,6 +304,54 @@ that&rsquo;s why <span class="citation-ref"><a href="#Wang2021"></a></span> did 
 </div>
 
 
+<h2 id="probabilistic-programming">Probabilistic Programming</h2>
+<p><span class="citation-ref"><a href="#Sidiroglou-Douskos2011"></a></span> propose loop perforation, a general
+technique to trade accuracy for performance by transforming loops to execute a
+subset of their iterations. They were able to make programs twice as fast, while
+changing the result by less than \(10\%\).</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#111">N</span><span style="color:#111">;</span> <span style="color:#111">i</span><span style="color:#f92672">++</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#111">...</span> <span style="color:#111">}</span> <span style="color:#75715e">// Original loop
+</span><span style="color:#75715e"></span>
+<span style="color:#111">d</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> <span style="color:#111">(</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> <span style="color:#111">r</span><span style="color:#111">);</span> <span style="color:#75715e">// r = perforation rate, in the range [0, 1)
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#111">N</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">+=</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#111">...</span> <span style="color:#111">}</span> <span style="color:#75715e">// Loop after an interleaving perforation
+</span></code></pre></div><p><span class="citation-ref"><a href="#Sidiroglou-Douskos2011"></a></span> proceed in two phases. The criticality
+testing phase finds the set of tunable loops \(P\) in an application \(A\),
+given a set of representative inputs \(T\), a set of perforation rates
+\(R\), and an accuracy bound \(b\). The second phase finds a subset \(S
+\subseteq P\) in \(A\), given \(T\) and \(b\).</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>For a loop \(l_i\) to be in \(P\), it must speed up the program, incur an
+accuracy loss that is less than \(b\), and not cause memory errors in \(A\).
+The memory errors are found running \(A\) under Valgrind.</p>
+</div>
+</div>
+
+
+
+<div class="flashcard">
+    <div class="flashcard-link-holder" id='card-61fb72b49c8ce100046bea16'>
+    <a href='https://cards.c13u.com/browse/?cardID=61fb72b49c8ce100046bea16' title='Flashcard: What types of computation patterns work well with loop perforation?' target="_blank">
+        <span aria-hidden="true"> 📑 </span>
+    </a>
+</div>
+<p>Applications that are amenable to loop perforation tend to have these
+computation patterns:</p>
+<ul>
+<li>Iterating over a search space of items. Perforation skips some of the items.</li>
+<li>Using a search metric to drive a search for the most desirable item.
+Perforation produces a less accurate but efficient metric.</li>
+<li>Performing Monte-Carlo simulation. Perforation evaluates fewer samples.</li>
+<li>Repeatedly improving on an approximate result to obtain a more accurate
+result. Perforation uses fewer improvement steps.</li>
+<li>Traversing a data structure and updating elements with computed values.
+Perforation skips some of the elements.</li>
+</ul>
+
+</div>
+
+<p><span class="citation-ref"><a href="#Sidiroglou-Douskos2011"></a></span></p>
 <h2 id="glossary">Glossary</h2>
 <dl>
     <dt id='DynamicProgrammingLanguage' style="font-weight: bolder;">Dynamic Programming Language</dt>
@@ -610,6 +671,47 @@ that&rsquo;s why <span class="citation-ref"><a href="#Wang2021"></a></span> did 
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='585'>
+    <cite id='Sidiroglou-Douskos2011'>
+        
+        Managing Performance vs. Accuracy Trade-offs with Loop Perforation<i>.</i>
+        
+    </cite>
+     Stelios Sidiroglou-Douskos; Sasa Misailovic; Henry Hoffmann; Martin Rinard.
+    
+     ACM SIGSOFT Symposium, 19th; European Conference on Foundations of Software Engineering, 13th, September 2011, Pages 124–134.
+    
+     Massachusetts Institute of Technology.
+    
+    <a href="https://doi.org/10.1145/2025113.2025133" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=Managing&#43;performance&#43;vs.&#43;accuracy&#43;trade-offs&#43;with&#43;loop&#43;perforation&#43;author%3ASidiroglou-Douskos&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 585 times as of Jan 30, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -635,19 +737,27 @@ that&rsquo;s why <span class="citation-ref"><a href="#Wang2021"></a></span> did 
     
         <a href='/authors/hildebrandt-ralf'>Hildebrandt, Ralf</a>
     
+        <a href='/authors/hoffmann-henry'>Hoffmann, Henry</a>
+    
         <a href='/authors/kang-eunsuk'>Kang, Eunsuk</a>
     
         <a href='/authors/manquinho-vasco'>Manquinho, Vasco</a>
     
         <a href='/authors/martins-ruben'>Martins, Ruben</a>
     
+        <a href='/authors/misailovic-sasa'>Misailovic, Sasa</a>
+    
         <a href='/authors/ntousakis-grigoris'>Ntousakis, Grigoris</a>
     
         <a href='/authors/orvalho-pedro'>Orvalho, Pedro</a>
     
+        <a href='/authors/rinard-martin'>Rinard, Martin</a>
+    
         <a href='/authors/rinard-martin-c.'>Rinard, Martin C.</a>
     
         <a href='/authors/shen-ruobing'>Shen, Ruobing</a>
+    
+        <a href='/authors/sidiroglou-douskos-stelios'>Sidiroglou-Douskos, Stelios</a>
     
         <a href='/authors/vasilakis-nikos'>Vasilakis, Nikos</a>
     
@@ -669,6 +779,8 @@ that&rsquo;s why <span class="citation-ref"><a href="#Wang2021"></a></span> did 
 
 <aside id="publications-holder" style="margin: 0 0 2% 0;">
     Cited Publications:
+    
+        <a href='/publications/acm-sigsoft-symposium'>ACM SIGSOFT Symposium</a>
     
         <a href='/publications/european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
     

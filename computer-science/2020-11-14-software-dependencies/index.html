@@ -80,7 +80,7 @@
         
         Dated Nov 14, 2020; 
         
-        last modified on Tue, 25 Jan 2022
+        last modified on Sun, 30 Jan 2022
         
     </p>
     </header>
@@ -90,7 +90,8 @@
             <nav id="TableOfContents">
   <ul>
     <li><a href="#bloated-dependencies">Bloated Dependencies</a></li>
-    <li><a href="#vulnerabilities-brought-by-dependencies">Vulnerabilities Brought By Dependencies</a></li>
+    <li><a href="#dependencies-vulnerabilities">Dependencies' Vulnerabilities</a></li>
+    <li><a href="#in-app-third-party-library-detection">In-App Third-Party Library Detection</a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -182,7 +183,11 @@ compiled from <span class="citation-ref"><a href="#WikiPackageManagers"></a></sp
 
 
 <div class="flashcard">
-    <p><span id="card-61f02446a31a800004e5889d"></span></p>
+    <div class="flashcard-link-holder" id='card-61f02446a31a800004e5889d'>
+    <a href='https://cards.c13u.com/browse/?cardID=61f02446a31a800004e5889d' title='Flashcard: How does Soto-Valero et. al.&#39;s DepClean de-bloat a Java application?' target="_blank">
+        <span aria-hidden="true"> 📑 </span>
+    </a>
+</div>
 <p>Java developers using Maven declare their dependencies in a POM file. Given an
 application and its POM file, <span class="citation-ref"><a href="#SotoValero2021DepClean"></a></span> collects the
 dependencies declared in the POM file and their transitive dependencies,
@@ -256,7 +261,7 @@ bloated dependencies in the Java/Maven ecosystem. Bloated dependencies steadily
 increase over time, and 89.2% of the direct dependencies that are bloated remain
 bloated. 22% of dependency updates performed by developers were made on bloated
 dependencies.</p>
-<h2 id="vulnerabilities-brought-by-dependencies">Vulnerabilities Brought By Dependencies</h2>
+<h2 id="dependencies-vulnerabilities">Dependencies' Vulnerabilities</h2>
 <p>No matter the obfuscation in the source code, the malicious package will have to
 make system calls in order to do anything interesting. These system calls are
 easier to analyze. <span class="citation-ref"><a href="#Wright2020"></a></span> Furthermore, 
@@ -275,6 +280,74 @@ being used by an imported package.</p>
 <p>Know your dependencies by heart. Know the maintainers. Be aware of problems
 going on in the project and help, e.g. patches, funding sources, etc.
 <span class="citation-ref"><a href="#DeVault2020"></a></span></p>
+<p><a id="Zhan2021VulnerabilityDetection"></a><span class="citation-ref"><a href="#Zhan2021"></a></span> build a
+vulnerabilities database (1,180 CVEs and 224 security bugs). With their
+database, and 
+<a href="#Zhan2021ATVHunter"
+    
+    
+    
+    >
+    their in-app third-party library (TPL)
+detector
+    
+</a>
+, they analyze 104k apps, and find 9k apps include
+vulnerable TPL versions and 7k security bugs.</p>
+<h2 id="in-app-third-party-library-detection">In-App Third-Party Library Detection</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Static detection of third-party libraries is a solved problem when the code is
+using a dependency manager. However, some of the declared dependencies 
+<a href="#bloated-dependencies"
+    
+    
+    
+    >
+    may be
+bloated
+    
+</a>
+, and there&rsquo;s active research on de-bloating.</p>
+<p>I&rsquo;m not sure what in-app TPL detection entails, and how useful it is in
+practice.</p>
+</div>
+</div>
+
+
+<p>Identifying in-app third-party libraries (TPLs) faces challenges like TPL
+dependency, code obfuscation &amp; dead-code removal, and precise version
+representation. <span class="citation-ref"><a href="#Zhan2021"></a></span></p>
+<p><a id="Zhan2021ATVHunter"></a><span class="citation-ref"><a href="#Zhan2021"></a></span> propose ATVHunter, a better
+tool for identifying Android in-app TPLs. They build a TPL database (189k TPLs
+with 3m versions). To identify specific TPL versions, they extract the Control
+Flow Graphs (CFG) to match potential TPLs, and then narrow down to the version
+by comparing opcode sequences in each basic block of CFG. ATVHunter outperforms
+existing tools, is resilient to common obfuscation techniques, and is scalable
+for large-scale TPL detection, e.g. 
+<a href="#Zhan2021VulnerabilityDetection"
+    
+    
+    
+    >
+    vulnerability
+detection
+    
+</a>
+.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Zhan2021"></a></span> do <del>not</del> have access to POM files. But they start by
+decompiling the android app. I&rsquo;m not really sure what the constraints that they
+are working under.</p>
+</div>
+</div>
+
+
 <h2 id="references">References</h2>
 <ol>
 <li>
@@ -349,7 +422,7 @@ going on in the project and help, e.g. patches, funding sources, etc.
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='0'>
     <cite id='SotoValero2021LongAnalysis'>
         
         A Longitudinal Analysis of Bloated Java Dependencies.<i></i>
@@ -381,6 +454,8 @@ going on in the project and help, e.g. patches, funding sources, etc.
     
     
     
+    Cited 0 times as of Jan 30, 2022.
+    
 </div>
 
 </li>
@@ -388,7 +463,7 @@ going on in the project and help, e.g. patches, funding sources, etc.
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='14'>
     <cite id='SotoValero2021DepClean'>
         
         A Comprehensive Study of Bloated Dependencies in the Maven Ecosystem<i>.</i>
@@ -424,6 +499,8 @@ going on in the project and help, e.g. patches, funding sources, etc.
     <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
     
     
+    
+    Cited 14 times as of Jan 30, 2022.
     
 </div>
 
@@ -462,6 +539,47 @@ going on in the project and help, e.g. patches, funding sources, etc.
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='10'>
+    <cite id='Zhan2021'>
+        
+        ATVHunter: Reliable Version Detection of Third-Party Libraries for Vulnerability Identification in Android Applications.<i></i>
+        
+    </cite>
+     Zhan, Xian; Fan, Lingling; Chen, Sen; We, Feng; Liu, Tianming; Luo, Xiapu; Liu, Yang.
+    
+     International Conference on Software Engineering, 43rd, 2021.
+    
+     The Hong Kong Polytechnic University; Nankai University; Tianjin University; Nanyang Technological University; Monash University.
+    
+    <a href="https://doi.org/10.1109/icse43902.2021.00150" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=ATVHunter%3A&#43;Reliable&#43;Version&#43;Detection&#43;of&#43;Third-Party&#43;Libraries&#43;for&#43;Vulnerability&#43;Identification&#43;in&#43;Android&#43;Apps&#43;author%3AZhan&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 10 times as of Jan 30, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -483,17 +601,31 @@ going on in the project and help, e.g. patches, funding sources, etc.
     
         <a href='/authors/baudry-benoit'>Baudry, Benoit</a>
     
+        <a href='/authors/chen-sen'>Chen, Sen</a>
+    
         <a href='/authors/devault-drew'>DeVault, Drew</a>
     
         <a href='/authors/durieux-thomas'>Durieux, Thomas</a>
     
+        <a href='/authors/fan-lingling'>Fan, Lingling</a>
+    
         <a href='/authors/harrand-nicolas'>Harrand, Nicolas</a>
+    
+        <a href='/authors/liu-tianming'>Liu, Tianming</a>
+    
+        <a href='/authors/liu-yang'>Liu, Yang</a>
+    
+        <a href='/authors/luo-xiapu'>Luo, Xiapu</a>
     
         <a href='/authors/monperrus-martin'>Monperrus, Martin</a>
     
         <a href='/authors/soto-valero-c%c3%a9sar'>Soto-Valero, César</a>
     
+        <a href='/authors/we-feng'>We, Feng</a>
+    
         <a href='/authors/wright-jordan'>Wright, Jordan</a>
+    
+        <a href='/authors/zhan-xian'>Zhan, Xian</a>
     
 </aside>
 
@@ -506,6 +638,8 @@ going on in the project and help, e.g. patches, funding sources, etc.
     
         <a href='/publications/european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
     
+        <a href='/publications/international-conference-on-software-engineering'>International Conference on Software Engineering</a>
+    
 </aside>
 
 
@@ -513,6 +647,16 @@ going on in the project and help, e.g. patches, funding sources, etc.
     Cited Authors' Affiliations:
     
         <a href='/affiliations/kth-royal-institute-of-technology'>KTH Royal Institute of Technology</a>
+    
+        <a href='/affiliations/monash-university'>Monash University</a>
+    
+        <a href='/affiliations/nankai-university'>Nankai University</a>
+    
+        <a href='/affiliations/nanyang-technological-university'>Nanyang Technological University</a>
+    
+        <a href='/affiliations/the-hong-kong-polytechnic-university'>The Hong Kong Polytechnic University</a>
+    
+        <a href='/affiliations/tianjin-university'>Tianjin University</a>
     
 </aside>
 
