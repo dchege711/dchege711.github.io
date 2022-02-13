@@ -80,7 +80,7 @@
         
         Dated Nov 14, 2020; 
         
-        last modified on Sun, 30 Jan 2022
+        last modified on Sun, 06 Feb 2022
         
     </p>
     </header>
@@ -89,6 +89,7 @@
         <aside id="toc">
             <nav id="TableOfContents">
   <ul>
+    <li><a href="#dependency-management">Dependency Management</a></li>
     <li><a href="#bloated-dependencies">Bloated Dependencies</a></li>
     <li><a href="#dependencies-vulnerabilities">Dependencies' Vulnerabilities</a></li>
     <li><a href="#in-app-third-party-library-detection">In-App Third-Party Library Detection</a></li>
@@ -98,7 +99,52 @@
         </aside>
 
         <article id="main-article">
-            <h2 id="bloated-dependencies">Bloated Dependencies</h2>
+            <h2 id="dependency-management">Dependency Management</h2>
+<p>Golang introduced a new library referencing mode to overcome limitations of the
+old one. While the two library modes are supported by Golang, they are
+incompatible, e.g. dependency management (DM) issues, reference inconsistencies,
+build failures, etc. <span class="citation-ref"><a href="#Wang2021"></a></span> did an empirical study that resulted
+in HERO, an automated technique to detect DM issues and suggest fixes. Applied
+to 19k Golang projects, HERO detected 98.5% on a DM issue benchmark, and found
+2,422 new DM issues in 2,356 Golang projects. They reported 280 issues, and
+almost all of the fixes have adopted HERO&rsquo;s fixing suggestions.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Prior to Golang 1.11, libraries were supported by the <code>GOPATH</code> mode, which
+fetched the library&rsquo;s latest version. To overcome this, Golang devs used
+third-party tools like Dep and Glide. Golang 1.11 introduced <code>Go Modules</code> which
+is more flexible and allows multiple versions to coexist in a Golang project. Of
+the Golang projects surveyed, 64.1% were still using <code>GOPATH</code>. <span class="citation-ref"><a href="#Wang2021"></a></span></p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I dig how Golang modules (fetched via 
+<a href="https://go.dev/ref/mod#go-get"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    <code>go get</code>
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+)
+are specified. For instance, <code>golang.org/x/text@v0.3.2</code> exists at the
+<code>golang.org/x/text</code> URL. Pretty sweet. The fact that we&rsquo;re explicitly
+downloading a package from a URL emphasizes the fact that we&rsquo;re choosing to
+trust whoever is in control of the website.</p>
+</div>
+</div>
+
+
+<h2 id="bloated-dependencies">Bloated Dependencies</h2>
 
 
 
@@ -580,6 +626,47 @@ are working under.</p>
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='0'>
+    <cite id='Wang2021'>
+        
+        HERO: On the Chaos When PATH Meets Modules.<i></i>
+        
+    </cite>
+     Wang, Ying; Liang Qiao; Chang Xu; Yepang Liu; Shing-Chi Cheung; Na Meng; Hai Yu; Zhiliang Zhu.
+    
+     International Conference on Software Engineering, 43rd, 2021, pp. 99-111.
+    
+     Northeastern University; Nanjing University; Southern University of Science and Technology; Hong Kong University of Science and Technology; Virginia Tech.
+    
+    <a href="https://doi.org/10.1109/icse43902.2021.00022" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?as_q=&amp;num=10&amp;btnG=Search&#43;Scholar&amp;as_epq=Hero:&#43;On&#43;the&#43;Chaos&#43;When&#43;PATH&#43;Meets&#43;Modules&amp;as_oq=&amp;as_eq=&amp;as_occt=any&amp;as_sauthors=Wang" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 0 times as of Feb 6, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -603,6 +690,8 @@ are working under.</p>
     
         <a href='/authors/chen-sen'>Chen, Sen</a>
     
+        <a href='/authors/cheung-shing-chi'>Cheung, Shing-Chi</a>
+    
         <a href='/authors/devault-drew'>DeVault, Drew</a>
     
         <a href='/authors/durieux-thomas'>Durieux, Thomas</a>
@@ -615,17 +704,31 @@ are working under.</p>
     
         <a href='/authors/liu-yang'>Liu, Yang</a>
     
+        <a href='/authors/liu-yepang'>Liu, Yepang</a>
+    
         <a href='/authors/luo-xiapu'>Luo, Xiapu</a>
+    
+        <a href='/authors/meng-na'>Meng, Na</a>
     
         <a href='/authors/monperrus-martin'>Monperrus, Martin</a>
     
+        <a href='/authors/qiao-liang'>Qiao, Liang</a>
+    
         <a href='/authors/soto-valero-c%c3%a9sar'>Soto-Valero, César</a>
+    
+        <a href='/authors/wang-ying'>Wang, Ying</a>
     
         <a href='/authors/we-feng'>We, Feng</a>
     
         <a href='/authors/wright-jordan'>Wright, Jordan</a>
     
+        <a href='/authors/xu-chang'>Xu, Chang</a>
+    
+        <a href='/authors/yu-hai'>Yu, Hai</a>
+    
         <a href='/authors/zhan-xian'>Zhan, Xian</a>
+    
+        <a href='/authors/zhu-zhiliang'>Zhu, Zhiliang</a>
     
 </aside>
 
@@ -646,17 +749,27 @@ are working under.</p>
 <aside id="affiliations-holder" style="margin: 0 0 2% 0;">
     Cited Authors' Affiliations:
     
+        <a href='/affiliations/hong-kong-university-of-science-and-technology'>Hong Kong University of Science and Technology</a>
+    
         <a href='/affiliations/kth-royal-institute-of-technology'>KTH Royal Institute of Technology</a>
     
         <a href='/affiliations/monash-university'>Monash University</a>
+    
+        <a href='/affiliations/nanjing-university'>Nanjing University</a>
     
         <a href='/affiliations/nankai-university'>Nankai University</a>
     
         <a href='/affiliations/nanyang-technological-university'>Nanyang Technological University</a>
     
+        <a href='/affiliations/northeastern-university'>Northeastern University</a>
+    
+        <a href='/affiliations/southern-university-of-science-and-technology'>Southern University of Science and Technology</a>
+    
         <a href='/affiliations/the-hong-kong-polytechnic-university'>The Hong Kong Polytechnic University</a>
     
         <a href='/affiliations/tianjin-university'>Tianjin University</a>
+    
+        <a href='/affiliations/virginia-tech'>Virginia Tech</a>
     
 </aside>
 
@@ -707,7 +820,7 @@ are working under.</p>
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/2020-11-21-on-systems-programming/">&laquo; On Systems Programming</a>
+            <a href="https://www.curiosities.dev/computer-science/2020-05-17-distributed-systems/">&laquo; On Distributed Systems</a>
         
         
             <a href="https://www.curiosities.dev/computer-science/2022-01-16-swe-journal-reviews/">Software Engineering Journal Reviews &raquo;</a>

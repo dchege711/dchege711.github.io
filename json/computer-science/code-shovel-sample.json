@@ -1,0 +1,295 @@
+{
+    "75827d89082bd67aba245e0817f3cdb76cc131bb":{
+      "type":"Ybodychange",
+      "commitMessage":"Only show unread notifications in the navbar\n",
+      "commitDate":"1/9/19 3:18 AM",
+      "commitName":"75827d89082bd67aba245e0817f3cdb76cc131bb",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"1/9/19 3:06 AM",
+      "commitNameOld":"32ebefacede3b02463dadd19e4d38c090065cf31",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":0.01,
+      "commitsBetweenForRepo":1,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,48 +1,50 @@\n def get_user(net_id, user_id=None):\n     \"\"\"\n     :param net_id: str\n     \n     The Princeton Net ID of the user\n \n     :kwarg user_id: int\n \n     The ID of the user as assigned in Tiger Leagues\n \n     :return: ``dict`` \n     \n     A representation of the user as stored in the database. Keys include: \n     ``user_id, name, net_id, email, phone_num, room, league_ids, \n     associated_leagues, unread_notifications``\n     \n     :return: ``NoneType``\n \n     If there is no user in the database with the provided net id\n     \"\"\"\n     if net_id is not None:\n         cursor = db.execute((\n             \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n             \"FROM users WHERE net_id = %s\"\n         ), values=[net_id])\n     else:\n         cursor = db.execute((\n             \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n             \"FROM users WHERE user_id = %s\"\n         ), values=[user_id])\n \n     user_profile = cursor.fetchone()\n     if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     \n-    mutable_user_data[\"unread_notifications\"] = read_notifications(user_profile[\"user_id\"])\n+    mutable_user_data[\"unread_notifications\"] = read_notifications(\n+        user_profile[\"user_id\"], notification_status=NOTIFICATION_STATUS_DELIVERED\n+    )\n     return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/models/user_model.py"
+    },
+    "076c38a853a0448daf3bbac30245a2a80f5e78c2":{
+      "type":"Ybodychange",
+      "commitMessage":"Rename messages to notifications\n",
+      "commitDate":"1/9/19 1:33 AM",
+      "commitName":"076c38a853a0448daf3bbac30245a2a80f5e78c2",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"1/8/19 8:57 PM",
+      "commitNameOld":"5d81d228cf5f70b8b86600e16a1c88069f7b9f6f",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":0.19,
+      "commitsBetweenForRepo":1,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,46 +1,48 @@\n def get_user(net_id, user_id=None):\n     \"\"\"\n     :param net_id: str\n     \n     The Princeton Net ID of the user\n \n     :kwarg user_id: int\n \n     The ID of the user as assigned in Tiger Leagues\n \n     :return: ``dict`` \n     \n     A representation of the user as stored in the database. Keys include: \n     ``user_id, name, net_id, email, phone_num, room, league_ids, \n-    associated_leagues``\n+    associated_leagues, unread_notifications``\n     \n     :return: ``NoneType``\n \n     If there is no user in the database with the provided net id\n     \"\"\"\n     if net_id is not None:\n         cursor = db.execute((\n             \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n             \"FROM users WHERE net_id = %s\"\n         ), values=[net_id])\n     else:\n         cursor = db.execute((\n             \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n             \"FROM users WHERE user_id = %s\"\n         ), values=[user_id])\n \n     user_profile = cursor.fetchone()\n     if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n+    \n+    mutable_user_data[\"unread_notifications\"] = read_notifications(user_profile[\"user_id\"])\n     return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/models/user_model.py"
+    },
+    "fe1ff4e6158b5d8fce7f34f4a6d873f65484d7d3":{
+      "type":"Ymultichange(Yparameterchange,Ybodychange)",
+      "commitMessage":"Include an optional user_id parameter in user_model.get_user\n",
+      "commitDate":"1/3/19 4:53 PM",
+      "commitName":"fe1ff4e6158b5d8fce7f34f4a6d873f65484d7d3",
+      "commitAuthor":"dchege711",
+      "subchanges":[
+        {
+          "type":"Yparameterchange",
+          "commitMessage":"Include an optional user_id parameter in user_model.get_user\n",
+          "commitDate":"1/3/19 4:53 PM",
+          "commitName":"fe1ff4e6158b5d8fce7f34f4a6d873f65484d7d3",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"1/2/19 8:38 PM",
+          "commitNameOld":"39c5585c842e3c1633dbedbe0cccab51a087b0cd",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.84,
+          "commitsBetweenForRepo":9,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,33 +1,46 @@\n-def get_user(net_id):\n+def get_user(net_id, user_id=None):\n     \"\"\"\n     :param net_id: str\n     \n     The Princeton Net ID of the user\n \n+    :kwarg user_id: int\n+\n+    The ID of the user as assigned in Tiger Leagues\n+\n     :return: ``dict`` \n     \n-    A representation of the user as stored in the database\n+    A representation of the user as stored in the database. Keys include: \n+    ``user_id, name, net_id, email, phone_num, room, league_ids, \n+    associated_leagues``\n     \n     :return: ``NoneType``\n \n     If there is no user in the database with the provided net id\n     \"\"\"\n-    cursor = db.execute((\n-        \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n-        \"FROM users WHERE net_id = %s\"\n-    ), values=[net_id])\n+    if net_id is not None:\n+        cursor = db.execute((\n+            \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+            \"FROM users WHERE net_id = %s\"\n+        ), values=[net_id])\n+    else:\n+        cursor = db.execute((\n+            \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+            \"FROM users WHERE user_id = %s\"\n+        ), values=[user_id])\n+\n     user_profile = cursor.fetchone()\n     if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+          "extendedDetails":{
+            "oldValue":"[net_id]",
+            "newValue":"[net_id, user_id(default-None)]"
+          }
+        },
+        {
+          "type":"Ybodychange",
+          "commitMessage":"Include an optional user_id parameter in user_model.get_user\n",
+          "commitDate":"1/3/19 4:53 PM",
+          "commitName":"fe1ff4e6158b5d8fce7f34f4a6d873f65484d7d3",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"1/2/19 8:38 PM",
+          "commitNameOld":"39c5585c842e3c1633dbedbe0cccab51a087b0cd",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.84,
+          "commitsBetweenForRepo":9,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,33 +1,46 @@\n-def get_user(net_id):\n+def get_user(net_id, user_id=None):\n     \"\"\"\n     :param net_id: str\n     \n     The Princeton Net ID of the user\n \n+    :kwarg user_id: int\n+\n+    The ID of the user as assigned in Tiger Leagues\n+\n     :return: ``dict`` \n     \n-    A representation of the user as stored in the database\n+    A representation of the user as stored in the database. Keys include: \n+    ``user_id, name, net_id, email, phone_num, room, league_ids, \n+    associated_leagues``\n     \n     :return: ``NoneType``\n \n     If there is no user in the database with the provided net id\n     \"\"\"\n-    cursor = db.execute((\n-        \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n-        \"FROM users WHERE net_id = %s\"\n-    ), values=[net_id])\n+    if net_id is not None:\n+        cursor = db.execute((\n+            \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+            \"FROM users WHERE net_id = %s\"\n+        ), values=[net_id])\n+    else:\n+        cursor = db.execute((\n+            \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+            \"FROM users WHERE user_id = %s\"\n+        ), values=[user_id])\n+\n     user_profile = cursor.fetchone()\n     if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+          "extendedDetails":{
+
+          }
+        }
+      ],
+      "file":"tiger_leagues/models/user_model.py",
+      "diff":"@@ -1,33 +1,46 @@\n-def get_user(net_id):\n+def get_user(net_id, user_id=None):\n     \"\"\"\n     :param net_id: str\n     \n     The Princeton Net ID of the user\n \n+    :kwarg user_id: int\n+\n+    The ID of the user as assigned in Tiger Leagues\n+\n     :return: ``dict`` \n     \n-    A representation of the user as stored in the database\n+    A representation of the user as stored in the database. Keys include: \n+    ``user_id, name, net_id, email, phone_num, room, league_ids, \n+    associated_leagues``\n     \n     :return: ``NoneType``\n \n     If there is no user in the database with the provided net id\n     \"\"\"\n-    cursor = db.execute((\n-        \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n-        \"FROM users WHERE net_id = %s\"\n-    ), values=[net_id])\n+    if net_id is not None:\n+        cursor = db.execute((\n+            \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+            \"FROM users WHERE net_id = %s\"\n+        ), values=[net_id])\n+    else:\n+        cursor = db.execute((\n+            \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+            \"FROM users WHERE user_id = %s\"\n+        ), values=[user_id])\n+\n     user_profile = cursor.fetchone()\n     if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n"
+    },
+    "39c5585c842e3c1633dbedbe0cccab51a087b0cd":{
+      "type":"Ybodychange",
+      "commitMessage":"Document the models\n",
+      "commitDate":"1/2/19 8:38 PM",
+      "commitName":"39c5585c842e3c1633dbedbe0cccab51a087b0cd",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"12/12/18 11:12 PM",
+      "commitNameOld":"2411e8e58a69c56b81c34f7772e920a6f8f9123b",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":20.89,
+      "commitsBetweenForRepo":71,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,26 +1,33 @@\n def get_user(net_id):\n     \"\"\"\n-    @param `net_id` [str]: The Princeton Net ID of the user\n+    :param net_id: str\n+    \n+    The Princeton Net ID of the user\n \n-    @returns `dict` representing a user in the database who has the specified \n-    net ID, otherwise returns `None`\n+    :return: ``dict`` \n+    \n+    A representation of the user as stored in the database\n+    \n+    :return: ``NoneType``\n+\n+    If there is no user in the database with the provided net id\n     \"\"\"\n     cursor = db.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n     user_profile = cursor.fetchone()\n     if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/models/user_model.py"
+    },
+    "0410b56f5f944dc01ef83d678788d6effcecc08e":{
+      "type":"Ymultichange(Ymovefromfile,Ybodychange)",
+      "commitMessage":"Refactor: Move non-flask related actions from user.py to user_model.py\n",
+      "commitDate":"12/12/18 5:34 AM",
+      "commitName":"0410b56f5f944dc01ef83d678788d6effcecc08e",
+      "commitAuthor":"dchege711",
+      "subchanges":[
+        {
+          "type":"Ymovefromfile",
+          "commitMessage":"Refactor: Move non-flask related actions from user.py to user_model.py\n",
+          "commitDate":"12/12/18 5:34 AM",
+          "commitName":"0410b56f5f944dc01ef83d678788d6effcecc08e",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"12/12/18 5:13 AM",
+          "commitNameOld":"eba22b6254f2c1058db0f642fb70b1cda222f4b7",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.01,
+          "commitsBetweenForRepo":1,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,25 +1,26 @@\n def get_user(net_id):\n     \"\"\"\n     @param `net_id` [str]: The Princeton Net ID of the user\n-    @returns `dict` representing a user in the database. \n-    @returns `None` If the user doesn't exist.\n+\n+    @returns `dict` representing a user in the database who has the specified \n+    net ID, otherwise returns `None`\n     \"\"\"\n-    cursor = database.execute((\n+    cursor = db.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n-    user_data = cursor.fetchone()\n-    if user_data is None: return user_data\n+    user_profile = cursor.fetchone()\n+    if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n-    mutable_user_data = dict(**user_data) # https://www.python.org/dev/peps/pep-0448/#abstract\n-    if user_data[\"league_ids\"] is None:\n+    mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n+    if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n-        mutable_user_data[\"league_ids\"] = [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n+        mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n-            user_data[\"user_id\"], mutable_user_data[\"league_ids\"]\n+            user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+          "extendedDetails":{
+            "oldPath":"tiger_leagues/user.py",
+            "newPath":"tiger_leagues/models/user_model.py",
+            "oldMethodName":"get_user",
+            "newMethodName":"get_user"
+          }
+        },
+        {
+          "type":"Ybodychange",
+          "commitMessage":"Refactor: Move non-flask related actions from user.py to user_model.py\n",
+          "commitDate":"12/12/18 5:34 AM",
+          "commitName":"0410b56f5f944dc01ef83d678788d6effcecc08e",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"12/12/18 5:13 AM",
+          "commitNameOld":"eba22b6254f2c1058db0f642fb70b1cda222f4b7",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.01,
+          "commitsBetweenForRepo":1,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,25 +1,26 @@\n def get_user(net_id):\n     \"\"\"\n     @param `net_id` [str]: The Princeton Net ID of the user\n-    @returns `dict` representing a user in the database. \n-    @returns `None` If the user doesn't exist.\n+\n+    @returns `dict` representing a user in the database who has the specified \n+    net ID, otherwise returns `None`\n     \"\"\"\n-    cursor = database.execute((\n+    cursor = db.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n-    user_data = cursor.fetchone()\n-    if user_data is None: return user_data\n+    user_profile = cursor.fetchone()\n+    if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n-    mutable_user_data = dict(**user_data) # https://www.python.org/dev/peps/pep-0448/#abstract\n-    if user_data[\"league_ids\"] is None:\n+    mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n+    if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n-        mutable_user_data[\"league_ids\"] = [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n+        mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n-            user_data[\"user_id\"], mutable_user_data[\"league_ids\"]\n+            user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+          "extendedDetails":{
+
+          }
+        }
+      ],
+      "file":"tiger_leagues/models/user_model.py",
+      "diff":"@@ -1,25 +1,26 @@\n def get_user(net_id):\n     \"\"\"\n     @param `net_id` [str]: The Princeton Net ID of the user\n-    @returns `dict` representing a user in the database. \n-    @returns `None` If the user doesn't exist.\n+\n+    @returns `dict` representing a user in the database who has the specified \n+    net ID, otherwise returns `None`\n     \"\"\"\n-    cursor = database.execute((\n+    cursor = db.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n-    user_data = cursor.fetchone()\n-    if user_data is None: return user_data\n+    user_profile = cursor.fetchone()\n+    if user_profile is None: return user_profile\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n-    mutable_user_data = dict(**user_data) # https://www.python.org/dev/peps/pep-0448/#abstract\n-    if user_data[\"league_ids\"] is None:\n+    mutable_user_data = dict(**user_profile) # https://www.python.org/dev/peps/pep-0448/#abstract\n+    if user_profile[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = {}\n     else:\n-        mutable_user_data[\"league_ids\"] = [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n+        mutable_user_data[\"league_ids\"] = [int(x) for x in user_profile[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n-            user_data[\"user_id\"], mutable_user_data[\"league_ids\"]\n+            user_profile[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n"
+    },
+    "e2a6fc0ed2ba4e8366b9e6359f7b5d319556811b":{
+      "type":"Ybodychange",
+      "commitMessage":"Rectify misnomers due to API changes\n",
+      "commitDate":"12/7/18 9:14 PM",
+      "commitName":"e2a6fc0ed2ba4e8366b9e6359f7b5d319556811b",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"12/7/18 6:12 PM",
+      "commitNameOld":"9e23b375b6a0e86d545742a071d64acfb5d6787e",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":0.13,
+      "commitsBetweenForRepo":5,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,25 +1,25 @@\n def get_user(net_id):\n     \"\"\"\n     @param `net_id` [str]: The Princeton Net ID of the user\n     @returns `dict` representing a user in the database. \n     @returns `None` If the user doesn't exist.\n     \"\"\"\n     cursor = database.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n     user_data = cursor.fetchone()\n     if user_data is None: return user_data\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_data) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_data[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n-        mutable_user_data[\"associated_leagues\"] = []\n+        mutable_user_data[\"associated_leagues\"] = {}\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_data[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/user.py"
+    },
+    "9e23b375b6a0e86d545742a071d64acfb5d6787e":{
+      "type":"Ybodychange",
+      "commitMessage":"Rename variables to more appropriate names\n",
+      "commitDate":"12/7/18 6:12 PM",
+      "commitName":"9e23b375b6a0e86d545742a071d64acfb5d6787e",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"12/6/18 8:59 PM",
+      "commitNameOld":"5504935b14c3b0cd01d6699f7d31d89c01a2beb8",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":0.88,
+      "commitsBetweenForRepo":12,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,25 +1,25 @@\n def get_user(net_id):\n     \"\"\"\n     @param `net_id` [str]: The Princeton Net ID of the user\n     @returns `dict` representing a user in the database. \n     @returns `None` If the user doesn't exist.\n     \"\"\"\n     cursor = database.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n     user_data = cursor.fetchone()\n     if user_data is None: return user_data\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n     mutable_user_data = dict(**user_data) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_data[\"league_ids\"] is None:\n         mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = []\n     else:\n         mutable_user_data[\"league_ids\"] = [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n-        mutable_user_data[\"associated_leagues\"] = __get_user_league_info_list(\n+        mutable_user_data[\"associated_leagues\"] = __get_user_leagues_info(\n             user_data[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/user.py"
+    },
+    "d547c32faf6ce89153116b09aa3845b2ec90bbd6":{
+      "type":"Ybodychange",
+      "commitMessage":"API improvements and SQL syntax correction\n",
+      "commitDate":"11/30/18 5:53 PM",
+      "commitName":"d547c32faf6ce89153116b09aa3845b2ec90bbd6",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"11/30/18 5:11 PM",
+      "commitNameOld":"7b064a41ddbe0663f81af577f339bdb43987b98d",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":0.03,
+      "commitsBetweenForRepo":2,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,23 +1,25 @@\n def get_user(net_id):\n     \"\"\"\n     @param `net_id` [str]: The Princeton Net ID of the user\n     @returns `dict` representing a user in the database. \n     @returns `None` If the user doesn't exist.\n     \"\"\"\n     cursor = database.execute((\n         \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n         \"FROM users WHERE net_id = %s\"\n     ), values=[net_id])\n     user_data = cursor.fetchone()\n     if user_data is None: return user_data\n \n     # Although psycopg2 allows us to change values already in the table, we \n     # cannot add new fields that weren't columns, thus the need for a new dict\n-    mutable_user_data = dict(**user_data)\n+    mutable_user_data = dict(**user_data) # https://www.python.org/dev/peps/pep-0448/#abstract\n     if user_data[\"league_ids\"] is None:\n+        mutable_user_data[\"league_ids\"] = []\n         mutable_user_data[\"associated_leagues\"] = []\n     else:\n+        mutable_user_data[\"league_ids\"] = [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n         mutable_user_data[\"associated_leagues\"] = __get_user_league_info_list(\n-            [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n+            user_data[\"user_id\"], mutable_user_data[\"league_ids\"]\n         )\n     return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/user.py"
+    },
+    "7b064a41ddbe0663f81af577f339bdb43987b98d":{
+      "type":"Ybodychange",
+      "commitMessage":"Fetch current user data in order to pass it to the session object\n",
+      "commitDate":"11/30/18 5:11 PM",
+      "commitName":"7b064a41ddbe0663f81af577f339bdb43987b98d",
+      "commitAuthor":"dchege711",
+      "commitDateOld":"11/30/18 1:22 AM",
+      "commitNameOld":"d68d04e4a5bdbb73daade74f4cfb73c425b19191",
+      "commitAuthorOld":"dchege711",
+      "daysBetweenCommits":0.66,
+      "commitsBetweenForRepo":8,
+      "commitsBetweenForFile":1,
+      "diff":"@@ -1,12 +1,23 @@\n def get_user(net_id):\n     \"\"\"\n+    @param `net_id` [str]: The Princeton Net ID of the user\n     @returns `dict` representing a user in the database. \n-    \n     @returns `None` If the user doesn't exist.\n     \"\"\"\n-    return {\n-        \"user_id\": 0, \"name\": \"Chege Gitau\", \"net_id\": net_id, \n-        \"email\": \"dgitau@princeton.edu\", \"phone_num\": \"555-555-5555\",\n-        \"room\": \"Henry Hall A34\", \n-        \"associated_leagues\": __get_user_league_info_list(0)\n-    }\n+    cursor = database.execute((\n+        \"SELECT user_id, name, net_id, email, phone_num, room, league_ids \"\n+        \"FROM users WHERE net_id = %s\"\n+    ), values=[net_id])\n+    user_data = cursor.fetchone()\n+    if user_data is None: return user_data\n+\n+    # Although psycopg2 allows us to change values already in the table, we \n+    # cannot add new fields that weren't columns, thus the need for a new dict\n+    mutable_user_data = dict(**user_data)\n+    if user_data[\"league_ids\"] is None:\n+        mutable_user_data[\"associated_leagues\"] = []\n+    else:\n+        mutable_user_data[\"associated_leagues\"] = __get_user_league_info_list(\n+            [int(x) for x in user_data[\"league_ids\"].split(\", \")]\n+        )\n+    return mutable_user_data\n",
+      "extendedDetails":{
+
+      },
+      "file":"tiger_leagues/user.py"
+    },
+    "69a305e21a75cc89b3d74a564f266cb0810ef0b7":{
+      "type":"Ymultichange(Yrename,Yparameterchange,Ybodychange)",
+      "commitMessage":"Add boilerplate for the user module\n",
+      "commitDate":"11/29/18 7:30 PM",
+      "commitName":"69a305e21a75cc89b3d74a564f266cb0810ef0b7",
+      "commitAuthor":"dchege711",
+      "subchanges":[
+        {
+          "type":"Yrename",
+          "commitMessage":"Add boilerplate for the user module\n",
+          "commitDate":"11/29/18 7:30 PM",
+          "commitName":"69a305e21a75cc89b3d74a564f266cb0810ef0b7",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"11/28/18 11:09 PM",
+          "commitNameOld":"bf66a2e7e707524e8931515745b77e50f3a1380b",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.85,
+          "commitsBetweenForRepo":9,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,11 +1,12 @@\n-def getUser(netid):\n+def get_user(net_id):\n     \"\"\"\n-    @returns `dict` representing a user in the database. If the user doesn't \n-    exist, returns `None`.\n+    @returns `dict` representing a user in the database. \n+    \n+    @returns `None` If the user doesn't exist.\n     \"\"\"\n-    cursor = database.execute(\n-        'SELECT UserId FROM Player_Accounts WHERE NetId = %s', values=(netid,)\n-    )\n-    userid = cursor.fetchone()\n-\n-    return userid\n+    return {\n+        \"user_id\": 0, \"name\": \"Chege Gitau\", \"net_id\": net_id, \n+        \"email\": \"dgitau@princeton.edu\", \"phone_num\": \"555-555-5555\",\n+        \"room\": \"Henry Hall A34\", \n+        \"associated_leagues\": __get_user_league_info_list(0)\n+    }\n",
+          "extendedDetails":{
+            "oldValue":"getUser",
+            "newValue":"get_user"
+          }
+        },
+        {
+          "type":"Yparameterchange",
+          "commitMessage":"Add boilerplate for the user module\n",
+          "commitDate":"11/29/18 7:30 PM",
+          "commitName":"69a305e21a75cc89b3d74a564f266cb0810ef0b7",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"11/28/18 11:09 PM",
+          "commitNameOld":"bf66a2e7e707524e8931515745b77e50f3a1380b",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.85,
+          "commitsBetweenForRepo":9,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,11 +1,12 @@\n-def getUser(netid):\n+def get_user(net_id):\n     \"\"\"\n-    @returns `dict` representing a user in the database. If the user doesn't \n-    exist, returns `None`.\n+    @returns `dict` representing a user in the database. \n+    \n+    @returns `None` If the user doesn't exist.\n     \"\"\"\n-    cursor = database.execute(\n-        'SELECT UserId FROM Player_Accounts WHERE NetId = %s', values=(netid,)\n-    )\n-    userid = cursor.fetchone()\n-\n-    return userid\n+    return {\n+        \"user_id\": 0, \"name\": \"Chege Gitau\", \"net_id\": net_id, \n+        \"email\": \"dgitau@princeton.edu\", \"phone_num\": \"555-555-5555\",\n+        \"room\": \"Henry Hall A34\", \n+        \"associated_leagues\": __get_user_league_info_list(0)\n+    }\n",
+          "extendedDetails":{
+            "oldValue":"[netid]",
+            "newValue":"[net_id]"
+          }
+        },
+        {
+          "type":"Ybodychange",
+          "commitMessage":"Add boilerplate for the user module\n",
+          "commitDate":"11/29/18 7:30 PM",
+          "commitName":"69a305e21a75cc89b3d74a564f266cb0810ef0b7",
+          "commitAuthor":"dchege711",
+          "commitDateOld":"11/28/18 11:09 PM",
+          "commitNameOld":"bf66a2e7e707524e8931515745b77e50f3a1380b",
+          "commitAuthorOld":"dchege711",
+          "daysBetweenCommits":0.85,
+          "commitsBetweenForRepo":9,
+          "commitsBetweenForFile":1,
+          "diff":"@@ -1,11 +1,12 @@\n-def getUser(netid):\n+def get_user(net_id):\n     \"\"\"\n-    @returns `dict` representing a user in the database. If the user doesn't \n-    exist, returns `None`.\n+    @returns `dict` representing a user in the database. \n+    \n+    @returns `None` If the user doesn't exist.\n     \"\"\"\n-    cursor = database.execute(\n-        'SELECT UserId FROM Player_Accounts WHERE NetId = %s', values=(netid,)\n-    )\n-    userid = cursor.fetchone()\n-\n-    return userid\n+    return {\n+        \"user_id\": 0, \"name\": \"Chege Gitau\", \"net_id\": net_id, \n+        \"email\": \"dgitau@princeton.edu\", \"phone_num\": \"555-555-5555\",\n+        \"room\": \"Henry Hall A34\", \n+        \"associated_leagues\": __get_user_league_info_list(0)\n+    }\n",
+          "extendedDetails":{
+
+          }
+        }
+      ],
+      "file":"tiger_leagues/user.py",
+      "diff":"@@ -1,11 +1,12 @@\n-def getUser(netid):\n+def get_user(net_id):\n     \"\"\"\n-    @returns `dict` representing a user in the database. If the user doesn't \n-    exist, returns `None`.\n+    @returns `dict` representing a user in the database. \n+    \n+    @returns `None` If the user doesn't exist.\n     \"\"\"\n-    cursor = database.execute(\n-        'SELECT UserId FROM Player_Accounts WHERE NetId = %s', values=(netid,)\n-    )\n-    userid = cursor.fetchone()\n-\n-    return userid\n+    return {\n+        \"user_id\": 0, \"name\": \"Chege Gitau\", \"net_id\": net_id, \n+        \"email\": \"dgitau@princeton.edu\", \"phone_num\": \"555-555-5555\",\n+        \"room\": \"Henry Hall A34\", \n+        \"associated_leagues\": __get_user_league_info_list(0)\n+    }\n"
+    },
+    "bf66a2e7e707524e8931515745b77e50f3a1380b":{
+      "type":"Yintroduced",
+      "commitMessage":"Add boilerplate for the user.\n",
+      "commitDate":"11/28/18 11:09 PM",
+      "commitName":"bf66a2e7e707524e8931515745b77e50f3a1380b",
+      "commitAuthor":"dchege711",
+      "diff":"@@ -0,0 +1,11 @@\n+def getUser(netid):\n+    \"\"\"\n+    @returns `dict` representing a user in the database. If the user doesn't \n+    exist, returns `None`.\n+    \"\"\"\n+    cursor = database.execute(\n+        'SELECT UserId FROM Player_Accounts WHERE NetId = %s', values=(netid,)\n+    )\n+    userid = cursor.fetchone()\n+\n+    return userid\n",
+      "file":"tiger_leagues/user.py"
+    }
+  }

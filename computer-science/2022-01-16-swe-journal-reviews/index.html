@@ -80,7 +80,7 @@
         
         Dated Jan 15, 2022; 
         
-        last modified on Wed, 02 Feb 2022
+        last modified on Sun, 06 Feb 2022
         
     </p>
     </header>
@@ -97,6 +97,7 @@
       </ul>
     </li>
     <li><a href="#probabilistic-programming">Probabilistic Programming</a></li>
+    <li><a href="#version-control-systems-vcs">Version Control Systems (VCS)</a></li>
     <li><a href="#glossary">Glossary</a></li>
     <li><a href="#references">References</a></li>
   </ul>
@@ -352,6 +353,126 @@ Perforation skips some of the elements.</li>
 </div>
 
 <p><span class="citation-ref"><a href="#Sidiroglou-Douskos2011"></a></span></p>
+<h2 id="version-control-systems-vcs">Version Control Systems (VCS)</h2>
+<p>VCS track line-level changes, which lose historical context after
+transformations like moves/renames across the file system, and groups of lines
+being moved within files. Furthermore, developers are usually interested in a
+slice of the history, and not the history for the whole file. <span class="citation-ref"><a href="#Grund2021"></a></span> propose CodeShovel, a tool for building method histories on demand that
+outperforms tools from research (e.g. FinerGit which needs pre-processing), and
+practice (e.g. IntelliJ&rsquo;s git history, <code>git log -L</code>). Field study with 16
+industrial devs confirmed CodeShovel&rsquo;s correctness, low runtime overhead, and
+versatility.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Grund2021"></a></span> have a public website that demonstrates CodeShovel, given
+the URL of a git repo. Tried it out to see if it would catch this commit from a
+past project of mine: 
+<a href="https://github.com/dchege711/cos333_tiger_leagues/commit/0410b56f5f944dc01ef83d678788d6effcecc08e"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Refactor: Move non-flask related actions from user.py to
+user_model.py ·
+dchege711/cos333_tiger_leagues@0410b56
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+. I&rsquo;m impressed!</p>
+<figure>
+    <img src="/img/computer-science/code-shovel-sample.jpg"
+         alt="CodeShovel&amp;rsquo;s analysis of the get_user function currently in user_model.py JSON version. Credits: https://se.cs.ubc.ca/CodeShovel/."/> <figcaption>
+            <p>CodeShovel&rsquo;s analysis of the get_user function currently in user_model.py <a href="/json/computer-science/code-shovel-sample.json">JSON version</a>. Credits: <a href="https://se.cs.ubc.ca/CodeShovel/">https://se.cs.ubc.ca/CodeShovel/</a>.</p>
+        </figcaption>
+</figure>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I didn&rsquo;t know about <span class="citation-ref"><a href="#GitLogL"></a></span>, which has two forms:
+<code>-L&lt;start&gt;,&lt;end&gt;:&lt;file&gt;</code> and <code>-L:&lt;funcname&gt;:&lt;file&gt;</code>, where <code>start</code>, <code>end</code> and
+<code>funcname</code> can be regex. If <code>end</code> is a regex, then the search starts at the line
+given by <code>start</code>.</p>
+<p>For example, <code>git log -L '/int main/',/^}/:main.c</code> shows how the function
+<code>main()</code> in the file <code>main.c</code> evolved over time. The challenge for the dev is
+constructing appropriate markers for <code>start</code> and <code>end</code>; it helps if the file is
+well-formatted (e.g. indentation).</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#Grund2021"></a></span>&rsquo;s CodeShovel starts out with a repo, starting SHA, and
+current location of the method. It uses a language-specific parser to generate
+an Abstract Syntax Tree (AST) of all methods in the files analyzed. For a given
+commit, CodeShovel stores the current file path (\(\textit{path}\)), line
+number (\(\textit{num}\)), method signature (\(\textit{sig}\)), and method
+body (\(\textit{body}\)) for the specified method. It then works backwards to
+the preceding commit that modified the \(\textit{path}\) containing the
+method. The method matching algorithm is as follows:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// Inputs
+</span><span style="color:#75715e">// sig: method signature
+</span><span style="color:#75715e">// body: method body text
+</span><span style="color:#75715e">// path: path to file containing method
+</span><span style="color:#75715e">// files: list of all files changed in the commit
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Phase 1: Find unchanged method within the same file
+</span><span style="color:#75715e"></span><span style="color:#111">FOREACH</span> <span style="color:#111">meth</span> <span style="color:#111">in</span> <span style="color:#111">files</span><span style="color:#111">[</span><span style="color:#111">path</span><span style="color:#111">]</span>
+  <span style="color:#111">IF</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;sig&#34;</span><span style="color:#111">],</span> <span style="color:#111">sig</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;body&#34;</span><span style="color:#111">],</span> <span style="color:#111">body</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1.0</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">NO_CHANGE</span>
+
+<span style="color:#75715e">// Phase 2: Find modified method within the same file
+</span><span style="color:#75715e"></span><span style="color:#111">FOREACH</span> <span style="color:#111">meth</span> <span style="color:#111">in</span> <span style="color:#111">files</span><span style="color:#111">[</span><span style="color:#111">path</span><span style="color:#111">]</span>
+  <span style="color:#111">IF</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;body&#34;</span><span style="color:#111">],</span> <span style="color:#111">body</span><span style="color:#111">)</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0.75</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">meth</span> <span style="color:#75715e">// Method found in file
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Phase 3: Find method within renamed or moved file
+</span><span style="color:#75715e"></span><span style="color:#111">FOREACH</span> <span style="color:#111">file</span> <span style="color:#111">in</span> <span style="color:#111">files</span>
+  <span style="color:#111">FOREACH</span> <span style="color:#111">meth</span> <span style="color:#111">in</span> <span style="color:#111">file</span>
+    <span style="color:#111">IF</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;sig&#34;</span><span style="color:#111">],</span> <span style="color:#111">sig</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1.0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;body&#34;</span><span style="color:#111">],</span> <span style="color:#111">body</span><span style="color:#111">)</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0.5</span>
+      <span style="color:#00a8c8">return</span> <span style="color:#111">meth</span> <span style="color:#75715e">// Method found in moved file
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Phase 4: Find method modified from different file
+</span><span style="color:#75715e"></span><span style="color:#111">methods</span> <span style="color:#f92672">=</span> <span style="color:#111">all</span> <span style="color:#111">methods</span> <span style="color:#111">in</span> <span style="color:#111">all</span> <span style="color:#111">files</span>
+<span style="color:#75715e">// Sort methods by decreasing body similarity
+</span><span style="color:#75715e"></span><span style="color:#111">methods</span> <span style="color:#f92672">=</span> <span style="color:#111">sort</span><span style="color:#111">(</span><span style="color:#111">methods</span><span style="color:#111">,</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">entry</span><span style="color:#111">[</span><span style="color:#d88200">&#34;body&#34;</span><span style="color:#111">],</span> <span style="color:#111">body</span><span style="color:#111">))</span>
+<span style="color:#75715e">// Find highest matching method
+</span><span style="color:#75715e"></span><span style="color:#111">FOREACH</span> <span style="color:#111">meth</span> <span style="color:#111">in</span> <span style="color:#111">methods</span>
+  <span style="color:#111">IF</span> <span style="color:#111">isShort</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;body&#34;</span><span style="color:#111">],</span> <span style="color:#111">body</span><span style="color:#111">)</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0.95</span> <span style="color:#75715e">// &lt; 20 chars = short
+</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">return</span> <span style="color:#111">meth</span>
+  <span style="color:#111">ELSE</span> <span style="color:#111">IF</span> <span style="color:#111">sim</span><span style="color:#111">(</span><span style="color:#111">meth</span><span style="color:#111">[</span><span style="color:#d88200">&#34;body&#34;</span><span style="color:#111">],</span> <span style="color:#111">body</span><span style="color:#111">)</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0.82</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">meth</span>
+
+<span style="color:#75715e">// No match, last commit introduced the method
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">return</span> <span style="color:#111">null</span>
+</code></pre></div><p>&hellip; where the thresholds were data-informed.</p>
+<figure>
+    <img src="/img/computer-science/code-shovel-change-kinds.jpg"
+         alt="The hierarchy of change kinds in CodeShovel. Credits: Grund2021."/> <figcaption>
+            <p>The hierarchy of change kinds in CodeShovel. Credits: Grund2021.</p>
+        </figcaption>
+</figure>
+
+<p>To add support for a new language, CodeShovel defines two interfaces, <code>Parser</code>
+and <code>Method</code>. The rest of the code is language agnostic.
+
+<a href="https://github.com/ataraxie/codeshovel/tree/master/src/main/java/com/felixgrund/codeshovel/parser/impl"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    codeshovel/src/main/java/com/felixgrund/codeshovel/parser/impl at master ·
+ataraxie/codeshovel
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+
+currently has implementations for Java, Python and TypeScript.</p>
 <h2 id="glossary">Glossary</h2>
 <dl>
     <dt id='DynamicProgrammingLanguage' style="font-weight: bolder;">Dynamic Programming Language</dt>
@@ -712,6 +833,86 @@ Perforation skips some of the elements.</li>
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='4'>
+    <cite id='Grund2021'>
+        
+        CodeShovel: Constructing Method-Level Source Code Histories.<i></i>
+        
+    </cite>
+     Grund, Felix; Shaiful Chowdhury; Nick C. Bradley; Braxton Hall; Reid Holmes.
+    
+     International Conference on Software Engineering, 43rd, 2021, pp. 1510-1522.
+    
+     University of British Columbia.
+    
+    <a href="https://doi.org/10.1109/ICSE43902.2021.00135" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?as_q=&amp;num=10&amp;btnG=Search&#43;Scholar&amp;as_epq=CodeShovel:&#43;Constructing&#43;Method-Level&#43;Source&#43;Code&#43;Histories&amp;as_oq=&amp;as_eq=&amp;as_occt=any&amp;as_sauthors=Grund" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://github.com/ataraxie/codeshovel" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    Cited 4 times as of Feb 6, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='GitLogL'>
+        
+        Git - git-log Documentation<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://git-scm.com/docs/git-log#Documentation/git-log.txt--Lltstartgtltendgtltfilegt" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=git-scm.com" loading="lazy">
+        <i>git-scm.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 6, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -729,15 +930,25 @@ Perforation skips some of the elements.</li>
 <aside id="authors-holder" style="margin: 0 0 2% 0;">
     Cited Authors:
     
+        <a href='/authors/bradley-nick-c.'>Bradley, Nick C.</a>
+    
         <a href='/authors/chen-junjie'>Chen, Junjie</a>
     
+        <a href='/authors/chowdhury-shaiful'>Chowdhury, Shaiful</a>
+    
         <a href='/authors/garlan-david'>Garlan, David</a>
+    
+        <a href='/authors/grund-felix'>Grund, Felix</a>
+    
+        <a href='/authors/hall-braxton'>Hall, Braxton</a>
     
         <a href='/authors/heller-veit'>Heller, Veit</a>
     
         <a href='/authors/hildebrandt-ralf'>Hildebrandt, Ralf</a>
     
         <a href='/authors/hoffmann-henry'>Hoffmann, Henry</a>
+    
+        <a href='/authors/holmes-reid'>Holmes, Reid</a>
     
         <a href='/authors/kang-eunsuk'>Kang, Eunsuk</a>
     
@@ -786,6 +997,8 @@ Perforation skips some of the elements.</li>
     
         <a href='/publications/ieee-transactions-on-software-engineering'>IEEE Transactions on Software Engineering</a>
     
+        <a href='/publications/international-conference-on-software-engineering'>International Conference on Software Engineering</a>
+    
 </aside>
 
 
@@ -810,6 +1023,8 @@ Perforation skips some of the elements.</li>
     
         <a href='/affiliations/universidade-de-lisboa'>Universidade de Lisboa</a>
     
+        <a href='/affiliations/university-of-british-columbia'>University of British Columbia</a>
+    
 </aside>
 
 
@@ -829,6 +1044,11 @@ Perforation skips some of the elements.</li>
         <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
             en.wikipedia.org
+        </a>
+    
+        <a href='/domains/git-scm.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=git-scm.com" loading="lazy">
+            git-scm.com
         </a>
     
         <a href='/domains/github.com' style="margin: 0px 2px;">
