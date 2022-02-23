@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
     <head>
         <title>
@@ -17,8 +17,18 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
 
         <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.pack.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
 
         <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -40,7 +50,7 @@
 
             
             <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q">
+                <input type="text" id="q" name="q" title="Search Query">
                 <input type="submit" id="submitButton" value="Search">
             </form>
 

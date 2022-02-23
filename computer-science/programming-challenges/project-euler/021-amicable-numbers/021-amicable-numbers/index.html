@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                021. Amicable Numbers | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/">Project Euler</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/021-amicable-numbers/021-amicable-numbers/">021. Amicable Numbers</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> 021. Amicable Numbers</h1>
+    <p class="meta">
+        
+        Dated Feb 6, 2021; 
+        
+        last modified on Sat, 06 Feb 2021
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#problem-statement-span-classcitation-refa-hrefprojecteuler021aspan">Problem Statement <span class="citation-ref"><a href="#ProjectEuler021"></a></span></a></li>
+    <li><a href="#my-solution">My Solution</a></li>
+    <li><a href="#learning-from-others-solutions">Learning From Others' Solutions</a>
+      <ul>
+        <li><a href="#minimizing-the-number-of-calls-to-the-sumofproperdivisors-function">Minimizing the Number of Calls to the <code>SumOfProperDivisors</code> Function</a></li>
+        <li><a href="#computing-sumofproperdivisors-efficiently">Computing <code>SumOfProperDivisors</code> Efficiently</a></li>
+        <li><a href="#trivia">Trivia</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="problem-statement-span-classcitation-refa-hrefprojecteuler021aspan">Problem Statement <span class="citation-ref"><a href="#ProjectEuler021"></a></span></h2>
+<p>Let \(d(n)\) be defined as the sum of proper divisors of \(n\) (numbers less
+than \(n\) which divide evenly into \(n\)).</p>
+<p>If \(d(a) = b\) and \(d(b) = a\), where \(a \neq b\), then \(a\) and
+\(b\) are an amicable pair and each of \(a\) and \(b\) are called amicable
+numbers.</p>
+<p>For example, the proper divisors of \(220\) are \(1, 2, 4, 5, 10, 11, 20, 22,
+44, 55, 110\); therefore \(d(220) = 284\). The proper divisors of \(284\)
+are \(1, 2, 4, 71, 142\); so \(d(284) = 220\).</p>
+<p>Evaluate the sum of all the amicable numbers under \(10{,}000\).</p>
+<h2 id="my-solution">My Solution</h2>
+<p>I don&rsquo;t think this problem can be efficiently solved manually. <del>Too much grunt
+work.</del> Given a number&rsquo;s prime factorization, <span class="citation-ref"><a href="#PlanetMathSumOfDivisors"></a></span> provides a formula for summing up the divisors.</p>
+<p>For this problem, I&rsquo;ll try out Haskell. <span class="citation-ref"><a href="#HaskellDocs"></a></span> lists several
+resources and recommends UPenn&rsquo;s <span class="citation-ref"><a href="#CIS194Spring2013"></a></span> for getting
+started. <span class="citation-ref"><a href="#SchoolOfHaskell"></a></span> is by the same author, and seems more
+applicable and less academic-focused. <span class="citation-ref"><a href="#Hoogle"></a></span> is a Haskell API
+search engine that helps one avoid re-implementing functionality from the
+Haskell library. There are VS Code extensions that use <span class="citation-ref"><a href="#HLint"></a></span> to
+offer contextual suggestions; they should help me hone my Haskell.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#CIS194Spring2013"></a></span> provides lecture slides as .html and .lhs files.
+Investigating .lhs files introduced me to literate programming, whose main idea
+is to regard a program as a communication to human beings rather than as a set
+of instructions to a computer. Nifty! There is even multi-mode support in Emacs,
+which switches between haskell-mode and latex-mode depending on where the cursor
+is. <span class="citation-ref"><a href="#HaskellWikiLiterateProgramming"></a></span></p>
+<p>Pays homage to &ldquo;nothing new under the sun&rdquo;. I thought Jupyter notebooks were
+quite fancy, but Literate Haskell already existed. Granted, Jupyter has bells
+and whistles for interactive programming.</p>
+</div>
+</div>
+
+
+
+
+<div id='PE021Haskell'><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-haskell" data-lang="haskell"><span style="color:#f92672">&lt;!--</span>
+<span style="color:#75715e">{-# OPTIONS_GHC -Wall #-}</span>
+<span style="color:#f92672">--&gt;</span>
+
+<span style="color:#75af00">\</span><span style="color:#111">begin</span><span style="color:#111">{</span><span style="color:#111">code</span><span style="color:#111">}</span>
+
+<span style="color:#75715e">-- Haskell functions cannot take multiple arguments, hence this syntax.</span>
+<span style="color:#75af00">isDivisor</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+<span style="color:#75af00">isDivisor</span> <span style="color:#111">n</span> <span style="color:#111">f</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span> <span style="color:#111">`</span><span style="color:#111">mod</span><span style="color:#111">`</span> <span style="color:#111">f</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#75af00">sumOfDivisors</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">sumOfDivisors</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">f</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">isDivisor</span> <span style="color:#111">n</span> <span style="color:#111">f</span><span style="color:#111">)</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">..</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">)]</span>
+
+<span style="color:#75af00">isAmicableNumber</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+<span style="color:#75af00">isAmicableNumber</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#111">((</span><span style="color:#111">sumOfDivisors</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#f92672">/=</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">(</span><span style="color:#111">sumOfDivisors</span> <span style="color:#111">(</span><span style="color:#111">sumOfDivisors</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">sumOfAmicableNumbers</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">sumOfAmicableNumbers</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span><span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">isAmicableNumber</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">..</span><span style="color:#111">n</span><span style="color:#111">])</span>
+
+<span style="color:#75715e">-- Every Haskell program needs to have one function called `main`, which is its</span>
+<span style="color:#75715e">-- entry point.</span>
+<span style="color:#75715e">-- The $ operator binds to the right, and therefore</span>
+<span style="color:#75715e">-- `(sumOfAmicableNumbers 10000)` is executed first.</span>
+<span style="color:#75af00">main</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
+    <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;The sum of amicable numbers under 10,000 is:&#34;</span>
+    <span style="color:#111">print</span> <span style="color:#f92672">$</span> <span style="color:#111">sumOfAmicableNumbers</span> <span style="color:#ae81ff">9999</span> <span style="color:#75715e">-- 31626</span>
+
+<span style="color:#75af00">\</span><span style="color:#111">end</span><span style="color:#111">{</span><span style="color:#111">code</span><span style="color:#111">}</span>
+</code></pre></div></div>
+
+<p>The 45s running time is pretty bad considering that a similar Python script
+takes 6s.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-py" data-lang="py"><span style="color:#00a8c8">def</span> <span style="color:#75af00">sum_of_divisors</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">):</span>
+    <span style="color:#111">s</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#00a8c8">for</span> <span style="color:#111">i</span> <span style="color:#f92672">in</span> <span style="color:#111">range</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">n</span><span style="color:#111">):</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#111">n</span> <span style="color:#f92672">%</span> <span style="color:#111">i</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">:</span> <span style="color:#111">s</span> <span style="color:#f92672">+=</span> <span style="color:#111">i</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">s</span>
+
+<span style="color:#00a8c8">def</span> <span style="color:#75af00">sum_of_divisors_slow</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">):</span>
+    <span style="color:#00a8c8">def</span> <span style="color:#75af00">is_factor</span><span style="color:#111">(</span><span style="color:#111">f</span><span style="color:#111">):</span> <span style="color:#00a8c8">return</span> <span style="color:#111">n</span> <span style="color:#f92672">%</span> <span style="color:#111">f</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">sum</span><span style="color:#111">(</span><span style="color:#111">filter</span><span style="color:#111">(</span><span style="color:#111">is_factor</span><span style="color:#111">,</span> <span style="color:#111">range</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">n</span><span style="color:#111">)))</span>
+</code></pre></div><p>I&rsquo;m surprised that using <code>sum_of_divisors_slow</code> takes about twice the time as
+using <code>sum_of_divisors</code>. I expected <code>sum_of_divisors</code> to be faster (given how
+for-loops go brrr), but not by much.</p>
+</div>
+</div>
+
+
+<h2 id="learning-from-others-solutions">Learning From Others' Solutions</h2>
+<h3 id="minimizing-the-number-of-calls-to-the-sumofproperdivisors-function">Minimizing the Number of Calls to the <code>SumOfProperDivisors</code> Function</h3>
+<p>A construction like:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-py" data-lang="py"><span style="color:#00a8c8">for</span> <span style="color:#111">a</span> <span style="color:#f92672">in</span> <span style="color:#111">range</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">10000</span><span style="color:#111">):</span> <span style="color:#75715e"># 1, 2, 3, ..., 9999</span>
+  <span style="color:#00a8c8">for</span> <span style="color:#111">b</span> <span style="color:#f92672">in</span> <span style="color:#111">range</span><span style="color:#111">(</span><span style="color:#111">a</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">10000</span><span style="color:#111">):</span> <span style="color:#75715e"># a + 1, a + 2, ..., 9999</span>
+    <span style="color:#00a8c8">if</span> <span style="color:#111">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">b</span> <span style="color:#f92672">and</span> <span style="color:#111">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">a</span><span style="color:#111">:</span> <span style="color:#75715e"># ...</span>
+</code></pre></div><p>&hellip; calls <code>sum_of_proper_divisors</code> at most \((9{,}999 \times 9{,}998)\) times.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Computing \((9{,}998 \times 9{,}997) / 2\): The inner for-loop executes
+\(9{,}998 + 9{,}997 + &hellip; + 1\) times. The closed form of \(1 + 2 + 3 + &hellip; +
+n\) is \(n \cdot (n + 1) / 2\). <span class="citation-ref"><a href="#BrilliantSumOfN"></a></span></p>
+</div>
+</div>
+
+
+<p>However, if we calculate <code>b = sum_of_proper_divisors(a)</code>, then
+<code>sum_of_proper_divisors(b)</code> should be equal to <code>a</code>, and therefore we can have:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-py" data-lang="py"><span style="color:#111">s</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#00a8c8">for</span> <span style="color:#111">a</span> <span style="color:#f92672">in</span> <span style="color:#111">range</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">10000</span><span style="color:#111">):</span> <span style="color:#75715e"># 1, 2, 3, ..., 9999</span>
+  <span style="color:#111">b</span> <span style="color:#f92672">=</span> <span style="color:#111">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#75715e"># Given `a`, there&#39;s at most one possible `b`</span>
+  <span style="color:#00a8c8">if</span> <span style="color:#111">b</span> <span style="color:#f92672">&gt;</span> <span style="color:#111">a</span><span style="color:#111">:</span> <span style="color:#75715e"># Avoid double counting (a, b) and (b, a)</span>
+    <span style="color:#00a8c8">if</span> <span style="color:#111">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">a</span><span style="color:#111">:</span> <span style="color:#111">s</span> <span style="color:#f92672">+=</span> <span style="color:#111">a</span> <span style="color:#f92672">+</span> <span style="color:#111">b</span>
+</code></pre></div><p>&hellip; which calls <code>sum_of_proper_divisors</code> at most \((9{,}999 \times 2)\) times.
+<span class="citation-ref"><a href="#ProjectEuler021Solutions"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>My 
+<a href="#PE021Haskell"
+    
+    
+    
+    >
+    Haskell solution
+    
+</a>
+ calls <code>sum_of_proper_divisors</code> at most
+\((9{,}999 \times 3)\) times. \(\times 3\) because I neither cache <code>b</code> [1],
+nor do I check <code>(b &gt; a)</code> [2]. Still, it did not occur to me that looping through
+possible pairs \((a, b)\) was also an available, albeit inefficient, option.</p>
+<p>Applying these two optimizations halves the running time from 45s to 23s.</p>
+<p>[1]: I did not cache <code>b</code> because I wasn&rsquo;t that familiar with Haskell&rsquo;s syntax
+for functions with multiple expressions.</p>
+<p>[2]: I did not check <code>(b &gt; a)</code> because it wasn&rsquo;t on my radar. My approach
+involved deciding if each number in \([1, 2, &hellip;, 9{,}999]\) was amicable or
+not. For amicable pair \((a, b)\), I included \(a\) in the sum, and
+disregarded \(b\) until I got to the pair \((b, a)\).</p>
+</div>
+</div>
+
+
+<h3 id="computing-sumofproperdivisors-efficiently">Computing <code>SumOfProperDivisors</code> Efficiently</h3>
+<p>To find the proper divisors of \(n\), we need not check from \(1\) to
+\(n\). At a first approximation, we only need to check till \(n/2\).
+However, we can go even further and only check till \(\sqrt{n}\), and use the
+fact that if \(i : i \le \lfloor \sqrt{n} \rfloor \) is a divisor, then
+\(n/i\) is also a proper divisor of \(n\). Furthermore, odd numbers cannot
+have even numbers as divisors. <span class="citation-ref"><a href="#ProjectEuler021Solutions"></a></span></p>
+
+
+<div id='PE021HaskellOptimizedSumDivisorsLoop'><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">{-# OPTIONS_GHC -Wall #-}</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">GHC.Float</span> <span style="color:#111">(</span><span style="color:#75af00">sqrtDouble</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">sumOfProperDivisorPair</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">sumOfProperDivisorPair</span> <span style="color:#111">n</span> <span style="color:#111">f</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">n</span> <span style="color:#f92672">==</span> <span style="color:#111">f</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">f</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">n</span> <span style="color:#111">`</span><span style="color:#111">mod</span><span style="color:#111">`</span> <span style="color:#111">f</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#111">f</span> <span style="color:#f92672">+</span> <span style="color:#111">(</span><span style="color:#111">n</span> <span style="color:#111">`</span><span style="color:#111">div</span><span style="color:#111">`</span> <span style="color:#111">f</span><span style="color:#111">)</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#75af00">sumOfProperDivisors</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">sumOfProperDivisors</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#75af00">sumOfProperDivisors</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#111">s</span> <span style="color:#00a8c8">where</span>
+    <span style="color:#111">flooredSqrt</span> <span style="color:#f92672">=</span> <span style="color:#111">floor</span> <span style="color:#f92672">$</span> <span style="color:#111">sqrtDouble</span> <span style="color:#f92672">$</span> <span style="color:#111">fromIntegral</span> <span style="color:#111">n</span>
+    <span style="color:#111">upperLimit</span> <span style="color:#f92672">=</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#111">flooredSqrt</span> <span style="color:#f92672">*</span> <span style="color:#111">flooredSqrt</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span> <span style="color:#00a8c8">then</span> <span style="color:#111">flooredSqrt</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#00a8c8">else</span> <span style="color:#111">flooredSqrt</span>
+    <span style="color:#111">stepSize</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">odd</span> <span style="color:#111">n</span> <span style="color:#00a8c8">then</span> <span style="color:#ae81ff">2</span> <span style="color:#00a8c8">else</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#111">s</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span>
+            <span style="color:#f92672">$</span> <span style="color:#111">map</span>
+                <span style="color:#111">(</span><span style="color:#111">sumOfProperDivisorPair</span> <span style="color:#111">n</span><span style="color:#111">)</span>
+                <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">(</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#111">stepSize</span><span style="color:#111">)</span> <span style="color:#f92672">..</span> <span style="color:#111">(</span><span style="color:#111">upperLimit</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">)]</span>
+
+<span style="color:#75af00">contributionToSum</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">contributionToSum</span> <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#111">res</span> <span style="color:#00a8c8">where</span>
+    <span style="color:#111">b</span> <span style="color:#f92672">=</span> <span style="color:#111">sumOfProperDivisors</span> <span style="color:#111">a</span>
+    <span style="color:#111">res</span> <span style="color:#f92672">=</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">b</span> <span style="color:#f92672">&gt;</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">(</span><span style="color:#111">sumOfProperDivisors</span> <span style="color:#111">b</span> <span style="color:#f92672">==</span> <span style="color:#111">a</span><span style="color:#111">)</span>
+            <span style="color:#00a8c8">then</span> <span style="color:#111">a</span> <span style="color:#f92672">+</span> <span style="color:#111">b</span>
+        <span style="color:#00a8c8">else</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#75af00">sumOfAmicableNumbers</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">sumOfAmicableNumbers</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span><span style="color:#111">(</span><span style="color:#111">map</span> <span style="color:#111">contributionToSum</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">..</span><span style="color:#111">n</span><span style="color:#111">])</span>
+
+<span style="color:#75af00">main</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span><span style="color:#111">()</span>
+<span style="color:#75af00">main</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
+    <span style="color:#111">print</span> <span style="color:#f92672">$</span> <span style="color:#111">sumOfAmicableNumbers</span> <span style="color:#ae81ff">9999</span> <span style="color:#75715e">-- 31626</span>
+</code></pre></div></div>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Applying this optimization slashes the execution time from 23s to 1s.</p>
+</div>
+</div>
+
+
+<p>Suppose that \(n\) is a positive integer whose factorization into prime
+factors is \(\prod_{i=1}^k p_{i}^{m_i}\). Notice that any divisor \(d\) must
+be a product of some number of each of the prime factors, i.e. \( \prod_{i=1}^k
+p_{i}^{\mu_i} \), where \(0 \le \mu_i \le m_i\). Then the sum over all
+divisors becomes the sum over all possible choices for the \(\mu_{i}\)&rsquo;s <span class="citation-ref"><a href="#PlanetMathSumOfDivisors"></a></span></p>
+<p>$$ \sum_{ d \mid n} d = \sum_{0 \le \mu_i \le m_i} \prod_{i=1}^k p_{i}^{\mu_i}<br>
+= \sum_{\mu_1 = 0}^{m_1} \sum_{\mu_2=0}^{m_2} &hellip; \sum_{\mu_k=0}^{m_k} \prod_{i=1}^k p_{i}^{\mu_i}<br>
+= \prod_{i=1}^k \left( \sum_{\mu_i = 0}^{m_i} p_{i}^{\mu_i} \right)<br>
+= \prod_{i=1}^k \frac{p_{i}^{m_i + 1} - 1}{p_i - 1} $$</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#PlanetMathSumOfDivisors"></a></span> uses several mathematical maneuvers:
+expressing sum as a multiple sum, factoring a sum of products into a product of
+sums, and recognizing that each sum is a geometric series.</p>
+</div>
+</div>
+
+
+<p>For instance, the factorization of \(220\) is \(2^2 \cdot 5^1 \cdot 11^1\),
+and therefore the sum of its proper divisors is:</p>
+<p>$$ \left( \frac{2^3 - 1}{1} \cdot \frac{5^2 - 1}{4} \cdot \frac{11^2 - 1}{10} \right) - 220 = 284 $$</p>
+
+
+<div id=''><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+
+<span style="color:#00a8c8">def</span> <span style="color:#75af00">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">):</span>
+    <span style="color:#00a8c8">if</span> <span style="color:#111">n</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">:</span> <span style="color:#00a8c8">return</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#111">orig_n</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span>
+    <span style="color:#111">s</span><span style="color:#111">,</span> <span style="color:#111">factor</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#00a8c8">while</span> <span style="color:#111">factor</span> <span style="color:#f92672">*</span> <span style="color:#111">factor</span> <span style="color:#f92672">&lt;=</span> <span style="color:#111">n</span> <span style="color:#f92672">and</span> <span style="color:#111">n</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#111">:</span> <span style="color:#75715e"># We only need to check up to sqrt(n)</span>
+        <span style="color:#111">multiplicity</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        <span style="color:#00a8c8">while</span> <span style="color:#111">n</span> <span style="color:#f92672">%</span> <span style="color:#111">factor</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">:</span>
+            <span style="color:#111">n</span> <span style="color:#f92672">/=</span> <span style="color:#111">factor</span>
+            <span style="color:#111">multiplicity</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#00a8c8">if</span> <span style="color:#111">multiplicity</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#111">:</span>
+            <span style="color:#111">s</span> <span style="color:#f92672">*=</span> <span style="color:#111">(</span><span style="color:#111">factor</span> <span style="color:#f92672">**</span> <span style="color:#111">(</span><span style="color:#111">multiplicity</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#f92672">/</span> <span style="color:#111">(</span><span style="color:#111">factor</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
+
+        <span style="color:#111">factor</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span> <span style="color:#00a8c8">if</span> <span style="color:#111">factor</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> <span style="color:#00a8c8">else</span> <span style="color:#111">factor</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>
+
+    <span style="color:#75715e"># Account for any remaining prime factor greater than sqrt(n). There will be</span>
+    <span style="color:#75715e"># at most one such factor. (n^2 - 1) / (n-1) simplifies to (n + 1).</span>
+    <span style="color:#00a8c8">if</span> <span style="color:#111">n</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#111">:</span> <span style="color:#111">s</span> <span style="color:#f92672">*=</span> <span style="color:#111">(</span><span style="color:#111">n</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
+
+    <span style="color:#00a8c8">return</span> <span style="color:#111">s</span> <span style="color:#f92672">-</span> <span style="color:#111">orig_n</span>
+
+<span style="color:#00a8c8">def</span> <span style="color:#75af00">is_amicable_number</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">):</span>
+    <span style="color:#111">s</span> <span style="color:#f92672">=</span> <span style="color:#111">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">if</span> <span style="color:#111">s</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span><span style="color:#111">:</span> <span style="color:#00a8c8">return</span> <span style="color:#111">False</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">sum_of_proper_divisors</span><span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span>
+
+<span style="color:#00a8c8">def</span> <span style="color:#75af00">sum_of_amicable_numbers</span><span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">):</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#111">sum</span><span style="color:#111">(</span><span style="color:#111">filter</span><span style="color:#111">(</span><span style="color:#111">is_amicable_number</span><span style="color:#111">,</span> <span style="color:#111">range</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">n</span><span style="color:#111">)))</span>
+
+<span style="color:#00a8c8">if</span> <span style="color:#111">__name__</span> <span style="color:#f92672">==</span> <span style="color:#d88200">&#34;__main__&#34;</span><span style="color:#111">:</span>
+    <span style="color:#00a8c8">print</span><span style="color:#111">(</span><span style="color:#111">sum_of_amicable_numbers</span><span style="color:#111">(</span><span style="color:#ae81ff">10000</span><span style="color:#111">))</span>
+</code></pre></div></div>
+
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Solve PE #021 using the sum of divisors formula in Haskell. The Python
+implementation runs in 0.1s (compared to the 6s Python equivalent of 
+<a href="#PE021Haskell"
+    
+    
+    
+    >
+    this naïve
+approach
+    
+</a>
+).</p>
+</div>
+</div>
+
+
+<h3 id="trivia">Trivia</h3>
+<p>Amicable numbers have history to them. For example, Genesis 32:14 has Jacob
+giving Esau 220 sheep when he was afraid that Esau was going to kill him. <span class="citation-ref"><a href="#CaldwellAmicableNums"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ProjectEuler021'>
+        
+        #21 Amicable numbers - Project Euler<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://projecteuler.net/problem=21" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
+        <i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 6, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HaskellDocs'>
+        
+        Documentation<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.haskell.org/documentation/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.haskell.org" loading="lazy" aria-hidden="true">
+        <i>www.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 6, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HaskellWikiLiterateProgramming'>
+        
+        Literate programming - HaskellWiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.haskell.org/Literate_programming" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 6, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='CIS194Spring2013'>
+        
+        Lecture notes and assignments<i>.</i>
+        
+    </cite>
+    
+     Brent Yorgey.
+    
+    
+    
+    
+    <a href="https://www.seas.upenn.edu/~cis194/spring13/lectures.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading="lazy" aria-hidden="true">
+        <i>www.seas.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 6, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='SchoolOfHaskell'>
+        
+        Starting with Haskell - School of Haskell | School of Haskell<i>.</i>
+        
+    </cite>
+    
+     Brent Yorgey.
+    
+    
+    
+    
+    <a href="https://www.schoolofhaskell.com/user/school/starting-with-haskell" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading="lazy" aria-hidden="true">
+        <i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ProjectEuler021Solutions'>
+        
+        Thread &amp; Overview for 21 - Project Euler<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://projecteuler.net/thread=21" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
+        <i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://projecteuler.net/overview=021" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
+        <i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 9, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='CaldwellAmicableNums'>
+        
+        The Prime Glossary: amicable numbers<i>.</i>
+        
+    </cite>
+    
+     Chris K. Caldwell.
+    
+    
+    
+    
+    <a href="https://primes.utm.edu/glossary/page.php?sort=AmicableNumber" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=primes.utm.edu" loading="lazy" aria-hidden="true">
+        <i>primes.utm.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 9, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='PlanetMathSumOfDivisors'>
+        
+        formula for sum of divisors<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://planetmath.org/formulaforsumofdivisors" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=planetmath.org" loading="lazy" aria-hidden="true">
+        <i>planetmath.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 12, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='BrilliantSumOfN'>
+        
+        Sum of n, n², or n³ | Brilliant Math &amp; Science Wiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://brilliant.org/wiki/sum-of-n-n2-or-n3/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=brilliant.org" loading="lazy" aria-hidden="true">
+        <i>brilliant.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 12, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Hoogle'>
+        
+        Hoogle<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hoogle.haskell.org/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hoogle.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hoogle.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 12, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HLint'>
+        
+        ndmitchell/hlint: Haskell source code suggestions<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://github.com/ndmitchell/hlint" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 12, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags:
+    
+        <a href="/tags/haskell">#haskell</a>
+    
+        <a href="/tags/programming-environment">#programming-environment</a>
+    
+</aside>
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/caldwell-chris-k.'>Caldwell, Chris K.</a>
+    
+        <a href='/authors/yorgey-brent'>Yorgey, Brent</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/brilliant.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=brilliant.org" loading="lazy" aria-hidden="true">
+            brilliant.org
+        </a>
+    
+        <a href='/domains/github.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+            github.com
+        </a>
+    
+        <a href='/domains/hoogle.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=hoogle.haskell.org" loading="lazy" aria-hidden="true">
+            hoogle.haskell.org
+        </a>
+    
+        <a href='/domains/planetmath.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=planetmath.org" loading="lazy" aria-hidden="true">
+            planetmath.org
+        </a>
+    
+        <a href='/domains/primes.utm.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=primes.utm.edu" loading="lazy" aria-hidden="true">
+            primes.utm.edu
+        </a>
+    
+        <a href='/domains/projecteuler.net' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
+            projecteuler.net
+        </a>
+    
+        <a href='/domains/wiki.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+            wiki.haskell.org
+        </a>
+    
+        <a href='/domains/www.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.haskell.org" loading="lazy" aria-hidden="true">
+            www.haskell.org
+        </a>
+    
+        <a href='/domains/www.schoolofhaskell.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading="lazy" aria-hidden="true">
+            www.schoolofhaskell.com
+        </a>
+    
+        <a href='/domains/www.seas.upenn.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading="lazy" aria-hidden="true">
+            www.seas.upenn.edu
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/020-factorial-digit-sum/020-factorial-digit-sum/">&laquo; 020. Factorial Digit Sum</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/022-name-scores/022-name-scores/">022. Name Scores &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

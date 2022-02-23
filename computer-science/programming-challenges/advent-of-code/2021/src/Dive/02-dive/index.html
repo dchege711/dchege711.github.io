@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Day 02: Dive! | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/dive/02-dive/">AoC 2021 Day 02: Dive!</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Day 02: Dive!</h1>
+    <p class="meta">
+        
+        Dated Feb 19, 2022; 
+        
+        last modified on Sat, 19 Feb 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#problem-statement">Problem Statement</a>
+      <ul>
+        <li><a href="#part-one">Part One</a></li>
+        <li><a href="#part-two">Part Two</a></li>
+      </ul>
+    </li>
+    <li><a href="#my-solution">My Solution</a></li>
+    <li><a href="#learning-from-others-solutions">Learning from Others' Solutions</a></li>
+    <li><a href="#reference">Reference</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='AoC2021-02'>
+        
+        Day 2 - Advent of Code 2021<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://adventofcode.com/2021/day/2" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 19, 2022.
+    
+</div>
+
+<h2 id="problem-statement">Problem Statement</h2>
+<h3 id="part-one">Part One</h3>
+<p>Now, you need to figure out how to pilot this thing.</p>
+<p>It seems like the submarine can take a series of commands like <code>forward 1</code>, <code>down 2</code>, or <code>up 3</code>:</p>
+<ul>
+<li><code>forward X</code> increases the horizontal position by <code>X</code> units.</li>
+<li><code>down X</code> <strong>increases</strong> the depth by <code>X</code> units.</li>
+<li><code>up X</code> <strong>decreases</strong> the depth by <code>X</code> units.</li>
+</ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Can&rsquo;t submarines move backwards? Why is there no <code>backward X</code>?</p>
+</div>
+</div>
+
+
+<p>Note that since you&rsquo;re on a submarine, <code>down</code> and <code>up</code> affect your
+<strong>depth</strong>, and so they have the opposite result of what you might
+expect.</p>
+<p>The submarine seems to already have a planned course (your puzzle
+input). You should probably figure out where it&rsquo;s going. For example:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">forward 5
+down 5
+forward 8
+up 3
+down 8
+forward 2
+</code></pre></div><p>Your horizontal position and depth both start at <code>0</code>. The steps above
+would then modify them as follows:</p>
+<ul>
+<li><code>forward 5</code> adds <code>5</code> to your horizontal position, a total of <code>5</code>.</li>
+<li><code>down 5</code> adds <code>5</code> to your depth, resulting in a value of <code>5</code>.</li>
+<li><code>forward 8</code> adds <code>8</code> to your horizontal position, a total of <code>13</code>.</li>
+<li><code>up 3</code> decreases your depth by <code>3</code>, resulting in a value of <code>2</code>.</li>
+<li><code>down 8</code> adds <code>8</code> to your depth, resulting in a value of <code>10</code>.</li>
+<li><code>forward 2</code> adds <code>2</code> to your horizontal position, a total of <code>15</code>.</li>
+</ul>
+<p>After following these instructions, you would have a horizontal position
+of <code>15</code> and a depth of <code>10</code>. (Multiplying these together produces
+<code>150</code>.)</p>
+<p>Calculate the horizontal position and depth you would have after the
+following 
+<a href="https://adventofcode.com/2021/day/2/input"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    planned course
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.
+<strong>What do you get if you multiply your final horizontal position by your
+final depth?</strong></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Not sure why we&rsquo;re interested in \(h \cdot d\) rather than in
+\(\sqrt{h^2 + d^2}\), which represents the distance. Part II might
+have this. Update: Part II doesn&rsquo;t address this.</p>
+<p>Another extension would be taking into account the effects of water
+current. If a submarine is not actively moving, it seems like it should
+drift depending on where the currents' magnitude and direction. Update:
+Part II doesn&rsquo;t address this.</p>
+</div>
+</div>
+
+
+<h3 id="part-two">Part Two</h3>
+<p>Based on your calculations, the planned course doesn&rsquo;t seem to make any
+sense. You find the submarine manual and discover that the process is
+actually slightly more complicated.</p>
+<p>In addition to horizontal position and depth, you&rsquo;ll also need to track
+a third value, <strong>aim</strong>, which also starts at <code>0</code>. The commands also mean
+something entirely different than you first thought:</p>
+<ul>
+<li><code>down X</code> <strong>increases</strong> your aim by <code>X</code> units.</li>
+<li><code>up X</code> <strong>decreases</strong> your aim by <code>X</code> units.</li>
+<li><code>forward X</code> does two things:
+<ul>
+<li>It increases your horizontal position by <code>X</code> units.</li>
+<li>It increases your depth by your aim <strong>multiplied by</strong> <code>X</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Again note that since you&rsquo;re on a submarine, <code>down</code> and <code>up</code> do the
+opposite of what you might expect: &ldquo;down&rdquo; means aiming in the positive
+direction.</p>
+<p>Now, the example above does something different:</p>
+<ul>
+<li><code>forward 5</code> adds <code>5</code> to your horizontal position, a total of <code>5</code>.
+Because your aim is <code>0</code>, your depth does not change.</li>
+<li><code>down 5</code> adds <code>5</code> to your aim, resulting in a value of <code>5</code>.</li>
+<li><code>forward 8</code> adds <code>8</code> to your horizontal position, a total of <code>13</code>.
+Because your aim is <code>5</code>, your depth increases by <code>8 * 5 = 40</code>.</li>
+<li><code>up 3</code> decreases your aim by <code>3</code>, resulting in a value of <code>2</code>.</li>
+<li><code>down 8</code> adds <code>8</code> to your aim, resulting in a value of <code>10</code>.</li>
+<li><code>forward 2</code> adds <code>2</code> to your horizontal position, a total of <code>15</code>.
+Because your aim is <code>10</code>, your depth increases by <code>2 * 10 = 20</code> to a
+total of <code>60</code>.</li>
+</ul>
+<p>After following these new instructions, you would have a horizontal
+position of <code>15</code> and a depth of <code>60</code>. (Multiplying these produces
+<code>900</code>.)</p>
+<p>Using this new interpretation of the commands, calculate the horizontal
+position and depth you would have after following the planned course.
+<strong>What do you get if you multiply your final horizontal position by your
+final depth?</strong></p>
+<h2 id="my-solution">My Solution</h2>
+
+
+<div id='Dive.hs'><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">{-# OPTIONS_GHC -Wall #-}</span>
+
+<span style="color:#00a8c8">module</span> <span style="color:#111">Dive.Dive</span>
+  <span style="color:#111">(</span> <span style="color:#75af00">productOfFinalPosition</span><span style="color:#111">,</span>
+    <span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span><span style="color:#111">,</span>
+  <span style="color:#111">)</span>
+<span style="color:#00a8c8">where</span>
+
+<span style="color:#75715e">-- One consideration in Haskell is the third-party library that I should use,</span>
+<span style="color:#75715e">-- given that standard GHC seems quite lean. [1] should help in picking up</span>
+<span style="color:#75715e">-- libraries that have lots of usage. For example, [2] helped me pick [3], which</span>
+<span style="color:#75715e">-- uses Posix regex, and is fast, native, stable and lazy.</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://wiki.haskell.org/Category:Libraries</span>
+<span style="color:#75715e">-- [2]: https://wiki.haskell.org/Regular_expressions</span>
+<span style="color:#75715e">-- [3]: https://hackage.haskell.org/package/regex-tdfa</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Maybe</span> <span style="color:#111">(</span><span style="color:#75af00">fromJust</span><span style="color:#111">,</span> <span style="color:#75af00">isJust</span><span style="color:#111">,</span> <span style="color:#75af00">mapMaybe</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Text.Read</span> <span style="color:#111">(</span><span style="color:#75af00">readMaybe</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Text.Regex.TDFA</span> <span style="color:#111">(</span> <span style="color:#111">(</span><span style="color:#f92672">=~</span><span style="color:#111">)</span> <span style="color:#111">)</span>
+
+<span style="color:#75715e">-- [1] suggests that I should be fine without deriving from the `Enum` data</span>
+<span style="color:#75715e">-- type. Deriving from `Enum` helps me when I care about the mapping to an</span>
+<span style="color:#75715e">-- underlying type, e.g. Int. [2]</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/5-tokenizer-data-types#enumerated-data-types</span>
+<span style="color:#75715e">-- [2]: https://stackoverflow.com/questions/6000511/better-way-to-define-an-enum-in-haskell/6000520</span>
+<span style="color:#75715e">-- [3]: https://www.schoolofhaskell.com/school/starting-with-haskell/introduction-to-haskell/2-algebraic-data-types</span>
+<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">DiveDirection</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Up</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">Down</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">Forward</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Eq</span><span style="color:#111">,</span> <span style="color:#00a8c8">Show</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">diveDirection</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#00a8c8">DiveDirection</span>
+<span style="color:#75af00">diveDirection</span> <span style="color:#d88200">&#34;forward&#34;</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Just</span> <span style="color:#00a8c8">Forward</span>
+<span style="color:#75af00">diveDirection</span> <span style="color:#d88200">&#34;up&#34;</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Just</span> <span style="color:#00a8c8">Up</span>
+<span style="color:#75af00">diveDirection</span> <span style="color:#d88200">&#34;down&#34;</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Just</span> <span style="color:#00a8c8">Down</span>
+<span style="color:#75af00">diveDirection</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Nothing</span>
+
+<span style="color:#75af00">parseSubMatches</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
+<span style="color:#75af00">parseSubMatches</span> <span style="color:#111">[</span><span style="color:#111">dir</span><span style="color:#111">,</span> <span style="color:#111">mag</span><span style="color:#111">]</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">direction</span> <span style="color:#f92672">=</span> <span style="color:#111">diveDirection</span> <span style="color:#111">dir</span>
+      <span style="color:#111">magnitude</span> <span style="color:#f92672">=</span> <span style="color:#111">readMaybe</span> <span style="color:#111">mag</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#00a8c8">Int</span>
+      <span style="color:#111">parsedDirAndMag</span> <span style="color:#f92672">=</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#111">isJust</span> <span style="color:#111">direction</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">isJust</span> <span style="color:#111">magnitude</span>
+          <span style="color:#00a8c8">then</span> <span style="color:#00a8c8">Just</span> <span style="color:#111">(</span><span style="color:#111">fromJust</span> <span style="color:#111">direction</span><span style="color:#111">,</span> <span style="color:#111">fromJust</span> <span style="color:#111">magnitude</span><span style="color:#111">)</span>
+          <span style="color:#00a8c8">else</span> <span style="color:#00a8c8">Nothing</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#111">parsedDirAndMag</span>
+<span style="color:#75af00">parseSubMatches</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Nothing</span>
+
+<span style="color:#75715e">-- Surprised that defining the constant as `STEP_REGEX` does not compile:</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">--    Not in scope: data constructor ‘FORWARD’typecheck</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- Variable names must start with a lowercase letter, and anything that is</span>
+<span style="color:#75715e">-- uppercase is interpreted as a Data Constructor. [1]</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://stackoverflow.com/a/28381111/7812406</span>
+<span style="color:#75af00">stepRegex</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Char</span><span style="color:#111">]</span>
+<span style="color:#75af00">stepRegex</span> <span style="color:#f92672">=</span> <span style="color:#d88200">&#34;([a-z]+) ([0-9]+)&#34;</span> <span style="color:#75715e">-- regex-tdfa doesn&#39;t have \d for digits</span>
+
+<span style="color:#75af00">directionAndMagnitude</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
+<span style="color:#75af00">directionAndMagnitude</span> <span style="color:#111">s</span> <span style="color:#f92672">=</span>
+  <span style="color:#75715e">-- The format is (beforeMatch, firstMatch, afterMatch, [subMatches])</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">(</span><span style="color:#00a8c8">_</span><span style="color:#111">,</span> <span style="color:#00a8c8">_</span><span style="color:#111">,</span> <span style="color:#00a8c8">_</span><span style="color:#111">,</span> <span style="color:#111">subMatches</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">s</span> <span style="color:#f92672">=~</span> <span style="color:#111">stepRegex</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">String</span><span style="color:#111">,</span> <span style="color:#00a8c8">String</span><span style="color:#111">,</span> <span style="color:#00a8c8">String</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">])</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#75715e">-- Haskell lists are ordinary single-linked lists. Except operations on the</span>
+      <span style="color:#75715e">-- first element (e.g. prepend, get, remove), the rest of the operations</span>
+      <span style="color:#75715e">-- (including getting the length and indexing) are linear-time.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://wiki.haskell.org/How_to_work_on_lists</span>
+      <span style="color:#111">parseSubMatches</span> <span style="color:#111">subMatches</span>
+
+<span style="color:#75af00">applySign</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">applySign</span> <span style="color:#111">(</span><span style="color:#00a8c8">Up</span><span style="color:#111">,</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span> <span style="color:#111">i</span>
+<span style="color:#75af00">applySign</span> <span style="color:#111">(</span><span style="color:#00a8c8">Down</span><span style="color:#111">,</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">i</span>
+<span style="color:#75af00">applySign</span> <span style="color:#111">(</span><span style="color:#00a8c8">Forward</span><span style="color:#111">,</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">i</span>
+
+<span style="color:#75715e">-- It&#39;s common in Haskell to use the apostrophe to signify a relationship to a</span>
+<span style="color:#75715e">-- previously defined item. Similar to how apostrophes are used in math.</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://stackoverflow.com/a/5673954/7812406</span>
+<span style="color:#75af00">applySign&#39;</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75715e">-- Hlint saved me here. My initial implementation was:</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">--    if isJust m then applySign $ fromJust m else 0</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- ... and Hlint suggested:</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">--    maybe 0 applySign m</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- ... and further suggested dropping the `m` citing Eta reduction. This</span>
+<span style="color:#75715e">-- reduction leads to the cleaner Pointfree style which omits the names of the</span>
+<span style="color:#75715e">-- variables. Pointfree style puts the spotlight on composing functions (high</span>
+<span style="color:#75715e">-- level), rather than shuffling data (low level). [1] [2].</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://wiki.haskell.org/Eta_conversion</span>
+<span style="color:#75715e">-- [2]: https://wiki.haskell.org/Pointfree</span>
+<span style="color:#75715e">-- [3]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/4-higher-order-programming-and-type-inference#wholemeal-programming</span>
+<span style="color:#75af00">applySign&#39;</span> <span style="color:#f92672">=</span> <span style="color:#111">maybe</span> <span style="color:#ae81ff">0</span> <span style="color:#111">applySign</span>
+
+<span style="color:#75af00">isForward</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+<span style="color:#75af00">isForward</span> <span style="color:#111">(</span><span style="color:#00a8c8">Forward</span><span style="color:#111">,</span> <span style="color:#00a8c8">_</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">True</span>
+<span style="color:#75af00">isForward</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">False</span>
+
+<span style="color:#75af00">cumulativeSums</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">cumulativeSums</span> <span style="color:#00a8c8">[]</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
+<span style="color:#75af00">cumulativeSums</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">]</span>
+<span style="color:#75af00">cumulativeSums</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">x</span> <span style="color:#f92672">+</span> <span style="color:#111">y</span><span style="color:#111">]</span>
+<span style="color:#75af00">cumulativeSums</span> <span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#00a8c8">:</span> <span style="color:#111">y</span> <span style="color:#00a8c8">:</span> <span style="color:#111">zs</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span> <span style="color:#00a8c8">:</span> <span style="color:#111">cumulativeSums</span> <span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#f92672">+</span> <span style="color:#111">y</span> <span style="color:#00a8c8">:</span> <span style="color:#111">zs</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">productOfFinalPosition</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">productOfFinalPosition</span> <span style="color:#111">steps</span> <span style="color:#f92672">=</span>
+  <span style="color:#75715e">-- In general, use `where` for locally-defined functions, and `let` for</span>
+  <span style="color:#75715e">-- intermediate values. [1]</span>
+  <span style="color:#75715e">--</span>
+  <span style="color:#75715e">-- I don&#39;t fully get the nuance in [2], but it might come in handy later as</span>
+  <span style="color:#75715e">-- I get more experience with Haskell. A broad stroke would be `let` places</span>
+  <span style="color:#75715e">-- fewer restrictions, and `where` is more readable, but `where` may obscure</span>
+  <span style="color:#75715e">-- inefficient code that redefines local functions.</span>
+  <span style="color:#75715e">--</span>
+  <span style="color:#75715e">-- [1]: http://www.cse.unsw.edu.au/~cs3161/14s2/StyleGuide.html#sec-5-1-1</span>
+  <span style="color:#75715e">-- [2]: https://wiki.haskell.org/Let_vs._Where</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">parsedSteps</span> <span style="color:#f92672">=</span> <span style="color:#111">mapMaybe</span> <span style="color:#111">directionAndMagnitude</span> <span style="color:#111">steps</span>
+
+      <span style="color:#75715e">-- `fst` and `snd` are utility functions for the first and second members</span>
+      <span style="color:#75715e">-- of a pair, respectively. [1]</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://en.wikibooks.org/wiki/Haskell/Lists_and_tuples</span>
+
+      <span style="color:#75715e">-- How do I compute `horizontalPos` and `verticalPos` while iterating</span>
+      <span style="color:#75715e">-- through `parsedSteps` once? From an imperative programming background,</span>
+      <span style="color:#75715e">-- this looks pretty inefficient! Update: [1] suggests the `foldl`</span>
+      <span style="color:#75715e">-- package.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-Foldable.html#g:18</span>
+      <span style="color:#111">finalHorizontalPos</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">applySign</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">isForward</span> <span style="color:#111">parsedSteps</span>
+
+      <span style="color:#75715e">-- The function composition operator is handy when inverting the filter</span>
+      <span style="color:#75715e">-- predicate.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://techoverflow.net/2014/01/03/haskell-invert-filter-predicate/</span>
+      <span style="color:#111">finalVerticalPos</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">applySign</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#111">not</span> <span style="color:#f92672">.</span> <span style="color:#111">isForward</span><span style="color:#111">)</span> <span style="color:#111">parsedSteps</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#111">finalHorizontalPos</span> <span style="color:#f92672">*</span> <span style="color:#111">finalVerticalPos</span>
+
+<span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span> <span style="color:#111">steps</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">parsedSteps</span> <span style="color:#f92672">=</span> <span style="color:#111">mapMaybe</span> <span style="color:#111">directionAndMagnitude</span> <span style="color:#111">steps</span>
+      <span style="color:#111">finalHorizontalPos</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">applySign</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">isForward</span> <span style="color:#111">parsedSteps</span>
+      <span style="color:#75715e">-- Hlint suggestion on using map once was illuminating. I had code like:</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--    l = ([1..10] :: [Int])</span>
+      <span style="color:#75715e">--    map even $ map negate l</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- ... for which Hlint suggested:</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--    map (even . negate) l</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- ... and that makes sense. Composition strikes again!</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- That said, the (.) can be unwieldy because we normally read from left</span>
+      <span style="color:#75715e">-- to right, but (.) composition is read from right to left. For extra</span>
+      <span style="color:#75715e">-- readability, we can use the (&gt;&gt;&gt;) operator from `Control.Arrow`, e.g.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--    map (negate &gt;&gt;&gt; even) l</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- ... as it flips the (.) operator. [1]</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://byorgey.wordpress.com/2019/04/24/competitive-programming-in-haskell-basic-setup/</span>
+      <span style="color:#111">aimDeltas</span> <span style="color:#f92672">=</span>
+        <span style="color:#111">map</span>
+          <span style="color:#111">(</span><span style="color:#111">applySign&#39;</span> <span style="color:#f92672">.</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">x</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">not</span> <span style="color:#f92672">.</span> <span style="color:#111">isForward</span><span style="color:#111">)</span> <span style="color:#111">x</span> <span style="color:#00a8c8">then</span> <span style="color:#00a8c8">Just</span> <span style="color:#111">x</span> <span style="color:#00a8c8">else</span> <span style="color:#00a8c8">Nothing</span><span style="color:#111">))</span>
+          <span style="color:#111">parsedSteps</span>
+
+      <span style="color:#75715e">-- How do I do cumulative sums, i.e. [1, 2, 3, 4] -&gt; [1, 3, 6, 10]? The end</span>
+      <span style="color:#75715e">-- result is a list, so maybe something to do with `map`, but how do I</span>
+      <span style="color:#75715e">-- reference what came before? Maybe a standalone function with pattern</span>
+      <span style="color:#75715e">-- matching?</span>
+      <span style="color:#111">cumulativeAims</span> <span style="color:#f92672">=</span> <span style="color:#111">cumulativeSums</span> <span style="color:#111">aimDeltas</span>
+
+      <span style="color:#111">forwardDeltas</span> <span style="color:#f92672">=</span>
+        <span style="color:#111">map</span>
+          <span style="color:#111">(</span><span style="color:#111">applySign&#39;</span> <span style="color:#f92672">.</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">x</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">isForward</span> <span style="color:#111">x</span> <span style="color:#00a8c8">then</span> <span style="color:#00a8c8">Just</span> <span style="color:#111">x</span> <span style="color:#00a8c8">else</span> <span style="color:#00a8c8">Nothing</span><span style="color:#111">))</span>
+          <span style="color:#111">parsedSteps</span>
+
+      <span style="color:#75715e">-- In other languages, moving from a list to a single value is referred to</span>
+      <span style="color:#75715e">-- as a reduction. Haskell uses the term &#34;folding&#34;. On lists, one can</span>
+      <span style="color:#75715e">-- either recursively combine the 1st element with the result of combining</span>
+      <span style="color:#75715e">-- the rest (right fold), or recursively combine the results of combining</span>
+      <span style="color:#75715e">-- all but the last element with the last element (left fold). Some</span>
+      <span style="color:#75715e">-- initial value is provided that is combined with the first item in the</span>
+      <span style="color:#75715e">-- list. There are some nuances:</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--   `foldr` lazily evaluates the recursive case of folding over the rest</span>
+      <span style="color:#75715e">--   of the list. This allows it to handle computations on infinite lists</span>
+      <span style="color:#75715e">--   that either produce some result without referencing the recursive</span>
+      <span style="color:#75715e">--   case, or short-circuit (e.g. `||` short-circuits on the first</span>
+      <span style="color:#75715e">--   `True`).</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--   `foldl` immediately calls itself with new params until it reaches the</span>
+      <span style="color:#75715e">--   end of the list (and thus can&#39;t handle infinite loops). However, its</span>
+      <span style="color:#75715e">--   tail recursiveness (the final result of the recursive call is the</span>
+      <span style="color:#75715e">--   final result of the function itself) can be efficiently compiled as a</span>
+      <span style="color:#75715e">--   as a loop.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--   `foldl` does not evaluate the initial parameter before the recursive</span>
+      <span style="color:#75715e">--   call is made. At the end of the list, we may end up with a gigantic</span>
+      <span style="color:#75715e">--   expression that causes stack overflow. Haskell provides the `foldl&#39;`</span>
+      <span style="color:#75715e">--   function that forces evaluation of the initial parameter before</span>
+      <span style="color:#75715e">--   making the recursive call.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- From [1] [2]. [3] and [4] goes into way more detail, and are worth a</span>
+      <span style="color:#75715e">-- closer read.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- That said, I still don&#39;t know how to summarize `(zip forwardDeltas</span>
+      <span style="color:#75715e">-- aimDeltas)`. `foldl` and `foldr` accept operators, but there&#39;s no</span>
+      <span style="color:#75715e">-- operator for &#34;increase depth value by aim multiplied by X&#34;. Seems like</span>
+      <span style="color:#75715e">-- `foldMap` is the place to be, but WHAT IS A MONOID?</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- Update: Misread the docs. `fold` and `foldMap` need monoids, but</span>
+      <span style="color:#75715e">-- `foldl` and `foldr` have examples with lambdas. Nice!</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://wiki.haskell.org/Fold</span>
+      <span style="color:#75715e">-- [2]: https://wiki.haskell.org/Tail_recursion</span>
+      <span style="color:#75715e">-- [3]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-Foldable.html#overview</span>
+      <span style="color:#75715e">-- [4]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/6-laziness</span>
+
+      <span style="color:#75715e">-- My version had:</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--    (fst p * snd p)</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- ... and Hlint proposed the use of uncurry, which converts a curried</span>
+      <span style="color:#75715e">-- function to a function on pairs. That&#39;s pretty neat.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:uncurry</span>
+
+      <span style="color:#75715e">-- Lambda abstractions can also have multiple arguments. For example:</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">--    \x y z -&gt; [x, 2 * y, 3 * z]</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- ... is an anonymous function that takes 3 arguments.</span>
+      <span style="color:#75715e">--</span>
+      <span style="color:#75715e">-- [1]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/4-higher-order-programming-and-type-inference#anonymous-functions</span>
+      <span style="color:#111">finalDepth</span> <span style="color:#f92672">=</span>
+        <span style="color:#111">foldr</span>
+          <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">p</span> <span style="color:#111">depthSoFar</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">depthSoFar</span> <span style="color:#f92672">+</span> <span style="color:#111">uncurry</span> <span style="color:#111">(</span><span style="color:#f92672">*</span><span style="color:#111">)</span> <span style="color:#111">p</span><span style="color:#111">)</span>
+          <span style="color:#ae81ff">0</span>
+          <span style="color:#111">(</span><span style="color:#111">zip</span> <span style="color:#111">forwardDeltas</span> <span style="color:#111">cumulativeAims</span><span style="color:#111">)</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#111">finalHorizontalPos</span> <span style="color:#f92672">*</span> <span style="color:#111">finalDepth</span>
+</code></pre></div></div>
+
+<h2 id="learning-from-others-solutions">Learning from Others' Solutions</h2>
+<p>Like my solution for &ldquo;Day 01: Sonar Sweep&rdquo;, this one also has an
+overuse of <code>Maybe</code> that could have been abstracted out during the
+parsing stage.</p>
+<p><span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span> uses the <code>Parsing</code> module, which results
+in pretty concise code:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">Instruction</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">GoForward</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">GoUp</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">GoDown</span> <span style="color:#00a8c8">Int</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Show</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">instructions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span>
+<span style="color:#75af00">instructions</span> <span style="color:#f92672">=</span> <span style="color:#111">sepEndBy1</span> <span style="color:#111">(</span><span style="color:#111">lexeme</span> <span style="color:#111">direction</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#111">integer</span><span style="color:#111">)</span> <span style="color:#111">eol</span>
+  <span style="color:#00a8c8">where</span> <span style="color:#111">direction</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;forward&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoForward</span><span style="color:#111">)</span>
+                <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;up&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoUp</span><span style="color:#111">)</span>
+                <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;down&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoDown</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">readInput</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Monad</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">m</span><span style="color:#111">,</span> <span style="color:#00a8c8">MonadReader</span> <span style="color:#111">env</span> <span style="color:#111">m</span><span style="color:#111">,</span> <span style="color:#00a8c8">HasLogFunc</span> <span style="color:#111">env</span><span style="color:#111">)</span> <span style="color:#f92672">=&gt;</span> <span style="color:#111">m</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span>
+<span style="color:#75af00">readInput</span> <span style="color:#f92672">=</span> <span style="color:#111">readInputParsing</span> <span style="color:#d88200">&#34;data/day02.txt&#34;</span> <span style="color:#111">instructions</span>
+</code></pre></div><p>These parsing utilities are not in the packages on Stackage. Turns out
+<span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span> has a custom
+
+<a href="https://jhidding.github.io/aoc2021/#appendix-parsing"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    app/Parsing.hs
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+that extends functionality from <span class="citation-ref"><a href="#Text.Megaparsec"></a></span>.</p>
+<h2 id="reference">Reference</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HiddingAoC2021-02'>
+        
+        Advent of Code 2021: Day 2: Dive!<i></i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://jhidding.github.io/aoc2021/#day-2-dive" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 22, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Text.Megaparsec'>
+        
+        Text.Megaparsec<i>.</i>
+        
+    </cite>
+    
+     Mark Karpov.
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/megaparsec-9.2.0/docs/Text-Megaparsec.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://markkarpov.com/tutorial/megaparsec.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy" aria-hidden="true">
+        <i>markkarpov.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 23, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/karpov-mark'>Karpov, Mark</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+            adventofcode.com
+        </a>
+    
+        <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+            hackage.haskell.org
+        </a>
+    
+        <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+            jhidding.github.io
+        </a>
+    
+        <a href='/domains/markkarpov.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy" aria-hidden="true">
+            markkarpov.com
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/sonarsweep/01-sonar-sweep/">&laquo; AoC 2021 Day 01: Sonar Sweep</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/">Learning Haskell via AoC 2021 &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

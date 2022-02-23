@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
     <head>
         <title>
@@ -17,8 +17,18 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
 
         <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.pack.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
 
         <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -39,7 +49,7 @@
 
             
             <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q">
+                <input type="text" id="q" name="q" title="Search Query">
                 <input type="submit" id="submitButton" value="Search">
             </form>
 
@@ -343,7 +353,7 @@ Test&rdquo;). Didn&rsquo;t scale well because lots of content moderation was nee
     
     
     <a href="https://news.ycombinator.com/item?id=27838479" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy">
+        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
         <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
@@ -377,7 +387,7 @@ Test&rdquo;). Didn&rsquo;t scale well because lots of content moderation was nee
     
     
     <a href="https://en.wikipedia.org/wiki/If%E2%80%94" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
         <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
@@ -411,7 +421,7 @@ Test&rdquo;). Didn&rsquo;t scale well because lots of content moderation was nee
     
     
     <a href="https://news.ycombinator.com/item?id=25580637" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy">
+        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
         <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
@@ -450,12 +460,12 @@ Test&rdquo;). Didn&rsquo;t scale well because lots of content moderation was nee
     Cited Domains:
     
         <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
             en.wikipedia.org
         </a>
     
         <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy">
+            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
             news.ycombinator.com
         </a>
     

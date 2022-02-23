@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
     <head>
         <title>
@@ -17,8 +17,18 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
 
         <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.pack.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
 
         <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -39,7 +49,7 @@
 
             
             <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q">
+                <input type="text" id="q" name="q" title="Search Query">
                 <input type="submit" id="submitButton" value="Search">
             </form>
 
@@ -114,7 +124,7 @@
     
     
     <a href="https://slatestarcodex.com/2015/01/31/the-parable-of-the-talents/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=slatestarcodex.com" loading="lazy">
+        <img src="https://www.google.com/s2/favicons?domain=slatestarcodex.com" loading="lazy" aria-hidden="true">
         <i>slatestarcodex.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
     </a>.
     
@@ -190,7 +200,7 @@
     Cited Domains:
     
         <a href='/domains/slatestarcodex.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=slatestarcodex.com" loading="lazy">
+            <img src="https://www.google.com/s2/favicons?domain=slatestarcodex.com" loading="lazy" aria-hidden="true">
             slatestarcodex.com
         </a>
     
