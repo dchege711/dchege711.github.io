@@ -1,5 +1,7 @@
 module Main (main) where
 
+import AoC2021InputParser (parseBinaryDiagnosticInput)
+import BinaryDiagnostic.BinaryDiagnostic (powerConsumption, lifeSupportRating)
 import Data.String (IsString (fromString))
 import Dive.Dive (productOfFinalPosition, productOfFinalPositionWithNewIntepretation)
 import Paths_advent_of_code_y2021 (getDataFileName)
@@ -45,11 +47,21 @@ testDive =
           )
     )
 
+testBinaryDiagnostic :: Test
+testBinaryDiagnostic =
+  TestCase
+    ( do
+        input <- parseBinaryDiagnosticInput "src/BinaryDiagnostic/scratchpad/sample.txt"
+        assertEqual "Power Consumption," 198 (powerConsumption input)
+        assertEqual "Life Support Rating," 230 (lifeSupportRating input)
+    )
+
 tests :: Test
 tests =
   TestList
     [ TestLabel "Day 01: Sonar Sweep" testSonarSweep,
-      TestLabel "Day 02: Dive!" testDive
+      TestLabel "Day 02: Dive!" testDive,
+      TestLabel "Day 03: Binary Diagnostic" testBinaryDiagnostic
     ]
 
 main :: IO Counts

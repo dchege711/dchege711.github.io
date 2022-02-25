@@ -299,6 +299,9 @@ update
 
 leading to erroneous flagging of code that compiles fine. Restarting the
 language server every once in a while is a tad inconvenient.</p>
+<p>Sometimes VS Code reports that it can&rsquo;t find both <code>GHC</code> and <code>HLint</code>.
+<span class="citation-ref"><a href="#rHaskellCantFindGHC"></a></span>&rsquo;s suggestion of launching VS Code via
+<code>code .</code> works.</p>
 <h2 id="debugging-haskell">Debugging Haskell</h2>
 <p>A lot of the errors are caught by the compiler given the strong typing.</p>
 <p>One option is to load the .hs file into GHCi and experiment in there.</p>
@@ -356,11 +359,25 @@ so that&rsquo;s promising!</p>
      <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
 </a>
 , but I don&rsquo;t use it much because it&rsquo;s not well-integrated into VS
-Code&rsquo;s intellisense and linting extensions. <span class="citation-ref"><a href="#HiddingAoC2021"></a></span>
-uses <span class="citation-ref"><a href="#Entangled"></a></span>, which allows one to put code inside
-markdown code blocks. Entangled then extracts code and writes it to
-traditional source files, and syncs changes made in either the markdown
-or the source file.</p>
+Code&rsquo;s intellisense and linting extensions.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>In terms of writing code, Literate Haskell works as expected on Emacs.
+However, the literate portion is LaTeX, and having a multi-language code
+doesn&rsquo;t work well with HighlightJS (the plugin API does not support
+line-by-line decision making). I&rsquo;m more interested in reading code that
+is well formatted, so I&rsquo;ll forego Literate Haskell, as HighlightJS is a
+tighter requirement for me.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#HiddingAoC2021"></a></span> uses <span class="citation-ref"><a href="#Entangled"></a></span>, which allows
+one to put code inside markdown code blocks. Entangled then extracts
+code and writes it to traditional source files, and syncs changes made
+in either the markdown or the source file.</p>
 
 
 
@@ -540,7 +557,7 @@ parsing.</p>
 </code></pre></div><p>Notice how <code>readInput</code> parses the input and takes care of converting
 into expected data types <code>[Int]</code> and takes care of parsing uncertainty
 with <code>*Maybe</code>. In comparison, my 
-<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/sonarsweep/01-sonar-sweep/#SonarSweep.hs"
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/01-sonar-sweep/#SonarSweep.hs"
     
     
     
@@ -550,7 +567,7 @@ with <code>*Maybe</code>. In comparison, my
      <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
 </a>
  and 
-<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/dive/02-dive/#Dive.hs"
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/Dive/02-dive/#Dive.hs"
     
     
     
@@ -561,6 +578,63 @@ with <code>*Maybe</code>. In comparison, my
 </a>
  functions receive a <code>[String]</code> which they then parse into intended
 types.</p>
+<p>Day 2 had input of the form:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt">forward 5
+down 5
+forward 8
+</code></pre></div><p>&hellip; and I parsed it using regular expressions. <a
+id="HiddingAoC2021-02-ParsingInput"></a><span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span>
+used the <code>Parsing</code> module, which results in pretty concise code:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">Instruction</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">GoForward</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">GoUp</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">GoDown</span> <span style="color:#00a8c8">Int</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Show</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">instructions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span>
+<span style="color:#75af00">instructions</span> <span style="color:#f92672">=</span> <span style="color:#111">sepEndBy1</span> <span style="color:#111">(</span><span style="color:#111">lexeme</span> <span style="color:#111">direction</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#111">integer</span><span style="color:#111">)</span> <span style="color:#111">eol</span>
+  <span style="color:#00a8c8">where</span> <span style="color:#111">direction</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;forward&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoForward</span><span style="color:#111">)</span>
+                <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;up&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoUp</span><span style="color:#111">)</span>
+                <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;down&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoDown</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">readInput</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Monad</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">m</span><span style="color:#111">,</span> <span style="color:#00a8c8">MonadReader</span> <span style="color:#111">env</span> <span style="color:#111">m</span><span style="color:#111">,</span> <span style="color:#00a8c8">HasLogFunc</span> <span style="color:#111">env</span><span style="color:#111">)</span> <span style="color:#f92672">=&gt;</span> <span style="color:#111">m</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span>
+<span style="color:#75af00">readInput</span> <span style="color:#f92672">=</span> <span style="color:#111">readInputParsing</span> <span style="color:#d88200">&#34;data/day02.txt&#34;</span> <span style="color:#111">instructions</span>
+</code></pre></div><p>These parsing utilities are not in the packages on Stackage. Turns out
+<span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span> has a custom
+
+<a href="https://jhidding.github.io/aoc2021/#appendix-parsing"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    app/Parsing.hs
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+that extends functionality from <span class="citation-ref"><a href="#Text.Megaparsec"></a></span>, which is
+an advanced fork of
+
+<a href="https://hackage.haskell.org/package/parsec"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    <code>Text.Parsec</code>
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, the
+&ldquo;default&rdquo; parsing library for Haskell.</p>
+<p>My takeaway is to first get the hang of <code>Text.Parsec</code>, as it probably
+has more &ldquo;official&rdquo; resources, e.g. 
+<a href="http://book.realworldhaskell.org/read/using-parsec.html"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Real World Haskell &gt; 16. Using
+Parsec
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.</p>
 <h2 id="monad"><code>Monad</code></h2>
 
 
@@ -1404,6 +1478,113 @@ containers/contexts <code>fmap g :: f a -&gt; f b</code>. <span class="citation-
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HiddingAoC2021-02'>
+        
+        Advent of Code 2021: Day 2: Dive!<i></i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://jhidding.github.io/aoc2021/#day-2-dive" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 22, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Text.Megaparsec'>
+        
+        Text.Megaparsec<i>.</i>
+        
+    </cite>
+    
+     Mark Karpov.
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/megaparsec-9.2.0/docs/Text-Megaparsec.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://markkarpov.com/tutorial/megaparsec.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy" aria-hidden="true">
+        <i>markkarpov.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 23, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='rHaskellCantFindGHC'>
+        
+        Haskell Extension for VS Code can&#39;t find GHC installed with nix-shell. Help! : haskell<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.reddit.com/r/haskell/comments/jah4ac/haskell_extension_for_vs_code_cant_find_ghc/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading="lazy" aria-hidden="true">
+        <i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 25, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -1417,6 +1598,8 @@ containers/contexts <code>fmap g :: f a -&gt; f b</code>. <span class="citation-
         <a href='/authors/breitner-joachim'>Breitner, Joachim</a>
     
         <a href='/authors/hidding-johan'>Hidding, Johan</a>
+    
+        <a href='/authors/karpov-mark'>Karpov, Mark</a>
     
         <a href='/authors/le-justin'>Le, Justin</a>
     
@@ -1461,6 +1644,11 @@ containers/contexts <code>fmap g :: f a -&gt; f b</code>. <span class="citation-
             jhidding.github.io
         </a>
     
+        <a href='/domains/markkarpov.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy" aria-hidden="true">
+            markkarpov.com
+        </a>
+    
         <a href='/domains/wiki.haskell.org' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
             wiki.haskell.org
@@ -1474,6 +1662,11 @@ containers/contexts <code>fmap g :: f a -&gt; f b</code>. <span class="citation-
         <a href='/domains/www.fpcomplete.com' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading="lazy" aria-hidden="true">
             www.fpcomplete.com
+        </a>
+    
+        <a href='/domains/www.reddit.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading="lazy" aria-hidden="true">
+            www.reddit.com
         </a>
     
         <a href='/domains/www.schoolofhaskell.com' style="margin: 0px 2px;">
@@ -1494,7 +1687,7 @@ containers/contexts <code>fmap g :: f a -&gt; f b</code>. <span class="citation-
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/dive/02-dive/">&laquo; AoC 2021 Day 02: Dive!</a>
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/">&laquo; AoC 2021 Day 03: Binary Diagnostic</a>
         
         
 

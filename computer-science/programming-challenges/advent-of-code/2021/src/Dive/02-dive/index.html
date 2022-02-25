@@ -95,7 +95,7 @@
 
 
 <li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/dive/02-dive/">AoC 2021 Day 02: Dive!</a>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/Dive/02-dive/">AoC 2021 Day 02: Dive!</a>
 </li>
 
     </ul>
@@ -128,7 +128,7 @@
     </li>
     <li><a href="#my-solution">My Solution</a></li>
     <li><a href="#learning-from-others-solutions">Learning from Others' Solutions</a></li>
-    <li><a href="#reference">Reference</a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
@@ -187,27 +187,6 @@
 <p>Note that since you&rsquo;re on a submarine, <code>down</code> and <code>up</code> affect your
 <strong>depth</strong>, and so they have the opposite result of what you might
 expect.</p>
-<p>The submarine seems to already have a planned course (your puzzle
-input). You should probably figure out where it&rsquo;s going. For example:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">forward 5
-down 5
-forward 8
-up 3
-down 8
-forward 2
-</code></pre></div><p>Your horizontal position and depth both start at <code>0</code>. The steps above
-would then modify them as follows:</p>
-<ul>
-<li><code>forward 5</code> adds <code>5</code> to your horizontal position, a total of <code>5</code>.</li>
-<li><code>down 5</code> adds <code>5</code> to your depth, resulting in a value of <code>5</code>.</li>
-<li><code>forward 8</code> adds <code>8</code> to your horizontal position, a total of <code>13</code>.</li>
-<li><code>up 3</code> decreases your depth by <code>3</code>, resulting in a value of <code>2</code>.</li>
-<li><code>down 8</code> adds <code>8</code> to your depth, resulting in a value of <code>10</code>.</li>
-<li><code>forward 2</code> adds <code>2</code> to your horizontal position, a total of <code>15</code>.</li>
-</ul>
-<p>After following these instructions, you would have a horizontal position
-of <code>15</code> and a depth of <code>10</code>. (Multiplying these together produces
-<code>150</code>.)</p>
 <p>Calculate the horizontal position and depth you would have after the
 following 
 <a href="https://adventofcode.com/2021/day/2/input"
@@ -257,22 +236,6 @@ something entirely different than you first thought:</p>
 <p>Again note that since you&rsquo;re on a submarine, <code>down</code> and <code>up</code> do the
 opposite of what you might expect: &ldquo;down&rdquo; means aiming in the positive
 direction.</p>
-<p>Now, the example above does something different:</p>
-<ul>
-<li><code>forward 5</code> adds <code>5</code> to your horizontal position, a total of <code>5</code>.
-Because your aim is <code>0</code>, your depth does not change.</li>
-<li><code>down 5</code> adds <code>5</code> to your aim, resulting in a value of <code>5</code>.</li>
-<li><code>forward 8</code> adds <code>8</code> to your horizontal position, a total of <code>13</code>.
-Because your aim is <code>5</code>, your depth increases by <code>8 * 5 = 40</code>.</li>
-<li><code>up 3</code> decreases your aim by <code>3</code>, resulting in a value of <code>2</code>.</li>
-<li><code>down 8</code> adds <code>8</code> to your aim, resulting in a value of <code>10</code>.</li>
-<li><code>forward 2</code> adds <code>2</code> to your horizontal position, a total of <code>15</code>.
-Because your aim is <code>10</code>, your depth increases by <code>2 * 10 = 20</code> to a
-total of <code>60</code>.</li>
-</ul>
-<p>After following these new instructions, you would have a horizontal
-position of <code>15</code> and a depth of <code>60</code>. (Multiplying these produces
-<code>900</code>.)</p>
 <p>Using this new interpretation of the commands, calculate the horizontal
 position and depth you would have after following the planned course.
 <strong>What do you get if you multiply your final horizontal position by your
@@ -530,39 +493,153 @@ final depth?</strong></p>
 </code></pre></div></div>
 
 <h2 id="learning-from-others-solutions">Learning from Others' Solutions</h2>
-<p>Like my solution for &ldquo;Day 01: Sonar Sweep&rdquo;, this one also has an
-overuse of <code>Maybe</code> that could have been abstracted out during the
-parsing stage.</p>
-<p><span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span> uses the <code>Parsing</code> module, which results
-in pretty concise code:</p>
+<p>Once again, I find myself admiring <span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span>&rsquo;s
+solution, which has fewer moving parts.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#HiddingAoC2021-02-ParsingInput"
+    
+    
+    
+    >
+    Remarks on how Hidding parses the file into <code>[Instruction]</code>
+    
+</a>
+.</p>
+</div>
+</div>
+
+
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">Instruction</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">GoForward</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">GoUp</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">GoDown</span> <span style="color:#00a8c8">Int</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Show</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Pos</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
 
-<span style="color:#75af00">instructions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span>
-<span style="color:#75af00">instructions</span> <span style="color:#f92672">=</span> <span style="color:#111">sepEndBy1</span> <span style="color:#111">(</span><span style="color:#111">lexeme</span> <span style="color:#111">direction</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#111">integer</span><span style="color:#111">)</span> <span style="color:#111">eol</span>
-  <span style="color:#00a8c8">where</span> <span style="color:#111">direction</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;forward&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoForward</span><span style="color:#111">)</span>
-                <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;up&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoUp</span><span style="color:#111">)</span>
-                <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">(</span><span style="color:#111">string</span> <span style="color:#d88200">&#34;down&#34;</span> <span style="color:#f92672">$&gt;</span> <span style="color:#00a8c8">GoDown</span><span style="color:#111">)</span>
+<span style="color:#75af00">moveA</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Pos</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Instruction</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Pos</span>
+<span style="color:#75af00">moveA</span> <span style="color:#111">(</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#00a8c8">GoForward</span> <span style="color:#111">dx</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#f92672">+</span> <span style="color:#111">dx</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">)</span>
+<span style="color:#75af00">moveA</span> <span style="color:#111">(</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#00a8c8">GoUp</span> <span style="color:#111">dy</span><span style="color:#111">)</span>      <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">+</span> <span style="color:#111">dy</span><span style="color:#111">)</span>
+<span style="color:#75af00">moveA</span> <span style="color:#111">(</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#00a8c8">GoDown</span> <span style="color:#111">dy</span><span style="color:#111">)</span>    <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">-</span> <span style="color:#111">dy</span><span style="color:#111">)</span>
 
-<span style="color:#75af00">readInput</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Monad</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">m</span><span style="color:#111">,</span> <span style="color:#00a8c8">MonadReader</span> <span style="color:#111">env</span> <span style="color:#111">m</span><span style="color:#111">,</span> <span style="color:#00a8c8">HasLogFunc</span> <span style="color:#111">env</span><span style="color:#111">)</span> <span style="color:#f92672">=&gt;</span> <span style="color:#111">m</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span>
-<span style="color:#75af00">readInput</span> <span style="color:#f92672">=</span> <span style="color:#111">readInputParsing</span> <span style="color:#d88200">&#34;data/day02.txt&#34;</span> <span style="color:#111">instructions</span>
-</code></pre></div><p>These parsing utilities are not in the packages on Stackage. Turns out
-<span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span> has a custom
+<span style="color:#75af00">productOfFinalPosition</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">productOfFinalPosition</span> <span style="color:#111">instructions</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span> <span style="color:#f92672">*</span> <span style="color:#111">y</span>
+  <span style="color:#00a8c8">where</span> <span style="color:#111">(</span><span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl</span> <span style="color:#111">moveA</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#111">instructions</span>
+</code></pre></div><p>&hellip; compared to mine:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">DiveDirection</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Up</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">Down</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">Forward</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Eq</span><span style="color:#111">,</span> <span style="color:#00a8c8">Show</span><span style="color:#111">)</span>
+<span style="color:#75af00">directionAndMagnitude</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
+<span style="color:#75af00">applySign</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">isForward</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">DiveDirection</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
 
-<a href="https://jhidding.github.io/aoc2021/#appendix-parsing"
+<span style="color:#75715e">-- The fact that I&#39;m repeatedly using `(DiveDirection, Int)` is a sign</span>
+<span style="color:#75715e">-- that something is wrong with my abstraction that only considers</span>
+<span style="color:#75715e">-- `DiveDirection`. My major thought at the time was that, &#34;Convert</span>
+<span style="color:#75715e">-- string inputs to enum values at parsing time,&#34; and once I achieved</span>
+<span style="color:#75715e">-- that, I patted myself on the back for applying a best practice. I did</span>
+<span style="color:#75715e">-- not stop to consider what else I could do to improve the abstraction.</span>
+
+<span style="color:#75af00">productOfFinalPosition</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">productOfFinalPosition</span> <span style="color:#111">steps</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">parsedSteps</span> <span style="color:#f92672">=</span> <span style="color:#111">mapMaybe</span> <span style="color:#111">directionAndMagnitude</span> <span style="color:#111">steps</span>
+      <span style="color:#111">finalHorizontalPos</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">applySign</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">isForward</span> <span style="color:#111">parsedSteps</span>
+      <span style="color:#111">finalVerticalPos</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">applySign</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#111">not</span> <span style="color:#f92672">.</span> <span style="color:#111">isForward</span><span style="color:#111">)</span> <span style="color:#111">parsedSteps</span>
+  <span style="color:#00a8c8">in</span> <span style="color:#111">finalHorizontalPos</span> <span style="color:#f92672">*</span> <span style="color:#111">finalVerticalPos</span>
+
+<span style="color:#75715e">-- Granted, during this time, I hadn&#39;t known about folding.</span>
+</code></pre></div><p>&hellip; really shows the code clarity that can be obtained from creating the
+proper abstractions.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><figure>
+    <img src="/img/computer-science/programming-challenges/advent-of-code/2021/stack-more-functions.jpg"
+         alt="&amp;ldquo;sum $ map applySign $ filter (not . isForward) parsedSteps&amp;rdquo;,
+colorized, Feb 2022."/> <figcaption>
+            <p>&ldquo;sum $ map applySign $ filter (not . isForward) parsedSteps&rdquo;,
+colorized, Feb 2022.</p>
+        </figcaption>
+</figure>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Copilot suggested <code>product . foldl' moveA (0, 0)</code>, but <code>product (3, 3) = 3</code> while <code>product [3, 3] = 9</code>. Color me surprised.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#HiddingAoC2021-02"></a></span>&rsquo;s solution for part two contains syntax
+that I am not familiar with:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">-- `Navigation` is using the record syntax. The compiler will generate</span>
+<span style="color:#75715e">-- accessor functions and update functions for the fields. Note that the</span>
+<span style="color:#75715e">-- records are still immutable, so the update syntax `y { x = z}`</span>
+<span style="color:#75715e">-- creates a new independent value. Also note that the compiler does not</span>
+<span style="color:#75715e">-- enforce that all fields are set. Accessing unspecified fields results</span>
+<span style="color:#75715e">-- in a runtime error. [1]</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://en.wikibooks.org/wiki/Haskell/More_on_datatypes#Named_Fields_(Record_Syntax)</span>
+<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">Navigation</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Navigation</span> <span style="color:#111">{</span><span style="color:#111">depth</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#111">aim</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#111">x</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">}</span>
+
+<span style="color:#75af00">moveB</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Navigation</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Instruction</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Navigation</span>
+<span style="color:#75715e">-- The `..` syntax is enabled by the RecordWildCards GHC language</span>
+<span style="color:#75715e">-- extension. Each elided field `f` is replaced by the pattern `f = f`.</span>
+<span style="color:#75715e">-- [1].</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- The `@` syntax that is preceded by whitespace is enabled by the</span>
+<span style="color:#75715e">-- TypeApplications GHC language extension [2].</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- When the `@` is not preceded by whitespace, it is being</span>
+<span style="color:#75715e">-- used as an as-pattern, which names a pattern for use of the RHS of an</span>
+<span style="color:#75715e">-- equation, e.g. `f s@(x:xs) = x:s` [3].</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- [1]: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/record_wildcards.html</span>
+<span style="color:#75715e">-- [2]: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/type_applications.html</span>
+<span style="color:#75715e">-- [3]: https://www.haskell.org/tutorial/patterns.html</span>
+<span style="color:#75af00">moveB</span> <span style="color:#111">n</span><span style="color:#f92672">@</span><span style="color:#00a8c8">Navigation</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span> <span style="color:#111">(</span><span style="color:#00a8c8">GoForward</span> <span style="color:#111">dx</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#111">{</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span> <span style="color:#f92672">+</span> <span style="color:#111">dx</span>
+                                           <span style="color:#111">,</span> <span style="color:#111">depth</span> <span style="color:#f92672">=</span> <span style="color:#111">depth</span> <span style="color:#f92672">+</span> <span style="color:#111">aim</span> <span style="color:#f92672">*</span> <span style="color:#111">dx</span><span style="color:#111">}</span>
+<span style="color:#75af00">moveB</span> <span style="color:#111">n</span><span style="color:#f92672">@</span><span style="color:#00a8c8">Navigation</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span> <span style="color:#111">(</span><span style="color:#00a8c8">GoUp</span> <span style="color:#111">dAim</span><span style="color:#111">)</span>      <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#111">{</span> <span style="color:#111">aim</span> <span style="color:#f92672">=</span> <span style="color:#111">aim</span> <span style="color:#f92672">-</span> <span style="color:#111">dAim</span> <span style="color:#111">}</span>
+<span style="color:#75af00">moveB</span> <span style="color:#111">n</span><span style="color:#f92672">@</span><span style="color:#00a8c8">Navigation</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span> <span style="color:#111">(</span><span style="color:#00a8c8">GoDown</span> <span style="color:#111">dAim</span><span style="color:#111">)</span>    <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#111">{</span> <span style="color:#111">aim</span> <span style="color:#f92672">=</span> <span style="color:#111">aim</span> <span style="color:#f92672">+</span> <span style="color:#111">dAim</span> <span style="color:#111">}</span>
+
+<span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Instruction</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span> <span style="color:#111">instructions</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span> <span style="color:#f92672">*</span> <span style="color:#111">depth</span>
+  <span style="color:#00a8c8">where</span> <span style="color:#00a8c8">Navigation</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl</span> <span style="color:#111">moveB</span> <span style="color:#111">(</span><span style="color:#00a8c8">Navigation</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#111">instructions</span>
+</code></pre></div><p>The fact that we can do <code>n{x = x + dx}</code> confused me because I didn&rsquo;t
+think <code>x = x + dx</code> is valid Haskell syntax, given it is not a generally
+true mathematical equation. However, the first <code>x</code> refers to the <code>x</code>
+field in <code>n</code>, while the second <code>x</code> refers to the one that was
+autogenerated by the <code>RecordWildCards</code> extension.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>
+<a href="https://github.com/mstksg/advent-of-code-2021/blob/master/reflections-out/day02.md"
     
     
     
         target="_blank" rel="noopener"
     >
-    app/Parsing.hs
+    Le&rsquo;s
+solution
      <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
 </a>
-,
-that extends functionality from <span class="citation-ref"><a href="#Text.Megaparsec"></a></span>.</p>
-<h2 id="reference">Reference</h2>
+
+starts with, &ldquo;Day 2 has a satisfying &ldquo;unified&rdquo; solution for both parts
+that can be derived from group theory!&rdquo; and I&rsquo;m not about that pure math
+life right now. ┐( ˘ ､ ˘ )┌</p>
+<p>It does mention an #adventofcode channel in libera IRC, and that&rsquo;s
+something worth checking out and possibly joining.</p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
 <ol>
 <li>
-
     
 
 <div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
@@ -593,46 +670,6 @@ that extends functionality from <span class="citation-ref"><a href="#Text.Megapa
      Accessed Feb 22, 2022.
     
 </div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Text.Megaparsec'>
-        
-        Text.Megaparsec<i>.</i>
-        
-    </cite>
-    
-     Mark Karpov.
-    
-    
-    
-    
-    <a href="https://hackage.haskell.org/package/megaparsec-9.2.0/docs/Text-Megaparsec.html" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
-        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://markkarpov.com/tutorial/megaparsec.html" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy" aria-hidden="true">
-        <i>markkarpov.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 23, 2022.
-    
-</div>
-
 </li>
 </ol>
 
@@ -640,13 +677,6 @@ that extends functionality from <span class="citation-ref"><a href="#Text.Megapa
 
         <div style="font-size: smaller;">
 
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/authors/karpov-mark'>Karpov, Mark</a>
-    
-</aside>
 
 
 
@@ -660,19 +690,9 @@ that extends functionality from <span class="citation-ref"><a href="#Text.Megapa
             adventofcode.com
         </a>
     
-        <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
-            hackage.haskell.org
-        </a>
-    
         <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
             jhidding.github.io
-        </a>
-    
-        <a href='/domains/markkarpov.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy" aria-hidden="true">
-            markkarpov.com
         </a>
     
 </aside>
@@ -688,10 +708,10 @@ that extends functionality from <span class="citation-ref"><a href="#Text.Megapa
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/sonarsweep/01-sonar-sweep/">&laquo; AoC 2021 Day 01: Sonar Sweep</a>
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/01-sonar-sweep/">&laquo; AoC 2021 Day 01: Sonar Sweep</a>
         
         
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/">Learning Haskell via AoC 2021 &raquo;</a>
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/">AoC 2021 Day 03: Binary Diagnostic &raquo;</a>
         
 
     </footer>
