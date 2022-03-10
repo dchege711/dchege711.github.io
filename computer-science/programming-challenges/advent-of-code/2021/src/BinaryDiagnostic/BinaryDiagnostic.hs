@@ -35,7 +35,7 @@ toBitList n numBits =
   map (\i -> if testBit n i then 1 else 0) [(numBits -1), (numBits -2) .. 0]
 
 -- | `fromBitList ds` returns the `Int` formed when `ds` is treated like a bit
--- | representation of an intege, e.g. `fromBitList [1, 0, 1, 1, 0] == 22`.
+-- | representation of an integer, e.g. `fromBitList [1, 0, 1, 1, 0] == 22`.
 fromBitList :: [Int] -> Int
 fromBitList ds = fst $ foldr f (0, 1) ds
   where
@@ -115,7 +115,7 @@ lastNumStanding [] _ _ _ = 0
 lastNumStanding [x] _ _ _ = x
 lastNumStanding nums width f positionToCheck =
   let expectedValues = f width nums
-      shouldBeSet = (expectedValues !! positionToCheck) == 1
+      shouldBeSet = (expectedValues !! positionToCheck) == 1 -- (*/_＼)
       bitIndex = length expectedValues - positionToCheck - 1
       matchingNums = filter (\n -> testBit n bitIndex == shouldBeSet) nums
    in if null matchingNums

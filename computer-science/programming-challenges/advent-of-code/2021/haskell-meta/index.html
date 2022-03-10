@@ -196,9 +196,8 @@ do the job.</p>
 │   └── Main.hs
 ├── src
 │   ├── AoC2021.hs
-│   └── SonarSweep
-│       ├── 01-sonar-sweep.md
-│       └── SonarSweep.hs
+│   ├── SonarSweep.hs
+│   └── SonarSweep.md
 └── test
     └──  AoC2021Test.hs
 </code></pre></div><p>I ended up using Cabal only as I thought it wouldn&rsquo;t have too many bells
@@ -438,6 +437,82 @@ and JavaScript&rsquo;s
      <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
 </a>
 .</p>
+<p>Cabal has integrations with Haddock, and that&rsquo;s useful for generating
+docs for the package. For some reason, <code>cabal init</code> doesn&rsquo;t generate a
+<code>Setup.hs</code> that is needed in <code>runhaskell Setup.hs haddock --internal</code>.
+Update: <code>cabal haddock</code> and <code>cabal v2-haddock</code> are alternative ways of
+using <code>haddock</code> on a package.</p>
+<figure>
+    <img src="/img/computer-science/programming-challenges/advent-of-code/2021/sample-haddock-documentation.jpg"
+         alt="&amp;ldquo;cabal haddock&amp;rdquo; generates documentation similar to ones at
+Hackage. Notice the &amp;ldquo;# Source&amp;rdquo; link."/> <figcaption>
+            <p>&ldquo;cabal haddock&rdquo; generates documentation similar to ones at
+Hackage. Notice the &ldquo;# Source&rdquo; link.</p>
+        </figcaption>
+</figure>
+
+<figure>
+    <img src="/img/computer-science/programming-challenges/advent-of-code/2021/sample-haddock-documentation-src-code.jpg"
+         alt="Clicking on the &amp;ldquo;#Source&amp;rdquo; link takes me to this browsable
+version of the code"/> <figcaption>
+            <p>Clicking on the &ldquo;#Source&rdquo; link takes me to this browsable
+version of the code</p>
+        </figcaption>
+</figure>
+
+<p>However, I&rsquo;d like the code inlined, and the non-code portions of the
+.lhs files rendered as normal text instead of being included inside a
+code block, like how <span class="citation-ref"><a href="#CIS194Spring13Monads"></a></span> is structured.
+Maybe the <code>lhs2TeX</code> package can get me there?</p>
+<p>Aha, <code>lhs2tex --markdown -o Foo.md Foo.lhs</code> gets me a nice .md file that
+could use some additional processing, e.g. removing the two leading
+lines that only have <code>%</code>s, adding YAML, changing the opening back-ticks
+to have <code>hs</code> (HighlightJS guesses the language correctly though). Maybe
+<code>lhs2TeX</code> has some customization options that won&rsquo;t require me to whip
+up a Python script? Didn&rsquo;t find anything promising. This script
+suffices:</p>
+
+
+<div id='publish_lhs_files.zsh'><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-zsh" data-lang="zsh"><span style="color:#75715e">#!/bin/zsh
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">if</span> <span style="color:#f92672">[[</span> <span style="color:#111">$1</span> <span style="color:#f92672">==</span> <span style="color:#d88200">&#34;--all&#34;</span> <span style="color:#f92672">]]</span>
+<span style="color:#00a8c8">then</span>
+<span style="color:#111">working_dir</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;</span><span style="color:#00a8c8">$(</span>dirname <span style="color:#111">$0</span><span style="color:#00a8c8">)</span><span style="color:#d88200">&#34;</span>
+<span style="color:#111">lhs_files</span><span style="color:#f92672">=(</span><span style="color:#111">$working_dir</span>/**/*.lhs<span style="color:#f92672">)</span>
+<span style="color:#00a8c8">elif</span> <span style="color:#f92672">[[</span> <span style="color:#111">$1</span> <span style="color:#f92672">]]</span>
+<span style="color:#00a8c8">then</span>
+<span style="color:#111">lhs_files</span><span style="color:#f92672">=(</span><span style="color:#111">$1</span><span style="color:#f92672">)</span>
+<span style="color:#00a8c8">else</span>
+<span style="color:#111">printf</span> <span style="color:#d88200">&#34;Either supply a filepath to an .lhs file, or use &#39;--all&#39;\n&#34;</span>
+<span style="color:#111">exit</span> <span style="color:#ae81ff">1</span>
+<span style="color:#00a8c8">fi</span>
+
+<span style="color:#00a8c8">for</span> lhs_file in <span style="color:#111">$lhs_files</span> <span style="color:#111">;</span> <span style="color:#00a8c8">do</span>
+    <span style="color:#111">output_file</span><span style="color:#f92672">=</span><span style="color:#d88200">${</span><span style="color:#111">lhs_file</span><span style="color:#111">/.lhs/.md</span><span style="color:#d88200">}</span> <span style="color:#75715e"># Replace .lhs with .md</span>
+    <span style="color:#75715e"># Delete the first 2 lines which only have a `%` character.</span>
+    <span style="color:#75715e"># The 2nd expression replaces `\#` with `#`. The former is needed for .lhs</span>
+    <span style="color:#75715e"># to compile. As an SO user said, when in doubt, add another backslash.</span>
+    lhs2tex --markdown <span style="color:#111">$lhs_file</span> <span style="color:#111">|</span> sed -e <span style="color:#d88200">&#39;1,2d&#39;</span> -e s.^<span style="color:#8045ff">\\\\\#</span>.<span style="color:#8045ff">\#</span>. &gt; <span style="color:#111">$output_file</span>
+    <span style="color:#111">printf</span> <span style="color:#d88200">&#34;Published </span><span style="color:#111">$output_file</span><span style="color:#d88200">\n&#34;</span>
+<span style="color:#00a8c8">done</span>
+</code></pre></div></div>
+
+<p>VS Code lacks multi-mode, which is helpful when editing .lhs files.
+<del>Emacs it is!</del> The editor shows highlights the non-code portions as
+Haskell, but the language server doesn&rsquo;t trip up. I&rsquo;ll keep using VS
+Code for now, especially with the 
+<a href="https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Run On Save
+extension
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+
+for regenerating the markdown as I save.</p>
 <h2 id="the-standard-library">The Standard Library</h2>
 <p><span class="citation-ref"><a href="#HiddingAoC2021"></a></span> uses the <code>RIO</code> library to replace the
 standard <code>Prelude</code>. <span class="citation-ref"><a href="#RioLibrary"></a></span> aims to be the de-facto
@@ -557,7 +632,7 @@ parsing.</p>
 </code></pre></div><p>Notice how <code>readInput</code> parses the input and takes care of converting
 into expected data types <code>[Int]</code> and takes care of parsing uncertainty
 with <code>*Maybe</code>. In comparison, my 
-<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/01-sonar-sweep/#SonarSweep.hs"
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/"
     
     
     
@@ -1687,8 +1762,8 @@ containers/contexts <code>fmap g :: f a -&gt; f b</code>. <span class="citation-
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/">&laquo; AoC 2021 Day 03: Binary Diagnostic</a>
         
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/">AoC 2021 Day 01: Sonar Sweep &raquo;</a>
         
 
     </footer>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Day 04: Giant Squid | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/GiantSquid/">AoC 2021 Day 04: Giant Squid</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Day 04: Giant Squid</h1>
+    <p class="meta">
+        
+        Dated Feb 25, 2022; 
+        
+        last modified on Fri, 25 Feb 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#part-one">Part One</a></li>
+    <li><a href="#part-two">Part Two</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='AoC2021-04'>
+        
+        Day 4 - Advent of Code 2021<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://adventofcode.com/2021/day/4" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Feb 25, 2022.
+    
+</div>
+
+<h2 id="part-one">Part One</h2>
+<p><em>You&rsquo;re already almost 1.5km (almost a mile) below the surface of the
+ocean, already so deep that you can&rsquo;t see any sunlight. What you <strong>can</strong>
+see, however, is a giant squid that has attached itself to the outside
+of your submarine.</em></p>
+<p><em>Maybe it wants to play
+
+<a href="https://en.wikipedia.org/wiki/Bingo_%28American_version%29"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    bingo
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+?</em></p>
+<p><em>Bingo is played on a set of boards each consisting of a 5x5 grid of
+numbers. Numbers are chosen at random, and the chosen number is
+<strong>marked</strong> on all boards on which it appears. (Numbers may not appear on
+all boards.) If all numbers in any row or any column of a board are
+marked, that board <strong>wins</strong>. (Diagonals don&rsquo;t count.)</em></p>
+<p><em>The submarine has a <strong>bingo subsystem</strong> to help passengers (currently,
+you and the giant squid) pass the time. It automatically generates a
+random order in which to draw numbers and a random set of boards (your
+puzzle input).</em></p>
+<p><em>The <strong>score</strong> of the winning board can be calculated. Start by finding
+the <strong>sum of all unmarked numbers</strong> on that board. Then multiply that
+sum by <strong>the number that was just called</strong> when the board won, to get
+the final score.</em></p>
+<p><em>To guarantee victory against the giant squid, figure out which board
+will win first. <strong>What will your final score be if you choose that
+board?</strong></em></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  OPTIONS_GHC -Wno-unrecognised-pragmas  #-}</span>
+<span style="color:#75715e">{-#  HLINT ignore &#34;Use tuple-section&#34;  #-}</span>
+
+<span style="color:#00a8c8">module</span> <span style="color:#111">GiantSquid</span>
+  <span style="color:#111">(</span> <span style="color:#00a8c8">DrawnNumbers</span><span style="color:#111">,</span>
+    <span style="color:#00a8c8">Tile</span><span style="color:#111">,</span>
+    <span style="color:#00a8c8">Board</span><span style="color:#111">,</span>
+    <span style="color:#75af00">scoreOfFirstWinningBoard</span><span style="color:#111">,</span>
+    <span style="color:#75af00">scoreOfLastWinningBoard</span><span style="color:#111">,</span>
+  <span style="color:#111">)</span>
+<span style="color:#00a8c8">where</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Vector</span> <span style="color:#00a8c8">as</span> <span style="color:#111">V</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Maybe</span> <span style="color:#111">(</span><span style="color:#75af00">fromJust</span><span style="color:#111">)</span>
+</code></pre></div><p>File format: the first line contains the numbers to draw. The rest is a new
+line followed by a 5x5 grid of numbers representing a board.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt">7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+
+22 13 17 11  0
+ 8  2 23  4 24
+21  9 14 16  7
+ 6 10  3 18  5
+ 1 12 20 15 19
+
+ 3 15  0  2 22
+ 9 18 13 17  5
+19  8  7 25 23
+20 11 10 24  4
+14 21 16 12  6
+</code></pre></div><p>The numbers to draw can be represented as an <code>[Int]</code>.</p>
+<p>A board can be represented as a flat list-like of <code>(Int, Bool)</code> tuples, with
+helper functions accessing the cell at <code>(i, j)</code>. Haskell types are immutable,
+so updating a board involves changing the entire board. I&rsquo;ll need to do a lot
+of indexing. From 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/#efficiency-of-collections-types"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    the evaluation for various containers
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, candidates are <code>List</code>, <code>Data.Sequence</code>, and <code>Data.Vector.*</code>.</p>
+<p>Typical operations will be updating a matching tile (if immutable, then
+creating new 25-element list), and then checking if the board wins (at most
+10 lookups). The need for <code>fmap</code> (<span class="citation-ref"><a href="#Data.Vector.Primitive"></a></span>) and
+indexing makes me choose <code>Data.Vector</code> for the <code>Board</code> type.</p>
+<p>Does changing a board in a list of <code>Board</code>s recreate the whole vector?
+Seems like it would because I&rsquo;d be using <code>map</code>. Presumably though, only one
+<code>[Board]</code> will be created because all <code>Boards</code> will be processed first.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">type</span> <span style="color:#00a8c8">DrawnNumbers</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Tile</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#00a8c8">Bool</span><span style="color:#111">)</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Tiles</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Vector</span> <span style="color:#00a8c8">Tile</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Board</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#00a8c8">Tiles</span><span style="color:#111">,</span> <span style="color:#00a8c8">Bool</span><span style="color:#111">)</span>
+</code></pre></div><p><span class="citation-ref"><a href="#HiddingAoC2021-04"></a></span> remarks that Haskell is not well-suited for
+multi-dimensional array processing, and therefore they use the <code>Massiv</code> library.
+In my case though, I represented the 5x5 board as a one-dimensional vector of 25
+elements.</p>
+<p>The <code>Massiv</code> also provided convenient APIs for the problem, which <span class="citation-ref"><a href="#HiddingAoC2021-04"></a></span> was able to utilize, e.g. traversing rows and columns,
+updating an entry that matches a predicate, etc.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><code>Massiv</code>&rsquo;s convenient APIs made me also look at APIs from <span class="citation-ref"><a href="#Data.Vector"></a></span>. Till then, I mostly assumed that <code>Data.Vector</code> shared the same API as
+<code>List</code>, only that the under-the-hood implementation was more efficient for my
+needs, e.g. indexing. Now that I&rsquo;ve looked at the docs, nothing stands out.
+There are a couple of mentions of &ldquo;monadic actions&rdquo;, e.g. <code>Data.Vector.mapM</code>
+which &ldquo;applies the monadic action to all elements of the vector, yielding a
+vector of results&rdquo;, but monadic actions can wait a bit for now. I&rsquo;m yet to get
+the hang on monads in code.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">boardWinsFromIndex</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Tiles</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+<span style="color:#75af00">boardWinsFromIndex</span> <span style="color:#111">tiles</span> <span style="color:#111">idx</span> <span style="color:#f92672">=</span>
+  <span style="color:#75715e">--  TODO: Add error handling? This function crashes with idx = 25</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">columnTiles</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">idx</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">5</span><span style="color:#111">,</span> <span style="color:#111">idx</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">..</span> <span style="color:#ae81ff">0</span><span style="color:#111">]</span> <span style="color:#f92672">++</span> <span style="color:#111">[</span><span style="color:#111">idx</span><span style="color:#111">]</span> <span style="color:#f92672">++</span> <span style="color:#111">[</span><span style="color:#111">idx</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span><span style="color:#111">,</span> <span style="color:#111">idx</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">..</span> <span style="color:#ae81ff">24</span><span style="color:#111">]</span>
+      <span style="color:#111">mod5</span> <span style="color:#f92672">=</span> <span style="color:#111">idx</span> <span style="color:#111">`</span><span style="color:#111">mod</span><span style="color:#111">`</span> <span style="color:#ae81ff">5</span>
+      <span style="color:#111">rowTiles</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">idx</span> <span style="color:#f92672">-</span> <span style="color:#111">mod5</span><span style="color:#111">,</span> <span style="color:#111">idx</span> <span style="color:#f92672">-</span> <span style="color:#111">mod5</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">..</span> <span style="color:#111">idx</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">-</span> <span style="color:#111">mod5</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">]</span>
+
+      <span style="color:#75715e">--  | Return `True` iff the tiles in the indices are all marked.</span>
+      <span style="color:#111">bingo</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+      <span style="color:#111">bingo</span> <span style="color:#111">(</span><span style="color:#111">j</span> <span style="color:#00a8c8">:</span> <span style="color:#111">js</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">let</span> <span style="color:#111">tileIsMarked</span> <span style="color:#f92672">=</span> <span style="color:#111">snd</span> <span style="color:#111">(</span><span style="color:#111">tiles</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.!</span> <span style="color:#111">j</span><span style="color:#111">)</span>
+                       <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">js</span>
+                           <span style="color:#00a8c8">then</span> <span style="color:#111">tileIsMarked</span>
+                           <span style="color:#00a8c8">else</span> <span style="color:#111">tileIsMarked</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">bingo</span> <span style="color:#111">js</span>
+      <span style="color:#111">bingo</span> <span style="color:#00a8c8">[]</span>       <span style="color:#f92672">=</span> <span style="color:#00a8c8">False</span>
+
+   <span style="color:#00a8c8">in</span> <span style="color:#111">bingo</span> <span style="color:#111">columnTiles</span> <span style="color:#f92672">||</span> <span style="color:#111">bingo</span> <span style="color:#111">rowTiles</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">TileWithIndex</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#00a8c8">Tile</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
+</code></pre></div><p>Unexpected infinite loop.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">l1</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#ae81ff">3</span><span style="color:#111">]</span>
+<span style="color:#75af00">l2</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">..</span> <span style="color:#111">]</span>
+<span style="color:#75af00">zip</span> <span style="color:#111">l1</span> <span style="color:#111">l2</span>              <span style="color:#75715e">-- [(1,1), (2,2), (3,3)]</span>
+<span style="color:#75af00">v1</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#ae81ff">3</span><span style="color:#111">]</span>
+<span style="color:#75af00">v2</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">..</span> <span style="color:#111">]</span>
+<span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">zip</span> <span style="color:#111">v1</span> <span style="color:#111">v2</span>            <span style="color:#75715e">-- Infinite loop!</span>
+</code></pre></div><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">indicesWithMatch</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Tiles</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Vector</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">indicesWithMatch</span> <span style="color:#111">tiles</span> <span style="color:#111">num</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">tileMatches</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">TileWithIndex</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+      <span style="color:#111">tileMatches</span> <span style="color:#111">numToMatch</span> <span style="color:#111">(</span><span style="color:#111">tile</span><span style="color:#111">,</span> <span style="color:#00a8c8">_</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">fst</span> <span style="color:#111">tile</span> <span style="color:#f92672">==</span> <span style="color:#111">numToMatch</span>
+
+      <span style="color:#111">tilesWithIndex</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Tiles</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Vector</span> <span style="color:#00a8c8">TileWithIndex</span>
+      <span style="color:#111">tilesWithIndex</span> <span style="color:#111">t</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">zip</span> <span style="color:#111">t</span> <span style="color:#111">(</span><span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#111">[</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">..</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">t</span><span style="color:#111">)])</span>
+
+      <span style="color:#111">matchingTilesWithIndex</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Vector</span> <span style="color:#00a8c8">TileWithIndex</span>
+      <span style="color:#111">matchingTilesWithIndex</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#111">tileMatches</span> <span style="color:#111">num</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#111">tilesWithIndex</span> <span style="color:#111">tiles</span><span style="color:#111">)</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">map</span> <span style="color:#111">snd</span> <span style="color:#111">matchingTilesWithIndex</span>
+
+<span style="color:#75af00">playRoundOnBoard</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Board</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Board</span>
+<span style="color:#75af00">playRoundOnBoard</span> <span style="color:#111">num</span> <span style="color:#111">board</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">updateTile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Tile</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Tile</span>
+      <span style="color:#111">updateTile</span> <span style="color:#111">n</span> <span style="color:#111">tile</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">fst</span> <span style="color:#111">tile</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span> <span style="color:#00a8c8">then</span> <span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#111">,</span> <span style="color:#00a8c8">True</span><span style="color:#111">)</span> <span style="color:#00a8c8">else</span> <span style="color:#111">tile</span>
+
+      <span style="color:#111">updatedTiles</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">updateTile</span> <span style="color:#111">num</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#111">fst</span> <span style="color:#111">board</span><span style="color:#111">)</span>
+      <span style="color:#111">matchedIndices</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">toList</span> <span style="color:#111">(</span><span style="color:#111">indicesWithMatch</span> <span style="color:#111">updatedTiles</span> <span style="color:#111">num</span><span style="color:#111">)</span>
+
+      <span style="color:#111">boardWins</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Tiles</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+      <span style="color:#111">boardWins</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">[]</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">False</span>
+      <span style="color:#111">boardWins</span> <span style="color:#111">tiles</span> <span style="color:#111">[</span><span style="color:#111">i</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">boardWinsFromIndex</span> <span style="color:#111">tiles</span> <span style="color:#111">i</span>
+      <span style="color:#111">boardWins</span> <span style="color:#111">tiles</span> <span style="color:#111">(</span><span style="color:#111">i</span> <span style="color:#00a8c8">:</span> <span style="color:#111">is</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">boardWinsFromIndex</span> <span style="color:#111">tiles</span> <span style="color:#111">i</span> <span style="color:#f92672">||</span> <span style="color:#111">boardWins</span> <span style="color:#111">tiles</span> <span style="color:#111">is</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#111">(</span><span style="color:#111">updatedTiles</span><span style="color:#111">,</span> <span style="color:#111">boardWins</span> <span style="color:#111">updatedTiles</span> <span style="color:#111">matchedIndices</span><span style="color:#111">)</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">BoardWithLastCalledNum</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#00a8c8">Board</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">playBingo</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">DrawnNumbers</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Board</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">BoardWithLastCalledNum</span>
+<span style="color:#75af00">playBingo</span> <span style="color:#111">(</span><span style="color:#111">n</span> <span style="color:#00a8c8">:</span> <span style="color:#111">nums</span><span style="color:#111">)</span> <span style="color:#111">currBoards</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">boardsAfterRound</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">playRoundOnBoard</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#111">currBoards</span>
+      <span style="color:#111">winner</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">snd</span> <span style="color:#111">boardsAfterRound</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#75715e">--  What is the idiomatic way of saying `if true`?</span>
+      <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">winner</span> <span style="color:#00a8c8">then</span> <span style="color:#111">playBingo</span> <span style="color:#111">nums</span> <span style="color:#111">boardsAfterRound</span> <span style="color:#00a8c8">else</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">winner</span><span style="color:#111">,</span> <span style="color:#111">n</span><span style="color:#111">)</span>
+<span style="color:#75af00">playBingo</span> <span style="color:#00a8c8">[]</span> <span style="color:#111">currBoards</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">currBoards</span><span style="color:#111">,</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">scoreOfBoard</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">BoardWithLastCalledNum</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">scoreOfBoard</span> <span style="color:#111">(</span><span style="color:#111">board</span><span style="color:#111">,</span> <span style="color:#111">lastCalledNum</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">let</span> <span style="color:#111">unmarkedTiles</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Tiles</span>
+      <span style="color:#111">unmarkedTiles</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#111">not</span> <span style="color:#f92672">.</span> <span style="color:#111">snd</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#111">fst</span> <span style="color:#111">board</span><span style="color:#111">)</span>
+   <span style="color:#00a8c8">in</span> <span style="color:#111">sum</span> <span style="color:#111">(</span><span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">map</span> <span style="color:#111">fst</span> <span style="color:#111">unmarkedTiles</span><span style="color:#111">)</span> <span style="color:#f92672">*</span> <span style="color:#111">lastCalledNum</span>
+
+<span style="color:#75af00">scoreOfFirstWinningBoard</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">DrawnNumbers</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#00a8c8">Board</span><span style="color:#111">])</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">scoreOfFirstWinningBoard</span> <span style="color:#111">(</span><span style="color:#111">drawnNums</span><span style="color:#111">,</span> <span style="color:#111">boards</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+  <span style="color:#111">scoreOfBoard</span> <span style="color:#111">(</span><span style="color:#111">playBingo</span> <span style="color:#111">drawnNums</span> <span style="color:#111">boards</span><span style="color:#111">)</span>
+</code></pre></div><h2 id="part-two">Part Two</h2>
+<p><em>On the other hand, it might be wise to try a different strategy: let the
+giant squid win.</em></p>
+<p><em>You aren&rsquo;t sure how many bingo boards a giant squid could play at once,
+so rather than waste time counting its arms, the safe thing to do is to
+<strong>figure out which board will win last</strong> and choose that one. That way,
+no matter which boards it picks, it will win for sure.</em></p>
+<p><em>Figure out which board will win last. <strong>Once it wins, what would its
+final score be?</strong></em></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">playLastBoardBingo</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">DrawnNumbers</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Board</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">BoardWithLastCalledNum</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#00a8c8">BoardWithLastCalledNum</span>
+
+<span style="color:#75af00">playLastBoardBingo</span> <span style="color:#111">[</span><span style="color:#111">n</span><span style="color:#111">]</span> <span style="color:#111">boards</span> <span style="color:#111">winningBoards</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">boardsAfterRound</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">playRoundOnBoard</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#111">boards</span>
+        <span style="color:#111">currWinners</span> <span style="color:#f92672">=</span> <span style="color:#111">reverse</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">snd</span> <span style="color:#111">boardsAfterRound</span><span style="color:#111">)</span>
+        <span style="color:#111">lastWinningBoardWithNum</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">currWinners</span>
+            <span style="color:#00a8c8">then</span> <span style="color:#111">head</span> <span style="color:#111">winningBoards</span>
+            <span style="color:#00a8c8">else</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">currWinners</span><span style="color:#111">,</span> <span style="color:#111">n</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">Just</span> <span style="color:#111">lastWinningBoardWithNum</span>
+
+<span style="color:#75af00">playLastBoardBingo</span> <span style="color:#111">(</span><span style="color:#111">n</span><span style="color:#00a8c8">:</span><span style="color:#111">ns</span><span style="color:#111">)</span> <span style="color:#111">boards</span> <span style="color:#111">winningBoards</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">boardsAfterRound</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">playRoundOnBoard</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#111">boards</span>
+        <span style="color:#111">currWinners</span> <span style="color:#f92672">=</span> <span style="color:#111">reverse</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">snd</span> <span style="color:#111">boardsAfterRound</span><span style="color:#111">)</span>
+        <span style="color:#111">pendingBoards</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#111">not</span> <span style="color:#f92672">.</span> <span style="color:#111">snd</span><span style="color:#111">)</span> <span style="color:#111">boardsAfterRound</span>
+        <span style="color:#111">allWinners</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">b</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">(</span><span style="color:#111">b</span><span style="color:#111">,</span> <span style="color:#111">n</span><span style="color:#111">))</span> <span style="color:#111">currWinners</span> <span style="color:#f92672">++</span> <span style="color:#111">winningBoards</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">playLastBoardBingo</span> <span style="color:#111">ns</span> <span style="color:#111">pendingBoards</span> <span style="color:#111">allWinners</span>
+
+<span style="color:#75af00">playLastBoardBingo</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Nothing</span>
+
+<span style="color:#75af00">scoreOfLastWinningBoard</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">DrawnNumbers</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#00a8c8">Board</span><span style="color:#111">])</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">scoreOfLastWinningBoard</span> <span style="color:#111">(</span><span style="color:#111">drawnNums</span><span style="color:#111">,</span> <span style="color:#111">boards</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+    <span style="color:#75715e">--  TODO: error handling?</span>
+    <span style="color:#111">scoreOfBoard</span><span style="color:#111">(</span><span style="color:#111">fromJust</span> <span style="color:#f92672">$</span> <span style="color:#111">playLastBoardBingo</span> <span style="color:#111">drawnNums</span> <span style="color:#111">boards</span> <span style="color:#00a8c8">[]</span><span style="color:#111">)</span>
+</code></pre></div><h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Data.Vector.Primitive'>
+        
+        Data.Vector.Primitive<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/vector-0.12.3.1/docs/Data-Vector-Primitive.html#t:Prim" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HiddingAoC2021-04'>
+        
+        Advent of Code 2021: Day 04: Giant Squid<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://jhidding.github.io/aoc2021/#day-4-giant-squid" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 2, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Data.Vector'>
+        
+        Data.Vector<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/vector-0.12.3.1/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+            adventofcode.com
+        </a>
+    
+        <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+            hackage.haskell.org
+        </a>
+    
+        <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+            jhidding.github.io
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/">&laquo; AoC 2021 Day 03: Binary Diagnostic</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/HydrothermalVenture/05-hydrothermal-venture/">AoC 2021 Day 05: Hydrothermal Venture &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

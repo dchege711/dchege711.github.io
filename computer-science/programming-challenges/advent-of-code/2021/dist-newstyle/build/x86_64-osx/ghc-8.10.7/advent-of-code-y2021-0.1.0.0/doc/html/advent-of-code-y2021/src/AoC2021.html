@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_GHC -Wall #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">AoC2021</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="AoC2021.html#allSolutions"><span class="hs-identifier">allSolutions</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- https://cabal.readthedocs.io/en/3.4/cabal-package.html#accessing-data-files-from-package-code</span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- https://cabal.readthedocs.io/en/3.4/cabal-package.html#accessing-data-files-from-package-code</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="AoC2021InputParser.html"><span class="hs-identifier">AoC2021InputParser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="AoC2021InputParser.html#parseBinaryDiagnosticInput"><span class="hs-identifier">parseBinaryDiagnosticInput</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="AoC2021InputParser.html#parseBingoInput"><span class="hs-identifier">parseBingoInput</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="AoC2021InputParser.html#parseHydrothermalVents"><span class="hs-identifier">parseHydrothermalVents</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html"><span class="hs-identifier">BinaryDiagnostic.BinaryDiagnostic</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#lifeSupportRating"><span class="hs-identifier">lifeSupportRating</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#powerConsumption"><span class="hs-identifier">powerConsumption</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.String</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">IsString</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">fromString</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Dive.Dive.html"><span class="hs-identifier">Dive.Dive</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Dive.Dive.html#productOfFinalPosition"><span class="hs-identifier">productOfFinalPosition</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Dive.Dive.html#productOfFinalPositionWithNewIntepretation"><span class="hs-identifier">productOfFinalPositionWithNewIntepretation</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html"><span class="hs-identifier">GiantSquid.GiantSquid</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfFirstWinningBoard"><span class="hs-identifier">scoreOfFirstWinningBoard</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfLastWinningBoard"><span class="hs-identifier">scoreOfLastWinningBoard</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="HydrothermalVenture.HydrothermalVenture.html"><span class="hs-identifier">HydrothermalVenture.HydrothermalVenture</span></a></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="HydrothermalVenture.HydrothermalVenture.html#pointsWithAtLeastTwoRightSegmentOverlaps"><span class="hs-identifier">pointsWithAtLeastTwoRightSegmentOverlaps</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><a href="HydrothermalVenture.HydrothermalVenture.html#pointsWithAtLeastTwoSegmentOverlaps"><span class="hs-identifier">pointsWithAtLeastTwoSegmentOverlaps</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Paths_advent_of_code_y2021.html"><span class="hs-identifier">Paths_advent_of_code_y2021</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Paths_advent_of_code_y2021.html#getDataFileName"><span class="hs-identifier">getDataFileName</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="SonarSweep.SonarSweep.html"><span class="hs-identifier">SonarSweep.SonarSweep</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SonarSweep</span></span><span>
+</span><span id="line-19"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier">num3MeasurementIncreases</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-20"></span><span>    </span><span class="annot"><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier">numIncreases</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-21"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">IOMode</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ReadMode</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">hGetContents</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">withFile</span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="annot"><a href="AoC2021.html#allSolutions"><span class="hs-identifier hs-type">allSolutions</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span id="allSolutions"><span class="annot"><span class="annottext">allSolutions :: IO ()
+</span><a href="AoC2021.html#allSolutions"><span class="hs-identifier hs-var hs-var">allSolutions</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-26"></span><span>  </span><span class="annot"><span class="annottext">IO ()
+</span><a href="AoC2021.html#solution01"><span class="hs-identifier hs-var">solution01</span></a></span><span>
+</span><span id="line-27"></span><span>  </span><span class="annot"><span class="annottext">IO ()
+</span><a href="AoC2021.html#solution02"><span class="hs-identifier hs-var">solution02</span></a></span><span>
+</span><span id="line-28"></span><span>  </span><span class="annot"><span class="annottext">IO ()
+</span><a href="AoC2021.html#solution03"><span class="hs-identifier hs-var">solution03</span></a></span><span>
+</span><span id="line-29"></span><span>  </span><span class="annot"><span class="annottext">IO ()
+</span><a href="AoC2021.html#solution04"><span class="hs-identifier hs-var">solution04</span></a></span><span>
+</span><span id="line-30"></span><span>  </span><span class="annot"><span class="annottext">IO ()
+</span><a href="AoC2021.html#solution05"><span class="hs-identifier hs-var">solution05</span></a></span><span>
+</span><span id="line-31"></span><span>
+</span><span id="line-32"></span><span class="annot"><a href="AoC2021.html#solution01"><span class="hs-identifier hs-type">solution01</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span id="solution01"><span class="annot"><span class="annottext">solution01 :: IO ()
+</span><a href="AoC2021.html#solution01"><span class="hs-identifier hs-var hs-var">solution01</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-34"></span><span>  </span><span class="hs-comment">-- hGetContents is lazy in that data is only read as the characters are</span><span>
+</span><span id="line-35"></span><span>  </span><span class="hs-comment">-- processed. The lazy evaluation of the string is transparent, and so it can</span><span>
+</span><span id="line-36"></span><span>  </span><span class="hs-comment">-- be passed to pure functions without any issues. However, if we try to hold</span><span>
+</span><span id="line-37"></span><span>  </span><span class="hs-comment">-- onto `s` past the call to `numIncreases`, then we lose the memory</span><span>
+</span><span id="line-38"></span><span>  </span><span class="hs-comment">-- efficiency as the compiler is forced to keep its value in memory for future</span><span>
+</span><span id="line-39"></span><span>  </span><span class="hs-comment">-- use. Note that closing a handle before fully consuming its results will</span><span>
+</span><span id="line-40"></span><span>  </span><span class="hs-comment">-- make you miss on the stream's data that had not been evaluated before the</span><span>
+</span><span id="line-41"></span><span>  </span><span class="hs-comment">-- handle's close. [1] [2]</span><span>
+</span><span id="line-42"></span><span>  </span><span class="hs-comment">--</span><span>
+</span><span id="line-43"></span><span>  </span><span class="hs-comment">-- [1]: http://book.realworldhaskell.org/read/io.html#io.lazy.hGetContents</span><span>
+</span><span id="line-44"></span><span>  </span><span class="hs-comment">-- [2]: https://hackage.haskell.org/package/base-4.16.0.0/docs/System-IO.html#v:hGetContents</span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span>  </span><span id="local-6989586621679058794"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058794"><span class="hs-identifier hs-var">fp</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; IO FilePath
+</span><a href="Paths_advent_of_code_y2021.html#getDataFileName"><span class="hs-identifier hs-var">getDataFileName</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;src/SonarSweep/scratchpad/input.txt&quot;</span></span><span>
+</span><span id="line-47"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;Day 01. Sonar Sweep&quot;</span></span><span>
+</span><span id="line-48"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IOMode -&gt; (Handle -&gt; IO ()) -&gt; IO ()
+forall r. FilePath -&gt; IOMode -&gt; (Handle -&gt; IO r) -&gt; IO r
+</span><span class="hs-identifier hs-var">withFile</span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058794"><span class="hs-identifier hs-var">fp</span></a></span><span>
+</span><span id="line-50"></span><span>    </span><span class="annot"><span class="annottext">IOMode
+</span><span class="hs-identifier hs-var">ReadMode</span></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679058792"><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679058792"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-52"></span><span>        </span><span id="local-6989586621679058791"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058791"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Handle -&gt; IO FilePath
+</span><span class="hs-identifier hs-var">hGetContents</span></span><span> </span><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679058792"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-53"></span><span>        </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\tPart 1: Number of measurements larger than previous measurement: &quot;</span></span><span>
+</span><span id="line-54"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[FilePath] -&gt; Int
+</span><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier hs-var">SonarSweep.numIncreases</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; [FilePath]
+</span><span class="hs-identifier hs-var">lines</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+forall a. IsString a =&gt; FilePath -&gt; a
+</span><span class="hs-identifier hs-var">fromString</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058791"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span>        </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\tPart 2: Number of 3-measurements larger than previous 3-measurement: &quot;</span></span><span>
+</span><span id="line-56"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[FilePath] -&gt; Int
+</span><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier hs-var">SonarSweep.num3MeasurementIncreases</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; [FilePath]
+</span><span class="hs-identifier hs-var">lines</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+forall a. IsString a =&gt; FilePath -&gt; a
+</span><span class="hs-identifier hs-var">fromString</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058791"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-58"></span><span>
+</span><span id="line-59"></span><span class="annot"><a href="AoC2021.html#solution02"><span class="hs-identifier hs-type">solution02</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-60"></span><span id="solution02"><span class="annot"><span class="annottext">solution02 :: IO ()
+</span><a href="AoC2021.html#solution02"><span class="hs-identifier hs-var hs-var">solution02</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-61"></span><span>  </span><span id="local-6989586621679058788"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058788"><span class="hs-identifier hs-var">fp</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; IO FilePath
+</span><a href="Paths_advent_of_code_y2021.html#getDataFileName"><span class="hs-identifier hs-var">getDataFileName</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;src/Dive/scratchpad/input.txt&quot;</span></span><span>
+</span><span id="line-62"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;Day 02. Dive!&quot;</span></span><span>
+</span><span id="line-63"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IOMode -&gt; (Handle -&gt; IO ()) -&gt; IO ()
+forall r. FilePath -&gt; IOMode -&gt; (Handle -&gt; IO r) -&gt; IO r
+</span><span class="hs-identifier hs-var">withFile</span></span><span>
+</span><span id="line-64"></span><span>    </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058788"><span class="hs-identifier hs-var">fp</span></a></span><span>
+</span><span id="line-65"></span><span>    </span><span class="annot"><span class="annottext">IOMode
+</span><span class="hs-identifier hs-var">ReadMode</span></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679058787"><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679058787"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-67"></span><span>        </span><span id="local-6989586621679058786"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058786"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Handle -&gt; IO FilePath
+</span><span class="hs-identifier hs-var">hGetContents</span></span><span> </span><span class="annot"><span class="annottext">Handle
+</span><a href="#local-6989586621679058787"><span class="hs-identifier hs-var">h</span></a></span><span>
+</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\tPart 1: Product of final horizontal position and final depth: &quot;</span></span><span>
+</span><span id="line-69"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[FilePath] -&gt; Int
+</span><a href="Dive.Dive.html#productOfFinalPosition"><span class="hs-identifier hs-var">productOfFinalPosition</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; [FilePath]
+</span><span class="hs-identifier hs-var">lines</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+forall a. IsString a =&gt; FilePath -&gt; a
+</span><span class="hs-identifier hs-var">fromString</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058786"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-70"></span><span>        </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\tPart 1: Product of final horizontal position and final depth &quot;</span></span><span>
+</span><span id="line-71"></span><span>        </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;with new instructions of : &quot;</span></span><span>
+</span><span id="line-72"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[FilePath] -&gt; Int
+</span><a href="Dive.Dive.html#productOfFinalPositionWithNewIntepretation"><span class="hs-identifier hs-var">productOfFinalPositionWithNewIntepretation</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; [FilePath]
+</span><span class="hs-identifier hs-var">lines</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+forall a. IsString a =&gt; FilePath -&gt; a
+</span><span class="hs-identifier hs-var">fromString</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679058786"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span>
+</span><span id="line-75"></span><span class="annot"><a href="AoC2021.html#solution03"><span class="hs-identifier hs-type">solution03</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-76"></span><span id="solution03"><span class="annot"><span class="annottext">solution03 :: IO ()
+</span><a href="AoC2021.html#solution03"><span class="hs-identifier hs-var hs-var">solution03</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-77"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;Day 03. Binary Diagnostic&quot;</span></span><span>
+</span><span id="line-78"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\t: Part 1: Power Consumption: &quot;</span></span><span>
+</span><span id="line-79"></span><span>  </span><span id="local-6989586621679058785"><span class="annot"><span class="annottext">BinaryDiagnostics
+</span><a href="#local-6989586621679058785"><span class="hs-identifier hs-var">input</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; IO BinaryDiagnostics
+</span><a href="AoC2021InputParser.html#parseBinaryDiagnosticInput"><span class="hs-identifier hs-var">parseBinaryDiagnosticInput</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;src/BinaryDiagnostic/scratchpad/input.txt&quot;</span></span><span>
+</span><span id="line-80"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">BinaryDiagnostics -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#powerConsumption"><span class="hs-identifier hs-var">powerConsumption</span></a></span><span> </span><span class="annot"><span class="annottext">BinaryDiagnostics
+</span><a href="#local-6989586621679058785"><span class="hs-identifier hs-var">input</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-81"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\t: Part 2: Life Support Rating: &quot;</span></span><span>
+</span><span id="line-82"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">BinaryDiagnostics -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#lifeSupportRating"><span class="hs-identifier hs-var">lifeSupportRating</span></a></span><span> </span><span class="annot"><span class="annottext">BinaryDiagnostics
+</span><a href="#local-6989586621679058785"><span class="hs-identifier hs-var">input</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-83"></span><span>
+</span><span id="line-84"></span><span class="annot"><a href="AoC2021.html#solution04"><span class="hs-identifier hs-type">solution04</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-85"></span><span id="solution04"><span class="annot"><span class="annottext">solution04 :: IO ()
+</span><a href="AoC2021.html#solution04"><span class="hs-identifier hs-var hs-var">solution04</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-86"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;Day 04. Giant Squid&quot;</span></span><span>
+</span><span id="line-87"></span><span>  </span><span id="local-6989586621679058784"><span class="annot"><span class="annottext">(DrawnNumbers, [Board])
+</span><a href="#local-6989586621679058784"><span class="hs-identifier hs-var">input</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; IO (DrawnNumbers, [Board])
+</span><a href="AoC2021InputParser.html#parseBingoInput"><span class="hs-identifier hs-var">parseBingoInput</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;src/GiantSquid/scratchpad/input.txt&quot;</span></span><span>
+</span><span id="line-88"></span><span>
+</span><span id="line-89"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\t: Part 1: Score of first winning board: &quot;</span></span><span>
+</span><span id="line-90"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(DrawnNumbers, [Board]) -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfFirstWinningBoard"><span class="hs-identifier hs-var">scoreOfFirstWinningBoard</span></a></span><span> </span><span class="annot"><span class="annottext">(DrawnNumbers, [Board])
+</span><a href="#local-6989586621679058784"><span class="hs-identifier hs-var">input</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\t: Part 2: Score of last winning board: &quot;</span></span><span>
+</span><span id="line-93"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(DrawnNumbers, [Board]) -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfLastWinningBoard"><span class="hs-identifier hs-var">scoreOfLastWinningBoard</span></a></span><span> </span><span class="annot"><span class="annottext">(DrawnNumbers, [Board])
+</span><a href="#local-6989586621679058784"><span class="hs-identifier hs-var">input</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-94"></span><span>
+</span><span id="line-95"></span><span class="annot"><a href="AoC2021.html#solution05"><span class="hs-identifier hs-type">solution05</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-96"></span><span id="solution05"><span class="annot"><span class="annottext">solution05 :: IO ()
+</span><a href="AoC2021.html#solution05"><span class="hs-identifier hs-var hs-var">solution05</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-97"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;Day 05. Hydrothermal Venture&quot;</span></span><span>
+</span><span id="line-98"></span><span>  </span><span id="local-6989586621679058783"><span class="annot"><span class="annottext">[LineSegment]
+</span><a href="#local-6989586621679058783"><span class="hs-identifier hs-var">input</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; IO [LineSegment]
+</span><a href="AoC2021InputParser.html#parseHydrothermalVents"><span class="hs-identifier hs-var">parseHydrothermalVents</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;src/HydrothermalVenture/scratchpad/input.txt&quot;</span></span><span>
+</span><span id="line-99"></span><span>
+</span><span id="line-100"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\t: Part 1: Num Points Where &gt;= 2 Right Lines Overlap: &quot;</span></span><span>
+</span><span id="line-101"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[LineSegment] -&gt; Int
+</span><a href="HydrothermalVenture.HydrothermalVenture.html#pointsWithAtLeastTwoRightSegmentOverlaps"><span class="hs-identifier hs-var">pointsWithAtLeastTwoRightSegmentOverlaps</span></a></span><span> </span><span class="annot"><span class="annottext">[LineSegment]
+</span><a href="#local-6989586621679058783"><span class="hs-identifier hs-var">input</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span>  </span><span class="annot"><span class="annottext">FilePath -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStr</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;\t: Part 1: Num Points Where &gt;= 2 Lines Overlap: &quot;</span></span><span>
+</span><span id="line-104"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; IO ()
+forall a. Show a =&gt; a -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[LineSegment] -&gt; Int
+</span><a href="HydrothermalVenture.HydrothermalVenture.html#pointsWithAtLeastTwoSegmentOverlaps"><span class="hs-identifier hs-var">pointsWithAtLeastTwoSegmentOverlaps</span></a></span><span> </span><span class="annot"><span class="annottext">[LineSegment]
+</span><a href="#local-6989586621679058783"><span class="hs-identifier hs-var">input</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-105"></span></pre></body></html>

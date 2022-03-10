@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Day 06: Lanternfish | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/Lanternfish/">AoC 2021 Day 06: Lanternfish</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Day 06: Lanternfish</h1>
+    <p class="meta">
+        
+        Dated Mar 1, 2022; 
+        
+        last modified on Tue, 01 Mar 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#part-i-description">Part I Description</a></li>
+    <li><a href="#part-i-solution">Part I Solution</a></li>
+    <li><a href="#part-ii-description">Part II Description</a></li>
+    <li><a href="#part-ii-solution">Part II Solution</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='AoC2021-06'>
+        
+        Day 6 - Advent of Code 2021<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://adventofcode.com/2021/day/6" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 2, 2022.
+    
+</div>
+
+<h2 id="part-i-description">Part I Description</h2>
+<p><em>The sea floor is getting steeper. Maybe the sleigh keys got carried this way?</em></p>
+<p><em>A massive school of glowing lanternfish swims past. They must spawn quickly to
+reach such large numbers - maybe exponentially quickly? You should model their
+growth to be sure.</em></p>
+<p><em>Although you know nothing about this specific species of lanternfish, you make
+some guesses about their attributes. Surely, each lanternfish creates a new
+lanternfish once every 7 days.</em></p>
+<p><em>However, this process isn&rsquo;t necessarily synchronized between every lanternfish -
+one lanternfish might have 2 days left until it creates another lanternfish,
+while another might have 4. So, you can model each fish as a single number that
+represents the number of days until it creates a new lanternfish.</em></p>
+<p><em>Furthermore, you reason, a new lanternfish would surely need slightly longer
+before it&rsquo;s capable of producing more lanternfish: two more days for its first
+cycle.</em></p>
+<p><em>A lanternfish that creates a new fish resets its timer to <code>6</code> not <code>7</code> (because
+<code>0</code> is included as a valid timer value). The new lanternfish starts with an
+internal time of <code>8</code> and does not start counting down until the next day.</em></p>
+<p><em>Realizing what you&rsquo;re trying to do, the submarine automatically produces a list
+of the ages of several hundred lanternfish (your puzzle input).</em></p>
+<p><em>Find a way to simulate lanternfish. <strong>How many lanternfish would there be after
+80 days?</strong></em></p>
+<h2 id="part-i-solution">Part I Solution</h2>
+<p>The input is of the form:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt">3,4,3,1,2
+</code></pre></div><p>&hellip; so nothing special with parsing. Using <code>[Int]</code> should do just fine.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  LANGUAGE RecordWildCards  #-}</span>
+<span style="color:#75715e">{-#  OPTIONS_GHC -Wall  #-}</span>
+
+<span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021.Lanternfish</span> <span style="color:#111">(</span><span style="color:#75af00">numOfFishIn80Days</span><span style="color:#111">,</span> <span style="color:#75af00">numOfFishIn256Days</span><span style="color:#111">)</span> <span style="color:#00a8c8">where</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.List</span> <span style="color:#111">(</span><span style="color:#75af00">group</span><span style="color:#111">,</span> <span style="color:#75af00">sort</span><span style="color:#111">,</span> <span style="color:#75af00">foldl&#39;</span><span style="color:#111">)</span>
+</code></pre></div><p><del>If the lanternfish&rsquo;s internal timers were all in sync, then their population
+on day \(d\) is of the form \(\lfloor n_0 \cdot r \cdot d \rfloor \), where
+\(r\) factor of growth per day.</del> Was unable to get a value for \(r\).</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>There should be some established literature on population growth modeling. For
+example, ORF 309 covered the Galton-Watson process, which is basically this
+question, with the descendants being born with some probability, and everyone in
+sync.</p>
+<p>I wonder how close I&rsquo;ll get from reasoning my way through.</p>
+</div>
+</div>
+
+
+<p>The case where \(n_0 = 1\), and the internal timer for the sole lanternfish
+starts with a value of <code>0</code> should help determine \(r\). At the end of
+\(d=1\), we&rsquo;d have two lanternfish \([l_1, l_2]\) with internal timers of
+<code>6</code> and <code>8</code> respectively. At the end of \(d = 8\), \(l_1\) would produce
+\(l_3\), and at the end of \(d = 10\), \(l_2\) will produce \(l_4\).
+Enumerating the days when \(l_i\) produces a new \(l_j\):</p>
+<p>$$ l_1 (d_{birth} = ?) \to 1, 8, 15, &hellip; $$
+$$ l_2 (d_{birth} = 1) \to 10, 17, 24, &hellip; $$
+$$ l_3 (d_{birth} = 8) \to 17, 24, 31, &hellip; $$
+$$ l_4 (d_{birth} = 10) \to 19, 26, 33, &hellip; $$</p>
+<p>Each case is an arithmetic series whose first term differs, but the difference
+between consecutive terms is always <code>7</code>. The number of fish at \(d\) is the
+number of terms less than \(d\) in the expressions above, plus \(n_0\).</p>
+<p>The sample input has starting internal timers of <code>3, 4, 3, 1, 2</code>. Using the
+notation above, and enumerating the individuals born at \(d \le 7\):</p>
+<p>$$ l_4 (d_{birth} = ?) \to 2, 9, 16, &hellip; $$
+$$ l_5 (d_{birth} = ?) \to 3, 10, 17, &hellip; $$
+$$ l_1 (d_{birth} = ?) \to 4, 11, 18, &hellip; $$
+$$ l_3 (d_{birth} = ?) \to 4, 11, 18, &hellip; $$
+$$ l_2 (d_{birth} = ?) \to 5, 12, &hellip; $$
+$$ l_6 (d_{birth} = 2) \to 11, 18, &hellip; $$
+$$ l_7 (d_{birth} = 3) \to 12, 19, &hellip; $$
+$$ l_8 (d_{birth} = 4) \to 13, 20, &hellip; $$
+$$ l_9 (d_{birth} = 4) \to 13, 20, &hellip; $$
+$$ l_{10} (d_{birth} = 5) \to 14, 21, &hellip; $$</p>
+<p>&hellip; the sum of individuals is \(5 + 5 = 10\). I&rsquo;m not sure how to turn this
+into an algorithm that doesn&rsquo;t enumerate all individuals at day \(d\), and
+then computes the individuals at \(d+1\), and so forth until we get to
+\(d=80\).</p>
+<p>Given an individual \(l_i\), we can compute the number of direct children the
+individual will have by \(d = 80\). However, we need to do this recursively
+as the children will also have children.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">_numOfDirectChildren</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">_numOfDirectChildren</span> <span style="color:#111">(</span><span style="color:#111">deliveryDay</span> <span style="color:#00a8c8">:</span> <span style="color:#111">deliveryDays</span><span style="color:#111">)</span> <span style="color:#111">finalDay</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span>
+        <span style="color:#111">childrenBirthdays</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">deliveryDay</span><span style="color:#111">,</span> <span style="color:#111">deliveryDay</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">..</span> <span style="color:#111">finalDay</span><span style="color:#111">]</span>
+        <span style="color:#111">childrenDeliveryDays</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#f92672">+</span><span style="color:#ae81ff">9</span><span style="color:#111">)</span> <span style="color:#111">childrenBirthdays</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">length</span> <span style="color:#111">childrenBirthdays</span> <span style="color:#f92672">+</span> <span style="color:#111">_numOfDirectChildren</span>
+        <span style="color:#111">(</span><span style="color:#111">deliveryDays</span> <span style="color:#f92672">++</span> <span style="color:#111">childrenDeliveryDays</span><span style="color:#111">)</span> <span style="color:#111">finalDay</span>
+<span style="color:#75af00">_numOfDirectChildren</span> <span style="color:#00a8c8">[]</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#75af00">_numOfFishIn80Days&#39;</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">_numOfFishIn80Days&#39;</span> <span style="color:#111">internalTimers</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">deliveryDays</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">internalTimers</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">length</span> <span style="color:#111">internalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">_numOfDirectChildren</span> <span style="color:#111">deliveryDays</span> <span style="color:#ae81ff">80</span>
+</code></pre></div><p>Debugging a recursive function using breakpoints is tedious. <span class="citation-ref"><a href="#HaskellWikiDebugging"></a></span> mentions the <code>Hood</code> package which can print all
+invocations of a function <code>f</code> and their results. However, <code>cabal install hood</code>
+fails because <code>FPretty</code> (dependency of <code>Hood</code>) requires <code>base&gt;=4.5 &amp;&amp; &lt;4.11</code>,
+while I have <code>base==4.14.3.0</code> installed. I don&rsquo;t want to demote by <code>base</code>.</p>
+<p><code>_numOfFishIn80Days'</code> is performant enough for the sample input that has <code>5</code>
+initial lanternfish being simulated for 80 days, but it chokes on part I, whose
+input has <code>300</code> initial lanternfish over the same period of time.</p>
+<p>Let&rsquo;s try a more straightforward (but less efficient?) approach, where we track
+individuals in <code>[Int]</code>.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">simulateFishGrowth</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">simulateFishGrowth</span> <span style="color:#111">(</span><span style="color:#00a8c8">_</span><span style="color:#00a8c8">:</span><span style="color:#111">days</span><span style="color:#111">)</span> <span style="color:#111">internalTimers</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">nextUnadjustedTimers</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">t</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">t</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">internalTimers</span>
+        <span style="color:#111">numChildren</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#111">nextUnadjustedTimers</span>
+        <span style="color:#111">adjustedTimers</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">v</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">v</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">then</span> <span style="color:#ae81ff">6</span> <span style="color:#00a8c8">else</span> <span style="color:#111">v</span><span style="color:#111">)</span> <span style="color:#111">nextUnadjustedTimers</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">simulateFishGrowth</span> <span style="color:#111">days</span> <span style="color:#111">(</span><span style="color:#111">adjustedTimers</span> <span style="color:#f92672">++</span> <span style="color:#111">replicate</span> <span style="color:#111">numChildren</span> <span style="color:#ae81ff">8</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">simulateFishGrowth</span> <span style="color:#00a8c8">[]</span> <span style="color:#111">internalTimers</span> <span style="color:#f92672">=</span> <span style="color:#111">internalTimers</span>
+
+<span style="color:#75af00">numOfFishIn80Days</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">numOfFishIn80Days</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#f92672">.</span> <span style="color:#111">simulateFishGrowth</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">..</span> <span style="color:#ae81ff">80</span><span style="color:#111">]</span>
+</code></pre></div><p>I thought <code>_numOfDirectChildren</code> was more efficient than <code>simulateFishGrowth</code>,
+but turns out that the latter handles <code>300</code> initial lanternfish over a period of
+80 days, while the former chokes. The answer of the final <code>simulateFishGrowth</code>
+call is the answer of the whole problem, so maybe the compiler did some tail
+recursion optimization?</p>
+<p><span class="citation-ref"><a href="#Hidding2021-06"></a></span>&rsquo;s naïve solution is more elegant:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">rules</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">rules</span> <span style="color:#111">clock</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">clock</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">8</span><span style="color:#111">,</span> <span style="color:#ae81ff">6</span><span style="color:#111">]</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>  <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">clock</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">]</span>
+
+<span style="color:#75af00">step</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">step</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#f92672">&gt;&gt;=</span> <span style="color:#111">rules</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">iterate</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">(</span><span style="color:#111">a</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">a</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#111">a</span><span style="color:#111">]</span>
+<span style="color:#75af00">iterate</span> <span style="color:#111">n</span> <span style="color:#111">f</span> <span style="color:#111">x</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">n</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>    <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">]</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span> <span style="color:#00a8c8">:</span> <span style="color:#111">iterate</span> <span style="color:#111">(</span><span style="color:#111">n</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#111">f</span> <span style="color:#111">x</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">numOfFishIn80Days</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">numOfFishIn80Days</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#f92672">.</span> <span style="color:#111">last</span> <span style="color:#f92672">.</span> <span style="color:#111">iterate</span> <span style="color:#ae81ff">80</span> <span style="color:#111">step</span>
+</code></pre></div><p>The use of the bind operator in the <code>step</code> function is foreign to me, 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#monad"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    as I&rsquo;ve
+only interacted with the <code>(&gt;&gt;=)</code> operator in monadic contexts
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+. How do we go from <code>as &gt;&gt;= bs</code> as syntactic sugar for <code>do a &lt;- as, bs a</code>
+to it being used form an <code>[Int] -&gt; [Int]</code> from an <code>Int -&gt; [Int]</code>? Maybe the two
+are not related? Ah, <code>:type (&gt;&gt;=)</code> is <code>Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b</code>,
+and the list is a monad. So in this case, we have
+<code>[Int] -&gt; (Int -&gt; [Int]) -&gt; [Int]</code>, where <code>rules</code> satisfies the <code>(Int -&gt; [Int])</code>
+part. Huh, the more you see monads, the more it starts clicking.</p>
+<p>I also have an anti-pattern in <code>simulateFishGrowth</code>, where I take <code>[1, 2 .. 80]</code>
+instead of taking <code>80</code> as an input. I could have then pattern-matched as
+<span class="citation-ref"><a href="#Hidding2021-06"></a></span> did in the <code>iterate</code> function.</p>
+<h2 id="part-ii-description">Part II Description</h2>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Expected extension for Part II: accounting for the fact that lanternfish die
+after some time. A lanternfish does not keep reproducing indefinitely.</p>
+<p>Update: Wrong guess. Death wouldn&rsquo;t complicate <code>simulateFishGrowth</code> too much.
+the major change would be instead of tracking only the internal timers, we&rsquo;d
+track the age of the lanternfish. Increasing the number of days being simulated
+makes a naïve solution contend with an exponential blowup.</p>
+</div>
+</div>
+
+
+<p><em>Suppose the lanternfish live forever and have unlimited food and space. Would
+they take over the entire ocean?</em></p>
+<p><em>After 256 days in the example above, there would be a total of 26,984,457,539
+lanternfish!</em></p>
+<p><em><strong>How many lanternfish would there be after 256 days?</strong></em></p>
+<h2 id="part-ii-solution">Part II Solution</h2>
+<p>Simulating 256 days will cripple <code>simulateFishGrowth</code>. In the sample input,
+we&rsquo;ll have a list with 27B items, up from 6k items! If the the same explosion is
+applied to the puzzle input, we&rsquo;re expecting a final list with
+\(360{,}610 \cdot (26{,}984{,}457{,}539 / 5{,}934) \approx
+1{,}639{,}849{,}213{,}538 \) items. Under the rosiest projections, each entry
+in the <code>[Int]</code> takes 8 bytes, we need
+\(\ge 1{,}639{,}849{,}213{,}538 \cdot 8 / 1{,}024^4 \approx 11.93 \text{TB}\).
+That&rsquo;s beyond my laptop&rsquo;s range.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">--  Takes too long</span>
+<span style="color:#75af00">_numOfFishIn256Days&#39;</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">_numOfFishIn256Days&#39;</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#f92672">.</span> <span style="color:#111">simulateFishGrowth</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">..</span> <span style="color:#ae81ff">256</span><span style="color:#111">]</span>
+</code></pre></div><p>One more attempt before looking up how to model unbounded population growth.
+There exists some cohort of lanternfish that are giving birth on the same day.
+If we have a lanternfish that reproduces on \(d = [0, 7, 14, &hellip;]\), the
+second generation will reproduce on \(d = [9, 16, &hellip;]\), the third on \(d =
+[16, 23, &hellip;]\), the fourth on \(d = [23, 30, 37, &hellip;]\), and so forth.
+Hmm&hellip; I don&rsquo;t see it. Time to consult population growth literature.</p>
+<p>The term for the kind of growth exhibited by the lanternfish is exponential
+growth, because each lanternfish gives forth one lanternfish. Exponential growth
+is described by \(x_t = x_0 \cdot b^{t/\tau}\), where \(b\) is a positive
+growth factor, and \(\tau\) is the time required for \(x\) to grow by one
+factor of \(b\). <span class="citation-ref"><a href="#WikiExpGrowth"></a></span> The simple case where each
+lanternfish creates a new one every seven days and is in sync with every other
+lanternfish, can be modelled by \(x_t = x_0 \cdot 2^{t/7}\). I still don&rsquo;t see
+a way of adapting \(x_t = x_0 \cdot b^{t/\tau}\) to account for the out of
+phase internal timers, and the initial \(\tau = 7\).</p>
+<p>What about maintaining a list of <code>InternalTimer {t :: Int, count :: Int}</code>. This
+list will have at most 9 items because <code>t</code> can only assume values in
+\([0,1,&hellip;8]\). Then on each day, we can update this list. The memory blow-up
+experienced earlier is avoided by collapsing all of the <code>n</code> items of value <code>t</code>
+in the original <code>[Int]</code> into a single <code>InternalTimer{t = t, count = n}</code>.</p>
+<p>Now that I type the above out, why didn&rsquo;t it hit me sooner? <span class="citation-ref"><a href="#WikiExpGrowth"></a></span> has a section on &ldquo;Exponential Growth Bias&rdquo;, the tendency to
+underestimate compound growth processes, e.g. a king was gifted a chess board,
+and agreed to re-gifting the donor with one grain of rice for the first square,
+two grains for the second square, four grains for the third square, and so
+forth; however, the \(2^{n-1}\) grains ballooned up pretty quick (e.g.
+\(2^{40} = 1{,}099{,}511{,}627{,}776\)), that it was infeasible to provide
+them. I wouldn&rsquo;t go as far as to say, &ldquo;Since we have an exponential growth
+process, to simulate this naively would be stupid, which is kind of the point of
+the exercise,&rdquo; as that is hostile to someone realizing that they have fallen to
+the exponential growth bias.</p>
+<figure>
+    <img src="/img/computer-science/programming-challenges/advent-of-code/2021/06-lanternfish-sample-simulation.jpg"
+         alt="I&amp;rsquo;ve heard the parable of the chess board and the rice, but it didn&amp;rsquo;t really hit me that I was the king. When I looked at this sample simulation for the test input, the growth didn&amp;rsquo;t seem all that fast; we add a couple of 8&amp;rsquo;s every so often, piece of cake. This problem was a good wake-up call to not be smug about never being on the receiving side of a bias that I already know! Image taken from https://adventofcode.com/2021/day/6."/> <figcaption>
+            <p>I&rsquo;ve heard the parable of the chess board and the rice, but it
+didn&rsquo;t really hit me that I was the king. When I looked at this sample
+simulation for the test input, the growth didn&rsquo;t seem all that fast; we add
+a couple of 8&rsquo;s every so often, piece of cake. This problem was a good
+wake-up call to not be smug about never being on the receiving side of a
+bias that I already know! Image taken from
+<a href="https://adventofcode.com/2021/day/6">https://adventofcode.com/2021/day/6</a>.</p>
+        </figcaption>
+</figure>
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">InternalTimers</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">InternalTimers</span> <span style="color:#111">{</span>
+    <span style="color:#111">t0</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t1</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t2</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t3</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t4</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span>
+    <span style="color:#111">t5</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t6</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t7</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">,</span> <span style="color:#111">t8</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">}</span> <span style="color:#00a8c8">deriving</span> <span style="color:#00a8c8">Show</span>
+
+<span style="color:#75715e">--  TODO: How do I avoid passing a phantom int to advanceInternalTimersOneStep?</span>
+<span style="color:#75715e">--  I just wanted to call `advanceInternalTimersOneStep` 256 times in a fold</span>
+<span style="color:#75715e">--  statement...</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">--  Answer: instead of using fold, write a recursive</span>
+<span style="color:#75715e">--  `advanceInternalTimersNSteps :: Int -&gt; InternalTimers -&gt; InternalTimers`, and</span>
+<span style="color:#75715e">--  do `finalTimers = advanceInternalTimersNSteps 256 internalTimers`</span>
+<span style="color:#75af00">advanceInternalTimersOneStep</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">InternalTimers</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">InternalTimers</span>
+<span style="color:#75af00">advanceInternalTimersOneStep</span> <span style="color:#00a8c8">InternalTimers</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">originalT0</span> <span style="color:#f92672">=</span> <span style="color:#111">t0</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">InternalTimers</span><span style="color:#111">{</span><span style="color:#111">t0</span> <span style="color:#f92672">=</span> <span style="color:#111">t1</span><span style="color:#111">,</span> <span style="color:#111">t1</span> <span style="color:#f92672">=</span> <span style="color:#111">t2</span><span style="color:#111">,</span> <span style="color:#111">t2</span> <span style="color:#f92672">=</span> <span style="color:#111">t3</span><span style="color:#111">,</span> <span style="color:#111">t3</span> <span style="color:#f92672">=</span> <span style="color:#111">t4</span><span style="color:#111">,</span> <span style="color:#111">t4</span> <span style="color:#f92672">=</span> <span style="color:#111">t5</span><span style="color:#111">,</span> <span style="color:#111">t5</span> <span style="color:#f92672">=</span> <span style="color:#111">t6</span><span style="color:#111">,</span>
+                      <span style="color:#111">t6</span> <span style="color:#f92672">=</span> <span style="color:#111">t7</span> <span style="color:#f92672">+</span> <span style="color:#111">originalT0</span><span style="color:#111">,</span> <span style="color:#111">t7</span> <span style="color:#f92672">=</span> <span style="color:#111">t8</span><span style="color:#111">,</span> <span style="color:#111">t8</span> <span style="color:#f92672">=</span> <span style="color:#111">originalT0</span><span style="color:#111">}</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p><code>InternalTimers</code> could have also been a <code>Data.Map Int Integer</code>. The named field
+has some awkward bits, e.g. the need to pad the <code>[Integer]</code> in
+<code>extractCohortCounts</code> and in <code>internalTimersFromRawData</code>.</p>
+</div>
+</div>
+
+
+<p>A sample implementation of <code>advanceInternalTimersNSteps</code>:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">advanceInternalTimersNSteps</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">InternalTimers</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">InternalTimers</span>
+<span style="color:#75af00">advanceInternalTimersNSteps</span> <span style="color:#111">n</span> <span style="color:#111">internalTimers</span><span style="color:#f92672">@</span><span style="color:#00a8c8">InternalTimers</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">n</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#111">internalTimers</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span>
+        <span style="color:#00a8c8">let</span> <span style="color:#111">originalT0</span> <span style="color:#f92672">=</span> <span style="color:#111">t0</span>
+            <span style="color:#111">currTimers</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">InternalTimers</span><span style="color:#111">{</span><span style="color:#111">t0</span> <span style="color:#f92672">=</span> <span style="color:#111">t1</span><span style="color:#111">,</span> <span style="color:#111">t1</span> <span style="color:#f92672">=</span> <span style="color:#111">t2</span><span style="color:#111">,</span> <span style="color:#111">t2</span> <span style="color:#f92672">=</span> <span style="color:#111">t3</span><span style="color:#111">,</span> <span style="color:#111">t3</span> <span style="color:#f92672">=</span> <span style="color:#111">t4</span><span style="color:#111">,</span>
+                                        <span style="color:#111">t4</span> <span style="color:#f92672">=</span> <span style="color:#111">t5</span><span style="color:#111">,</span> <span style="color:#111">t5</span> <span style="color:#f92672">=</span> <span style="color:#111">t6</span><span style="color:#111">,</span> <span style="color:#111">t6</span> <span style="color:#f92672">=</span> <span style="color:#111">t7</span> <span style="color:#f92672">+</span> <span style="color:#111">originalT0</span><span style="color:#111">,</span>
+                                        <span style="color:#111">t7</span> <span style="color:#f92672">=</span> <span style="color:#111">t8</span><span style="color:#111">,</span> <span style="color:#111">t8</span> <span style="color:#f92672">=</span> <span style="color:#111">originalT0</span><span style="color:#111">}</span>
+        <span style="color:#00a8c8">in</span> <span style="color:#111">advanceInternalTimersNSteps</span> <span style="color:#111">(</span><span style="color:#111">n</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">currTimers</span>
+</code></pre></div><p>The <code>t0 = t1, t1 = t2, ...</code> could make use of a circular data structure, so
+that we&rsquo;re only moving the &ldquo;head&rdquo;, and not the data itself. But given that
+Haskell values are immutable, we don&rsquo;t have much to gain (and potentially more
+to lose as we add the complexity of implementing circular data structure and
+locating a given cohort).</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">numPossibleInternalTimers</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">numPossibleInternalTimers</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span> <span style="color:#75715e">--  [0, 1, 2, ..., 8]</span>
+
+<span style="color:#75af00">extractCohortCounts</span> <span style="color:#f92672">::</span> <span style="color:#111">[[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Integer</span><span style="color:#111">]</span>
+<span style="color:#75af00">extractCohortCounts</span> <span style="color:#111">(</span><span style="color:#111">l</span><span style="color:#00a8c8">:</span><span style="color:#111">ls</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">currentCohort</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">l</span>
+        <span style="color:#75715e">--  TODO: Is there a common idiom for this. I repeat it in</span>
+        <span style="color:#75715e">--  `internalTimersFromRawData` too...</span>
+        <span style="color:#111">numFillers</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">ls</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">currentCohort</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>
+            <span style="color:#00a8c8">then</span> <span style="color:#111">currentCohort</span>
+            <span style="color:#00a8c8">else</span> <span style="color:#111">currentCohort</span> <span style="color:#f92672">-</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">ls</span><span style="color:#111">)</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+        <span style="color:#111">cohortCountEntries</span> <span style="color:#f92672">=</span> <span style="color:#111">toInteger</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">l</span><span style="color:#111">)</span> <span style="color:#00a8c8">:</span> <span style="color:#111">replicate</span> <span style="color:#111">numFillers</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Integer</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">cohortCountEntries</span> <span style="color:#f92672">++</span> <span style="color:#111">extractCohortCounts</span> <span style="color:#111">ls</span>
+<span style="color:#75af00">extractCohortCounts</span> <span style="color:#00a8c8">[]</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
+
+<span style="color:#75af00">internalTimersFromRawData</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">InternalTimers</span>
+<span style="color:#75af00">internalTimersFromRawData</span> <span style="color:#111">ts</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span>
+        <span style="color:#111">reversedGrouping</span> <span style="color:#f92672">=</span> <span style="color:#111">group</span> <span style="color:#f92672">$</span> <span style="color:#111">reverse</span> <span style="color:#f92672">$</span> <span style="color:#111">sort</span> <span style="color:#111">ts</span>
+        <span style="color:#111">possiblyPartialCohorts</span> <span style="color:#f92672">=</span> <span style="color:#111">extractCohortCounts</span> <span style="color:#111">reversedGrouping</span>
+
+        <span style="color:#111">frontPaddingSize</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">reversedGrouping</span>
+            <span style="color:#00a8c8">then</span> <span style="color:#111">numPossibleInternalTimers</span>
+            <span style="color:#00a8c8">else</span> <span style="color:#111">numPossibleInternalTimers</span> <span style="color:#f92672">-</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">reversedGrouping</span><span style="color:#111">)</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+
+        <span style="color:#111">extractedCohortCounts</span> <span style="color:#f92672">=</span> <span style="color:#111">reverse</span> <span style="color:#111">possiblyPartialCohorts</span> <span style="color:#f92672">++</span>
+                                <span style="color:#111">replicate</span> <span style="color:#111">frontPaddingSize</span> <span style="color:#ae81ff">0</span>
+
+        <span style="color:#75715e">--  TODO: Link to StackOverflow answer with suggestion.</span>
+        <span style="color:#111">internalTimers</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">InternalTimers</span><span style="color:#111">{</span><span style="color:#f92672">..</span><span style="color:#111">}</span> <span style="color:#00a8c8">where</span>
+            <span style="color:#111">[</span><span style="color:#111">t0</span><span style="color:#111">,</span> <span style="color:#111">t1</span><span style="color:#111">,</span> <span style="color:#111">t2</span><span style="color:#111">,</span> <span style="color:#111">t3</span><span style="color:#111">,</span> <span style="color:#111">t4</span><span style="color:#111">,</span> <span style="color:#111">t5</span><span style="color:#111">,</span> <span style="color:#111">t6</span><span style="color:#111">,</span> <span style="color:#111">t7</span><span style="color:#111">,</span> <span style="color:#111">t8</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">extractedCohortCounts</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">internalTimers</span>
+
+<span style="color:#75af00">numOfFishIn256Days</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Integer</span>
+<span style="color:#75af00">numOfFishIn256Days</span> <span style="color:#111">rawTimers</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span>
+        <span style="color:#111">days</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">..</span> <span style="color:#ae81ff">256</span><span style="color:#111">]</span>
+        <span style="color:#111">internalTimers</span> <span style="color:#f92672">=</span> <span style="color:#111">internalTimersFromRawData</span> <span style="color:#111">rawTimers</span>
+        <span style="color:#111">finalTimers</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#111">advanceInternalTimersOneStep</span> <span style="color:#111">internalTimers</span> <span style="color:#111">days</span>
+        <span style="color:#111">totalPopulation</span> <span style="color:#f92672">=</span> <span style="color:#111">t0</span> <span style="color:#111">finalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">t1</span> <span style="color:#111">finalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">t2</span> <span style="color:#111">finalTimers</span>
+                        <span style="color:#f92672">+</span> <span style="color:#111">t3</span> <span style="color:#111">finalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">t4</span> <span style="color:#111">finalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">t5</span> <span style="color:#111">finalTimers</span>
+                        <span style="color:#f92672">+</span> <span style="color:#111">t6</span> <span style="color:#111">finalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">t7</span> <span style="color:#111">finalTimers</span> <span style="color:#f92672">+</span> <span style="color:#111">t8</span> <span style="color:#111">finalTimers</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">totalPopulation</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Hidding2021-06"></a></span> implemented an efficient simulation, but much of it
+went over my head, e.g. <code>Semigroup</code>, <code>Monoid</code>, <code>Applicative</code>, <code>TypeFamilies</code>,
+<code>ConstraintKinds</code>, and lifting. Revisit that solution as your Haskell maturity
+increases.</p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HaskellWikiDebugging'>
+        
+        Debugging - HaskellWiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.haskell.org/Debugging" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 2, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiExpGrowth'>
+        
+        Exponential Growth - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Exponential_growth" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 4, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Hidding2021-06'>
+        
+        Advent of Code 2021 : Day 06. Lanternfish<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://jhidding.github.io/aoc2021/#day-6-lanternfish" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 5, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+            adventofcode.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+            jhidding.github.io
+        </a>
+    
+        <a href='/domains/wiki.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+            wiki.haskell.org
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/HydrothermalVenture/05-hydrothermal-venture/">&laquo; AoC 2021 Day 05: Hydrothermal Venture</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/TreacheryOfWhales/">AoC 2021 Day 07: The Treachery of Whales &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

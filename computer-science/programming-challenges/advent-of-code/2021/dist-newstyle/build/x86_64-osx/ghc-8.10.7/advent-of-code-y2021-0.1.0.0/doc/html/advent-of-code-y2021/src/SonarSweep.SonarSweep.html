@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_GHC -Wall #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">SonarSweep.SonarSweep</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier">numIncreases</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier">num3MeasurementIncreases</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isJust</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">catMaybes</span></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Read</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">readMaybe</span></span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- Computing `numIncreases` imperatively is rather straightforward, e.g.</span><span>
+</span><span id="line-9"></span><span class="hs-comment">--</span><span>
+</span><span id="line-10"></span><span class="hs-comment">-- ```py</span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- prev_val = math.inf</span><span>
+</span><span id="line-12"></span><span class="hs-comment">-- count = 0</span><span>
+</span><span id="line-13"></span><span class="hs-comment">--</span><span>
+</span><span id="line-14"></span><span class="hs-comment">-- for line in s.split(&quot;\n&quot;):</span><span>
+</span><span id="line-15"></span><span class="hs-comment">--   val = int(line)</span><span>
+</span><span id="line-16"></span><span class="hs-comment">--   if val &gt; prev_val: count += 1</span><span>
+</span><span id="line-17"></span><span class="hs-comment">--   prev_val = val</span><span>
+</span><span id="line-18"></span><span class="hs-comment">--</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- return count</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- ```</span><span>
+</span><span id="line-21"></span><span class="hs-comment">--</span><span>
+</span><span id="line-22"></span><span class="hs-comment">-- How do I do it in Haskell? Variables are immutable, so I can't accumulate</span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- to some value. Furthermore, [1] says, &quot;If you think of a `Text` value as an</span><span>
+</span><span id="line-24"></span><span class="hs-comment">-- array of `Char` values (which it is not), you run the risk of writing</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- inefficient code.&quot; My mindset is still on `Text` as a `[Char]`. We'll see!</span><span>
+</span><span id="line-26"></span><span class="hs-comment">--</span><span>
+</span><span id="line-27"></span><span class="hs-comment">-- Pattern matching on lists looks promising. [2]</span><span>
+</span><span id="line-28"></span><span class="hs-comment">--</span><span>
+</span><span id="line-29"></span><span class="hs-comment">-- [1]: https://hackage.haskell.org/package/text-2.0/docs/Data-Text.html#g:24</span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- [2]: https://www.schoolofhaskell.com/school/starting-with-haskell/introduction-to-haskell/1-haskell-basics#functions-on-lists</span><span>
+</span><span id="line-31"></span><span class="annot"><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier hs-type">numIncreases</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-32"></span><span id="numIncreases"><span class="annot"><span class="annottext">numIncreases :: [String] -&gt; Int
+</span><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier hs-var hs-var">numIncreases</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-comment">-- The empty list does not have a delta</span><span>
+</span><span id="line-33"></span><span class="annot"><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier hs-var">numIncreases</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-comment">-- The single item list does not have a delta</span><span>
+</span><span id="line-34"></span><span class="annot"><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier hs-var">numIncreases</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058768"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058768"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058767"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058767"><span class="hs-identifier hs-var">y</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058766"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679058766"><span class="hs-identifier hs-var">zs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058765"><span class="hs-identifier hs-var">total</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-35"></span><span>  </span><span id="local-6989586621679058764"><span class="annot"><span class="annottext">xInt :: Maybe Int
+</span><a href="#local-6989586621679058764"><span class="hs-identifier hs-var hs-var">xInt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int
+forall a. Read a =&gt; String -&gt; Maybe a
+</span><span class="hs-identifier hs-var">readMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058768"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-36"></span><span>  </span><span id="local-6989586621679058763"><span class="annot"><span class="annottext">yInt :: Maybe Int
+</span><a href="#local-6989586621679058763"><span class="hs-identifier hs-var hs-var">yInt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int
+forall a. Read a =&gt; String -&gt; Maybe a
+</span><span class="hs-identifier hs-var">readMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058767"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-37"></span><span>  </span><span id="local-6989586621679058762"><span class="annot"><span class="annottext">contribution :: Int
+</span><a href="#local-6989586621679058762"><span class="hs-identifier hs-var hs-var">contribution</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058764"><span class="hs-identifier hs-var">xInt</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058763"><span class="hs-identifier hs-var">yInt</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058763"><span class="hs-identifier hs-var">yInt</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Maybe Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058764"><span class="hs-identifier hs-var">xInt</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">else</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span>  </span><span id="local-6989586621679058765"><span class="annot"><span class="annottext">total :: Int
+</span><a href="#local-6989586621679058765"><span class="hs-identifier hs-var hs-var">total</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058762"><span class="hs-identifier hs-var">contribution</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; Int
+</span><a href="SonarSweep.SonarSweep.html#numIncreases"><span class="hs-identifier hs-var">numIncreases</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058767"><span class="hs-identifier hs-var">y</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679058766"><span class="hs-identifier hs-var">zs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="annot"><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier hs-type">num3MeasurementIncreases</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-41"></span><span class="hs-comment">-- More on pattern matching on lists. [1] offers a more concise syntax than the</span><span>
+</span><span id="line-42"></span><span class="hs-comment">-- one I used in `numIncreases`. It takes advantage of the fact that pattern</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- matching starts from the top.</span><span>
+</span><span id="line-44"></span><span class="hs-comment">--</span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- [1]: https://en.wikibooks.org/wiki/Haskell/Pattern_matching#Why_does_it_work_with_lists?</span><span>
+</span><span id="line-46"></span><span id="num3MeasurementIncreases"><span class="annot"><span class="annottext">num3MeasurementIncreases :: [String] -&gt; Int
+</span><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier hs-var hs-var">num3MeasurementIncreases</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058758"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058758"><span class="hs-identifier hs-var">u</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058757"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058757"><span class="hs-identifier hs-var">w</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058756"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058756"><span class="hs-identifier hs-var">x</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058755"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058755"><span class="hs-identifier hs-var">y</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058754"><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679058754"><span class="hs-identifier hs-var">zs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058753"><span class="hs-identifier hs-var">total</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-47"></span><span>  </span><span class="hs-comment">-- Skipping error handling is not remarkably shorter as we get a</span><span>
+</span><span id="line-48"></span><span>  </span><span class="hs-comment">-- `[(a, String)]`, and the code seems less readable. Good on Haskell for not</span><span>
+</span><span id="line-49"></span><span>  </span><span class="hs-comment">-- granting my request for a footgun.</span><span>
+</span><span id="line-50"></span><span>  </span><span id="local-6989586621679058752"><span class="annot"><span class="annottext">uInt :: Maybe Int
+</span><a href="#local-6989586621679058752"><span class="hs-identifier hs-var hs-var">uInt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int
+forall a. Read a =&gt; String -&gt; Maybe a
+</span><span class="hs-identifier hs-var">readMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058758"><span class="hs-identifier hs-var">u</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-51"></span><span>  </span><span id="local-6989586621679058751"><span class="annot"><span class="annottext">wInt :: Maybe Int
+</span><a href="#local-6989586621679058751"><span class="hs-identifier hs-var hs-var">wInt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int
+forall a. Read a =&gt; String -&gt; Maybe a
+</span><span class="hs-identifier hs-var">readMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058757"><span class="hs-identifier hs-var">w</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-52"></span><span>  </span><span id="local-6989586621679058750"><span class="annot"><span class="annottext">xInt :: Maybe Int
+</span><a href="#local-6989586621679058750"><span class="hs-identifier hs-var hs-var">xInt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int
+forall a. Read a =&gt; String -&gt; Maybe a
+</span><span class="hs-identifier hs-var">readMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058756"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-53"></span><span>  </span><span id="local-6989586621679058749"><span class="annot"><span class="annottext">yInt :: Maybe Int
+</span><a href="#local-6989586621679058749"><span class="hs-identifier hs-var hs-var">yInt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Maybe Int
+forall a. Read a =&gt; String -&gt; Maybe a
+</span><span class="hs-identifier hs-var">readMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058755"><span class="hs-identifier hs-var">y</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-54"></span><span>  </span><span id="local-6989586621679058748"><span class="annot"><span class="annottext">areAllValidInts :: Bool
+</span><a href="#local-6989586621679058748"><span class="hs-identifier hs-var hs-var">areAllValidInts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058752"><span class="hs-identifier hs-var">uInt</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058751"><span class="hs-identifier hs-var">wInt</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058750"><span class="hs-identifier hs-var">xInt</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058749"><span class="hs-identifier hs-var">yInt</span></a></span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span>  </span><span class="hs-comment">-- Looks like I don't need `(0 :: Int)` when the `then` part is clear.</span><span>
+</span><span id="line-57"></span><span>  </span><span id="local-6989586621679058747"><span class="annot"><span class="annottext">prevWindow :: Int
+</span><a href="#local-6989586621679058747"><span class="hs-identifier hs-var hs-var">prevWindow</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058748"><span class="hs-identifier hs-var">areAllValidInts</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int
+forall (t :: * -&gt; *) a. (Foldable t, Num a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">sum</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Maybe Int] -&gt; [Int]
+forall a. [Maybe a] -&gt; [a]
+</span><span class="hs-identifier hs-var">catMaybes</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058752"><span class="hs-identifier hs-var">uInt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058751"><span class="hs-identifier hs-var">wInt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058750"><span class="hs-identifier hs-var">xInt</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-58"></span><span>  </span><span id="local-6989586621679058745"><span class="annot"><span class="annottext">currWindow :: Int
+</span><a href="#local-6989586621679058745"><span class="hs-identifier hs-var hs-var">currWindow</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058748"><span class="hs-identifier hs-var">areAllValidInts</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int
+forall (t :: * -&gt; *) a. (Foldable t, Num a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">sum</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Maybe Int] -&gt; [Int]
+forall a. [Maybe a] -&gt; [a]
+</span><span class="hs-identifier hs-var">catMaybes</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058751"><span class="hs-identifier hs-var">wInt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058750"><span class="hs-identifier hs-var">xInt</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Maybe Int
+</span><a href="#local-6989586621679058749"><span class="hs-identifier hs-var">yInt</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-59"></span><span>  </span><span id="local-6989586621679058744"><span class="annot"><span class="annottext">contribution :: Int
+</span><a href="#local-6989586621679058744"><span class="hs-identifier hs-var hs-var">contribution</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058745"><span class="hs-identifier hs-var">currWindow</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058747"><span class="hs-identifier hs-var">prevWindow</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span>  </span><span id="local-6989586621679058753"><span class="annot"><span class="annottext">total :: Int
+</span><a href="#local-6989586621679058753"><span class="hs-identifier hs-var hs-var">total</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058744"><span class="hs-identifier hs-var">contribution</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">[String] -&gt; Int
+</span><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier hs-var">num3MeasurementIncreases</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058757"><span class="hs-identifier hs-var">w</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058756"><span class="hs-identifier hs-var">x</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679058755"><span class="hs-identifier hs-var">y</span></a></span><span class="annot"><span class="annottext">String -&gt; [String] -&gt; [String]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[String]
+</span><a href="#local-6989586621679058754"><span class="hs-identifier hs-var">zs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span>
+</span><span id="line-63"></span><span class="annot"><a href="SonarSweep.SonarSweep.html#num3MeasurementIncreases"><span class="hs-identifier hs-var">num3MeasurementIncreases</span></a></span><span> </span><span class="annot"><span class="annottext">[String]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-comment">-- Any list with less than 4 items doesn't have a delta</span><span>
+</span><span id="line-64"></span></pre></body></html>

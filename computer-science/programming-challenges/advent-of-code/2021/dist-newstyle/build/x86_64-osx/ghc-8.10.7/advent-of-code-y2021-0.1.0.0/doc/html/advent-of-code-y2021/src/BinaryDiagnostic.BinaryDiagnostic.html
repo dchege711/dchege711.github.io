@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RecordWildCards #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# OPTIONS_GHC -Wall #-}</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">BinaryDiagnostic.BinaryDiagnostic</span><span>
+</span><span id="line-5"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier">BinaryDiagnostics</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#powerConsumption"><span class="hs-identifier">powerConsumption</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#lifeSupportRating"><span class="hs-identifier">lifeSupportRating</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span class="hs-keyword">where</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.DeepSeq</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">NFData</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">rnf</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bits</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Bits</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">testBit</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-comment">-- Without the underscore prefix, I need to add `diagWidth` and `diagNums` to the</span><span>
+</span><span id="line-15"></span><span class="hs-comment">-- export list to avoid `Wunused-top-binds` [1]. The field names share the top</span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- level namespace with ordinary variables and classes. [2] That's kinda</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- inconvenient.</span><span>
+</span><span id="line-18"></span><span class="hs-comment">--</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- [1]: https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html?highlight=unused-top-binds#ghc-flag--Wunused-top-binds</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- [2]: https://www.haskell.org/tutorial/moretypes.html#sect6.2</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">data</span><span> </span><span id="BinaryDiagnostics"><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-var">BinaryDiagnostics</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="BinaryDiagnostics"><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-var">BinaryDiagnostics</span></a></span></span><span> </span><span class="hs-special">{</span><span id="diagWidth"><span class="annot"><span class="annottext">BinaryDiagnostics -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#diagWidth"><span class="hs-identifier hs-var hs-var">diagWidth</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span id="diagNums"><span class="annot"><span class="annottext">BinaryDiagnostics -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#diagNums"><span class="hs-identifier hs-var hs-var">diagNums</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span class="hs-special">}</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span class="hs-comment">-- For the `($!!)` operator to work on `BinaryDiagnostics`, we need to be an</span><span>
+</span><span id="line-24"></span><span class="hs-comment">-- instance of `NFData`. [1] ([2] for syntax)</span><span>
+</span><span id="line-25"></span><span class="hs-comment">--</span><span>
+</span><span id="line-26"></span><span class="hs-comment">-- [1]: https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/Control-DeepSeq.html#t:NFData</span><span>
+</span><span id="line-27"></span><span class="hs-comment">-- [2]: https://stackoverflow.com/a/31478918/7812406</span><span>
+</span><span id="line-28"></span><span class="hs-keyword">instance</span><span> </span><span class="annot"><span class="hs-identifier hs-type">NFData</span></span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-type">BinaryDiagnostics</span></a></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-29"></span><span>  </span><span id="local-6989586621679058104"><span class="annot"><span class="annottext">rnf :: BinaryDiagnostics -&gt; ()
+</span><a href="#local-6989586621679058104"><span class="hs-identifier hs-var hs-var hs-var hs-var">rnf</span></a></span></span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-type">BinaryDiagnostics</span></a></span><span> </span><span class="hs-special">{</span><span id="local-6989586621679058102"><span id="local-6989586621679058103"><span class="annot"><span class="annottext">Int
+[Int]
+diagNums :: [Int]
+diagWidth :: Int
+diagNums :: BinaryDiagnostics -&gt; [Int]
+diagWidth :: BinaryDiagnostics -&gt; Int
+</span><a href="#local-6989586621679058102"><span class="hs-glyph hs-var hs-var hs-var hs-var">..</span></a></span></span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; ()
+forall a. NFData a =&gt; a -&gt; ()
+</span><span class="hs-identifier hs-var">rnf</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058103"><span class="hs-identifier hs-var">diagWidth</span></a></span><span> </span><span class="annot"><span class="annottext">() -&gt; () -&gt; ()
+</span><span class="hs-operator hs-var">`seq`</span></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; ()
+forall a. NFData a =&gt; a -&gt; ()
+</span><span class="hs-identifier hs-var">rnf</span></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058102"><span class="hs-identifier hs-var">diagNums</span></a></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-comment">-- | `toBitList n b` returns a `[Int]` representing the b-least significant</span><span>
+</span><span id="line-32"></span><span class="hs-comment">-- | bits of `n`, e.g. `toBitList 22 5 == [1, 0, 1, 1, 0]`.</span><span>
+</span><span id="line-33"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#toBitList"><span class="hs-identifier hs-type">toBitList</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-34"></span><span id="toBitList"><span class="annot"><span class="annottext">toBitList :: Int -&gt; Int -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#toBitList"><span class="hs-identifier hs-var hs-var">toBitList</span></a></span></span><span> </span><span id="local-6989586621679058100"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058100"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span id="local-6989586621679058099"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058099"><span class="hs-identifier hs-var">numBits</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-35"></span><span>  </span><span class="annot"><span class="annottext">(Int -&gt; Int) -&gt; [Int] -&gt; [Int]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679058098"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058098"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Bits a =&gt; a -&gt; Int -&gt; Bool
+</span><span class="hs-identifier hs-var">testBit</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058100"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058098"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058099"><span class="hs-identifier hs-var">numBits</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058099"><span class="hs-identifier hs-var">numBits</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">2</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">..</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">]</span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="hs-comment">-- | `fromBitList ds` returns the `Int` formed when `ds` is treated like a bit</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- | representation of an integer, e.g. `fromBitList [1, 0, 1, 1, 0] == 22`.</span><span>
+</span><span id="line-39"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#fromBitList"><span class="hs-identifier hs-type">fromBitList</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-40"></span><span id="fromBitList"><span class="annot"><span class="annottext">fromBitList :: [Int] -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#fromBitList"><span class="hs-identifier hs-var hs-var">fromBitList</span></a></span></span><span> </span><span id="local-6989586621679058096"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058096"><span class="hs-identifier hs-var">ds</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int, Int) -&gt; Int
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">((Int, Int) -&gt; Int) -&gt; (Int, Int) -&gt; Int
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; (Int, Int) -&gt; (Int, Int))
+-&gt; (Int, Int) -&gt; [Int] -&gt; (Int, Int)
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; (Int, Int) -&gt; (Int, Int)
+forall b. Num b =&gt; b -&gt; (b, b) -&gt; (b, b)
+</span><a href="#local-6989586621679058094"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058096"><span class="hs-identifier hs-var">ds</span></a></span><span>
+</span><span id="line-41"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-42"></span><span>    </span><span id="local-6989586621679058094"><span class="annot"><span class="annottext">f :: b -&gt; (b, b) -&gt; (b, b)
+</span><a href="#local-6989586621679058094"><span class="hs-identifier hs-var hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058093"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058093"><span class="hs-identifier hs-var">d</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058092"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058092"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058091"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058091"><span class="hs-identifier hs-var">powerOf2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058092"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">b -&gt; b -&gt; b
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058091"><span class="hs-identifier hs-var">powerOf2</span></a></span><span> </span><span class="annot"><span class="annottext">b -&gt; b -&gt; b
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058093"><span class="hs-identifier hs-var">d</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679058091"><span class="hs-identifier hs-var">powerOf2</span></a></span><span> </span><span class="annot"><span class="annottext">b -&gt; b -&gt; b
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><span class="hs-number">2</span></span><span class="hs-special">)</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- | Flips any `0` to `1` and anything else to `0`. Assumes the input `[Int]` is</span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- | just zeros and ones.</span><span>
+</span><span id="line-46"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#flipZerosAndOnes"><span class="hs-identifier hs-type">flipZerosAndOnes</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-47"></span><span id="flipZerosAndOnes"><span class="annot"><span class="annottext">flipZerosAndOnes :: [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#flipZerosAndOnes"><span class="hs-identifier hs-var hs-var">flipZerosAndOnes</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int) -&gt; [Int] -&gt; [Int]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679058087"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058087"><span class="hs-identifier hs-var">num</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058087"><span class="hs-identifier hs-var">num</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="hs-comment">-- | `bitFrequencies numBits nums` returns an `[Int]` of size `numBits` where</span><span>
+</span><span id="line-50"></span><span class="hs-comment">-- | the i'th element encodes the relative frequency of the bit at position</span><span>
+</span><span id="line-51"></span><span class="hs-comment">-- | `numBits - i`.</span><span>
+</span><span id="line-52"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#bitFrequencies"><span class="hs-identifier hs-type">bitFrequencies</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-53"></span><span id="bitFrequencies"><span class="annot"><span class="annottext">bitFrequencies :: Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#bitFrequencies"><span class="hs-identifier hs-var hs-var">bitFrequencies</span></a></span></span><span> </span><span id="local-6989586621679058085"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058085"><span class="hs-identifier hs-var">numBits</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; [Int] -&gt; [Int]) -&gt; [Int] -&gt; [Int] -&gt; [Int]
+forall (t :: * -&gt; *) a b.
+Foldable t =&gt;
+(a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldr</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="#local-6989586621679058084"><span class="hs-identifier hs-var">updateCumulativeFrequencies</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; [Int]
+forall a. Int -&gt; a -&gt; [a]
+</span><span class="hs-identifier hs-var">replicate</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058085"><span class="hs-identifier hs-var">numBits</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span>
+</span><span id="line-54"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-55"></span><span>    </span><span class="annot"><a href="#local-6989586621679058082"><span class="hs-identifier hs-type">zerosToNegativeOnes</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-56"></span><span>    </span><span id="local-6989586621679058082"><span class="annot"><span class="annottext">zerosToNegativeOnes :: Int -&gt; Int
+</span><a href="#local-6989586621679058082"><span class="hs-identifier hs-var hs-var">zerosToNegativeOnes</span></a></span></span><span> </span><span id="local-6989586621679058081"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058081"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058081"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="hs-glyph">-</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058081"><span class="hs-identifier hs-var">i</span></a></span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><a href="#local-6989586621679058084"><span class="hs-identifier hs-type">updateCumulativeFrequencies</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-59"></span><span>    </span><span id="local-6989586621679058084"><span class="annot"><span class="annottext">updateCumulativeFrequencies :: Int -&gt; [Int] -&gt; [Int]
+</span><a href="#local-6989586621679058084"><span class="hs-identifier hs-var hs-var">updateCumulativeFrequencies</span></a></span></span><span> </span><span id="local-6989586621679058080"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058080"><span class="hs-identifier hs-var">num</span></a></span></span><span> </span><span id="local-6989586621679058079"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058079"><span class="hs-identifier hs-var">cumulativeBitFrequencies</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-60"></span><span>      </span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; Int) -&gt; [Int] -&gt; [Int] -&gt; [Int]
+forall a b c. (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
+</span><span class="hs-identifier hs-var">zipWith</span></span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">(+)</span></span><span>
+</span><span id="line-62"></span><span>        </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058079"><span class="hs-identifier hs-var">cumulativeBitFrequencies</span></a></span><span>
+</span><span id="line-63"></span><span>        </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int) -&gt; [Int] -&gt; [Int]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span>
+</span><span id="line-64"></span><span>            </span><span class="annot"><span class="annottext">Int -&gt; Int
+</span><a href="#local-6989586621679058082"><span class="hs-identifier hs-var">zerosToNegativeOnes</span></a></span><span>
+</span><span id="line-65"></span><span>            </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#toBitList"><span class="hs-identifier hs-var">toBitList</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058080"><span class="hs-identifier hs-var">num</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058085"><span class="hs-identifier hs-var">numBits</span></a></span><span>
+</span><span id="line-66"></span><span>            </span><span class="hs-special">)</span><span>
+</span><span id="line-67"></span><span>        </span><span class="hs-special">)</span><span>
+</span><span id="line-68"></span><span>
+</span><span id="line-69"></span><span class="hs-comment">-- | Convert frequency values to either 0 or 1 depending on whether the value</span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- | is negative or positive. In case the value is zero, `tieValue` is used.</span><span>
+</span><span id="line-71"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#frequenciesToZeroOne"><span class="hs-identifier hs-type">frequenciesToZeroOne</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-72"></span><span id="frequenciesToZeroOne"><span class="annot"><span class="annottext">frequenciesToZeroOne :: Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#frequenciesToZeroOne"><span class="hs-identifier hs-var hs-var">frequenciesToZeroOne</span></a></span></span><span> </span><span id="local-6989586621679058076"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058076"><span class="hs-identifier hs-var">tieValue</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Int) -&gt; [Int] -&gt; [Int]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int
+</span><a href="#local-6989586621679058075"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><span id="line-73"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-74"></span><span>    </span><span class="annot"><a href="#local-6989586621679058075"><span class="hs-identifier hs-type">f</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-75"></span><span>    </span><span id="local-6989586621679058075"><span class="annot"><span class="annottext">f :: Int -&gt; Int
+</span><a href="#local-6989586621679058075"><span class="hs-identifier hs-var hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058074"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058074"><span class="hs-identifier hs-var">freq</span></a></span></span><span>
+</span><span id="line-76"></span><span>      </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058074"><span class="hs-identifier hs-var">freq</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&lt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-77"></span><span>      </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058074"><span class="hs-identifier hs-var">freq</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Ord a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-78"></span><span>      </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058076"><span class="hs-identifier hs-var">tieValue</span></a></span><span>
+</span><span id="line-79"></span><span>
+</span><span id="line-80"></span><span class="hs-keyword">type</span><span> </span><span id="BitFrequencySummarizer"><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BitFrequencySummarizer"><span class="hs-identifier hs-var">BitFrequencySummarizer</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-81"></span><span>
+</span><span id="line-82"></span><span class="hs-comment">-- | `majorityBits numBits tieValue nums` returns an `[Int]` where the element</span><span>
+</span><span id="line-83"></span><span class="hs-comment">-- at index `i` is the most common bit at position `i`. In case of a tie,</span><span>
+</span><span id="line-84"></span><span class="hs-comment">-- `tieBreaker` is placed into `i`.</span><span>
+</span><span id="line-85"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#majorityBits"><span class="hs-identifier hs-type">majorityBits</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BitFrequencySummarizer"><span class="hs-identifier hs-type">BitFrequencySummarizer</span></a></span><span>
+</span><span id="line-86"></span><span id="majorityBits"><span class="annot"><span class="annottext">majorityBits :: Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#majorityBits"><span class="hs-identifier hs-var hs-var">majorityBits</span></a></span></span><span> </span><span id="local-6989586621679058069"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058069"><span class="hs-identifier hs-var">numBits</span></a></span></span><span> </span><span id="local-6989586621679058068"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058068"><span class="hs-identifier hs-var">nums</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-87"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#frequenciesToZeroOne"><span class="hs-identifier hs-var">frequenciesToZeroOne</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#bitFrequencies"><span class="hs-identifier hs-var">bitFrequencies</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058069"><span class="hs-identifier hs-var">numBits</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058068"><span class="hs-identifier hs-var">nums</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-88"></span><span>
+</span><span id="line-89"></span><span class="hs-comment">-- | `majorityBits numBits tieValue nums` returns an `[Int]` where the element</span><span>
+</span><span id="line-90"></span><span class="hs-comment">-- at index `i` is the least common bit at position `i`. In case of a tie,</span><span>
+</span><span id="line-91"></span><span class="hs-comment">-- `tieBreaker` is placed into `i`.</span><span>
+</span><span id="line-92"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#minorityBits"><span class="hs-identifier hs-type">minorityBits</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BitFrequencySummarizer"><span class="hs-identifier hs-type">BitFrequencySummarizer</span></a></span><span>
+</span><span id="line-93"></span><span id="minorityBits"><span class="annot"><span class="annottext">minorityBits :: Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#minorityBits"><span class="hs-identifier hs-var hs-var">minorityBits</span></a></span></span><span> </span><span id="local-6989586621679058066"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058066"><span class="hs-identifier hs-var">numBits</span></a></span></span><span> </span><span id="local-6989586621679058065"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058065"><span class="hs-identifier hs-var">nums</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-94"></span><span>  </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#frequenciesToZeroOne"><span class="hs-identifier hs-var">frequenciesToZeroOne</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Int -&gt; Int) -&gt; [Int] -&gt; [Int]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">-</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#bitFrequencies"><span class="hs-identifier hs-var">bitFrequencies</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058066"><span class="hs-identifier hs-var">numBits</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058065"><span class="hs-identifier hs-var">nums</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-95"></span><span>
+</span><span id="line-96"></span><span class="hs-comment">-- The BinaryLiterals language extension adds syntactic sugar for `0b11001001`</span><span>
+</span><span id="line-97"></span><span class="hs-comment">-- [1]. But I didn't end up using binary representation. `Data.Bits` provides</span><span>
+</span><span id="line-98"></span><span class="hs-comment">-- utilities for working with `Int`, so why not? [2]</span><span>
+</span><span id="line-99"></span><span class="hs-comment">--</span><span>
+</span><span id="line-100"></span><span class="hs-comment">-- [1]: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/binary_literals.html</span><span>
+</span><span id="line-101"></span><span class="hs-comment">-- [2]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-Bits.html</span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span class="hs-comment">-- | Solution for Advent of Code Day 3: Part I.</span><span>
+</span><span id="line-104"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#powerConsumption"><span class="hs-identifier hs-type">powerConsumption</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-type">BinaryDiagnostics</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-105"></span><span id="powerConsumption"><span class="annot"><span class="annottext">powerConsumption :: BinaryDiagnostics -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#powerConsumption"><span class="hs-identifier hs-var hs-var">powerConsumption</span></a></span></span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-type">BinaryDiagnostics</span></a></span><span> </span><span class="hs-special">{</span><span id="local-6989586621679058063"><span id="local-6989586621679058064"><span class="annot"><span class="annottext">Int
+[Int]
+diagNums :: [Int]
+diagWidth :: Int
+diagNums :: BinaryDiagnostics -&gt; [Int]
+diagWidth :: BinaryDiagnostics -&gt; Int
+</span><a href="#local-6989586621679058063"><span class="hs-glyph hs-var hs-var hs-var hs-var">..</span></a></span></span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-106"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058062"><span class="annot"><span class="annottext">majorities :: [Int]
+</span><a href="#local-6989586621679058062"><span class="hs-identifier hs-var hs-var">majorities</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#majorityBits"><span class="hs-identifier hs-var">majorityBits</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058064"><span class="hs-identifier hs-var">diagWidth</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058063"><span class="hs-identifier hs-var">diagNums</span></a></span><span>
+</span><span id="line-107"></span><span>      </span><span id="local-6989586621679058061"><span class="annot"><span class="annottext">gammaRate :: Int
+</span><a href="#local-6989586621679058061"><span class="hs-identifier hs-var hs-var">gammaRate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#fromBitList"><span class="hs-identifier hs-var">fromBitList</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058062"><span class="hs-identifier hs-var">majorities</span></a></span><span>
+</span><span id="line-108"></span><span>      </span><span id="local-6989586621679058060"><span class="annot"><span class="annottext">epsilonRate :: Int
+</span><a href="#local-6989586621679058060"><span class="hs-identifier hs-var hs-var">epsilonRate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#fromBitList"><span class="hs-identifier hs-var">fromBitList</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#flipZerosAndOnes"><span class="hs-identifier hs-var">flipZerosAndOnes</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058062"><span class="hs-identifier hs-var">majorities</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-109"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058061"><span class="hs-identifier hs-var">gammaRate</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058060"><span class="hs-identifier hs-var">epsilonRate</span></a></span><span>
+</span><span id="line-110"></span><span>
+</span><span id="line-111"></span><span class="hs-comment">-- | `lastNumStanding nums width f positionToCheck` recursively finds an `Int`</span><span>
+</span><span id="line-112"></span><span class="hs-comment">-- | that matches the rules of AoC Day 3: Part II.</span><span>
+</span><span id="line-113"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#lastNumStanding"><span class="hs-identifier hs-type">lastNumStanding</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BitFrequencySummarizer"><span class="hs-identifier hs-type">BitFrequencySummarizer</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-114"></span><span id="lastNumStanding"><span class="annot"><span class="annottext">lastNumStanding :: [Int] -&gt; Int -&gt; (Int -&gt; [Int] -&gt; [Int]) -&gt; Int -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#lastNumStanding"><span class="hs-identifier hs-var hs-var">lastNumStanding</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-115"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#lastNumStanding"><span class="hs-identifier hs-var">lastNumStanding</span></a></span><span> </span><span class="hs-special">[</span><span id="local-6989586621679058058"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058058"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058058"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><span id="line-116"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#lastNumStanding"><span class="hs-identifier hs-var">lastNumStanding</span></a></span><span> </span><span id="local-6989586621679058057"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058057"><span class="hs-identifier hs-var">nums</span></a></span></span><span> </span><span id="local-6989586621679058056"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058056"><span class="hs-identifier hs-var">width</span></a></span></span><span> </span><span id="local-6989586621679058055"><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="#local-6989586621679058055"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679058054"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058054"><span class="hs-identifier hs-var">positionToCheck</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-117"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058053"><span class="annot"><span class="annottext">expectedValues :: [Int]
+</span><a href="#local-6989586621679058053"><span class="hs-identifier hs-var hs-var">expectedValues</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="#local-6989586621679058055"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058056"><span class="hs-identifier hs-var">width</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058057"><span class="hs-identifier hs-var">nums</span></a></span><span>
+</span><span id="line-118"></span><span>      </span><span id="local-6989586621679058052"><span class="annot"><span class="annottext">shouldBeSet :: Bool
+</span><a href="#local-6989586621679058052"><span class="hs-identifier hs-var hs-var">shouldBeSet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058053"><span class="hs-identifier hs-var">expectedValues</span></a></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int -&gt; Int
+forall a. [a] -&gt; Int -&gt; a
+</span><span class="hs-operator hs-var">!!</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058054"><span class="hs-identifier hs-var">positionToCheck</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-comment">-- (*/_&#65340;)</span><span>
+</span><span id="line-119"></span><span>      </span><span id="local-6989586621679058050"><span class="annot"><span class="annottext">bitIndex :: Int
+</span><a href="#local-6989586621679058050"><span class="hs-identifier hs-var hs-var">bitIndex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058053"><span class="hs-identifier hs-var">expectedValues</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058054"><span class="hs-identifier hs-var">positionToCheck</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span>
+</span><span id="line-120"></span><span>      </span><span id="local-6989586621679058048"><span class="annot"><span class="annottext">matchingNums :: [Int]
+</span><a href="#local-6989586621679058048"><span class="hs-identifier hs-var hs-var">matchingNums</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Bool) -&gt; [Int] -&gt; [Int]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679058047"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058047"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Bits a =&gt; a -&gt; Int -&gt; Bool
+</span><span class="hs-identifier hs-var">testBit</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058047"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058050"><span class="hs-identifier hs-var">bitIndex</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058052"><span class="hs-identifier hs-var">shouldBeSet</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058057"><span class="hs-identifier hs-var">nums</span></a></span><span>
+</span><span id="line-121"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058048"><span class="hs-identifier hs-var">matchingNums</span></a></span><span>
+</span><span id="line-122"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">last</span></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058057"><span class="hs-identifier hs-var">nums</span></a></span><span>
+</span><span id="line-123"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int -&gt; (Int -&gt; [Int] -&gt; [Int]) -&gt; Int -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#lastNumStanding"><span class="hs-identifier hs-var">lastNumStanding</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058048"><span class="hs-identifier hs-var">matchingNums</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058056"><span class="hs-identifier hs-var">width</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="#local-6989586621679058055"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058054"><span class="hs-identifier hs-var">positionToCheck</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">)</span><span>
+</span><span id="line-124"></span><span>
+</span><span id="line-125"></span><span class="hs-comment">-- | Solution for Advent of Code Day 3: Part II.</span><span>
+</span><span id="line-126"></span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#lifeSupportRating"><span class="hs-identifier hs-type">lifeSupportRating</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-type">BinaryDiagnostics</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-127"></span><span id="lifeSupportRating"><span class="annot"><span class="annottext">lifeSupportRating :: BinaryDiagnostics -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#lifeSupportRating"><span class="hs-identifier hs-var hs-var">lifeSupportRating</span></a></span></span><span> </span><span class="annot"><a href="BinaryDiagnostic.BinaryDiagnostic.html#BinaryDiagnostics"><span class="hs-identifier hs-type">BinaryDiagnostics</span></a></span><span> </span><span class="hs-special">{</span><span id="local-6989586621679058043"><span id="local-6989586621679058044"><span class="annot"><span class="annottext">Int
+[Int]
+diagNums :: [Int]
+diagWidth :: Int
+diagNums :: BinaryDiagnostics -&gt; [Int]
+diagWidth :: BinaryDiagnostics -&gt; Int
+</span><a href="#local-6989586621679058043"><span class="hs-glyph hs-var hs-var hs-var hs-var">..</span></a></span></span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-128"></span><span>  </span><span class="hs-comment">-- Partial application allows us to pass less than the full number of args to</span><span>
+</span><span id="line-129"></span><span>  </span><span class="hs-comment">-- a function that takes multiple arguments.</span><span>
+</span><span id="line-130"></span><span>  </span><span class="hs-comment">--</span><span>
+</span><span id="line-131"></span><span>  </span><span class="hs-comment">-- [1]: https://wiki.haskell.org/Partial_application</span><span>
+</span><span id="line-132"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058042"><span class="annot"><span class="annottext">f :: (Int -&gt; [Int] -&gt; [Int]) -&gt; Int -&gt; Int
+</span><a href="#local-6989586621679058042"><span class="hs-identifier hs-var hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Int -&gt; (Int -&gt; [Int] -&gt; [Int]) -&gt; Int -&gt; Int
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#lastNumStanding"><span class="hs-identifier hs-var">lastNumStanding</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058043"><span class="hs-identifier hs-var">diagNums</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058044"><span class="hs-identifier hs-var">diagWidth</span></a></span><span>
+</span><span id="line-133"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">(Int -&gt; [Int] -&gt; [Int]) -&gt; Int -&gt; Int
+</span><a href="#local-6989586621679058042"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#majorityBits"><span class="hs-identifier hs-var">majorityBits</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; [Int] -&gt; [Int]) -&gt; Int -&gt; Int
+</span><a href="#local-6989586621679058042"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; [Int] -&gt; [Int]
+</span><a href="BinaryDiagnostic.BinaryDiagnostic.html#minorityBits"><span class="hs-identifier hs-var">minorityBits</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span>
+</span><span id="line-134"></span></pre></body></html>

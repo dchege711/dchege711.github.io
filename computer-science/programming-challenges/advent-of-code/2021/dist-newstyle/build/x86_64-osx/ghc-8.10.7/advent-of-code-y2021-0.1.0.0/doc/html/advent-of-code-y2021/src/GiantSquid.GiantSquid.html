@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# HLINT ignore &quot;Use tuple-section&quot; #-}</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">GiantSquid.GiantSquid</span><span>
+</span><span id="line-5"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#DrawnNumbers"><span class="hs-identifier">DrawnNumbers</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tile"><span class="hs-identifier">Tile</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier">Board</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfFirstWinningBoard"><span class="hs-identifier">scoreOfFirstWinningBoard</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfLastWinningBoard"><span class="hs-identifier">scoreOfLastWinningBoard</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">where</span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Vector</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">V</span></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">fromJust</span></span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- File format: the first line contains the numbers to draw. The rest is a new</span><span>
+</span><span id="line-17"></span><span class="hs-comment">-- line followed by a 5x5 grid of numbers representing a board.</span><span>
+</span><span id="line-18"></span><span class="hs-comment">--</span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- 7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1</span><span>
+</span><span id="line-20"></span><span class="hs-comment">--</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- 22 13 17 11  0 8  2 23  4 24 21  9 14 16  7 6 10  3 18  5 1 12 20 15 19</span><span>
+</span><span id="line-22"></span><span class="hs-comment">--</span><span>
+</span><span id="line-23"></span><span class="hs-comment">--  3 15  0  2 22 9 18 13 17  5 19  8  7 25 23 20 11 10 24  4 14 21 16 12  6</span><span>
+</span><span id="line-24"></span><span class="hs-comment">--</span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- The numbers to draw can be represented as an `[Int]`.</span><span>
+</span><span id="line-26"></span><span class="hs-comment">--</span><span>
+</span><span id="line-27"></span><span class="hs-comment">-- A board can be represented as a flat list-like of `(Int, Bool)` tuples, with</span><span>
+</span><span id="line-28"></span><span class="hs-comment">-- helper functions accessing the cell at `(i, j)`. Haskell types are immutable,</span><span>
+</span><span id="line-29"></span><span class="hs-comment">-- so updating a board involves changing the entire board. I'll need to do a lot</span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- of indexing. [1] evaluates trade-offs for various containers. Candidates:</span><span>
+</span><span id="line-31"></span><span class="hs-comment">-- `List`, `Data.Sequence`, and `Data.Vector.*`.</span><span>
+</span><span id="line-32"></span><span class="hs-comment">--</span><span>
+</span><span id="line-33"></span><span class="hs-comment">-- Typical operations will be updating a matching tile (if immutable, then</span><span>
+</span><span id="line-34"></span><span class="hs-comment">-- creating new 25-element list), and then checking if the board wins (at most</span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- 10 lookups). The need for `fmap` and indexing makes me choose `Data.Vector`</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- for the `Board` type.</span><span>
+</span><span id="line-37"></span><span class="hs-comment">--</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- Does changing a board in a list of `Board`s recreate the whole vector?</span><span>
+</span><span id="line-39"></span><span class="hs-comment">-- Seems like it would because I'd be using `map`. Presumably though, only one</span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- `[Board]` will be created because all `Boards` will be processed first.</span><span>
+</span><span id="line-41"></span><span class="hs-comment">--</span><span>
+</span><span id="line-42"></span><span class="hs-comment">-- [1]: https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/#efficiency-of-collections-types</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- [2]: https://hackage.haskell.org/package/vector-0.12.3.1/docs/Data-Vector-Primitive.html#t:Prim</span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-keyword">type</span><span> </span><span id="DrawnNumbers"><span class="annot"><a href="GiantSquid.GiantSquid.html#DrawnNumbers"><span class="hs-identifier hs-var">DrawnNumbers</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-keyword">type</span><span> </span><span id="Tile"><span class="annot"><a href="GiantSquid.GiantSquid.html#Tile"><span class="hs-identifier hs-var">Tile</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="hs-keyword">type</span><span> </span><span id="Tiles"><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-var">Tiles</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">V.Vector</span></span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tile"><span class="hs-identifier hs-type">Tile</span></a></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span class="hs-keyword">type</span><span> </span><span id="Board"><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-var">Board</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-type">Tiles</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span>
+</span><span id="line-53"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#boardWinsFromIndex"><span class="hs-identifier hs-type">boardWinsFromIndex</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-type">Tiles</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-54"></span><span id="boardWinsFromIndex"><span class="annot"><span class="annottext">boardWinsFromIndex :: Tiles -&gt; Int -&gt; Bool
+</span><a href="GiantSquid.GiantSquid.html#boardWinsFromIndex"><span class="hs-identifier hs-var hs-var">boardWinsFromIndex</span></a></span></span><span> </span><span id="local-6989586621679058336"><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058336"><span class="hs-identifier hs-var">tiles</span></a></span></span><span> </span><span id="local-6989586621679058335"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-55"></span><span>  </span><span class="hs-comment">-- TODO: Add error handling? This function crashes with idx = 25</span><span>
+</span><span id="line-56"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058334"><span class="annot"><span class="annottext">columnTiles :: [Int]
+</span><a href="#local-6989586621679058334"><span class="hs-identifier hs-var hs-var">columnTiles</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">5</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">10</span></span><span> </span><span class="hs-glyph">..</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; [Int] -&gt; [Int]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; [Int] -&gt; [Int]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">5</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">10</span></span><span> </span><span class="hs-glyph">..</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">24</span></span><span class="hs-special">]</span><span>
+</span><span id="line-57"></span><span>      </span><span id="local-6989586621679058332"><span class="annot"><span class="annottext">mod5 :: Int
+</span><a href="#local-6989586621679058332"><span class="hs-identifier hs-var hs-var">mod5</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Integral a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">`mod`</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">5</span></span><span>
+</span><span id="line-58"></span><span>      </span><span id="local-6989586621679058330"><span class="annot"><span class="annottext">rowTiles :: [Int]
+</span><a href="#local-6989586621679058330"><span class="hs-identifier hs-var hs-var">rowTiles</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058332"><span class="hs-identifier hs-var">mod5</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058332"><span class="hs-identifier hs-var">mod5</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span> </span><span class="hs-glyph">..</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058335"><span class="hs-identifier hs-var">idx</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">+</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">5</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058332"><span class="hs-identifier hs-var">mod5</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">1</span></span><span class="hs-special">]</span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span>      </span><span class="hs-comment">-- | Return `True` iff the tiles in the indices are all marked.</span><span>
+</span><span id="line-61"></span><span>      </span><span class="annot"><a href="#local-6989586621679058329"><span class="hs-identifier hs-type">bingo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-62"></span><span>      </span><span id="local-6989586621679058329"><span class="annot"><span class="annottext">bingo :: [Int] -&gt; Bool
+</span><a href="#local-6989586621679058329"><span class="hs-identifier hs-var hs-var">bingo</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058328"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058328"><span class="hs-identifier hs-var">j</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679058327"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058327"><span class="hs-identifier hs-var">js</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058326"><span class="annot"><span class="annottext">tileIsMarked :: Bool
+</span><a href="#local-6989586621679058326"><span class="hs-identifier hs-var hs-var">tileIsMarked</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int, Bool) -&gt; Bool
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058336"><span class="hs-identifier hs-var">tiles</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles -&gt; Int -&gt; (Int, Bool)
+forall a. Vector a -&gt; Int -&gt; a
+</span><span class="hs-operator hs-var">V.!</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058328"><span class="hs-identifier hs-var">j</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-63"></span><span>                       </span><span class="hs-keyword">in</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058327"><span class="hs-identifier hs-var">js</span></a></span><span>
+</span><span id="line-64"></span><span>                           </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058326"><span class="hs-identifier hs-var">tileIsMarked</span></a></span><span>
+</span><span id="line-65"></span><span>                           </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679058326"><span class="hs-identifier hs-var">tileIsMarked</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">&amp;&amp;</span></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bool
+</span><a href="#local-6989586621679058329"><span class="hs-identifier hs-var">bingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058327"><span class="hs-identifier hs-var">js</span></a></span><span>
+</span><span id="line-66"></span><span>      </span><span class="annot"><a href="#local-6989586621679058329"><span class="hs-identifier hs-var">bingo</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bool
+</span><a href="#local-6989586621679058329"><span class="hs-identifier hs-var">bingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058334"><span class="hs-identifier hs-var">columnTiles</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; Bool
+</span><a href="#local-6989586621679058329"><span class="hs-identifier hs-var">bingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058330"><span class="hs-identifier hs-var">rowTiles</span></a></span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span class="hs-keyword">type</span><span> </span><span id="TileWithIndex"><span class="annot"><a href="GiantSquid.GiantSquid.html#TileWithIndex"><span class="hs-identifier hs-var">TileWithIndex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tile"><span class="hs-identifier hs-type">Tile</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span>
+</span><span id="line-72"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#indicesWithMatch"><span class="hs-identifier hs-type">indicesWithMatch</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-type">Tiles</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">V.Vector</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-73"></span><span id="indicesWithMatch"><span class="annot"><span class="annottext">indicesWithMatch :: Tiles -&gt; Int -&gt; Vector Int
+</span><a href="GiantSquid.GiantSquid.html#indicesWithMatch"><span class="hs-identifier hs-var hs-var">indicesWithMatch</span></a></span></span><span> </span><span id="local-6989586621679058320"><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058320"><span class="hs-identifier hs-var">tiles</span></a></span></span><span> </span><span id="local-6989586621679058319"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058319"><span class="hs-identifier hs-var">num</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-74"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span class="annot"><a href="#local-6989586621679058318"><span class="hs-identifier hs-type">tileMatches</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#TileWithIndex"><span class="hs-identifier hs-type">TileWithIndex</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-75"></span><span>      </span><span id="local-6989586621679058318"><span class="annot"><span class="annottext">tileMatches :: Int -&gt; TileWithIndex -&gt; Bool
+</span><a href="#local-6989586621679058318"><span class="hs-identifier hs-var hs-var">tileMatches</span></a></span></span><span> </span><span id="local-6989586621679058317"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058317"><span class="hs-identifier hs-var">numToMatch</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058316"><span class="annot"><span class="annottext">(Int, Bool)
+</span><a href="#local-6989586621679058316"><span class="hs-identifier hs-var">tile</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Int, Bool) -&gt; Int
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">(Int, Bool)
+</span><a href="#local-6989586621679058316"><span class="hs-identifier hs-var">tile</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058317"><span class="hs-identifier hs-var">numToMatch</span></a></span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span><span>      </span><span class="annot"><a href="#local-6989586621679058315"><span class="hs-identifier hs-type">tilesWithIndex</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-type">Tiles</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">V.Vector</span></span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#TileWithIndex"><span class="hs-identifier hs-type">TileWithIndex</span></a></span><span>
+</span><span id="line-78"></span><span>      </span><span class="hs-comment">-- Unxpected infinite loop.</span><span>
+</span><span id="line-79"></span><span>      </span><span class="hs-comment">--</span><span>
+</span><span id="line-80"></span><span>      </span><span class="hs-comment">-- &gt; l1 = [1, 2, 3]</span><span>
+</span><span id="line-81"></span><span>      </span><span class="hs-comment">-- &gt; l2 = [1 .. ]</span><span>
+</span><span id="line-82"></span><span>      </span><span class="hs-comment">-- &gt; zip l1 l2              -- [(1,1), (2,2), (3,3)]</span><span>
+</span><span id="line-83"></span><span>      </span><span class="hs-comment">-- &gt; v1 = [1, 2, 3]</span><span>
+</span><span id="line-84"></span><span>      </span><span class="hs-comment">-- &gt; v2 = [1 .. ]</span><span>
+</span><span id="line-85"></span><span>      </span><span class="hs-comment">-- &gt; V.zip v1 v2            -- Infinite loop!</span><span>
+</span><span id="line-86"></span><span>      </span><span id="local-6989586621679058315"><span class="annot"><span class="annottext">tilesWithIndex :: Tiles -&gt; Vector TileWithIndex
+</span><a href="#local-6989586621679058315"><span class="hs-identifier hs-var hs-var">tilesWithIndex</span></a></span></span><span> </span><span id="local-6989586621679058314"><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058314"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Tiles -&gt; Vector Int -&gt; Vector TileWithIndex
+forall a b. Vector a -&gt; Vector b -&gt; Vector (a, b)
+</span><span class="hs-identifier hs-var">V.zip</span></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058314"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Int] -&gt; Vector Int
+forall a. [a] -&gt; Vector a
+</span><span class="hs-identifier hs-var">V.fromList</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">..</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Tiles -&gt; Int
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058314"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-87"></span><span>
+</span><span id="line-88"></span><span>      </span><span class="annot"><a href="#local-6989586621679058310"><span class="hs-identifier hs-type">matchingTilesWithIndex</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">V.Vector</span></span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#TileWithIndex"><span class="hs-identifier hs-type">TileWithIndex</span></a></span><span>
+</span><span id="line-89"></span><span>      </span><span id="local-6989586621679058310"><span class="annot"><span class="annottext">matchingTilesWithIndex :: Vector TileWithIndex
+</span><a href="#local-6989586621679058310"><span class="hs-identifier hs-var hs-var">matchingTilesWithIndex</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(TileWithIndex -&gt; Bool)
+-&gt; Vector TileWithIndex -&gt; Vector TileWithIndex
+forall a. (a -&gt; Bool) -&gt; Vector a -&gt; Vector a
+</span><span class="hs-identifier hs-var">V.filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; TileWithIndex -&gt; Bool
+</span><a href="#local-6989586621679058318"><span class="hs-identifier hs-var">tileMatches</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058319"><span class="hs-identifier hs-var">num</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Tiles -&gt; Vector TileWithIndex
+</span><a href="#local-6989586621679058315"><span class="hs-identifier hs-var">tilesWithIndex</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058320"><span class="hs-identifier hs-var">tiles</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-90"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">(TileWithIndex -&gt; Int) -&gt; Vector TileWithIndex -&gt; Vector Int
+forall a b. (a -&gt; b) -&gt; Vector a -&gt; Vector b
+</span><span class="hs-identifier hs-var">V.map</span></span><span> </span><span class="annot"><span class="annottext">TileWithIndex -&gt; Int
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">Vector TileWithIndex
+</span><a href="#local-6989586621679058310"><span class="hs-identifier hs-var">matchingTilesWithIndex</span></a></span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#playRoundOnBoard"><span class="hs-identifier hs-type">playRoundOnBoard</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span>
+</span><span id="line-93"></span><span id="playRoundOnBoard"><span class="annot"><span class="annottext">playRoundOnBoard :: Int -&gt; Board -&gt; Board
+</span><a href="GiantSquid.GiantSquid.html#playRoundOnBoard"><span class="hs-identifier hs-var hs-var">playRoundOnBoard</span></a></span></span><span> </span><span id="local-6989586621679058306"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058306"><span class="hs-identifier hs-var">num</span></a></span></span><span> </span><span id="local-6989586621679058305"><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679058305"><span class="hs-identifier hs-var">board</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-94"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span class="annot"><a href="#local-6989586621679058304"><span class="hs-identifier hs-type">updateTile</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tile"><span class="hs-identifier hs-type">Tile</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tile"><span class="hs-identifier hs-type">Tile</span></a></span><span>
+</span><span id="line-95"></span><span>      </span><span id="local-6989586621679058304"><span class="annot"><span class="annottext">updateTile :: Int -&gt; (Int, Bool) -&gt; (Int, Bool)
+</span><a href="#local-6989586621679058304"><span class="hs-identifier hs-var hs-var">updateTile</span></a></span></span><span> </span><span id="local-6989586621679058303"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058303"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span id="local-6989586621679058302"><span class="annot"><span class="annottext">(Int, Bool)
+</span><a href="#local-6989586621679058302"><span class="hs-identifier hs-var">tile</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">(Int, Bool) -&gt; Int
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">(Int, Bool)
+</span><a href="#local-6989586621679058302"><span class="hs-identifier hs-var">tile</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058303"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058303"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">(Int, Bool)
+</span><a href="#local-6989586621679058302"><span class="hs-identifier hs-var">tile</span></a></span><span>
+</span><span id="line-96"></span><span>
+</span><span id="line-97"></span><span>      </span><span id="local-6989586621679058301"><span class="annot"><span class="annottext">updatedTiles :: Tiles
+</span><a href="#local-6989586621679058301"><span class="hs-identifier hs-var hs-var">updatedTiles</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((Int, Bool) -&gt; (Int, Bool)) -&gt; Tiles -&gt; Tiles
+forall a b. (a -&gt; b) -&gt; Vector a -&gt; Vector b
+</span><span class="hs-identifier hs-var">V.map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; (Int, Bool) -&gt; (Int, Bool)
+</span><a href="#local-6989586621679058304"><span class="hs-identifier hs-var">updateTile</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058306"><span class="hs-identifier hs-var">num</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Board -&gt; Tiles
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679058305"><span class="hs-identifier hs-var">board</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-98"></span><span>      </span><span id="local-6989586621679058300"><span class="annot"><span class="annottext">matchedIndices :: [Int]
+</span><a href="#local-6989586621679058300"><span class="hs-identifier hs-var hs-var">matchedIndices</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Vector Int -&gt; [Int]
+forall a. Vector a -&gt; [a]
+</span><span class="hs-identifier hs-var">V.toList</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Tiles -&gt; Int -&gt; Vector Int
+</span><a href="GiantSquid.GiantSquid.html#indicesWithMatch"><span class="hs-identifier hs-var">indicesWithMatch</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058301"><span class="hs-identifier hs-var">updatedTiles</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058306"><span class="hs-identifier hs-var">num</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-99"></span><span>
+</span><span id="line-100"></span><span>      </span><span class="annot"><a href="#local-6989586621679058298"><span class="hs-identifier hs-type">boardWins</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-type">Tiles</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-101"></span><span>      </span><span id="local-6989586621679058298"><span class="annot"><span class="annottext">boardWins :: Tiles -&gt; [Int] -&gt; Bool
+</span><a href="#local-6989586621679058298"><span class="hs-identifier hs-var hs-var">boardWins</span></a></span></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-102"></span><span>      </span><span class="annot"><a href="#local-6989586621679058298"><span class="hs-identifier hs-var">boardWins</span></a></span><span> </span><span id="local-6989586621679058297"><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058297"><span class="hs-identifier hs-var">tiles</span></a></span></span><span> </span><span class="hs-special">[</span><span id="local-6989586621679058296"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058296"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Tiles -&gt; Int -&gt; Bool
+</span><a href="GiantSquid.GiantSquid.html#boardWinsFromIndex"><span class="hs-identifier hs-var">boardWinsFromIndex</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058297"><span class="hs-identifier hs-var">tiles</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058296"><span class="hs-identifier hs-var">i</span></a></span><span>
+</span><span id="line-103"></span><span>      </span><span class="annot"><a href="#local-6989586621679058298"><span class="hs-identifier hs-var">boardWins</span></a></span><span> </span><span id="local-6989586621679058295"><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058295"><span class="hs-identifier hs-var">tiles</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058294"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058294"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679058293"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058293"><span class="hs-identifier hs-var">is</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Tiles -&gt; Int -&gt; Bool
+</span><a href="GiantSquid.GiantSquid.html#boardWinsFromIndex"><span class="hs-identifier hs-var">boardWinsFromIndex</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058295"><span class="hs-identifier hs-var">tiles</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058294"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool -&gt; Bool
+</span><span class="hs-operator hs-var">||</span></span><span> </span><span class="annot"><span class="annottext">Tiles -&gt; [Int] -&gt; Bool
+</span><a href="#local-6989586621679058298"><span class="hs-identifier hs-var">boardWins</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058295"><span class="hs-identifier hs-var">tiles</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058293"><span class="hs-identifier hs-var">is</span></a></span><span>
+</span><span id="line-104"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058301"><span class="hs-identifier hs-var">updatedTiles</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Tiles -&gt; [Int] -&gt; Bool
+</span><a href="#local-6989586621679058298"><span class="hs-identifier hs-var">boardWins</span></a></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058301"><span class="hs-identifier hs-var">updatedTiles</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058300"><span class="hs-identifier hs-var">matchedIndices</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-105"></span><span>
+</span><span id="line-106"></span><span class="hs-keyword">type</span><span> </span><span id="BoardWithLastCalledNum"><span class="annot"><a href="GiantSquid.GiantSquid.html#BoardWithLastCalledNum"><span class="hs-identifier hs-var">BoardWithLastCalledNum</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">)</span><span>
+</span><span id="line-107"></span><span>
+</span><span id="line-108"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#playBingo"><span class="hs-identifier hs-type">playBingo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#DrawnNumbers"><span class="hs-identifier hs-type">DrawnNumbers</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#BoardWithLastCalledNum"><span class="hs-identifier hs-type">BoardWithLastCalledNum</span></a></span><span>
+</span><span id="line-109"></span><span id="playBingo"><span class="annot"><span class="annottext">playBingo :: [Int] -&gt; [Board] -&gt; BoardWithLastCalledNum
+</span><a href="GiantSquid.GiantSquid.html#playBingo"><span class="hs-identifier hs-var hs-var">playBingo</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058291"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058291"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span id="local-6989586621679058290"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058290"><span class="hs-identifier hs-var">nums</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679058289"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058289"><span class="hs-identifier hs-var">currBoards</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-110"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058288"><span class="annot"><span class="annottext">boardsAfterRound :: [Board]
+</span><a href="#local-6989586621679058288"><span class="hs-identifier hs-var hs-var">boardsAfterRound</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Board) -&gt; [Board] -&gt; [Board]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Board -&gt; Board
+</span><a href="GiantSquid.GiantSquid.html#playRoundOnBoard"><span class="hs-identifier hs-var">playRoundOnBoard</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058291"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058289"><span class="hs-identifier hs-var">currBoards</span></a></span><span>
+</span><span id="line-111"></span><span>      </span><span id="local-6989586621679058287"><span class="annot"><span class="annottext">winner :: [Board]
+</span><a href="#local-6989586621679058287"><span class="hs-identifier hs-var hs-var">winner</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Bool) -&gt; [Board] -&gt; [Board]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Bool
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058288"><span class="hs-identifier hs-var">boardsAfterRound</span></a></span><span>
+</span><span id="line-112"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="hs-comment">-- What is the idiomatic way of saying `if true`?</span><span>
+</span><span id="line-113"></span><span>      </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">[Board] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058287"><span class="hs-identifier hs-var">winner</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[Int] -&gt; [Board] -&gt; BoardWithLastCalledNum
+</span><a href="GiantSquid.GiantSquid.html#playBingo"><span class="hs-identifier hs-var">playBingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058290"><span class="hs-identifier hs-var">nums</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058288"><span class="hs-identifier hs-var">boardsAfterRound</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Board] -&gt; Board
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058287"><span class="hs-identifier hs-var">winner</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058291"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-114"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#playBingo"><span class="hs-identifier hs-var">playBingo</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span id="local-6989586621679058285"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058285"><span class="hs-identifier hs-var">currBoards</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Board] -&gt; Board
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058285"><span class="hs-identifier hs-var">currBoards</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span class="hs-special">)</span><span>
+</span><span id="line-115"></span><span>
+</span><span id="line-116"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfBoard"><span class="hs-identifier hs-type">scoreOfBoard</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#BoardWithLastCalledNum"><span class="hs-identifier hs-type">BoardWithLastCalledNum</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-117"></span><span id="scoreOfBoard"><span class="annot"><span class="annottext">scoreOfBoard :: BoardWithLastCalledNum -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfBoard"><span class="hs-identifier hs-var hs-var">scoreOfBoard</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058283"><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679058283"><span class="hs-identifier hs-var">board</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058282"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058282"><span class="hs-identifier hs-var">lastCalledNum</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-118"></span><span>  </span><span class="hs-keyword">let</span><span> </span><span class="annot"><a href="#local-6989586621679058281"><span class="hs-identifier hs-type">unmarkedTiles</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#Tiles"><span class="hs-identifier hs-type">Tiles</span></a></span><span>
+</span><span id="line-119"></span><span>      </span><span id="local-6989586621679058281"><span class="annot"><span class="annottext">unmarkedTiles :: Tiles
+</span><a href="#local-6989586621679058281"><span class="hs-identifier hs-var hs-var">unmarkedTiles</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((Int, Bool) -&gt; Bool) -&gt; Tiles -&gt; Tiles
+forall a. (a -&gt; Bool) -&gt; Vector a -&gt; Vector a
+</span><span class="hs-identifier hs-var">V.filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; ((Int, Bool) -&gt; Bool) -&gt; (Int, Bool) -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Int, Bool) -&gt; Bool
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Board -&gt; Tiles
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679058283"><span class="hs-identifier hs-var">board</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-120"></span><span>   </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">Vector Int -&gt; Int
+forall (t :: * -&gt; *) a. (Foldable t, Num a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">sum</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">((Int, Bool) -&gt; Int) -&gt; Tiles -&gt; Vector Int
+forall a b. (a -&gt; b) -&gt; Vector a -&gt; Vector b
+</span><span class="hs-identifier hs-var">V.map</span></span><span> </span><span class="annot"><span class="annottext">(Int, Bool) -&gt; Int
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">Tiles
+</span><a href="#local-6989586621679058281"><span class="hs-identifier hs-var">unmarkedTiles</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Int -&gt; Int
+forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">*</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058282"><span class="hs-identifier hs-var">lastCalledNum</span></a></span><span>
+</span><span id="line-121"></span><span>
+</span><span id="line-122"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfFirstWinningBoard"><span class="hs-identifier hs-type">scoreOfFirstWinningBoard</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GiantSquid.GiantSquid.html#DrawnNumbers"><span class="hs-identifier hs-type">DrawnNumbers</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-123"></span><span id="scoreOfFirstWinningBoard"><span class="annot"><span class="annottext">scoreOfFirstWinningBoard :: ([Int], [Board]) -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfFirstWinningBoard"><span class="hs-identifier hs-var hs-var">scoreOfFirstWinningBoard</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058276"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058276"><span class="hs-identifier hs-var">drawnNums</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058275"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058275"><span class="hs-identifier hs-var">boards</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-124"></span><span>  </span><span class="annot"><span class="annottext">BoardWithLastCalledNum -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfBoard"><span class="hs-identifier hs-var">scoreOfBoard</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Int] -&gt; [Board] -&gt; BoardWithLastCalledNum
+</span><a href="GiantSquid.GiantSquid.html#playBingo"><span class="hs-identifier hs-var">playBingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058276"><span class="hs-identifier hs-var">drawnNums</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058275"><span class="hs-identifier hs-var">boards</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-125"></span><span>
+</span><span id="line-126"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#playLastBoardBingo"><span class="hs-identifier hs-type">playLastBoardBingo</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#DrawnNumbers"><span class="hs-identifier hs-type">DrawnNumbers</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GiantSquid.GiantSquid.html#BoardWithLastCalledNum"><span class="hs-identifier hs-type">BoardWithLastCalledNum</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="GiantSquid.GiantSquid.html#BoardWithLastCalledNum"><span class="hs-identifier hs-type">BoardWithLastCalledNum</span></a></span><span>
+</span><span id="line-127"></span><span>
+</span><span id="line-128"></span><span id="playLastBoardBingo"><span class="annot"><span class="annottext">playLastBoardBingo :: [Int]
+-&gt; [Board]
+-&gt; [BoardWithLastCalledNum]
+-&gt; Maybe BoardWithLastCalledNum
+</span><a href="GiantSquid.GiantSquid.html#playLastBoardBingo"><span class="hs-identifier hs-var hs-var">playLastBoardBingo</span></a></span></span><span> </span><span class="hs-special">[</span><span id="local-6989586621679058273"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058273"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">]</span><span> </span><span id="local-6989586621679058272"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058272"><span class="hs-identifier hs-var">boards</span></a></span></span><span> </span><span id="local-6989586621679058271"><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+</span><a href="#local-6989586621679058271"><span class="hs-identifier hs-var">winningBoards</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-129"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058270"><span class="annot"><span class="annottext">boardsAfterRound :: [Board]
+</span><a href="#local-6989586621679058270"><span class="hs-identifier hs-var hs-var">boardsAfterRound</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Board) -&gt; [Board] -&gt; [Board]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Board -&gt; Board
+</span><a href="GiantSquid.GiantSquid.html#playRoundOnBoard"><span class="hs-identifier hs-var">playRoundOnBoard</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058273"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058272"><span class="hs-identifier hs-var">boards</span></a></span><span>
+</span><span id="line-130"></span><span>        </span><span id="local-6989586621679058269"><span class="annot"><span class="annottext">currWinners :: [Board]
+</span><a href="#local-6989586621679058269"><span class="hs-identifier hs-var hs-var">currWinners</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Board] -&gt; [Board]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Board -&gt; Bool) -&gt; [Board] -&gt; [Board]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Bool
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058270"><span class="hs-identifier hs-var">boardsAfterRound</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-131"></span><span>        </span><span id="local-6989586621679058267"><span class="annot"><span class="annottext">lastWinningBoardWithNum :: BoardWithLastCalledNum
+</span><a href="#local-6989586621679058267"><span class="hs-identifier hs-var hs-var">lastWinningBoardWithNum</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">[Board] -&gt; Bool
+forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Bool
+</span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058269"><span class="hs-identifier hs-var">currWinners</span></a></span><span>
+</span><span id="line-132"></span><span>            </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">[BoardWithLastCalledNum] -&gt; BoardWithLastCalledNum
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+</span><a href="#local-6989586621679058271"><span class="hs-identifier hs-var">winningBoards</span></a></span><span>
+</span><span id="line-133"></span><span>            </span><span class="hs-keyword">else</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Board] -&gt; Board
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">head</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058269"><span class="hs-identifier hs-var">currWinners</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058273"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-134"></span><span>    </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">BoardWithLastCalledNum -&gt; Maybe BoardWithLastCalledNum
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">BoardWithLastCalledNum
+</span><a href="#local-6989586621679058267"><span class="hs-identifier hs-var">lastWinningBoardWithNum</span></a></span><span>
+</span><span id="line-135"></span><span>
+</span><span id="line-136"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#playLastBoardBingo"><span class="hs-identifier hs-var">playLastBoardBingo</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058266"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058266"><span class="hs-identifier hs-var">n</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679058265"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058265"><span class="hs-identifier hs-var">ns</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679058264"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058264"><span class="hs-identifier hs-var">boards</span></a></span></span><span> </span><span id="local-6989586621679058263"><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+</span><a href="#local-6989586621679058263"><span class="hs-identifier hs-var">winningBoards</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-137"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679058262"><span class="annot"><span class="annottext">boardsAfterRound :: [Board]
+</span><a href="#local-6989586621679058262"><span class="hs-identifier hs-var hs-var">boardsAfterRound</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Board) -&gt; [Board] -&gt; [Board]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int -&gt; Board -&gt; Board
+</span><a href="GiantSquid.GiantSquid.html#playRoundOnBoard"><span class="hs-identifier hs-var">playRoundOnBoard</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058266"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058264"><span class="hs-identifier hs-var">boards</span></a></span><span>
+</span><span id="line-138"></span><span>        </span><span id="local-6989586621679058261"><span class="annot"><span class="annottext">currWinners :: [Board]
+</span><a href="#local-6989586621679058261"><span class="hs-identifier hs-var hs-var">currWinners</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Board] -&gt; [Board]
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Board -&gt; Bool) -&gt; [Board] -&gt; [Board]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Bool
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058262"><span class="hs-identifier hs-var">boardsAfterRound</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-139"></span><span>        </span><span id="local-6989586621679058260"><span class="annot"><span class="annottext">pendingBoards :: [Board]
+</span><a href="#local-6989586621679058260"><span class="hs-identifier hs-var hs-var">pendingBoards</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Bool) -&gt; [Board] -&gt; [Board]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; (Board -&gt; Bool) -&gt; Board -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Bool
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058262"><span class="hs-identifier hs-var">boardsAfterRound</span></a></span><span>
+</span><span id="line-140"></span><span>        </span><span id="local-6989586621679058259"><span class="annot"><span class="annottext">allWinners :: [BoardWithLastCalledNum]
+</span><a href="#local-6989586621679058259"><span class="hs-identifier hs-var hs-var">allWinners</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Board -&gt; BoardWithLastCalledNum)
+-&gt; [Board] -&gt; [BoardWithLastCalledNum]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679058258"><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679058258"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679058258"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679058266"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058261"><span class="hs-identifier hs-var">currWinners</span></a></span><span> </span><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+-&gt; [BoardWithLastCalledNum] -&gt; [BoardWithLastCalledNum]
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+</span><a href="#local-6989586621679058263"><span class="hs-identifier hs-var">winningBoards</span></a></span><span>
+</span><span id="line-141"></span><span>    </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">[Int]
+-&gt; [Board]
+-&gt; [BoardWithLastCalledNum]
+-&gt; Maybe BoardWithLastCalledNum
+</span><a href="GiantSquid.GiantSquid.html#playLastBoardBingo"><span class="hs-identifier hs-var">playLastBoardBingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058265"><span class="hs-identifier hs-var">ns</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058260"><span class="hs-identifier hs-var">pendingBoards</span></a></span><span> </span><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+</span><a href="#local-6989586621679058259"><span class="hs-identifier hs-var">allWinners</span></a></span><span>
+</span><span id="line-142"></span><span>
+</span><span id="line-143"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#playLastBoardBingo"><span class="hs-identifier hs-var">playLastBoardBingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">[BoardWithLastCalledNum]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe BoardWithLastCalledNum
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-144"></span><span>
+</span><span id="line-145"></span><span class="annot"><a href="GiantSquid.GiantSquid.html#scoreOfLastWinningBoard"><span class="hs-identifier hs-type">scoreOfLastWinningBoard</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="GiantSquid.GiantSquid.html#DrawnNumbers"><span class="hs-identifier hs-type">DrawnNumbers</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="GiantSquid.GiantSquid.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-146"></span><span id="scoreOfLastWinningBoard"><span class="annot"><span class="annottext">scoreOfLastWinningBoard :: ([Int], [Board]) -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfLastWinningBoard"><span class="hs-identifier hs-var hs-var">scoreOfLastWinningBoard</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679058257"><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058257"><span class="hs-identifier hs-var">drawnNums</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679058256"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058256"><span class="hs-identifier hs-var">boards</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-147"></span><span>    </span><span class="hs-comment">-- TODO: error handling?</span><span>
+</span><span id="line-148"></span><span>    </span><span class="annot"><span class="annottext">BoardWithLastCalledNum -&gt; Int
+</span><a href="GiantSquid.GiantSquid.html#scoreOfBoard"><span class="hs-identifier hs-var">scoreOfBoard</span></a></span><span class="hs-special">(</span><span class="annot"><span class="annottext">Maybe BoardWithLastCalledNum -&gt; BoardWithLastCalledNum
+forall a. HasCallStack =&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromJust</span></span><span> </span><span class="annot"><span class="annottext">(Maybe BoardWithLastCalledNum -&gt; BoardWithLastCalledNum)
+-&gt; Maybe BoardWithLastCalledNum -&gt; BoardWithLastCalledNum
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Int]
+-&gt; [Board]
+-&gt; [BoardWithLastCalledNum]
+-&gt; Maybe BoardWithLastCalledNum
+</span><a href="GiantSquid.GiantSquid.html#playLastBoardBingo"><span class="hs-identifier hs-var">playLastBoardBingo</span></a></span><span> </span><span class="annot"><span class="annottext">[Int]
+</span><a href="#local-6989586621679058257"><span class="hs-identifier hs-var">drawnNums</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679058256"><span class="hs-identifier hs-var">boards</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
+</span><span id="line-149"></span></pre></body></html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Day 07: The Treachery of Whales | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/TreacheryOfWhales/">AoC 2021 Day 07: The Treachery of Whales</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Day 07: The Treachery of Whales</h1>
+    <p class="meta">
+        
+        Dated Mar 5, 2022; 
+        
+        last modified on Sat, 05 Mar 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#part-i-description">Part I Description</a></li>
+    <li><a href="#part-i-solution">Part I Solution</a></li>
+    <li><a href="#part-ii-description">Part II Description</a></li>
+    <li><a href="#part-ii-solution">Part II Solution</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='AoC2021-07'>
+        
+        Day 7 - Advent of Code 2021<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://adventofcode.com/2021/day/7" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 5, 2022.
+    
+</div>
+
+<h2 id="part-i-description">Part I Description</h2>
+<p><em>A giant whale has decided that your submarine is its next meal, and it&rsquo;s much
+faster than you are. There&rsquo;s nowhere to run!</em></p>
+<p><em>Suddenly, a swarm of crabs (each in its own tiny submarine - it&rsquo;s too deep for
+them otherwise) zooms in to rescue you! They seem to be preparing to blast a
+hole in the ocean floor; sensors indicate a massive underground cave system just
+beyond where they&rsquo;re aiming!</em></p>
+<p><em>The crab submarines all need to be aligned before they&rsquo;ll have enough power to
+blast a large enough hole for your submarine to get through. However, it doesn&rsquo;t
+look like they&rsquo;ll be aligned before the whale catches you! Maybe you can help?</em></p>
+<p><em>There&rsquo;s one major catch - crab submarines can only move horizontally.</em></p>
+<p><em>You quickly make a list of the horizontal position of each crab (your puzzle
+input). Crab submarines have limited fuel, so you need to find a way to make
+all of their horizontal positions match, while requiring them to spend as
+little fuel as possible.</em></p>
+<p><em>Determine the horizontal position that the crabs can align to using the least
+fuel possible. <strong>How much fuel must they spend to align to that position?</strong></em></p>
+<h2 id="part-i-solution">Part I Solution</h2>
+<p>The challenge is finding the number that minimizes the sum of differences in the
+whole list. My gut is to test the mean, mode, and median, with emphasis on the
+mean (as the definition of standard deviation uses the mean).</p>
+<p>The sample input is \([0,1,1,2,2,2,4,7,14,16]\), and the number that minimizes
+the sum of differences is \(2\). The three statistics are: mean = \(4.9\),
+mode = \(2\), and median = \(2\). My hunch on using the mean was wrong, it
+would not have gotten me to \(2\).</p>
+<p>Is the mode the best candidate? In \([0,0,7,8,9]\), the mode is \(0\), and
+choosing it leads to \(0 + 0 + 7 + 8 + 9 = 24\), while choosing \(8\) would
+give us \(8 + 8 + 1 + 0 + 1 = 18\). So the mode does not always give the
+correct answer.</p>
+<p>Is the median the best candidate? In \([0,0,0,7,9,9,15]\), the median is
+\(7\), and choosing it leads to \(7 + 7 + 7 + 0 + 2 + 2 + 8 = 33\). Choosing
+\(9\) leads to \(9 + 9 + 9 + 2 + 0 + 0 + 6 = 35\). Choosing \(8\) gives
+\(8 + 8 + 8 + 1 + 1 + 1 + 7 = 34\). Hmm, maybe this is it? With
+\([0,0,0,0,10,10,10]\), the median (\(0\)) gives \(30\). Choosing \(6\)
+gives \(6 \cdot 4 + 4 \cdot 3 = 36\), \(5\) gives \(5 \cdot 4 + 4 \cdot 3
+= 32\), and \(4\) gives \(4 \cdot 4 + 6 \cdot 3 = 34\). A counterexample is
+proving elusive. Maybe the median works.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>CLRS provides an algorithm for getting the \(k\)-th largest element in an
+unsorted array in \(O(N)\) probabilistic time, and \(O(1)\) space. I don&rsquo;t
+know if it&rsquo;ll come to that, but this is Advent of Code. And maybe the median is
+not the winning answer.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021.TreacheryOfWhales</span>
+    <span style="color:#111">(</span>   <span style="color:#75af00">minFuelForAlignmentWithConstantBurnRate</span><span style="color:#111">,</span>
+        <span style="color:#75af00">minFuelForAlignmentWithIncreasingBurnRate</span>
+    <span style="color:#111">)</span>
+<span style="color:#00a8c8">where</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.List</span> <span style="color:#111">(</span><span style="color:#75af00">sort</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">median</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Double</span> <span style="color:#75715e">--  Partial function !</span>
+<span style="color:#75af00">median</span> <span style="color:#111">xs</span>  <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span>
+        <span style="color:#111">sortedXs</span> <span style="color:#f92672">=</span> <span style="color:#111">sort</span> <span style="color:#111">xs</span>
+        <span style="color:#111">lenDiv2</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#111">xs</span> <span style="color:#111">`</span><span style="color:#111">div</span><span style="color:#111">`</span> <span style="color:#ae81ff">2</span>
+
+        <span style="color:#111">medianIdxs</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">even</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">xs</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">lenDiv2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">lenDiv2</span><span style="color:#111">]</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>        <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">lenDiv2</span><span style="color:#111">]</span>
+
+        <span style="color:#111">medianSum</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">sortedXs</span> <span style="color:#f92672">!!</span><span style="color:#111">)</span> <span style="color:#111">medianIdxs</span>
+
+    <span style="color:#00a8c8">in</span> <span style="color:#111">(</span><span style="color:#111">fromIntegral</span> <span style="color:#111">medianSum</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Double</span><span style="color:#111">)</span> <span style="color:#f92672">/</span> <span style="color:#111">(</span><span style="color:#111">fromIntegral</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">medianIdxs</span><span style="color:#111">)</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Double</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">sumManhattanDistance</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">sumManhattanDistance</span> <span style="color:#111">xs</span> <span style="color:#111">anchor</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">x</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">abs</span><span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#f92672">-</span> <span style="color:#111">anchor</span><span style="color:#111">))</span> <span style="color:#111">xs</span>
+
+<span style="color:#75af00">minFuelForAlignment</span> <span style="color:#f92672">::</span> <span style="color:#111">([</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Double</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">([</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">minFuelForAlignment</span> <span style="color:#111">statisticCalculator</span> <span style="color:#111">costCalculator</span> <span style="color:#111">positions</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span>
+        <span style="color:#111">statistic</span> <span style="color:#f92672">=</span> <span style="color:#111">statisticCalculator</span> <span style="color:#111">positions</span>
+        <span style="color:#111">floorStatistic</span> <span style="color:#f92672">=</span> <span style="color:#111">floor</span> <span style="color:#111">statistic</span>
+        <span style="color:#111">ceilingStatistic</span> <span style="color:#f92672">=</span> <span style="color:#111">ceiling</span> <span style="color:#111">statistic</span>
+
+        <span style="color:#111">manhattanDistSums</span> <span style="color:#f92672">=</span>
+            <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">costCalculator</span> <span style="color:#111">positions</span><span style="color:#111">)</span> <span style="color:#111">[</span><span style="color:#111">floorStatistic</span><span style="color:#111">,</span> <span style="color:#111">ceilingStatistic</span><span style="color:#111">]</span>
+
+        <span style="color:#111">minFuel</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">floorStatistic</span> <span style="color:#f92672">==</span> <span style="color:#111">ceilingStatistic</span> <span style="color:#f92672">=</span>
+                <span style="color:#111">costCalculator</span> <span style="color:#111">positions</span> <span style="color:#111">floorStatistic</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span>
+                <span style="color:#111">uncurry</span> <span style="color:#111">min</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">manhattanDistSums</span><span style="color:#111">,</span> <span style="color:#111">manhattanDistSums</span> <span style="color:#f92672">!!</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">minFuel</span>
+
+<span style="color:#75af00">minFuelForAlignmentWithConstantBurnRate</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">minFuelForAlignmentWithConstantBurnRate</span> <span style="color:#f92672">=</span>
+    <span style="color:#111">minFuelForAlignment</span> <span style="color:#111">median</span> <span style="color:#111">sumManhattanDistance</span>
+</code></pre></div><p>Whoa, the median does work. I need a solid proof for why it works.</p>
+<p><span class="citation-ref"><a href="#Hidding2021-07"></a></span> phrases the problem as a minimization of a cost
+function. For Part I, the cost function is
+\( f_a (x) = \sum_{i=1}^{N} | c_i - x | \), and that representation more
+readily intuits the median.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>I don&rsquo;t quite comprehend <span class="citation-ref"><a href="#Hidding2021-07"></a></span>&rsquo;s proof that the median
+always works. Revisit this part: <em>If we remove the outer two most points, the
+answer stays the same, repeat and we arrive at the center most point.</em></p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#Hidding2021-07"></a></span> further claims that for even length sequences, it
+doesn&rsquo;t matter if we take the upper or lower median; the cost is the same. This
+fact simplifies the solution as <code>median</code> could have returned an <code>Int</code>, and
+<code>minFuelForAlignment</code> would not need to try out both the <code>floor</code> and <code>ceiling</code>
+of the returned median.</p>
+<h2 id="part-ii-description">Part II Description</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Given that the \(O(N\ log(N))\) approached worked for Part I, it&rsquo;s not the
+bottleneck for Part II since \(O(N\ log(N))\) is pretty typical of efficient
+algorithms; no need to implement the \(O(N)\) quick-select algorithm.</p>
+<p>Maybe another variable to optimize over that&rsquo;s in conflict with coalescing into
+the same horizontal position? Maybe they need to spend more fuel to get into a
+better position before blasting a hole?</p>
+</div>
+</div>
+
+
+<p><em>The crabs don&rsquo;t seem interested in your proposed solution. Perhaps you
+misunderstand crab engineering?</em></p>
+<p><em>As it turns out, crab submarine engines don&rsquo;t burn fuel at a constant rate.
+Instead, each change of <code>1</code> step in horizontal position costs <code>1</code> more unit of
+fuel than the last: the first step costs <code>1</code>, the second step costs <code>2</code>, the
+third step costs <code>3</code>, and so on.</em></p>
+<p><em>As each crab moves, moving further becomes expensive. This changes the best
+horizontal position to align them all on.</em></p>
+<p><em>Determine the horizontal position that the crabs can align to using the least
+fuel possible so they can make you an escape route! <strong>How much fuel must they
+spend to align to that position?</strong></em></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Huh, my guess on where Part II was headed was wrong.</p>
+</div>
+</div>
+
+
+<h2 id="part-ii-solution">Part II Solution</h2>
+<p>The cost of moving from position \(0\) to position \(n\) is
+
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/cs97si/02-mathematics/01-sum-of-powers/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    \(1 + 2 + &hellip; + n = n(n+1)/2\)
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.</p>
+<p>The best position for \([0,1,1,2,2,2,4,7,14,16]\) is \(5\), and that is
+pretty close to the mean (\(4.9)\). The fuel burnt is \(O(N^2)\), and the
+standard deviation also has a square term,
+\(\sqrt{ \frac{ \sum | x - \mu |^2 }{ N } } \), so maybe it somehow works
+out?</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">sumPlusOneIncreasingBurnRates</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">sumPlusOneIncreasingBurnRates</span> <span style="color:#111">xs</span> <span style="color:#111">anchor</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#111">map</span> <span style="color:#111">sumPowersOfOne</span> <span style="color:#111">xs</span> <span style="color:#00a8c8">where</span>
+    <span style="color:#111">sumPowersOfOne</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+    <span style="color:#111">sumPowersOfOne</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span>
+        <span style="color:#00a8c8">let</span> <span style="color:#111">d</span> <span style="color:#f92672">=</span> <span style="color:#111">abs</span><span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#f92672">-</span> <span style="color:#111">anchor</span><span style="color:#111">)</span>
+        <span style="color:#00a8c8">in</span> <span style="color:#111">(</span><span style="color:#111">d</span> <span style="color:#f92672">*</span> <span style="color:#111">(</span><span style="color:#111">d</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">))</span> <span style="color:#111">`</span><span style="color:#111">div</span><span style="color:#111">`</span> <span style="color:#ae81ff">2</span>
+
+<span style="color:#75af00">mean</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Double</span> <span style="color:#75715e">--  Partial function !</span>
+<span style="color:#75af00">mean</span> <span style="color:#111">xs</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">fromIntegral</span> <span style="color:#111">(</span><span style="color:#111">sum</span> <span style="color:#111">xs</span><span style="color:#111">)</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Double</span><span style="color:#111">)</span> <span style="color:#f92672">/</span> <span style="color:#111">(</span><span style="color:#111">fromIntegral</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">xs</span><span style="color:#111">)</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Double</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">minFuelForAlignmentWithIncreasingBurnRate</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">minFuelForAlignmentWithIncreasingBurnRate</span> <span style="color:#f92672">=</span>
+    <span style="color:#111">minFuelForAlignment</span> <span style="color:#111">mean</span> <span style="color:#111">sumPlusOneIncreasingBurnRates</span>
+</code></pre></div><p>Holy smokes! The mean works for Part II! I&rsquo;m missing a lot of fundamentals.</p>
+<p><span class="citation-ref"><a href="#Hidding2021-07"></a></span> defines the cost function as
+\( f_b (x) = \sum_{i=1}^{N} (| c_i - x |)(| c_i - x | + 1) / 2 \), and
+writes a proof for why \(\bar{x} = \langle c_i \rangle\) minimizes the cost
+function.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>In mathematical notation, angle brackets (or &lsquo;chevrons&rsquo;) are used:</p>
+<ul>
+<li>In group theory to write group representations (1) and to denote the subgroup
+generated by a collection of elements (2).</li>
+<li>In set theory to denote ordered pairs and other tuples (3).</li>
+</ul>
+<p><span class="citation-ref"><a href="#WikiAngleBrackets"></a></span></p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>So much for not taking the optimization class in college. I&rsquo;m feeling out of my
+depth w.r.t mathematical maturity. Find some material that explains how to
+minimize the \(f_a\) and \(f_b\) cost functions. ORF 307 might be a good
+start.</p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Hidding2021-07'>
+        
+        Advent of Code 2021: Day 07. The Treachery of Whales<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://jhidding.github.io/aoc2021/#day-7-the-treachery-of-whales" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 7, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiAngleBrackets'>
+        
+        Bracket &gt; Angle brackets - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Bracket#Angle_brackets" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 7, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+            adventofcode.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+            jhidding.github.io
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/Lanternfish/">&laquo; AoC 2021 Day 06: Lanternfish</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SevenSegmentSearch/">AoC 2021 Day 08: Seven Segment Search &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
