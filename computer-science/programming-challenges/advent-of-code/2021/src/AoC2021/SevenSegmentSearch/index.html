@@ -121,6 +121,7 @@
             <nav id="TableOfContents">
   <ul>
     <li><a href="#part-i-description">Part I Description</a></li>
+    <li><a href="#input-representation">Input Representation</a></li>
   </ul>
 </nav>
         </aside>
@@ -224,7 +225,26 @@ each use a unique number of segments, you should be able to tell which
 combinations of signals correspond to those digits.</em></p>
 <p><em><strong>In the output values (the part after the <code>|</code> on each line), how many times
 do digits <code>1</code>, <code>4</code>, <code>7</code>, or <code>8</code> appear?</strong></em></p>
+<h2 id="input-representation">Input Representation</h2>
+<p>The line <code>be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe</code> has <code>cfbegad</code> matching with <code>fdgacbe</code> in the output value, so
+I need a representation that allows those two to be linked. Sorting the
+characters is sufficient as it gives <code>abcdefg</code> in both cases.</p>
+<p>The ten signal patterns are in no particular order, so a <code>[String]</code> will do. The
+output values do not need to be in any particular order, so a <code>[String]</code> will
+also do.</p>
+<pre><code>module AoC2021.SevenSegmentSearch
+    (
+        SevenSegmentDisplay(..),
+        numOf1478AppearancesInOutput,
+    )
+where
 
+data SevenSegmentDisplay = SevenSegmentDisplay{
+    uniquePatterns :: [String], outputValues :: [String]} deriving Show
+
+numOf1478AppearancesInOutput :: [SevenSegmentDisplay] -&gt; Int
+numOf1478AppearancesInOutput _ = 0
+</code></pre>
         </article>
 
         <div style="font-size: smaller;">
