@@ -122,6 +122,10 @@
   <ul>
     <li><a href="#part-i-description">Part I Description</a></li>
     <li><a href="#input-representation">Input Representation</a></li>
+    <li><a href="#part-i-solution">Part I Solution</a></li>
+    <li><a href="#part-ii-description">Part II Description</a></li>
+    <li><a href="#part-ii-solution">Part II Solution</a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
@@ -232,19 +236,283 @@ characters is sufficient as it gives <code>abcdefg</code> in both cases.</p>
 <p>The ten signal patterns are in no particular order, so a <code>[String]</code> will do. The
 output values do not need to be in any particular order, so a <code>[String]</code> will
 also do.</p>
-<pre><code>module AoC2021.SevenSegmentSearch
-    (
-        SevenSegmentDisplay(..),
-        numOf1478AppearancesInOutput,
-    )
-where
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  OPTIONS_GHC -Wall  #-}</span>
 
-data SevenSegmentDisplay = SevenSegmentDisplay{
-    uniquePatterns :: [String], outputValues :: [String]} deriving Show
+<span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021.SevenSegmentSearch</span>
+    <span style="color:#111">(</span>
+        <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span>
+        <span style="color:#75af00">numOf1478AppearancesInOutput</span><span style="color:#111">,</span>
+        <span style="color:#75af00">sumOfOutputValues</span>
+    <span style="color:#111">)</span>
+<span style="color:#00a8c8">where</span>
 
-numOf1478AppearancesInOutput :: [SevenSegmentDisplay] -&gt; Int
-numOf1478AppearancesInOutput _ = 0
-</code></pre>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.IntMap</span> <span style="color:#00a8c8">as</span> <span style="color:#111">IntMap</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.IntSet</span> <span style="color:#00a8c8">as</span> <span style="color:#111">IntSet</span>
+
+<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span>
+    <span style="color:#111">uniquePatterns</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">],</span> <span style="color:#111">outputValues</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]}</span> <span style="color:#00a8c8">deriving</span> <span style="color:#00a8c8">Show</span>
+</code></pre></div><h2 id="part-i-solution">Part I Solution</h2>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">numActiveSegmentsToDigits</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntMap</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">numActiveSegmentsToDigits</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span>
+    <span style="color:#111">[(</span><span style="color:#ae81ff">6</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">6</span><span style="color:#111">,</span> <span style="color:#ae81ff">9</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">5</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#ae81ff">3</span><span style="color:#111">,</span> <span style="color:#ae81ff">5</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">4</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">4</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">3</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">7</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">7</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">8</span><span style="color:#111">])]</span>
+
+<span style="color:#75af00">nonAmbiguousLengths</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntSet</span>
+<span style="color:#75715e">--  There is also `Map.keysSet` but that returns an</span>
+<span style="color:#75af00">nonAmbiguousLengths</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#111">keys</span> <span style="color:#f92672">$</span>
+    <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">t</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">length</span> <span style="color:#111">t</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">numActiveSegmentsToDigits</span>
+</code></pre></div><p>The <code>containers</code> package provides <code>IntMap</code> and <code>IntSet</code> in addition to the
+general <code>Map</code> and <code>Set</code> data structures. <span class="citation-ref"><a href="#containersHaskell"></a></span> This
+distinction is motivated by <span class="citation-ref"><a href="#Okasaki1998"></a></span>&rsquo;s work on finite maps that
+are based on <span class="citation-ref"><a href="#Morrison1968"></a></span>&rsquo;s Patricia trees, instead of the usual
+base of balanced binary search trees. While both bases have fast lookups and
+inserts, Patricia trees have fast merges of two containers. <span class="citation-ref"><a href="#Okasaki1998"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I&rsquo;ve been getting the vibe that Haskell is more explicit in its connection to
+academia, e.g. foundational papers being linked from API docs, and library
+writers and maintainers being faculty in CS departments.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">numOf1478AppearancesInOutput</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">numOf1478AppearancesInOutput</span> <span style="color:#f92672">=</span> <span style="color:#111">foldr</span> <span style="color:#111">f</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">where</span>
+    <span style="color:#111">f</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+    <span style="color:#111">f</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span> <span style="color:#111">outputValues</span><span style="color:#f92672">=</span><span style="color:#111">outputValues</span> <span style="color:#111">}</span> <span style="color:#111">prevSum</span> <span style="color:#f92672">=</span>
+        <span style="color:#111">prevSum</span> <span style="color:#f92672">+</span> <span style="color:#111">length</span> <span style="color:#111">(</span>
+            <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">s</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">member</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">nonAmbiguousLengths</span><span style="color:#111">)</span>
+            <span style="color:#111">outputValues</span><span style="color:#111">)</span>
+</code></pre></div><p>Pattern-matching using <code>SevenSegmentDisplay{ outputValues=outputValues }</code> leads
+to a <code>Wname-shadowing</code> HLint warning on the second <code>outputValues</code>. <span class="citation-ref"><a href="#LeventErkok2020"></a></span> notes that either of the <code>NamedFieldPuns</code> or
+<code>RecordWildCards</code> extensions allows shadowing of field names. However, adding
+either language extension results in HLint warning that the <code>LANGUAGE</code> pragma is
+unused.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Compared to other Part I&rsquo;s, this one felt too straightforward. Most of the
+difficulty was in using <code>parsec</code> to parse the input line.</p>
+</div>
+</div>
+
+
+<h2 id="part-ii-description">Part II Description</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Part II might feature additional information to distinguish additional digits.
+Maybe the output values follow some pattern, e.g. the digits are always
+increasing from right to left, not all digits are possible for a given output,
+etc.</p>
+<p>Update: I was wrong. We <em>do</em> have enough information to deduce all of the
+digits. I don&rsquo;t see how this is always possible.</p>
+</div>
+</div>
+
+
+<p><em>Through a little deduction, you should now be able to determine the remaining
+digits. Consider again the first example above:</em></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-txt" data-lang="txt">acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
+</code></pre></div><p><em>After some careful analysis, the mapping between signal wires and segments only
+make sense in the following configuration:</em></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md"> dddd
+e    a
+e    a
+ ffff
+g    b
+g    b
+ cccc
+</code></pre></div><p><em>So, the unique signal patterns would correspond to the following digits:</em></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">acedgfb: 8
+cdfbe: 5
+gcdfa: 2
+fbcad: 3
+dab: 7
+cefabd: 9
+cdfgeb: 6
+eafb: 4
+cagedb: 0
+ab: 1
+</code></pre></div><p><em>Then, the four digits of the output value can be decoded:</em></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">cdfeb: 5
+fcadb: 3
+cdfeb: 5
+cdbaf: 3
+</code></pre></div><p><em>Therefore, the output value for this entry is <code>5353</code>.</em></p>
+<p><em>For each entry, determine all of the wire/segment connections and decode the
+four-digit output values. <strong>What do you get if you add up all of the output
+values?</strong></em></p>
+<h2 id="part-ii-solution">Part II Solution</h2>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">sumOfOutputValues</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">sumOfOutputValues</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='containersHaskell'>
+        
+        containers: Assorted concrete container types<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/containers" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://haskell-containers.readthedocs.io/en/latest/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=haskell-containers.readthedocs.io" loading="lazy" aria-hidden="true">
+        <i>haskell-containers.readthedocs.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://github.com/haskell-perf/sets" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 13, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='91'>
+    <cite id='Okasaki1998'>
+        
+        Fast Mergeable Integer Maps<i>.</i>
+        
+    </cite>
+     Okasaki, Chris; Andy Gill.
+    
+     Workshop on ML, pp. 77-86.
+    
+     Columbia University; Semantic Designs.
+    
+    <a href="http://ittc.ku.edu/~andygill/papers/IntMap98.pdf" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=ittc.ku.edu" loading="lazy" aria-hidden="true">
+        <i>ittc.ku.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=Fast&#43;Mergeable&#43;Integer&#43;Maps&#43;%281998%29&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy" aria-hidden="true">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     1998.
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+     Accessed Mar 13, 2022.
+    
+    Cited 91 times as of Mar 13, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='1370'>
+    <cite id='Morrison1968'>
+        
+        PATRICIA - practical algorithm to retrieve information coded in alphanumeric.<i></i>
+        
+    </cite>
+    
+     Morrison, Donald R.
+     Journal of the ACM, Vol. 15, No. 4 (1968): 514-534..
+    
+    
+    
+    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=PATRICIA%E2%80%94practical&#43;algorithm&#43;to&#43;retrieve&#43;information&#43;coded&#43;in&#43;alphanumeric&amp;btnG=" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy" aria-hidden="true">
+        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+     Accessed Mar 13, 2022.
+    
+    Cited 1370 times as of Mar 13, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='LeventErkok2020'>
+        
+        Question: Confusion between `-Wall` and `NamedFieldPuns` (#18246) · Issues · Glasgow Haskell Compiler / GHC · GitLab<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/18246" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=gitlab.haskell.org" loading="lazy" aria-hidden="true">
+        <i>gitlab.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://github.com/ndmitchell/hlint/issues/1250" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+     May 27, 2020.
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 13, 2022.
+    
+</div>
+
+</li>
+</ol>
+
         </article>
 
         <div style="font-size: smaller;">
