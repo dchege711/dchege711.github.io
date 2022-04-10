@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                019. Counting Sundays | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/">Project Euler</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/019-counting-sundays/019-counting-sundays/">019. Counting Sundays</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> 019. Counting Sundays</h1>
+    <p class="meta">
+        
+        Dated Jan 7, 2022; 
+        
+        last modified on Fri, 07 Jan 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#problem-statement-span-classcitation-refa-hrefprojecteuler019aspan">Problem Statement <span class="citation-ref"><a href="#ProjectEuler019"></a></span></a></li>
+    <li><a href="#solution">Solution</a>
+      <ul>
+        <li><a href="#manual-attempt">Manual Attempt</a></li>
+        <li><a href="#programmatic-attempt">Programmatic Attempt</a></li>
+        <li><a href="#other-peoples-solutions">Other People&rsquo;s Solutions</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="problem-statement-span-classcitation-refa-hrefprojecteuler019aspan">Problem Statement <span class="citation-ref"><a href="#ProjectEuler019"></a></span></h2>
+<p>You are given the following information, but you may prefer to do some
+research for yourself:</p>
+<ul>
+<li>1 Jan 1900 was a Monday.</li>
+<li>Thirty days has September,<br/> April, June and November.<br/> All the
+rest have thirty-one,<br/> Saving February alone,<br/> Which has
+twenty-eight, rain or shine.<br/> And on leap years, twenty-nine.</li>
+<li>A leap year occurs on any year evenly divisible by 4, but not on a
+century unless it is divisible by 400.</li>
+</ul>
+<p>How many Sundays fell on the first of the month during the twentieth
+century (1 Jan 1901 to 31 Dec 2000)?</p>
+<h2 id="solution">Solution</h2>
+<h3 id="manual-attempt">Manual Attempt</h3>
+<figure>
+    <img src="/img/computer-science/programming-challenges/project-euler/019-counting-sundays-manual.png"
+         alt="Failed manual attempt at solving &amp;lsquo;Counting Sundays&amp;rsquo;"/> <figcaption>
+            <p><a href="https://onedrive.live.com/view.aspx?resid=D3A50A924AE586F1%214828&amp;id=documents&amp;wd=target%28Project%20Euler.one%7C4AFF21B6-FEDE-2540-83FB-3D9780501572%2F019.%20Counting%20Sundays%7CBFAA8572-5B22-4243-AEE7-F117AA6DF265%2F%29">Failed manual attempt at solving &lsquo;Counting Sundays&rsquo;</a></p>
+        </figcaption>
+</figure>
+
+<h3 id="programmatic-attempt">Programmatic Attempt</h3>
+
+
+<div id=''><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cassert&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">enum</span> <span style="color:#00a8c8">class</span> <span style="color:#75af00">Month</span> <span style="color:#111">{</span>
+    <span style="color:#111">Jan</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">Feb</span><span style="color:#111">,</span> <span style="color:#111">Mar</span><span style="color:#111">,</span> <span style="color:#111">Apr</span><span style="color:#111">,</span> <span style="color:#111">May</span><span style="color:#111">,</span> <span style="color:#111">June</span><span style="color:#111">,</span> <span style="color:#111">July</span><span style="color:#111">,</span> <span style="color:#111">Aug</span><span style="color:#111">,</span> <span style="color:#111">Sept</span><span style="color:#111">,</span> <span style="color:#111">Oct</span><span style="color:#111">,</span> <span style="color:#111">Nov</span><span style="color:#111">,</span> <span style="color:#111">Dec</span><span style="color:#111">};</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Core idea: Index the days in an increasing manner. 01/01/1900 corresponds
+</span><span style="color:#75715e"> * to 1, 02/01/1900 corresponds to 32, and so forth.
+</span><span style="color:#75715e"> */</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Return the number of days in month `increasing_month_idx`, where a value of
+</span><span style="color:#75715e"> * 1 corresponds to Jan 1900, and values increase monotonically thereafter.
+</span><span style="color:#75715e"> */</span>
+<span style="color:#00a8c8">int</span> <span style="color:#75af00">NumOfDaysInMonth</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">increasing_month_idx</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+    <span style="color:#111">assert</span><span style="color:#111">(</span><span style="color:#111">increasing_month_idx</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#111">);</span>
+
+    <span style="color:#00a8c8">int</span> <span style="color:#111">month_idx_base12</span> <span style="color:#f92672">=</span> <span style="color:#111">increasing_month_idx</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">12</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">month_idx_base12</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#111">month_idx_base12</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span><span style="color:#111">;</span>
+
+    <span style="color:#111">Month</span> <span style="color:#111">month</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#111">Month</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#111">month_idx_base12</span><span style="color:#111">);</span>
+    <span style="color:#111">assert</span><span style="color:#111">(</span><span style="color:#111">month</span> <span style="color:#f92672">&gt;=</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">Jan</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">month</span> <span style="color:#f92672">&lt;=</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">Dec</span><span style="color:#111">);</span>
+
+    <span style="color:#00a8c8">switch</span> <span style="color:#111">(</span><span style="color:#111">month</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+        <span style="color:#00a8c8">case</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">Sept</span><span style="color:#111">:</span>
+        <span style="color:#00a8c8">case</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">Apr</span><span style="color:#111">:</span>
+        <span style="color:#00a8c8">case</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">June</span><span style="color:#111">:</span>
+        <span style="color:#00a8c8">case</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">Nov</span><span style="color:#111">:</span>
+            <span style="color:#00a8c8">return</span> <span style="color:#ae81ff">30</span><span style="color:#111">;</span>
+
+        <span style="color:#00a8c8">case</span> <span style="color:#111">Month</span><span style="color:#f92672">::</span><span style="color:#111">Feb</span><span style="color:#111">:</span> <span style="color:#111">{</span>
+            <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">int</span> <span style="color:#111">year</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1900</span> <span style="color:#f92672">+</span> <span style="color:#111">(</span><span style="color:#111">increasing_month_idx</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">12</span><span style="color:#111">);</span>
+            <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">bool</span> <span style="color:#111">is_leap_year</span> <span style="color:#f92672">=</span>
+                <span style="color:#111">(</span><span style="color:#111">year</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#f92672">?</span> <span style="color:#111">(</span><span style="color:#111">year</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">400</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#f92672">:</span> <span style="color:#111">(</span><span style="color:#111">year</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">);</span>
+            <span style="color:#00a8c8">return</span> <span style="color:#111">is_leap_year</span> <span style="color:#f92672">?</span> <span style="color:#ae81ff">29</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">28</span><span style="color:#111">;</span>
+        <span style="color:#111">}</span>
+
+        <span style="color:#00a8c8">default</span><span style="color:#f92672">:</span>
+            <span style="color:#00a8c8">return</span> <span style="color:#ae81ff">31</span><span style="color:#111">;</span>
+    <span style="color:#111">}</span>
+<span style="color:#111">}</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Given that 1 Jan 1900 was a Monday, how many Sundays fell on the first of the
+</span><span style="color:#75715e"> * month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
+</span><span style="color:#75715e"> *
+</span><span style="color:#75715e"> * [1]: https://projecteuler.net/problem=19
+</span><span style="color:#75715e"> */</span>
+<span style="color:#00a8c8">void</span> <span style="color:#75af00">solve_euler_19</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+    <span style="color:#75715e">// 365 for the year 1900, and (365.25 * 100) for the next 100 years.
+</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">int</span> <span style="color:#111">total_num_days</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">365</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">36525</span><span style="color:#111">;</span>
+
+    <span style="color:#75715e">// Returns true if `day_idx` is between 1 Jan 1901 and 31 Dec 200,
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// inclusive.
+</span><span style="color:#75715e"></span>    <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">function</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">bool</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span><span style="color:#111">)</span><span style="color:#f92672">&gt;</span> <span style="color:#111">is_in_range_of_interest</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#f92672">&amp;</span><span style="color:#111">](</span><span style="color:#00a8c8">int</span> <span style="color:#111">day_idx</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+        <span style="color:#00a8c8">return</span> <span style="color:#111">day_idx</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">365</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">day_idx</span> <span style="color:#f92672">&lt;=</span> <span style="color:#111">total_num_days</span><span style="color:#111">;</span>
+    <span style="color:#111">};</span>
+
+    <span style="color:#75715e">// Returns true if `day_idx` was a Sunday. Uses the fact that 7th Jan, 1900
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// was a Sunday.
+</span><span style="color:#75715e"></span>    <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">function</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">bool</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span><span style="color:#111">)</span><span style="color:#f92672">&gt;</span> <span style="color:#111">is_a_sunday</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#f92672">&amp;</span><span style="color:#111">](</span><span style="color:#00a8c8">int</span> <span style="color:#111">day_idx</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+        <span style="color:#00a8c8">return</span> <span style="color:#111">day_idx</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+    <span style="color:#111">};</span>
+
+    <span style="color:#00a8c8">int</span> <span style="color:#111">num_sundays_on_first_of_the_month</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">int</span> <span style="color:#111">increasing_month_idx</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">int</span> <span style="color:#111">day_idx</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">while</span> <span style="color:#111">(</span><span style="color:#111">day_idx</span> <span style="color:#f92672">&lt;=</span> <span style="color:#111">total_num_days</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+        <span style="color:#00a8c8">int</span> <span style="color:#111">first_day_of_month_idx</span> <span style="color:#f92672">=</span> <span style="color:#111">day_idx</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">is_a_sunday</span><span style="color:#111">(</span><span style="color:#111">first_day_of_month_idx</span><span style="color:#111">)</span>
+            <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">is_in_range_of_interest</span><span style="color:#111">(</span><span style="color:#111">first_day_of_month_idx</span><span style="color:#111">))</span> <span style="color:#111">{</span>
+                <span style="color:#111">num_sundays_on_first_of_the_month</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span>
+        <span style="color:#111">}</span>
+        <span style="color:#111">day_idx</span> <span style="color:#f92672">+=</span> <span style="color:#111">NumOfDaysInMonth</span><span style="color:#111">(</span><span style="color:#111">increasing_month_idx</span><span style="color:#111">);</span>
+        <span style="color:#111">increasing_month_idx</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span>
+    <span style="color:#111">}</span>
+
+    <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">cout</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#111">num_sundays_on_first_of_the_month</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#d88200">&#34; Sundays</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">;</span>
+<span style="color:#111">}</span>
+
+<span style="color:#00a8c8">int</span> <span style="color:#75af00">main</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+    <span style="color:#111">solve_euler_19</span><span style="color:#111">();</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+<span style="color:#111">}</span>
+</code></pre></div></div>
+
+<p>Tried setting up a C++ build, like the one used in 
+<a href="https://www.chromium.org/Home"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    the Chromium
+Project
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+. Setting up
+
+<a href="https://clang.llvm.org/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Clang
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, 
+<a href="https://llvm.org/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    LLVM
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+
+<a href="https://ninja-build.org/manual.html"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Ninja
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ and
+
+<a href="https://gn.googlesource.com/gn/&#43;/refs/heads/main/docs/quick_start.md"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    GN
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ took
+some time. Mostly because I don&rsquo;t have a good understanding of the purpose of
+each.</p>
+<h3 id="other-peoples-solutions">Other People&rsquo;s Solutions</h3>
+<p>Some used the Date/Time libraries for their languages. For example, <span class="citation-ref"><a href="#Edlund2013"></a></span> using C#:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-c#" data-lang="c#"><span style="color:#00a8c8">int</span> <span style="color:#111">sundays</span> <span style="color:#111">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+
+<span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">year</span> <span style="color:#111">=</span> <span style="color:#ae81ff">1901</span><span style="color:#111">;</span> <span style="color:#111">year</span> <span style="color:#111">&lt;=</span> <span style="color:#ae81ff">2000</span><span style="color:#111">;</span> <span style="color:#111">year</span><span style="color:#111">++)</span> <span style="color:#111">{</span>
+    <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">month</span> <span style="color:#111">=</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span> <span style="color:#111">month</span> <span style="color:#111">&lt;=</span> <span style="color:#ae81ff">12</span><span style="color:#111">;</span> <span style="color:#111">month</span><span style="color:#111">++)</span> <span style="color:#111">{</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#111">((</span><span style="color:#00a8c8">new</span> <span style="color:#111">DateTime</span><span style="color:#111">(</span><span style="color:#111">year</span><span style="color:#111">,</span> <span style="color:#111">month</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">)).</span><span style="color:#111">DayOfWeek</span> <span style="color:#111">==</span> <span style="color:#111">DayOfWeek</span><span style="color:#111">.</span><span style="color:#111">Sunday</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+            <span style="color:#111">sundays</span><span style="color:#111">++;</span>
+        <span style="color:#111">}</span>
+    <span style="color:#111">}</span>
+<span style="color:#111">}</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>On the difference between .NET and C#, .NET is a dev platform for building
+cross-platform apps, and C# is one of the languages in which one can use the
+.NET platform. Other languages include F# and Visual Basic. <span class="citation-ref"><a href="#DotNetDocs"></a></span></p>
+</div>
+</div>
+
+
+<p>This didn&rsquo;t occur to me as it defeats the purpose of Project Euler. There&rsquo;s no
+fun in letting the built-in functions do most of the work for you. That said,
+it&rsquo;s pretty sweet how programming languages have made things easier for us.</p>
+<p><span class="citation-ref"><a href="#EiselePE019"></a></span> goes a different route. They mention Zeller&rsquo;s
+Congruence, an algorithm for calculating the day of the week for any Julian or
+Gregorian calendar date. For the Gregorian calendar, we have:</p>
+<p>$$ h = \left( q + \lfloor \frac{13(m + 1)}{5} \rfloor + K + \lfloor K/4 \rfloor + \lfloor J/4 \rfloor - 2J \right) \text{mod } 7 $$</p>
+<p>&hellip; where \(h\) is the day of the week (0 = Sat, 1 = Sun, &hellip;, 6 = Fri),
+\(q\) is the day of the month, \(m\) is the month (3 = Mar, 4 = Apr &hellip;, 14
+= Feb), \(K\) is the year of the century (\(\text{year } \text{mod } 100\)),
+and \(J\) is the zero-based century (\(\lfloor \text{year}/100 \rfloor\)).
+Jan and Feb are counted as months 13 and 14 of the previous year, e.g. Jan 1st,
+1901 would be 13/01/1900 in MM/DD/YYYY format.</p>
+<p><span class="citation-ref"><a href="#WikiZellerCongruence"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Maybe <span class="citation-ref"><a href="#WikiZellerCongruence"></a></span> is what <span class="citation-ref"><a href="#ProjectEuler019"></a></span>
+meant by &ldquo;you may prefer to do some research for yourself&rdquo;?</p>
+</div>
+</div>
+
+
+<p>However, <span class="citation-ref"><a href="#WikiZellerCongruence"></a></span> doesn&rsquo;t help us in solving the problem
+faster. <span class="citation-ref"><a href="#EiselePE019"></a></span>&rsquo;s final [annotated] solution is:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-js" data-lang="js"><span style="color:#00a8c8">function</span> <span style="color:#75af00">solution</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">var</span> <span style="color:#75af00">numSundaysOnFirstDayOfMonth</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+  <span style="color:#00a8c8">var</span> <span style="color:#75af00">dayOfWeekOfTheFirst</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#111">;</span> <span style="color:#75715e">// 01/01/1901 was a Tuesday
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">var</span> <span style="color:#75af00">months</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#ae81ff">31</span><span style="color:#111">,</span> <span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">31</span><span style="color:#111">,</span> <span style="color:#ae81ff">30</span><span style="color:#111">,</span> <span style="color:#ae81ff">31</span><span style="color:#111">,</span> <span style="color:#ae81ff">30</span><span style="color:#111">,</span> <span style="color:#ae81ff">31</span><span style="color:#111">,</span> <span style="color:#ae81ff">31</span><span style="color:#111">,</span> <span style="color:#ae81ff">30</span><span style="color:#111">,</span> <span style="color:#ae81ff">31</span><span style="color:#111">,</span> <span style="color:#ae81ff">30</span><span style="color:#111">,</span> <span style="color:#ae81ff">31</span><span style="color:#111">];</span>
+
+  <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">var</span> <span style="color:#75af00">y</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1901</span><span style="color:#111">;</span> <span style="color:#75af00">y</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">2000</span><span style="color:#111">;</span> <span style="color:#75af00">y</span><span style="color:#f92672">++</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+    <span style="color:#75715e">// Update the numbers of days in February.
+</span><span style="color:#75715e"></span>    <span style="color:#75af00">months</span><span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">28</span> <span style="color:#f92672">+</span> <span style="color:#111">(</span><span style="color:#75af00">y</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#75af00">y</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">!==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#75af00">y</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">400</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span><span style="color:#111">);</span>
+
+    <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">var</span> <span style="color:#75af00">month</span> <span style="color:#00a8c8">of</span> <span style="color:#75af00">months</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+      <span style="color:#75715e">// Adding 7 days results in the same day of the week. Adding the number of
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// days per month helps us go faster. We make use of the homomorphic rule:
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">//   (d + m) ≡ (d mod 7 + m mod 7) (mod 7)
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">//
+</span><span style="color:#75715e"></span>      <span style="color:#75af00">dayOfWeekOfTheFirst</span> <span style="color:#f92672">+=</span> <span style="color:#75af00">month</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">7</span><span style="color:#111">;</span>
+
+      <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#75af00">dayOfWeekOfTheFirst</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+        <span style="color:#75af00">numSundaysOnFirstDayOfMonth</span><span style="color:#f92672">++</span><span style="color:#111">;</span>
+      <span style="color:#111">}</span>
+    <span style="color:#111">}</span>
+  <span style="color:#111">}</span>
+  <span style="color:#00a8c8">return</span> <span style="color:#75af00">numSundaysOnFirstDayOfMonth</span><span style="color:#111">;</span>
+<span style="color:#111">}</span>
+</code></pre></div><p>There are two things that I don&rsquo;t understand in <span class="citation-ref"><a href="#EiselePE019"></a></span>&rsquo;s code.</p>
+<p>First, why is <code>dayOfWeekOfTheFirst</code> given a value of <code>2</code> despite <code>2</code> being
+Monday in Zeller&rsquo;s Congruence formula? If I change <code>dayOfWeekOfTheFirst</code> to to
+<code>3</code> as per Zeller, and check Sundays by <code>dayOfWeekOfTheFirst % 7 === 1</code>, then
+the code still gives the right answer. Maybe it&rsquo;s a matter of being consistent
+with how you label the days of the week.</p>
+<p>Second, which homomorphic property is \( (d + m) \equiv (d \text{ mod } 7 + m
+\text{ mod } 7) \ (\text{mod } 7) \)? Going by <span class="citation-ref"><a href="#KhanAcademyModularAdditionSubtraction"></a></span>, that&rsquo;s a known result in modular
+arithmetic.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>See 
+<a href="https://www.curiosities.dev/mathematics/cryptography/modular-arithmetic/"
+    
+    
+    
+    >
+    Modular Arithmetic
+    
+</a>
+ for a review of modular
+arithmetic.</p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ProjectEuler019'>
+        
+        #19 Counting Sundays - Project Euler<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://projecteuler.net/problem=19" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
+        <i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 7, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Edlund2013'>
+        
+        Project Euler 19: How many Sundays on the first of a month in C# | MathBlog<i>.</i>
+        
+    </cite>
+     Kristian Edlund.
+    
+    
+    
+    
+    
+    <a href="https://www.mathblog.dk/project-euler-19/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.mathblog.dk" loading="lazy" aria-hidden="true">
+        <i>www.mathblog.dk</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+     2013.
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='DotNetDocs'>
+        
+        .NET documentation | Microsoft Docs<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://docs.microsoft.com/en-us/dotnet/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading="lazy" aria-hidden="true">
+        <i>docs.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://docs.microsoft.com/en-us/dotnet/core/introduction" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading="lazy" aria-hidden="true">
+        <i>docs.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='EiselePE019'>
+        
+        Project Euler 19 Solution: Counting Sundays • Computer Science and Machine Learning<i>.</i>
+        
+    </cite>
+    
+     Robert Eisele.
+    
+    
+    
+    
+    <a href="https://www.xarg.org/puzzle/project-euler/problem-19/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.xarg.org" loading="lazy" aria-hidden="true">
+        <i>www.xarg.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiZellerCongruence'>
+        
+        Zeller&#39;s congruence - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Zeller%27s_congruence" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='KhanAcademyModularAdditionSubtraction'>
+        
+        Modular addition and subtraction (article) | Khan Academy<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/modular-addition-and-subtraction" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading="lazy" aria-hidden="true">
+        <i>www.khanacademy.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jan 10, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags:
+    
+        <a href="/tags/cpp">#cpp</a>
+    
+</aside>
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/edlund-kristian'>Edlund, Kristian</a>
+    
+        <a href='/authors/eisele-robert'>Eisele, Robert</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/docs.microsoft.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading="lazy" aria-hidden="true">
+            docs.microsoft.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/projecteuler.net' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
+            projecteuler.net
+        </a>
+    
+        <a href='/domains/www.khanacademy.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading="lazy" aria-hidden="true">
+            www.khanacademy.org
+        </a>
+    
+        <a href='/domains/www.mathblog.dk' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.mathblog.dk" loading="lazy" aria-hidden="true">
+            www.mathblog.dk
+        </a>
+    
+        <a href='/domains/www.xarg.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.xarg.org" loading="lazy" aria-hidden="true">
+            www.xarg.org
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/020-factorial-digit-sum/020-factorial-digit-sum/">020. Factorial Digit Sum &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

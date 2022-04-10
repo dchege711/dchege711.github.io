@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Day 09: Smoke Basin | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+        
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SmokeBasin/">AoC 2021 Day 09: Smoke Basin</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Day 09: Smoke Basin</h1>
+    <p class="meta">
+        
+        Dated Mar 16, 2022; 
+        
+        last modified on Wed, 16 Mar 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#part-i-span-classcitation-refa-hrefaoc2021-09aspan">Part I <span class="citation-ref"><a href="#AoC2021-09"></a></span></a></li>
+    <li><a href="#input-representation">Input Representation</a></li>
+    <li><a href="#notable-design-decisions-in-massiv">Notable Design Decisions in <code>massiv</code></a></li>
+    <li><a href="#input-representation-contd">Input Representation (Cont&rsquo;d)</a></li>
+    <li><a href="#part-i-solution">Part I Solution</a></li>
+    <li><a href="#part-ii-span-classcitation-refa-hrefaoc2021-09aspan">Part II <span class="citation-ref"><a href="#AoC2021-09"></a></span></a></li>
+    <li><a href="#part-ii-solution">Part II Solution</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='AoC2021-09'>
+        
+        Day 9 - Advent of Code 2021<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://adventofcode.com/2021/day/9" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 16, 2022.
+    
+</div>
+
+<h2 id="part-i-span-classcitation-refa-hrefaoc2021-09aspan">Part I <span class="citation-ref"><a href="#AoC2021-09"></a></span></h2>
+<p>These caves seem to be lava tubes. Parts are even still volcanically active;
+small hydrothermal vents release smoke into the caves that slowly settles like
+like rain.</p>
+<p>If you can model how the smoke flows through the caves, you might be able to
+avoid it and be that much safer. The submarine generates a height-map of the
+floor of the nearby caves for you (your puzzle input).</p>
+<p>Smoke flows to the lowest point of the area it&rsquo;s in. Your first goal is to find
+the low points - the locations that are lower than any of its adjacent
+locations. Most locations have four adjacent locations (up, down, left, and
+right); locations on the edge or corner of the map have three or two adjacent
+locations, respectively. (Diagonal locations do not count as adjacent.)</p>
+<p>The risk level of a low point is <code>1</code> plus its height. Find all of the low points
+on your height-map. <strong>What is the sum of the risk levels of all low points on
+your height-map?</strong></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The modeling of the risk level as <code>1 + height</code> is unintuitive. I&rsquo;d think that
+the lowest point on the map has the greatest risk, e.g. if there is a lot of
+smoke flow, the global low point will get the greatest depth of smoke. So I&rsquo;d
+have modeled the risk level as <code>1 / (1 + height)</code>.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  OPTIONS_GHC -Wall  #-}</span>
+
+<span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021.SmokeBasin</span>
+    <span style="color:#111">(</span>
+        <span style="color:#00a8c8">HeightMap</span><span style="color:#111">,</span>
+        <span style="color:#75af00">sumOfRiskLevelsOfLowPoints</span><span style="color:#111">,</span>
+        <span style="color:#75af00">productOf3LargestBasins</span>
+    <span style="color:#111">)</span>
+<span style="color:#00a8c8">where</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Massiv.Core.Index</span> <span style="color:#111">(</span><span style="color:#00a8c8">Ix2</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#00a8c8">Sz</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#00a8c8">Border</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#75af00">unSz</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Massiv.Array</span> <span style="color:#00a8c8">as</span> <span style="color:#111">A</span>
+    <span style="color:#111">(</span>
+        <span style="color:#00a8c8">Array</span><span style="color:#111">,</span> <span style="color:#00a8c8">P</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#111">computeAs</span><span style="color:#111">,</span> <span style="color:#111">sum</span><span style="color:#111">,</span> <span style="color:#111">(</span><span style="color:#f92672">!?</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#f92672">!</span><span style="color:#111">),</span> <span style="color:#111">flatten</span><span style="color:#111">,</span> <span style="color:#111">size</span><span style="color:#111">,</span> <span style="color:#111">zeroIndex</span><span style="color:#111">,</span>
+        <span style="color:#111">(</span><span style="color:#f92672">..:</span><span style="color:#111">),</span> <span style="color:#111">toList</span>
+    <span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Massiv.Array.Stencil</span> <span style="color:#111">(</span><span style="color:#00a8c8">Stencil</span><span style="color:#111">,</span> <span style="color:#75af00">makeStencil</span><span style="color:#111">,</span> <span style="color:#75af00">mapStencil</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.List</span> <span style="color:#111">(</span><span style="color:#75af00">foldl&#39;</span><span style="color:#111">,</span> <span style="color:#75af00">sort</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Maybe</span> <span style="color:#111">(</span><span style="color:#75af00">isJust</span><span style="color:#111">,</span> <span style="color:#75af00">fromJust</span><span style="color:#111">,</span> <span style="color:#75af00">maybeToList</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Set</span> <span style="color:#00a8c8">as</span> <span style="color:#111">Set</span>
+    <span style="color:#111">(</span>
+        <span style="color:#00a8c8">Set</span><span style="color:#111">,</span> <span style="color:#111">fromList</span><span style="color:#111">,</span> <span style="color:#111">union</span><span style="color:#111">,</span> <span style="color:#111">empty</span><span style="color:#111">,</span> <span style="color:#111">singleton</span><span style="color:#111">,</span> <span style="color:#111">null</span><span style="color:#111">,</span> <span style="color:#111">deleteFindMin</span><span style="color:#111">,</span> <span style="color:#111">insert</span><span style="color:#111">,</span>
+        <span style="color:#111">difference</span><span style="color:#111">,</span> <span style="color:#111">size</span><span style="color:#111">,</span> <span style="color:#111">member</span>
+    <span style="color:#111">)</span>
+</code></pre></div><h2 id="input-representation">Input Representation</h2>
+<p>The data is an \(n \times n\) grid. In another language, using a
+one-dimensional array might have reaped me the benefits of cache locality, but
+lists in Haskell are linked lists that lack guaranteed locality.</p>
+<p>In 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/GiantSquid/#HiddingAoC2021-04"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Day 04: Giant Squid
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, Hidding used the <span class="citation-ref"><a href="#Massiv"></a></span> array library, whose tagline is
+&ldquo;multi-dimensional arrays with 
+<a href="#MassiveFusion"
+    
+    
+    
+    >
+    fusion
+    
+</a>
+,
+
+<a href="#MassiveStencil"
+    
+    
+    
+    >
+    stencils
+    
+</a>
+ and parallel computation&rdquo;. It&rsquo;s at least worth
+checking out in the problem.</p>
+<h2 id="notable-design-decisions-in-massiv">Notable Design Decisions in <code>massiv</code></h2>
+<p>For example, <code>foo = length . filter p . map g . map f . concat</code> would be pretty
+inefficient if executed literally. Fusion refers to program transformations
+aimed at removing intermediate data structures. GHC has transformation rules
+that enable fusion. <span class="citation-ref"><a href="#haskellWikiFusion"></a></span>  <a id="MassiveFusion"></a></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Also encountered stream fusion 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/#Data.Vector.StreamFusion"
+    
+    
+    
+    >
+    in the <code>Data.Vector</code> library
+    
+</a>
+. A
+<em>stream</em> represents the traversal of a list-like structure. All the list
+functions become stream functions &ndash;  but crucially. stream operations are
+non-recursive, and can therefore be glued together. <span class="citation-ref"><a href="#haskellWikiFusion"></a></span></p>
+</div>
+</div>
+
+
+<p>
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/#efficiency-of-collections-types"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Like <code>Data.Vector</code>
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, <code>Massiv</code> also supports boxed elements (may point to a thunk), unboxed
+elements, and storable types. However, <code>Massiv</code> has optimized containers for
+instances of 
+<a href="https://hackage.haskell.org/package/massiv-1.0.1.1/docs/Data-Massiv-Array-Manifest.html#t:Prim"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    the <code>Prim</code>
+class
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.
+<span class="citation-ref"><a href="#Massiv"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>A bit surprised that <code>Boolean</code> is not an instance of the <code>Prim</code> type. Other
+languages tend to have Boolean as one of primitive types.</p>
+<p>The size of a <code>bool</code> in C++ is defined from the implementation and may be
+greater than 1 (byte) <span class="citation-ref"><a href="#cppFundamentalTypes"></a></span>. However, the <code>sizeof</code>
+for <code>char</code>, <code>signed char</code>, <code>unsigned char</code>, <code>std::byte</code> (C++17), and <code>char8_t</code>
+(C++20) will always evaluate to 1 (byte). <span class="citation-ref"><a href="#cppSizeOf"></a></span>. A tad
+counter-intuitive that a <code>bool</code> is at least 8 bits in C++. <span class="citation-ref"><a href="#cpp8bitsForBoolean"></a></span> attributes this to every C++ data type needing to be
+addressable, and most CPU architectures are designed with a 8-bit chunks as the
+smallest addressable memory.</p>
+<p>While <code>std::vector&lt;bool&gt;</code> is allowed to be space-efficient,
+it loses some guarantees of <code>std::vector</code> e.g. safely modifying elements
+concurrently in a multi-threaded context, contiguous storage (that allows
+pointer arithmetic), etc. <span class="citation-ref"><a href="#cppVectorBool"></a></span></p>
+</div>
+</div>
+
+
+<p><code>Massiv</code> has delayed arrays which do not exist in memory, and are instead
+defined as a function or a composition of functions. This allows to operate on
+a massive array in constant memory. <span class="citation-ref"><a href="#Massiv"></a></span></p>
+<p><code>Massiv</code> has a wrapping data type for indices, e.g. <code>makeArrayR D Seq (Sz (3 :. 5)) (\ (i :. j) -&gt; i * j)</code>, which creates a 2D array with 3 arrays,
+each with 5 elements, where the element at index <code>i :. j</code> is computed as
+<code>i * j</code>. There is a constructor, <code>IxN</code> that supports N-dimensional arrays, e.g.
+<code>10 :&gt; 20 :&gt; 30 :. 40</code> is an index into a 4D array. <span class="citation-ref"><a href="#Massiv"></a></span></p>
+<p>A stencil is a function that can read the neighboring elements of the stencil&rsquo;s
+center (the zero index), and only those, and then outputs a new value for the
+center element. <span class="citation-ref"><a href="#Massiv"></a></span> <a id="MassiveStencil"></a></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Massiv"></a></span> mentions &ldquo;Moore neighborhood&rdquo;, which led to me to the Von
+Neumann neighborhood (the cell itself and cells at a Manhattan distance of <code>1</code>)
+which happens to be the kind of neighborhood being evaluated in this problem.
+<span class="citation-ref"><a href="#wikiVonNeumannNeighborhood"></a></span></p>
+</div>
+</div>
+
+
+<h2 id="input-representation-contd">Input Representation (Cont&rsquo;d)</h2>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">--  `A.P` because the underlying representation (Int) is an instance of the</span>
+<span style="color:#75715e">--  `Prim` type class.</span>
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Array</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#00a8c8">P</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#00a8c8">Int</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>For a while, I was stuck thinking of \(a = [[0,1,2], [1,2,5], &hellip;, [3,2,6]]\)
+as an N-dimensional array, where \(N\) can only be determined after reading
+the whole file. Gleaning at <span class="citation-ref"><a href="#HiddingAoC21-09"></a></span> made me see \(a\) as
+the 2D array that it is.</p>
+</div>
+</div>
+
+
+<h2 id="part-i-solution">Part I Solution</h2>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">vonNeumannNeighborhood</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Ix2</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">vonNeumannNeighborhood</span> <span style="color:#111">get</span> <span style="color:#f92672">=</span>
+    <span style="color:#111">[</span><span style="color:#111">get</span> <span style="color:#111">(</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">0</span><span style="color:#111">),</span> <span style="color:#111">get</span> <span style="color:#111">(</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">0</span><span style="color:#111">),</span> <span style="color:#111">get</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span> <span style="color:#00a8c8">:.</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">),</span> <span style="color:#111">get</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">1</span><span style="color:#111">)]</span>
+
+<span style="color:#75af00">riskIfLowPoint</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Ix2</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">riskIfLowPoint</span> <span style="color:#111">get</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">centerPoint</span> <span style="color:#f92672">=</span> <span style="color:#111">get</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
+        <span style="color:#111">lowPoint</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#111">min</span> <span style="color:#111">(</span><span style="color:#111">maxBound</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#111">vonNeumannNeighborhood</span> <span style="color:#111">get</span><span style="color:#111">)</span>
+        <span style="color:#111">risk</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">centerPoint</span> <span style="color:#f92672">&lt;</span> <span style="color:#111">lowPoint</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#111">centerPoint</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>              <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#00a8c8">in</span>  <span style="color:#111">risk</span>
+
+<span style="color:#75af00">riskIfLowPointStencil</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Stencil</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#00a8c8">Int</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">riskIfLowPointStencil</span> <span style="color:#f92672">=</span> <span style="color:#111">makeStencil</span> <span style="color:#111">(</span><span style="color:#00a8c8">Sz</span> <span style="color:#111">(</span><span style="color:#ae81ff">3</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">3</span><span style="color:#111">))</span> <span style="color:#111">(</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">riskIfLowPoint</span>
+<span style="color:#75715e">{-#  INLINE riskIfLowPointStencil  #-}</span>
+
+<span style="color:#75af00">sumOfRiskLevelsOfLowPoints</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">sumOfRiskLevelsOfLowPoints</span> <span style="color:#111">heightMap</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">borderHandling</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Fill</span> <span style="color:#111">(</span><span style="color:#111">maxBound</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
+        <span style="color:#111">risksArrayDW</span> <span style="color:#f92672">=</span> <span style="color:#111">mapStencil</span> <span style="color:#111">borderHandling</span> <span style="color:#111">riskIfLowPointStencil</span> <span style="color:#111">heightMap</span>
+        <span style="color:#111">riskArray</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">computeAs</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#00a8c8">P</span> <span style="color:#111">risksArrayDW</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">sum</span> <span style="color:#111">riskArray</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Most of my time was spent trying to get the syntax and types right. I&rsquo;m spending
+a lot of time deciphering <code>massiv</code>&rsquo;s syntax as opposed to learning Haskell.</p>
+</div>
+</div>
+
+
+<h2 id="part-ii-span-classcitation-refa-hrefaoc2021-09aspan">Part II <span class="citation-ref"><a href="#AoC2021-09"></a></span></h2>
+<p>Next, you need to find the largest basins so you know what areas are most
+important to avoid.</p>
+<p>A basin is all locations that eventually flow downward to a single low point.
+Therefore, every low point has a basin, although some basins are very small.
+Locations of height <code>9</code> do not count as being in any basin, and all other
+locations will always be part of exactly one basin.</p>
+<p>The size of a basin is the number of locations within the basin, including the
+low point.</p>
+<p>What do you get if you multiply together the sizes of the three largest basins?</p>
+<h2 id="part-ii-solution">Part II Solution</h2>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">maxHeight</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">maxHeight</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">9</span>
+</code></pre></div><p>I initially tried to be &ldquo;efficient&rdquo; about this problem by only considering
+right and bottom neighbors to prevent double-counting.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">buggyBasinSize</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">buggyBasinSize</span> <span style="color:#111">heightMap</span> <span style="color:#111">ix</span><span style="color:#f92672">@</span><span style="color:#111">(</span><span style="color:#111">row</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">localBasinSize</span> <span style="color:#111">height</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">height</span> <span style="color:#f92672">==</span> <span style="color:#111">maxHeight</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#111">basinSize</span> <span style="color:#111">heightMap</span> <span style="color:#111">(</span><span style="color:#111">row</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#111">)</span>
+                            <span style="color:#f92672">+</span> <span style="color:#111">basinSize</span> <span style="color:#111">heightMap</span> <span style="color:#111">(</span><span style="color:#111">row</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">localBasinSize</span> <span style="color:#111">(</span><span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">defaultIndex</span> <span style="color:#111">maxHeight</span> <span style="color:#111">heightMap</span> <span style="color:#111">ix</span><span style="color:#111">)</span>
+</code></pre></div><p>Even if the above implementation were correct, the size of a basin would depend
+on what the initial <code>(i, j)</code> are. If <code>(i, j)</code> are not the top-left cell in the
+basin, then we might not get the correct answer as the locations to the left and
+above the starting location are omitted.</p>
+<p>This question reduces to the connected components problem in graph theory. Two
+neighboring locations are considered connected if their heights are both less
+than <code>maxheight = 9</code>.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#AoC2021-09"></a></span> is not explicit about what counts as a neighbor. In this
+height map:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">19
+92
+</code></pre></div><p>&hellip; are <code>1</code> and <code>2</code> considered to be in the same basin? Maybe not because the
+two <code>9</code>s form a wall that prevents water in <code>1</code> from flowing to <code>2</code>. If it does
+flow, then all <code>9</code>s are submerged, and we have one huge basin, which is not in
+the spirit of the problem.</p>
+</div>
+</div>
+
+
+<p>Is there a way of finding the connected components using stencils? <del>It feels
+like there should, given <code>vonNeumannNeighborhood</code>&hellip;</del> Stencils make sense when
+we&rsquo;re applying a function to each element while taking its neighbors into
+account. In the case of finding neighbors, I don&rsquo;t think a stencil will be
+useful.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">isInABasin</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
+<span style="color:#75af00">isInABasin</span> <span style="color:#111">height</span> <span style="color:#f92672">=</span> <span style="color:#111">height</span> <span style="color:#f92672">&lt;</span> <span style="color:#111">maxHeight</span>
+
+<span style="color:#75af00">computeBasinNeighbors</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Locations</span>
+<span style="color:#75af00">computeBasinNeighbors</span> <span style="color:#111">heightMap</span> <span style="color:#111">(</span><span style="color:#111">row</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">candidates</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">row</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#111">,</span> <span style="color:#111">row</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#111">,</span> <span style="color:#111">row</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">row</span> <span style="color:#00a8c8">:.</span> <span style="color:#111">col</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#111">]</span>
+        <span style="color:#111">heights</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">heightMap</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.!?</span><span style="color:#111">)</span> <span style="color:#111">candidates</span>
+        <span style="color:#111">isNeighbor</span> <span style="color:#111">(</span><span style="color:#00a8c8">_</span><span style="color:#111">,</span> <span style="color:#111">maybeHeight</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
+            <span style="color:#111">isJust</span> <span style="color:#111">maybeHeight</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#111">isInABasin</span> <span style="color:#111">(</span><span style="color:#111">fromJust</span> <span style="color:#111">maybeHeight</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#111">(</span><span style="color:#111">map</span> <span style="color:#111">fst</span> <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">isNeighbor</span> <span style="color:#111">(</span><span style="color:#111">zip</span> <span style="color:#111">candidates</span> <span style="color:#111">heights</span><span style="color:#111">))</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Is there a more idiomatic way of checking that a given index is within bounds?</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Locations</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Set</span> <span style="color:#00a8c8">Ix2</span>
+
+<span style="color:#75af00">getBasin</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#00a8c8">Locations</span>
+<span style="color:#75af00">getBasin</span> <span style="color:#111">heightMap</span> <span style="color:#111">location</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">not</span> <span style="color:#111">(</span><span style="color:#111">isInABasin</span> <span style="color:#111">(</span><span style="color:#111">heightMap</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.!</span> <span style="color:#111">location</span><span style="color:#111">))</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Nothing</span>
+    <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Just</span> <span style="color:#111">(</span><span style="color:#111">getLocationsInBasin</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">empty</span> <span style="color:#111">(</span><span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">singleton</span> <span style="color:#111">location</span><span style="color:#111">))</span> <span style="color:#00a8c8">where</span>
+        <span style="color:#111">getLocationsInBasin</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Locations</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Locations</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Locations</span>
+        <span style="color:#111">getLocationsInBasin</span> <span style="color:#111">visited</span> <span style="color:#111">visiting</span>
+            <span style="color:#f92672">|</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">null</span> <span style="color:#111">visiting</span> <span style="color:#f92672">=</span> <span style="color:#111">visited</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span>
+                <span style="color:#00a8c8">let</span> <span style="color:#111">(</span><span style="color:#111">currLocation</span><span style="color:#111">,</span> <span style="color:#111">otherLocations</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">deleteFindMin</span> <span style="color:#111">visiting</span>
+                    <span style="color:#111">visited&#39;</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">insert</span> <span style="color:#111">currLocation</span> <span style="color:#111">visited</span>
+                    <span style="color:#111">currNeighbors</span> <span style="color:#f92672">=</span> <span style="color:#111">computeBasinNeighbors</span> <span style="color:#111">heightMap</span> <span style="color:#111">currLocation</span>
+                    <span style="color:#111">unseenLocations</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">difference</span> <span style="color:#111">currNeighbors</span> <span style="color:#111">visited</span>
+                    <span style="color:#111">visiting&#39;</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">union</span> <span style="color:#111">otherLocations</span> <span style="color:#111">unseenLocations</span>
+                <span style="color:#00a8c8">in</span> <span style="color:#111">getLocationsInBasin</span> <span style="color:#111">visited&#39;</span> <span style="color:#111">visiting&#39;</span>
+
+<span style="color:#75af00">collectBasins</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Ix2</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Locations</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Locations</span><span style="color:#111">]</span>
+<span style="color:#75af00">collectBasins</span> <span style="color:#111">heightMap</span> <span style="color:#111">(</span><span style="color:#111">location</span><span style="color:#00a8c8">:</span><span style="color:#111">locations</span><span style="color:#111">)</span> <span style="color:#111">visited</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">maybeBasin</span>
+            <span style="color:#f92672">|</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">member</span> <span style="color:#111">location</span> <span style="color:#111">visited</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Nothing</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>                   <span style="color:#f92672">=</span> <span style="color:#111">getBasin</span> <span style="color:#111">heightMap</span> <span style="color:#111">location</span>
+        <span style="color:#111">visited&#39;</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">isJust</span> <span style="color:#111">maybeBasin</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">union</span> <span style="color:#111">visited</span> <span style="color:#111">(</span><span style="color:#111">fromJust</span> <span style="color:#111">maybeBasin</span><span style="color:#111">)</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>         <span style="color:#f92672">=</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">insert</span> <span style="color:#111">location</span> <span style="color:#111">visited</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">maybeToList</span> <span style="color:#111">maybeBasin</span> <span style="color:#f92672">++</span> <span style="color:#111">collectBasins</span> <span style="color:#111">heightMap</span> <span style="color:#111">locations</span> <span style="color:#111">visited&#39;</span>
+<span style="color:#75af00">collectBasins</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">[]</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I&rsquo;m spending too much time writing down code for collecting the connected
+components. Two sources of delay:</p>
+<ul>
+<li>
+<p>In my head, I have a vague idea of how I&rsquo;d solve this problem in Python, and
+I&rsquo;m trying to translate that into Haskell, which demands a functional style with
+immutability. I need to learn how to think in functional terms, i.e. going from
+the algorithm to functional implementation, instead of going from an imperative
+implementation to a functional one.</p>
+</li>
+<li>
+<p>Not understanding the documentation at <span class="citation-ref"><a href="#Massiv"></a></span>. I&rsquo;m struggling
+with things that are relatively straightforward in other languages' docs, e.g.
+given an N-dimensional array, how do I construct a list of all the valid
+indices? Or am I asking questions that only an imperative thinker would? How do
+I verify that an index into a given array is valid, without trying to fetch the
+element at that index?</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+<p>The <code>Set</code> library does not offer a generic <code>Set.pop</code> API. Instead, it has
+<code>Set.lookupMin</code> and <code>Set.lookupMax</code>, which both run in \(O(log\ n)\) time.
+These APIs make it apparent that the <code>Set</code> container is ordered.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>C++17 introduced <code>std::set&lt;Key,Compare,Allocator&gt;::extract</code>, which is amortized
+\(O(1)\) when passing in an iterator. <span class="citation-ref"><a href="#cppSetExtract"></a></span>
+<code>std::unordered_set</code>, which hashes items into buckets, has its <code>extract</code> method
+taking \(O(1)\) in the average case, and \(O(n)\) in the worst case.
+<span class="citation-ref"><a href="#cppUnorderedSetExtract"></a></span></p>
+<p>Python&rsquo;s <code>set.pop</code> specifies that an arbitrary element is removed and returned.
+There aren&rsquo;t explicit guidelines, but I assume the underlying implementation has
+similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">productOf3LargestBasins</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">HeightMap</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">productOf3LargestBasins</span> <span style="color:#111">heightMap</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">indexes</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">toList</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">flatten</span> <span style="color:#f92672">$</span> <span style="color:#111">(</span><span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">zeroIndex</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Ix2</span><span style="color:#111">)</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">...:</span> <span style="color:#111">unSz</span> <span style="color:#111">(</span><span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">size</span> <span style="color:#111">heightMap</span><span style="color:#111">)</span>
+        <span style="color:#111">basinSizes</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">size</span> <span style="color:#111">(</span><span style="color:#111">collectBasins</span> <span style="color:#111">heightMap</span> <span style="color:#111">indexes</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">empty</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">(</span><span style="color:#111">product</span> <span style="color:#f92672">.</span> <span style="color:#111">take</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">.</span> <span style="color:#111">reverse</span> <span style="color:#f92672">.</span> <span style="color:#111">sort</span><span style="color:#111">)</span> <span style="color:#111">basinSizes</span>
+</code></pre></div><h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Massiv'>
+        
+        massiv: Massiv (Массив) is an Array Library.<i></i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/massiv" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://hackage.haskell.org/package/massiv#stencil" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 16, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='wikiVonNeumannNeighborhood'>
+        
+        Von Neumann neighborhood - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Von_Neumann_neighborhood" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 16, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='haskellWikiFusion'>
+        
+        GHC optimisations - HaskellWiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.haskell.org/GHC_optimisations#Fusion" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 16, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppFundamentalTypes'>
+        
+        Fundamental types - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/types#Boolean_type" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 28, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppSizeOf'>
+        
+        sizeof operator - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/sizeof" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 28, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cpp8bitsForBoolean'>
+        
+        boolean - C&#43;&#43; : why bool is 8 bits long? - Stack Overflow<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://stackoverflow.com/questions/2064550/c-why-bool-is-8-bits-long" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
+        <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 28, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppVectorBool'>
+        
+        std::vector&lt;bool&gt; - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/container/vector_bool" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 28, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HiddingAoC21-09'>
+        
+        Advent of Code 2021: Day 9: Smoke Basin<i>.</i>
+        
+    </cite>
+    
+     Johan Hidding.
+    
+    
+    
+    
+    <a href="https://jhidding.github.io/aoc2021/#day-9-smoke-basin" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 29, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='haskellWikiSectionInfixOp'>
+        
+        Section of an infix operator - HaskellWiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.haskell.org/Section_of_an_infix_operator" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppSetExtract'>
+        
+        std::set&lt;Key,Compare,Allocator&gt;::extract - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/container/set/extract" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='pySetPop'>
+        
+        Built-in Types — Python 3.10.4 documentation<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://docs.python.org/3/library/stdtypes.html#frozenset.pop" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading="lazy" aria-hidden="true">
+        <i>docs.python.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 8, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppUnorderedSetExtract'>
+        
+        std::unordered_set - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/container/unordered_set" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 8, 2022.
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/hidding-johan'>Hidding, Johan</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
+            adventofcode.com
+        </a>
+    
+        <a href='/domains/docs.python.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading="lazy" aria-hidden="true">
+            docs.python.org
+        </a>
+    
+        <a href='/domains/en.cppreference.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+            en.cppreference.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+            hackage.haskell.org
+        </a>
+    
+        <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
+            jhidding.github.io
+        </a>
+    
+        <a href='/domains/stackoverflow.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
+            stackoverflow.com
+        </a>
+    
+        <a href='/domains/wiki.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+            wiki.haskell.org
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SevenSegmentSearch/">&laquo; AoC 2021 Day 08: Seven Segment Search</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/">AoC 2021 Input Parser &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

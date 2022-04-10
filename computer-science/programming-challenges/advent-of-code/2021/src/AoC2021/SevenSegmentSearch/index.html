@@ -229,14 +229,8 @@ each use a unique number of segments, you should be able to tell which
 combinations of signals correspond to those digits.</em></p>
 <p><em><strong>In the output values (the part after the <code>|</code> on each line), how many times
 do digits <code>1</code>, <code>4</code>, <code>7</code>, or <code>8</code> appear?</strong></em></p>
-<h2 id="input-representation">Input Representation</h2>
-<p>The line <code>be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe</code> has <code>cfbegad</code> matching with <code>fdgacbe</code> in the output value, so
-I need a representation that allows those two to be linked. Sorting the
-characters is sufficient as it gives <code>abcdefg</code> in both cases.</p>
-<p>The ten signal patterns are in no particular order, so a <code>[String]</code> will do. The
-output values do not need to be in any particular order, so a <code>[String]</code> will
-also do.</p>
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  OPTIONS_GHC -Wall  #-}</span>
+<span style="color:#75715e">{-#  LANGUAGE RecordWildCards  #-}</span>
 
 <span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021.SevenSegmentSearch</span>
     <span style="color:#111">(</span>
@@ -248,10 +242,42 @@ also do.</p>
 
 <span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.IntMap</span> <span style="color:#00a8c8">as</span> <span style="color:#111">IntMap</span>
 <span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.IntSet</span> <span style="color:#00a8c8">as</span> <span style="color:#111">IntSet</span>
-
-<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span>
-    <span style="color:#111">uniquePatterns</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">],</span> <span style="color:#111">outputValues</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]}</span> <span style="color:#00a8c8">deriving</span> <span style="color:#00a8c8">Show</span>
-</code></pre></div><h2 id="part-i-solution">Part I Solution</h2>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Map</span> <span style="color:#00a8c8">as</span> <span style="color:#111">Map</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Foldable</span> <span style="color:#111">(</span><span style="color:#00a8c8">Foldable</span><span style="color:#111">(</span><span style="color:#75af00">foldl&#39;</span><span style="color:#111">))</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Char</span> <span style="color:#111">(</span><span style="color:#75af00">ord</span><span style="color:#111">)</span>
+</code></pre></div><h2 id="input-representation">Input Representation</h2>
+<p>The line <code>be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe</code> has <code>cfbegad</code> matching with <code>fdgacbe</code> in the output value, so
+I need a representation that allows those two to be linked. Sorting the
+characters is sufficient as it gives <code>abcdefg</code> in both cases.</p>
+<p>The ten signal patterns are in no particular order, so a <code>[String]</code> will do. The
+output values do not need to be in any particular order, so a <code>[String]</code> will
+also do.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span>
+    <span style="color:#111">uniquePatterns</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntSet</span><span style="color:#111">],</span> <span style="color:#111">outputValues</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntSet</span><span style="color:#111">]}</span> <span style="color:#00a8c8">deriving</span> <span style="color:#00a8c8">Show</span>
+</code></pre></div><p>However, the 
+<a href="#part-ii-solution"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    solution for Part II
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ makes use
+of set operations, e.g. intersection and subtraction, and therefore, using a
+<code>[Set Char]</code> instead of a <code>[String]</code> makes more sense. 
+<a href="#PatriciaTreesSection"
+    
+    
+    
+    >
+    Even better, an
+<code>[IntSet]</code>
+    
+</a>
+.</p>
+<h2 id="part-i-solution">Part I Solution</h2>
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">numActiveSegmentsToDigits</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntMap</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
 <span style="color:#75af00">numActiveSegmentsToDigits</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span>
     <span style="color:#111">[(</span><span style="color:#ae81ff">6</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">6</span><span style="color:#111">,</span> <span style="color:#ae81ff">9</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">5</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#ae81ff">3</span><span style="color:#111">,</span> <span style="color:#ae81ff">5</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">4</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">4</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">3</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">7</span><span style="color:#111">]),</span> <span style="color:#111">(</span><span style="color:#ae81ff">7</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#ae81ff">8</span><span style="color:#111">])]</span>
@@ -261,11 +287,9 @@ also do.</p>
 <span style="color:#75af00">nonAmbiguousLengths</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#111">keys</span> <span style="color:#f92672">$</span>
     <span style="color:#00a8c8">IntMap</span><span style="color:#f92672">.</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">t</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">length</span> <span style="color:#111">t</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">numActiveSegmentsToDigits</span>
 </code></pre></div><p>The <code>containers</code> package provides <code>IntMap</code> and <code>IntSet</code> in addition to the
-general <code>Map</code> and <code>Set</code> data structures. <span class="citation-ref"><a href="#containersHaskell"></a></span> This
-distinction is motivated by <span class="citation-ref"><a href="#Okasaki1998"></a></span>&rsquo;s work on finite maps that
-are based on <span class="citation-ref"><a href="#Morrison1968"></a></span>&rsquo;s Patricia trees, instead of the usual
-base of balanced binary search trees. While both bases have fast lookups and
-inserts, Patricia trees have fast merges of two containers. <span class="citation-ref"><a href="#Okasaki1998"></a></span></p>
+general <code>Map</code> and <code>Set</code> data structures. <a id="PatriciaTreesSection"></a> <span class="citation-ref"><a href="#containersHaskell"></a></span> This distinction is motivated by <span class="citation-ref"><a href="#Okasaki1998"></a></span>&rsquo;s work on finite maps that are based on <span class="citation-ref"><a href="#Morrison1968"></a></span>&rsquo;s Patricia trees, instead of the usual base of balanced binary search trees.
+While both bases have fast lookups and inserts, Patricia trees have fast merges
+of two containers. <span class="citation-ref"><a href="#Okasaki1998"></a></span></p>
 
 
 
@@ -280,10 +304,11 @@ writers and maintainers being faculty in CS departments.</p>
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">numOf1478AppearancesInOutput</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
 <span style="color:#75af00">numOf1478AppearancesInOutput</span> <span style="color:#f92672">=</span> <span style="color:#111">foldr</span> <span style="color:#111">f</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">where</span>
     <span style="color:#111">f</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-    <span style="color:#111">f</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span> <span style="color:#111">outputValues</span><span style="color:#f92672">=</span><span style="color:#111">outputValues</span> <span style="color:#111">}</span> <span style="color:#111">prevSum</span> <span style="color:#f92672">=</span>
+    <span style="color:#111">f</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span> <span style="color:#111">outputValues</span><span style="color:#f92672">=</span><span style="color:#111">outputs</span> <span style="color:#111">}</span> <span style="color:#111">prevSum</span> <span style="color:#f92672">=</span>
         <span style="color:#111">prevSum</span> <span style="color:#f92672">+</span> <span style="color:#111">length</span> <span style="color:#111">(</span>
-            <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">s</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">member</span> <span style="color:#111">(</span><span style="color:#111">length</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">nonAmbiguousLengths</span><span style="color:#111">)</span>
-            <span style="color:#111">outputValues</span><span style="color:#111">)</span>
+            <span style="color:#111">filter</span>
+            <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">s</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">member</span> <span style="color:#111">(</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">size</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">nonAmbiguousLengths</span><span style="color:#111">)</span>
+            <span style="color:#111">outputs</span><span style="color:#111">)</span>
 </code></pre></div><p>Pattern-matching using <code>SevenSegmentDisplay{ outputValues=outputValues }</code> leads
 to a <code>Wname-shadowing</code> HLint warning on the second <code>outputValues</code>. <span class="citation-ref"><a href="#LeventErkok2020"></a></span> notes that either of the <code>NamedFieldPuns</code> or
 <code>RecordWildCards</code> extensions allows shadowing of field names. However, adding
@@ -294,7 +319,16 @@ unused.</p>
 
 <div class="comment-holder">
     <div class="comment"><p>Compared to other Part I&rsquo;s, this one felt too straightforward. Most of the
-difficulty was in using <code>parsec</code> to parse the input line.</p>
+difficulty was in 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/#day-08-seven-segment-search"
+    
+    
+    
+    >
+    using <code>parsec</code> to parse the input line
+    
+</a>
+.</p>
 </div>
 </div>
 
@@ -347,9 +381,338 @@ cdbaf: 3
 four-digit output values. <strong>What do you get if you add up all of the output
 values?</strong></em></p>
 <h2 id="part-ii-solution">Part II Solution</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">sumOfOutputValues</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">sumOfOutputValues</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</code></pre></div><h2 id="references">References</h2>
+<p>In the non-jumbled up case, the matching of digits to segments is:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">1 -   c  f
+4 -  bcd f
+7 - a c  f
+8 - abcdefg
+
+0 - abc efg
+2 - a cde g
+3 - a cd fg
+5 - ab d fg
+6 - ab defg
+9 - abcd fg
+</code></pre></div><p>From Part I, the jumbled representations of <code>1</code>, <code>4</code>, <code>7</code>, and <code>8</code> can be
+identified by counting the number of segments. We can go further and note that
+there are shared segments, for example, <code>0</code> and <code>1</code> both have segments <code>c</code> and
+<code>f</code>. So, solving Part II comes down to building up from the base provided by
+<code>1</code>, <code>4</code>, <code>7</code>, and <code>8</code>.</p>
+<p>The union of the active segments in <code>147</code> is <code>abcdf</code>, but that doesn&rsquo;t seem
+helpful. <code>8</code> isn&rsquo;t helpful because it has all of the segments active. The union
+of <code>1x</code>&rsquo;s segments (for \(x \in [4, 7, 8]\)) doesn&rsquo;t seem helpful because it
+will be the same as the active segments for \(x\). The union of <code>47</code>&rsquo;s active
+segments is <code>abcdf</code>, which also doesn&rsquo;t correspond to a digit.</p>
+<p>If we go one level deeper, we might deduce an additional digit. With regard to
+<code>x</code>&rsquo;s active segments,  \(x \in [1, 4, 7, 8]\), being a subset of another
+number <code>y</code>&rsquo;s active segments, \(y \in [0, 2, 3, 5, 6, 9]\):</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">1: 0, 3, 9
+4: 9
+7: 0, 3, 9
+</code></pre></div><p>Nothing jumps out yet. Maybe looking at <code>x</code>s and <code>y</code>s that share segments might
+be illuminating? <code>1</code>&rsquo;s <code>cf</code> shares at least one active segment with all <code>y</code>s
+and therefore given that the union of <code>1x</code>&rsquo;s active segments is the same as that
+of <code>x</code>, proceeding further doesn&rsquo;t seem useful. Maybe looking at non-shared
+segments between <code>x</code>s and <code>y</code>s helps? Nah, that wouldn&rsquo;t provide additional
+info than what I got from the shared segments analysis.</p>
+<p>Maybe I can do something with the <code>y</code>s:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">0 - abc efg (6)
+6 - ab defg (6)
+9 - abcd fg (6)
+
+2 - a cde g (5)
+3 - a cd fg (5)
+5 - ab d fg (5)
+</code></pre></div><p>The union of <code>069</code>&rsquo;s active segments is <code>abcdefg</code>, and so is the union of
+<code>235</code>&rsquo;s active segments, so that&rsquo;s not helpful.</p>
+<p>The intersection of <code>069</code>&rsquo;s active segments is <code>abfg</code>, and the complement of
+this intersection is <code>cde</code>; nothing useful yet.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>I&rsquo;m mostly talking in set terminology, so maybe instead of using <code>String</code> to
+represent a display digit, I should have used a <code>Set Char</code>.</p>
+</div>
+</div>
+
+
+<p>The intersection of <code>253</code>&rsquo;s active segments is <code>adg</code>, and the complement of this
+intersection is <code>bcef</code>; nothing useful yet.</p>
+<p>The union of the previous two intersections (<code>abfg</code> and <code>adg</code>) is <code>abdfg</code>, and
+for once we have something useful as that equals to <code>5</code>&rsquo;s active segments! The
+complement of <code>abdfg</code> is <code>ce</code>, but that&rsquo;s not useful.</p>
+<p>Of <code>23</code>&rsquo;s active segments, the union is <code>acdefg</code>, the complement of the union is
+<code>b</code>, the intersection is <code>acdg</code>, and the complement of this intersection is
+<code>bef</code>. None of these look helpful.</p>
+<p>The knowns and unknowns are currently:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">8 - abcdefg (7)
+
+1 -   c  f  (2)
+4 -  bcd f  (4)
+7 - a c  f  (3)
+5 - ab d fg (5)
+
+0 - abc efg (6)
+6 - ab defg (6)
+9 - abcd fg (6)
+
+2 - a cde g (5)
+3 - a cd fg (5)
+</code></pre></div><p>I had already computed combinations of <code>147</code>, but maybe there&rsquo;s new info now
+that <code>5</code> is also known.</p>
+<p>The unknowns, \([0, 6, 9, 2, 3]\) have at least 5 active segments, so taking
+operations which give at least 5 elements will be most useful.</p>
+<p>The union of <code>15</code>s active segments is <code>abcdfg</code>, which matches the active
+segments of <code>9</code>. Sweet!</p>
+<p>The union of <code>45</code>&rsquo;s active segments is <code>abcdfg</code>, which we&rsquo;ve already determined
+to be <code>9</code>. The union of <code>75</code>&rsquo;s active segments doesn&rsquo;t yield anything new
+either.</p>
+<p>The knowns and unknowns are currently:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">8 - abcdefg (7)
+
+1 -   c  f  (2)
+4 -  bcd f  (4)
+7 - a c  f  (3)
+5 - ab d fg (5)
+9 - abcd fg (6)
+
+0 - abc efg (6)
+6 - ab defg (6)
+
+2 - a cde g (5)
+3 - a cd fg (5)
+</code></pre></div><p>The difference between <code>0</code> and <code>6</code> is that the former has a <code>c</code>, while the
+latter has a <code>d</code>. Subtracting <code>5 abdfg</code> from <code>9 abcdfg</code> gives <code>c</code>, and therefore
+distinguishes <code>0</code> from <code>6</code>.</p>
+<p>The difference between <code>2</code> and <code>3</code> is that the former has an <code>e</code>, while the
+latter has an <code>f</code>. The complement of the union of <code>14759</code>&rsquo;s active segments is
+<code>e</code>, and that can be used to distinguish <code>2</code> from <code>3</code>.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Tedious exercise, but rewarding in the end. I feel like Sherlock Holmes.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#Mazon2021-08"></a></span> has simpler logic though. For convenience, here is the
+non-scrambled mapping:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-md" data-lang="md">1 -   c  f  (2)
+4 -  bcd f  (4)
+7 - a c  f  (3)
+8 - abcdefg (7)
+
+0 - abc efg (6)
+6 - ab defg (6)
+9 - abcd fg (6)
+
+2 - a cde g (5)
+3 - a cd fg (5)
+5 - ab d fg (5)
+</code></pre></div><p>\([1, 4, 7, 8]\) are identifiable from their unique lengths. <a
+id="Mazon2021-08-LogicDeduction"></a> <code>6</code> is the 6-segment digit digit that does
+not include <code>1</code>. <code>9</code> is the 6-segment digit that includes <code>4</code>. <code>0</code> is the
+remaining 6-segment digit. <code>3</code> is the 5-segment digit that includes <code>1</code>. <code>5</code>
+is the 5-segment digit that&rsquo;s included in <code>6</code>. <code>2</code> is the remaining 5-segment
+digit. <span class="citation-ref"><a href="#Mazon2021-08"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The major shortcoming of how I went about deducing the mapping was thinking in
+terms of unions and intersections, and not considering subsets. Once I found a
+working approach, I hastened to implement it and call it a day.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Segment</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntSet</span>
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">SegmentsMapping</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Map</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Map</span> <span style="color:#00a8c8">Segment</span> <span style="color:#00a8c8">Int</span>
+
+<span style="color:#75af00">allSegmentsActive</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntSet</span>
+<span style="color:#75af00">allSegmentsActive</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#f92672">.</span> <span style="color:#111">map</span> <span style="color:#111">ord</span><span style="color:#111">)</span> <span style="color:#d88200">&#34;abcdefg&#34;</span>
+
+<span style="color:#75af00">deduceMappings</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Segment</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">SegmentsMapping</span>
+<span style="color:#75af00">deduceMappings</span> <span style="color:#111">input</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">Map</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#111">[(</span><span style="color:#111">repr0</span><span style="color:#111">,</span> <span style="color:#ae81ff">0</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr1</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr2</span><span style="color:#111">,</span> <span style="color:#ae81ff">2</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr3</span><span style="color:#111">,</span> <span style="color:#ae81ff">3</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr4</span><span style="color:#111">,</span> <span style="color:#ae81ff">4</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr5</span><span style="color:#111">,</span> <span style="color:#ae81ff">5</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr6</span><span style="color:#111">,</span> <span style="color:#ae81ff">6</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr7</span><span style="color:#111">,</span> <span style="color:#ae81ff">7</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr8</span><span style="color:#111">,</span> <span style="color:#ae81ff">8</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">repr9</span><span style="color:#111">,</span> <span style="color:#ae81ff">9</span><span style="color:#111">)]</span> <span style="color:#00a8c8">where</span>
+        <span style="color:#111">getSegmentsOfSize</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Segment</span><span style="color:#111">]</span>
+        <span style="color:#111">getSegmentsOfSize</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">s</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">size</span> <span style="color:#111">s</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#111">input</span>
+
+        <span style="color:#111">repr1</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">getSegmentsOfSize</span> <span style="color:#ae81ff">2</span><span style="color:#111">)</span>
+        <span style="color:#111">repr4</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">getSegmentsOfSize</span> <span style="color:#ae81ff">4</span><span style="color:#111">)</span>
+        <span style="color:#111">repr7</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">getSegmentsOfSize</span> <span style="color:#ae81ff">3</span><span style="color:#111">)</span>
+        <span style="color:#111">repr8</span> <span style="color:#f92672">=</span> <span style="color:#111">allSegmentsActive</span>
+
+        <span style="color:#111">reprs069</span> <span style="color:#f92672">=</span> <span style="color:#111">getSegmentsOfSize</span> <span style="color:#ae81ff">6</span>
+        <span style="color:#111">intersection069</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">intersection</span> <span style="color:#111">allSegmentsActive</span> <span style="color:#111">reprs069</span>
+
+        <span style="color:#111">reprs235</span> <span style="color:#f92672">=</span> <span style="color:#111">getSegmentsOfSize</span> <span style="color:#ae81ff">5</span>
+        <span style="color:#111">intersection235</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">intersection</span> <span style="color:#111">allSegmentsActive</span> <span style="color:#111">reprs235</span>
+
+        <span style="color:#111">repr5</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">union</span> <span style="color:#111">intersection069</span> <span style="color:#111">intersection235</span>
+        <span style="color:#111">repr9</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">union</span> <span style="color:#111">repr1</span> <span style="color:#111">repr5</span>
+
+        <span style="color:#111">reprs06</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#f92672">/=</span> <span style="color:#111">repr9</span><span style="color:#111">)</span> <span style="color:#111">reprs069</span>
+        <span style="color:#111">difference95</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">difference</span> <span style="color:#111">repr9</span> <span style="color:#111">repr5</span>
+
+        <span style="color:#111">repr6</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">disjoint</span> <span style="color:#111">difference95</span><span style="color:#111">)</span> <span style="color:#111">reprs06</span><span style="color:#111">)</span>
+        <span style="color:#111">repr0</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#f92672">/=</span> <span style="color:#111">repr6</span><span style="color:#111">)</span> <span style="color:#111">reprs06</span><span style="color:#111">)</span>
+
+        <span style="color:#111">union14579</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">union</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">empty</span> <span style="color:#111">[</span><span style="color:#111">repr1</span><span style="color:#111">,</span> <span style="color:#111">repr4</span><span style="color:#111">,</span> <span style="color:#111">repr5</span><span style="color:#111">,</span> <span style="color:#111">repr7</span><span style="color:#111">,</span> <span style="color:#111">repr9</span><span style="color:#111">]</span>
+        <span style="color:#111">complement14579</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">difference</span> <span style="color:#111">allSegmentsActive</span> <span style="color:#111">union14579</span>
+
+        <span style="color:#111">reprs23</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#f92672">/=</span> <span style="color:#111">repr5</span><span style="color:#111">)</span> <span style="color:#111">reprs235</span>
+        <span style="color:#111">repr3</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">disjoint</span> <span style="color:#111">complement14579</span><span style="color:#111">)</span> <span style="color:#111">reprs23</span><span style="color:#111">)</span>
+        <span style="color:#111">repr2</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#f92672">/=</span> <span style="color:#111">repr3</span><span style="color:#111">)</span> <span style="color:#111">reprs23</span><span style="color:#111">)</span>
+
+
+<span style="color:#75af00">parseInt</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">SegmentsMapping</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Segment</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">parseInt</span> <span style="color:#111">mapping</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">acc</span> <span style="color:#111">segment</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">acc</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> <span style="color:#111">(</span><span style="color:#111">mapping</span> <span style="color:#00a8c8">Map</span><span style="color:#f92672">.!</span> <span style="color:#111">segment</span><span style="color:#111">))</span> <span style="color:#ae81ff">0</span>
+
+<span style="color:#75af00">sumOfOutputValues</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">sumOfOutputValues</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl&#39;</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">acc</span> <span style="color:#111">display</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">acc</span> <span style="color:#f92672">+</span> <span style="color:#111">extractOutputValue</span> <span style="color:#111">display</span><span style="color:#111">)</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">where</span>
+    <span style="color:#111">extractOutputValue</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+    <span style="color:#111">extractOutputValue</span> <span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span> <span style="color:#f92672">..</span> <span style="color:#111">}</span> <span style="color:#f92672">=</span> <span style="color:#111">parseInt</span> <span style="color:#111">(</span><span style="color:#111">deduceMappings</span> <span style="color:#111">uniquePatterns</span><span style="color:#111">)</span> <span style="color:#111">outputValues</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p><code>parseInt</code> adapted from 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/#converting-binary-representation-to-decimal"
+    
+    
+    
+    >
+    AoC 21 #03: Binary Diagnostic &gt; Converting Binary
+Representation to Decimal
+    
+</a>
+.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#Mazon2021-08"></a></span> approaches the problem differently. They note that the
+search space is small enough, \(7! = 5{,}040\), that there is 
+<a href="#Mazon2021-08-LogicDeduction"
+    
+    
+    
+    >
+    no need to use
+first-order logic
+    
+</a>
+.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Why is the search space \(7!\) instead of \(6!\), given that we already know
+the representations of \([1, 4, 7, 8]\)?</p>
+<p>Answer: We&rsquo;re looking at a seven-segment display.</p>
+<p>Why \(7!\) though. \(7!\) is the number of ways \(7\) items can be
+ordered. I don&rsquo;t understand why the search space also corresponds to this.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">-- From https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Segment</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#00a8c8">newtype</span> <span style="color:#00a8c8">Observation</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Observation</span> <span style="color:#111">{</span> <span style="color:#111">view</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Segment</span><span style="color:#111">]</span> <span style="color:#111">}</span>
+
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Wire</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#00a8c8">newtype</span> <span style="color:#00a8c8">Digit</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Digit</span> <span style="color:#111">[</span><span style="color:#00a8c8">Wire</span><span style="color:#111">]</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Eq</span><span style="color:#111">,</span> <span style="color:#00a8c8">Ord</span><span style="color:#111">)</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>So far I&rsquo;ve been using <code>data</code> to define custom types; <code>newtype</code> is new to me.</p>
+</div>
+</div>
+
+
+<p>The syntax and usage of <code>newtype</code> and <code>data</code> are identical. Replacing <code>newtype</code>
+with <code>data</code> will compile and most probably work, but <code>data</code> can only be replaced
+with <code>newtype</code> if the type has exactly one constructor with exactly one field
+inside it. The restrictions for <code>newtype</code> imply that the new type and the type
+of field are in direct correspondence (isomorphic), and therefore after the
+type is checked at compile time, at run time the two types can be treated
+essentially the same, without the overhead or indirection normally associated
+with a data constructor. <span class="citation-ref"><a href="#haskellWikiNewtype"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Note that there is more subtle reasoning  on the nuance between <code>newtype</code> and
+<code>data</code> (e.g. why not use <code>newtype</code> everywhere you can?) in
+<span class="citation-ref"><a href="#haskellWikiNewtype"></a></span> and in 
+<a href="https://www.haskell.org/tutorial/moretypes.html#sect6.1"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    A Gentle Introduction to Haskell: Types,
+Again
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+. This nuance
+doesn&rsquo;t seem useful to me at this stage.</p>
+</div>
+</div>
+
+
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">-- From https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html</span>
+
+<span style="color:#75af00">combine</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Observation</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Digit</span>
+<span style="color:#75af00">combine</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Digit</span> <span style="color:#f92672">.</span> <span style="color:#111">sort</span> <span style="color:#f92672">.</span> <span style="color:#111">view</span>
+</code></pre></div><p>This syntax is possible because <code>Observation { view :: [Segment] }</code> creates an
+accessor function called <code>view</code> of type <code>Observation -&gt; [Segment]</code> <span class="citation-ref"><a href="#wikiHaskellNamedFields"></a></span>. <code>Segment</code> and <code>Wire</code> are synonyms for <code>Int</code>, and are
+thus entirely compatible, and that&rsquo;s why <code>Digit</code> can accept a <code>[Segment]</code>
+<span class="citation-ref"><a href="#haskellWikiTypeSynonym"></a></span>.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">-- From https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html</span>
+
+<span style="color:#75af00">reference</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Digit</span><span style="color:#111">]</span>
+<span style="color:#75af00">reference</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">combine</span> <span style="color:#f92672">.</span> <span style="color:#111">readObservation</span><span style="color:#111">)</span>
+    <span style="color:#111">[</span> <span style="color:#d88200">&#34;abcefg&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;cf&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;acdeg&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;acdfg&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;bcdf&#34;</span>
+    <span style="color:#111">,</span> <span style="color:#d88200">&#34;abdfg&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;abdefg&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;acf&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;abcdefg&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;abcdfg&#34;</span>
+    <span style="color:#111">]</span>
+
+<span style="color:#75af00">solve</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Observation</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Observation</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style="color:#75af00">solve</span> <span style="color:#111">obsDigits</span> <span style="color:#111">obsDisplay</span> <span style="color:#f92672">=</span>
+    <span style="color:#00a8c8">let</span> <span style="color:#111">permute</span> <span style="color:#111">p</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">combine</span> <span style="color:#f92672">.</span> <span style="color:#00a8c8">Observation</span> <span style="color:#f92672">.</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">p</span> <span style="color:#f92672">!!</span><span style="color:#111">)</span> <span style="color:#f92672">.</span> <span style="color:#111">view</span><span style="color:#111">)</span>
+        <span style="color:#00a8c8">Just</span> <span style="color:#111">perm</span> <span style="color:#f92672">=</span> <span style="color:#111">find</span> <span style="color:#111">((</span><span style="color:#f92672">==</span> <span style="color:#111">sort</span> <span style="color:#111">reference</span><span style="color:#111">)</span> <span style="color:#f92672">.</span> <span style="color:#111">sort</span> <span style="color:#f92672">.</span> <span style="color:#111">flip</span> <span style="color:#111">permute</span> <span style="color:#111">obsDigits</span><span style="color:#111">)</span>
+                    <span style="color:#111">(</span><span style="color:#111">permutations</span> <span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">6</span><span style="color:#111">])</span>
+    <span style="color:#00a8c8">in</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#111">fromJust</span> <span style="color:#f92672">.</span> <span style="color:#111">(`</span><span style="color:#111">elemIndex</span><span style="color:#111">`</span> <span style="color:#111">reference</span><span style="color:#111">))</span> <span style="color:#111">(</span><span style="color:#111">permute</span> <span style="color:#111">perm</span> <span style="color:#111">obsDisplay</span><span style="color:#111">)</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>I don&rsquo;t yet follow why <code>solve</code> works, and I don&rsquo;t think dissecting it further
+is worthwhile. Maybe I can leave it at &ldquo;exhaustive search is feasible for this
+problem&rdquo;?</p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>New API: <code>flip :: (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c</code>, where <code>flip f</code> takes its
+(first) two arguments in the reverse order of <code>f</code>, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"> <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#111">flip</span> <span style="color:#111">(</span><span style="color:#f92672">++</span><span style="color:#111">)</span> <span style="color:#d88200">&#34;hello&#34;</span> <span style="color:#d88200">&#34;world&#34;</span>
+<span style="color:#d88200">&#34;worldhello&#34;</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Prelude"></a></span></p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
 <ol>
 <li>
 
@@ -449,7 +812,7 @@ values?</strong></em></p>
     
      Morrison, Donald R.
      Journal of the ACM, Vol. 15, No. 4 (1968): 514-534..
-    
+     Sandia Laboratory.
     
     
     <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=PATRICIA%E2%80%94practical&#43;algorithm&#43;to&#43;retrieve&#43;information&#43;coded&#43;in&#43;alphanumeric&amp;btnG=" target="_blank" rel="noopener">
@@ -511,6 +874,210 @@ values?</strong></em></p>
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Mazon2021-08'>
+        
+        AoC Day 8: Seven Segment Search<i>.</i>
+        
+    </cite>
+    
+     Jean-Baptiste Mazon.
+    
+    
+    
+    
+    <a href="https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=xn--sant-epa.ti-pun.ch" loading="lazy" aria-hidden="true">
+        <i>xn--sant-epa.ti-pun.ch</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='wikiHaskellNamedFields'>
+        
+        Haskell/More on datatypes - Wikibooks, open books for an open world<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikibooks.org/wiki/Haskell/More_on_datatypes#Named_Fields_%28Record_Syntax%29" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikibooks.org" loading="lazy" aria-hidden="true">
+        <i>en.wikibooks.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='haskellWikiTypeSynonym'>
+        
+        Type synonym - HaskellWiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.haskell.org/Type_synonym" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='haskellWikiNewtype'>
+        
+        Newtype - HaskellWiki<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://wiki.haskell.org/Newtype" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Data.List'>
+        
+        Data.List<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-List.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Prelude'>
+        
+        Prelude<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:flip" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Mar 15, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -518,8 +1085,41 @@ values?</strong></em></p>
         <div style="font-size: smaller;">
 
 
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/gill-andy'>Gill, Andy</a>
+    
+        <a href='/authors/mazon-jean-baptiste'>Mazon, Jean-Baptiste</a>
+    
+        <a href='/authors/morrison-donald-r'>Morrison, Donald R</a>
+    
+        <a href='/authors/okasaki-chris'>Okasaki, Chris</a>
+    
+</aside>
 
 
+
+<aside id="publications-holder" style="margin: 0 0 2% 0;">
+    Cited Publications:
+    
+        <a href='/publications/journal-of-the-acm'>Journal of the ACM</a>
+    
+        <a href='/publications/workshop-on-ml'>Workshop on ML</a>
+    
+</aside>
+
+
+<aside id="affiliations-holder" style="margin: 0 0 2% 0;">
+    Cited Authors' Affiliations:
+    
+        <a href='/affiliations/columbia-university'>Columbia University</a>
+    
+        <a href='/affiliations/sandia-laboratory'>Sandia Laboratory</a>
+    
+        <a href='/affiliations/semantic-designs'>Semantic Designs</a>
+    
+</aside>
 
 
 <aside id="domains-holder" style="margin: 0 0 2% 0;">
@@ -528,6 +1128,51 @@ values?</strong></em></p>
         <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
             adventofcode.com
+        </a>
+    
+        <a href='/domains/en.wikibooks.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikibooks.org" loading="lazy" aria-hidden="true">
+            en.wikibooks.org
+        </a>
+    
+        <a href='/domains/github.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+            github.com
+        </a>
+    
+        <a href='/domains/gitlab.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=gitlab.haskell.org" loading="lazy" aria-hidden="true">
+            gitlab.haskell.org
+        </a>
+    
+        <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+            hackage.haskell.org
+        </a>
+    
+        <a href='/domains/haskell-containers.readthedocs.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=haskell-containers.readthedocs.io" loading="lazy" aria-hidden="true">
+            haskell-containers.readthedocs.io
+        </a>
+    
+        <a href='/domains/ittc.ku.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=ittc.ku.edu" loading="lazy" aria-hidden="true">
+            ittc.ku.edu
+        </a>
+    
+        <a href='/domains/scholar.google.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy" aria-hidden="true">
+            scholar.google.com
+        </a>
+    
+        <a href='/domains/wiki.haskell.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
+            wiki.haskell.org
+        </a>
+    
+        <a href='/domains/xn--sant-epa.ti-pun.ch' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=xn--sant-epa.ti-pun.ch" loading="lazy" aria-hidden="true">
+            xn--sant-epa.ti-pun.ch
         </a>
     
 </aside>
@@ -545,6 +1190,8 @@ values?</strong></em></p>
         
             <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/TreacheryOfWhales/">&laquo; AoC 2021 Day 07: The Treachery of Whales</a>
         
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SmokeBasin/">AoC 2021 Day 09: Smoke Basin &raquo;</a>
         
 
     </footer>
