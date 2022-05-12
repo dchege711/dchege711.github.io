@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Main | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/">AoC 2021 Main</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Main</h1>
+    <p class="meta">
+        
+        Dated Apr 11, 2022;
+        
+        last modified on Mon, 11 Apr 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents"></nav>
+        </aside>
+
+        <article id="main-article">
+            <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">module</span> <span style="color:#111">Main</span> <span style="color:#00a8c8">where</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021</span> <span style="color:#111">(</span><span style="color:#75af00">runSolution</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">AoC2021Args</span> <span style="color:#111">(</span><span style="color:#00a8c8">Args</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#75af00">aocArgParser</span><span style="color:#111">)</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#111">Options.Applicative</span>
+
+<span style="color:#75af00">main</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
+<span style="color:#75af00">main</span> <span style="color:#f92672">=</span> <span style="color:#111">runAoCSolutions</span> <span style="color:#f92672">=&lt;&lt;</span> <span style="color:#111">execParser</span> <span style="color:#111">opts</span>
+  <span style="color:#00a8c8">where</span>
+    <span style="color:#111">opts</span> <span style="color:#f92672">=</span> <span style="color:#111">info</span> <span style="color:#111">(</span><span style="color:#111">aocArgParser</span> <span style="color:#f92672">&lt;**&gt;</span> <span style="color:#111">helper</span><span style="color:#111">)</span>
+      <span style="color:#111">(</span> <span style="color:#111">fullDesc</span>
+     <span style="color:#f92672">&lt;&gt;</span> <span style="color:#111">progDesc</span> <span style="color:#d88200">&#34;Run solutions for a given DAY of AoC 2021&#34;</span>
+     <span style="color:#f92672">&lt;&gt;</span> <span style="color:#111">header</span> <span style="color:#d88200">&#34;A module for running solutions for AoC 2021&#34;</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">runAoCSolutions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Args</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
+<span style="color:#75af00">runAoCSolutions</span> <span style="color:#111">(</span><span style="color:#00a8c8">Args</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">AoC2021</span><span style="color:#f92672">.</span><span style="color:#111">runSolution</span> <span style="color:#111">d</span>
+</code></pre></div>
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/">&laquo; AoC 2021 Input Parser</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/">AoC 2021 Solution Runner &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

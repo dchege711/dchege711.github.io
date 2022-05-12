@@ -40,7 +40,8 @@
         <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
 
         
-        
+
+
     </head>
 
     <body>
@@ -109,7 +110,7 @@
     <h1> AoC 2021 Day 09: Smoke Basin</h1>
     <p class="meta">
         
-        Dated Mar 16, 2022; 
+        Dated Mar 16, 2022;
         
         last modified on Wed, 16 Mar 2022
         
@@ -124,9 +125,18 @@
     <li><a href="#input-representation">Input Representation</a></li>
     <li><a href="#notable-design-decisions-in-massiv">Notable Design Decisions in <code>massiv</code></a></li>
     <li><a href="#input-representation-contd">Input Representation (Cont&rsquo;d)</a></li>
-    <li><a href="#part-i-solution">Part I Solution</a></li>
+    <li><a href="#part-i-solution">Part I Solution</a>
+      <ul>
+        <li><a href="#learnings-from-others-part-i-solutions">Learnings from Others' Part I Solutions</a></li>
+      </ul>
+    </li>
     <li><a href="#part-ii-span-classcitation-refa-hrefaoc2021-09aspan">Part II <span class="citation-ref"><a href="#AoC2021-09"></a></span></a></li>
-    <li><a href="#part-ii-solution">Part II Solution</a></li>
+    <li><a href="#part-ii-solution">Part II Solution</a>
+      <ul>
+        <li><a href="#learnings-from-others-part-ii-solutions">Learnings from Others' Part II Solutions</a></li>
+      </ul>
+    </li>
+    <li><a href="#misc-learnings-from-others-solutions">Misc. Learnings from Others' Solutions</a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -396,6 +406,38 @@ a lot of time deciphering <code>massiv</code>&rsquo;s syntax as opposed to learn
 </div>
 
 
+<h3 id="learnings-from-others-part-i-solutions">Learnings from Others' Part I Solutions</h3>
+<p><span class="citation-ref"><a href="#HiddingAoC21-09"></a></span> has more succinct solution:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Array2&#39;</span> <span style="color:#111">r</span> <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Array</span> <span style="color:#111">r</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#111">a</span>
+<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">Array2</span> <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Array2&#39;</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#00a8c8">U</span> <span style="color:#111">a</span>
+</code></pre></div><p>The <code>U</code> is the <code>Unbox</code> type class. The array is usually just as fast as <code>P</code>, but
+can work with a wider range of data types. <span class="citation-ref"><a href="#Massiv"></a></span> Using <code>Array2</code>
+allowed <span class="citation-ref"><a href="#HiddingAoC21-09"></a></span> to define more types, e.g. <code>Array2 Int</code> for
+the height map, <code>Array2 Int</code> for the risk values, <code>Array2 (Int, Int)</code> in Part
+II, and so forth. However, the <code>Array2'</code> type was unncessary IMO.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">neighbours</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Ix2</span><span style="color:#111">]</span>
+<span style="color:#75af00">neighbours</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">:.</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">1</span><span style="color:#111">]</span>
+</code></pre></div><p>My analogous function, <code>vonNeumannNeighborhood :: (Ix2 -&gt; Int) -&gt; [Int]</code>, could
+have been simplified into <span class="citation-ref"><a href="#HiddingAoC21-09"></a></span>&rsquo;s. After all, I kept on
+using the <code>get</code> parameter for all 4 elements, and that&rsquo;s not in tune with
+the wholemeal programming advocated for in Haskell. My lack of understanding of
+<code>get</code> as a function that knows how to fetch values made me blind to <span class="citation-ref"><a href="#HiddingAoC21-09"></a></span> use of <code>get</code> in <code>findMinStencil</code>.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">findMinStencil</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Stencil</span> <span style="color:#00a8c8">Ix2</span> <span style="color:#00a8c8">Int</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">findMinStencil</span> <span style="color:#f92672">=</span> <span style="color:#111">makeStencil</span> <span style="color:#111">(</span><span style="color:#00a8c8">Size</span> <span style="color:#111">(</span><span style="color:#ae81ff">3</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">3</span><span style="color:#111">))</span> <span style="color:#111">(</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">go</span>
+    <span style="color:#00a8c8">where</span> <span style="color:#111">go</span> <span style="color:#111">get</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">all</span> <span style="color:#111">((</span><span style="color:#111">centerPoint</span> <span style="color:#f92672">&lt;</span><span style="color:#111">)</span> <span style="color:#f92672">.</span> <span style="color:#111">get</span><span style="color:#111">)</span> <span style="color:#111">neighbors</span> <span style="color:#f92672">=</span> <span style="color:#111">value</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>                             <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+            <span style="color:#00a8c8">where</span> <span style="color:#111">centerPoint</span> <span style="color:#f92672">=</span> <span style="color:#111">get</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span> <span style="color:#00a8c8">:.</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
+</code></pre></div><p><code>all</code> returns <code>True</code> if all elements of a <code>Foldable</code> structure satisfy the
+predicate (and interestingly, <code>all (&gt; 3) [] == True</code>) <span class="citation-ref"><a href="#Prelude"></a></span>. It&rsquo;s
+also possible to nest <code>where</code> definitions. Neat!</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">sumOfRiskLevelsOfLowPoints</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Array2</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">sumOfRiskLevelsOfLowPoints</span> <span style="color:#111">heightMap</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">sum</span> <span style="color:#111">riskArray</span>
+    <span style="color:#00a8c8">where</span> <span style="color:#111">riskArray</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Array2</span> <span style="color:#00a8c8">Int</span>
+          <span style="color:#111">riskArray</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">compute</span> <span style="color:#f92672">$</span> <span style="color:#111">mapStencil</span> <span style="color:#111">(</span><span style="color:#00a8c8">Fill</span> <span style="color:#ae81ff">10</span><span style="color:#111">)</span> <span style="color:#111">findMinStencil</span> <span style="color:#111">heightMap</span>
+</code></pre></div><p>My use of <code>Fill (maxBound :: Int)</code> for border handling was unncessary. The
+max height is <code>9</code> so <code>10</code> suffices. However, I also think that <code>maxBound :: Int</code>
+is more self explanatory.</p>
 <h2 id="part-ii-span-classcitation-refa-hrefaoc2021-09aspan">Part II <span class="citation-ref"><a href="#AoC2021-09"></a></span></h2>
 <p>Next, you need to find the largest basins so you know what areas are most
 important to avoid.</p>
@@ -543,7 +585,70 @@ similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></
     <span style="color:#00a8c8">let</span> <span style="color:#111">indexes</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">toList</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">flatten</span> <span style="color:#f92672">$</span> <span style="color:#111">(</span><span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">zeroIndex</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Ix2</span><span style="color:#111">)</span> <span style="color:#00a8c8">A</span><span style="color:#f92672">...:</span> <span style="color:#111">unSz</span> <span style="color:#111">(</span><span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">size</span> <span style="color:#111">heightMap</span><span style="color:#111">)</span>
         <span style="color:#111">basinSizes</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">size</span> <span style="color:#111">(</span><span style="color:#111">collectBasins</span> <span style="color:#111">heightMap</span> <span style="color:#111">indexes</span> <span style="color:#00a8c8">Set</span><span style="color:#f92672">.</span><span style="color:#111">empty</span><span style="color:#111">)</span>
     <span style="color:#00a8c8">in</span> <span style="color:#111">(</span><span style="color:#111">product</span> <span style="color:#f92672">.</span> <span style="color:#111">take</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">.</span> <span style="color:#111">reverse</span> <span style="color:#f92672">.</span> <span style="color:#111">sort</span><span style="color:#111">)</span> <span style="color:#111">basinSizes</span>
-</code></pre></div><h2 id="references">References</h2>
+</code></pre></div><h3 id="learnings-from-others-part-ii-solutions">Learnings from Others' Part II Solutions</h3>
+<p><span class="citation-ref"><a href="#HiddingAoC21-09"></a></span>&rsquo;s approach was different: mark the minima, and then
+repeatedly grow neighborhood around each minimum until two patches meet.</p>
+<p>Given an <code>Array2 Int</code> where minima are denoted as non-zero elements, <span class="citation-ref"><a href="#HiddingAoC21-09"></a></span> labels each minima with a unique integer, with the help of
+<span class="citation-ref"><a href="#RIO.State"></a></span> (which re-exports <span class="citation-ref"><a href="#Control.Monad"></a></span>).</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">-- `evalState :: State s a -&gt; s -&gt; a` evaluates a state computation with the</span>
+<span style="color:#75715e">-- initial state, and returns the final value, discarding the final state.</span>
+<span style="color:#75715e">--</span>
+<span style="color:#75715e">-- `State s a` is a state-passing computation to execute.</span>
+<span style="color:#75715e">-- `s` is the initial value.</span>
+<span style="color:#75715e">-- `a` is the return value of the state computation.</span>
+
+<span style="color:#75af00">markBasins</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Array2</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Array2</span> <span style="color:#00a8c8">Int</span>
+<span style="color:#75af00">markBasins</span> <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#111">evalState</span> <span style="color:#111">(</span><span style="color:#00a8c8">A</span><span style="color:#f92672">.</span><span style="color:#111">mapM</span> <span style="color:#111">markNonZero</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e">-- Initial ID is zero.</span>
+    <span style="color:#00a8c8">where</span> <span style="color:#111">markNonZero</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">State</span> <span style="color:#00a8c8">Int</span> <span style="color:#00a8c8">Int</span>
+          <span style="color:#111">markNonZero</span> <span style="color:#111">x</span>
+            <span style="color:#75715e">-- `modify` maps an old state to a new state inside a state monad;</span>
+            <span style="color:#75715e">-- the old state is thrown away. `modify&#39;` is its strict variant.</span>
+            <span style="color:#75715e">--</span>
+            <span style="color:#75715e">-- `get` returns the state from the internals of the monad.</span>
+            <span style="color:#75715e">--</span>
+            <span style="color:#75715e">-- So whenever x is a minimum, we increase the state, and then</span>
+            <span style="color:#75715e">-- assign the value to that array element. That&#39;s why the IDs are</span>
+            <span style="color:#75715e">-- all greater than zero and unique.</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">x</span> <span style="color:#f92672">/=</span> <span style="color:#ae81ff">0</span>    <span style="color:#f92672">=</span> <span style="color:#111">modify</span> <span style="color:#111">(</span><span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#f92672">&gt;&gt;</span> <span style="color:#111">get</span>
+            <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#111">return</span> <span style="color:#ae81ff">0</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The <code>(&gt;&gt;)</code> &ldquo;and then&rdquo; operator sequentially composes two actions, discarding
+any value produced by the first. 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#monad"
+    
+    
+    
+    >
+    Previous encounter with <code>(&gt;&gt;)</code> operator
+    
+</a>
+.</p>
+</div>
+</div>
+
+
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The technique used in <code>markBasins</code> looks promising for future endeavors where I
+need to process a collection whle keeping track of some state. Previously, I&rsquo;ve
+found such problems tricky because I&rsquo;m used to state being in a mutable
+variable. The monad state feels mutable, but somehow abstracted from me.</p>
+</div>
+</div>
+
+
+<h2 id="misc-learnings-from-others-solutions">Misc. Learnings from Others' Solutions</h2>
+<p><span class="citation-ref"><a href="#Qualia91AoC21-09"></a></span> used the <span class="citation-ref"><a href="#Debug.Trace"></a></span> library, and it
+looks promising, there are functions in the package that are not &ldquo;referentially
+transparent&rdquo;, e.g. <code>trace :: String -&gt; a -&gt; a</code> whose type indicates purity, but
+it actually has a side effect of outputting the trace message. I didn&rsquo;t know
+this was possible.</p>
+<h2 id="references">References</h2>
 <ol>
 <li>
 
@@ -556,7 +661,7 @@ similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></
         
     </cite>
     
-    
+     Alexey Kuleshevich.
     
     
     
@@ -958,6 +1063,176 @@ similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Qualia91AoC21-09'>
+        
+        AdventOfCode2021/day9.hs at master · Qualia91/AdventOfCode2021<i>.</i>
+        
+    </cite>
+    
+     BOC Dev.
+    
+    
+    
+    
+    <a href="https://github.com/Qualia91/AdventOfCode2021/blob/master/Day9/day9.hs" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Debug.Trace'>
+        
+        Debug.Trace<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/base-4.16.1.0/docs/Debug-Trace.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Prelude'>
+        
+        Prelude<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/base-4.16.1.0/docs/Prelude.html#v:all" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='RIO.State'>
+        
+        RIO.State<i>.</i>
+        
+    </cite>
+    
+     Michael Snoyman.
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/rio-0.1.21.0/docs/RIO-State.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 15, 2022.
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Control.Monad'>
+        
+        mtl: Monad classes, using functional dependencies<i>.</i>
+        
+    </cite>
+    
+     Andy Gill; Edward Kmett.
+    
+    
+    
+    
+    <a href="https://hackage.haskell.org/package/mtl" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
+        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Apr 15, 2022.
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -968,7 +1243,17 @@ similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></
 <aside id="authors-holder" style="margin: 0 0 2% 0;">
     Cited Authors:
     
+        <a href='/authors/dev-boc'>Dev, BOC</a>
+    
+        <a href='/authors/gill-andy'>Gill, Andy</a>
+    
         <a href='/authors/hidding-johan'>Hidding, Johan</a>
+    
+        <a href='/authors/kmett-edward'>Kmett, Edward</a>
+    
+        <a href='/authors/kuleshevich-alexey'>Kuleshevich, Alexey</a>
+    
+        <a href='/authors/snoyman-michael'>Snoyman, Michael</a>
     
 </aside>
 
@@ -997,6 +1282,11 @@ similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></
         <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
             en.wikipedia.org
+        </a>
+    
+        <a href='/domains/github.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
+            github.com
         </a>
     
         <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
@@ -1035,7 +1325,7 @@ similar complexity. <span class="citation-ref"><a href="#pySetPop"></a></span></
             <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SevenSegmentSearch/">&laquo; AoC 2021 Day 08: Seven Segment Search</a>
         
         
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/">AoC 2021 Input Parser &raquo;</a>
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/">AoC 2021 Day 10: Syntax Scoring &raquo;</a>
         
 
     </footer>

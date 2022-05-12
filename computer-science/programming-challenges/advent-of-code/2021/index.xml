@@ -106,7 +106,17 @@ As your submarine slowly makes its way through the cave system, you notice that 
       <pubDate>Wed, 16 Mar 2022 00:00:00 +0000</pubDate>
       
       <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SmokeBasin/</guid>
-      <description>Multi-dimensional arrays using &lt;code&gt;massiv&lt;/code&gt;; Fusion; Box vs. Unboxed; Connected Components; &lt;code&gt;Data.Set&lt;/code&gt;</description>
+      <description>Multi-dimensional arrays using &lt;code&gt;massiv&lt;/code&gt;; Fusion; Box vs. Unboxed; Connected Components; &lt;code&gt;Data.Set&lt;/code&gt;; Monadic map</description>
+    </item>
+    
+    <item>
+      <title>AoC 2021 Day 10: Syntax Scoring</title>
+      <link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/</link>
+      <pubDate>Tue, 12 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/</guid>
+      <description>Day 10 - Advent of Code 2021.  adventofcode.com  .  Accessed Apr 12, 2022.  Part I You ask the submarine to determine the best route out of the deep-sea cave, but it only replies:
+Syntax error in navigation subsystem on line: all of them The navigation subsystem is made of several lines containing chunks. There are one or more chunks on each line, and chunks contain zero or more other chunks.</description>
     </item>
     
     <item>
@@ -116,6 +126,43 @@ As your submarine slowly makes its way through the cave system, you notice that 
       
       <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/</guid>
       <description>{-# OPTIONS_GHC -Wall #-} -- {-# LANGUAGE FlexibleContexts #-} -- The `(..)` syntax represents all of the constructors for the data type. [1] -- Without that export, we can pattern-match in BinaryDiagnostic.hs because we -- run into a &amp;#34;Not in scope: data constructor ‘BinaryDiagnostics’&amp;#34; error. --  -- [1]: https://stackoverflow.com/a/34548070/7812406 module AoC2021InputParser ( parseBinaryDiagnosticInput, parseBingoInput, parseHydrothermalVents, parseLanternfishInternalTimers, parseHorizontalCrabPositions, parseSevenSegmentsDisplay, parseHeightMap, ) where import BinaryDiagnostic.BinaryDiagnostic (BinaryDiagnostics (..), diagNums, diagWidth) import Control.DeepSeq (($!</description>
+    </item>
+    
+    <item>
+      <title>AoC 2021 Main</title>
+      <link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/</link>
+      <pubDate>Mon, 11 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/</guid>
+      <description>module Main where import qualified AoC2021 (runSolution) import AoC2021Args (Args(..), aocArgParser) import Options.Applicative main :: IO () main = runAoCSolutions =&amp;lt;&amp;lt; execParser opts where opts = info (aocArgParser &amp;lt;**&amp;gt; helper) ( fullDesc &amp;lt;&amp;gt; progDesc &amp;#34;Run solutions for a given DAY of AoC 2021&amp;#34; &amp;lt;&amp;gt; header &amp;#34;A module for running solutions for AoC 2021&amp;#34;) runAoCSolutions :: Args -&amp;gt; IO () runAoCSolutions (Args d) = AoC2021.runSolution d </description>
+    </item>
+    
+    <item>
+      <title>AoC 2021 Solution Runner</title>
+      <link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/</link>
+      <pubDate>Mon, 11 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/</guid>
+      <description>{-# OPTIONS_GHC -Wall #-} module AoC2021 (runSolution) where -- https://cabal.readthedocs.io/en/3.4/cabal-package.html#accessing-data-files-from-package-code import AoC2021InputParser ( parseBinaryDiagnosticInput, parseBingoInput, parseHydrothermalVents, parseLanternfishInternalTimers, parseHorizontalCrabPositions, parseSevenSegmentsDisplay, parseHeightMap ) import BinaryDiagnostic.BinaryDiagnostic (lifeSupportRating, powerConsumption) import Data.String (IsString (fromString)) import Dive.Dive (productOfFinalPosition, productOfFinalPositionWithNewIntepretation) import GiantSquid (scoreOfFirstWinningBoard, scoreOfLastWinningBoard) import HydrothermalVenture.HydrothermalVenture ( pointsWithAtLeastTwoRightSegmentOverlaps, pointsWithAtLeastTwoSegmentOverlaps, ) import qualified AoC2021.Lanternfish (numOfFishIn80Days, numOfFishIn256Days) import qualified AoC2021.TreacheryOfWhales as TreacheryOfWhales ( minFuelForAlignmentWithConstantBurnRate, minFuelForAlignmentWithIncreasingBurnRate ) import Paths_advent_of_code_y2021 (getDataFileName) import SonarSweep ( num3MeasurementIncreases, numIncreases ) import System.IO (IOMode (ReadMode), hGetContents, withFile) import qualified AoC2021.</description>
+    </item>
+    
+    <item>
+      <title>AoC 2021 Test Code</title>
+      <link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/test/AoC2021Test/</link>
+      <pubDate>Mon, 11 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/test/AoC2021Test/</guid>
+      <description>module Main (main) where import AoC2021InputParser ( parseBinaryDiagnosticInput, parseBingoInput, parseHydrothermalVents, parseLanternfishInternalTimers, parseHorizontalCrabPositions, parseSevenSegmentsDisplay, parseHeightMap ) import BinaryDiagnostic.BinaryDiagnostic (lifeSupportRating, powerConsumption) import Data.String (IsString (fromString)) import Dive.Dive (productOfFinalPosition, productOfFinalPositionWithNewIntepretation) import GiantSquid (scoreOfFirstWinningBoard, scoreOfLastWinningBoard) import HydrothermalVenture.HydrothermalVenture ( pointsWithAtLeastTwoRightSegmentOverlaps, pointsWithAtLeastTwoSegmentOverlaps, ) import qualified AoC2021.Lanternfish (numOfFishIn80Days, numOfFishIn256Days) import qualified AoC2021.TreacheryOfWhales as TreacheryOfWhales ( minFuelForAlignmentWithConstantBurnRate, minFuelForAlignmentWithIncreasingBurnRate ) import qualified AoC2021.SevenSegmentSearch as SevenSegmentSearch (numOf1478AppearancesInOutput, sumOfOutputValues) import qualified AoC2021.SmokeBasin as SmokeBasin ( sumOfRiskLevelsOfLowPoints, productOf3LargestBasins ) import Paths_advent_of_code_y2021 (getDataFileName) import SonarSweep ( num3MeasurementIncreases, numIncreases ) import System.</description>
+    </item>
+    
+    <item>
+      <title>AoC 2021 Parsing Arguments</title>
+      <link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021Args/</link>
+      <pubDate>Mon, 11 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021Args/</guid>
+      <description>Parsing the Command Line  lists a couple of libraries.  and  are the most popular options. Going with  as it&amp;rsquo;s slightly more popular.
+{-# OPTIONS_GHC -Wall #-} module AoC2021Args (Args(..), aocArgParser) where import Options.Applicative import Data.Semigroup ((&amp;lt;&amp;gt;)) data Args = Args { day :: Int } aocArgParser :: Parser Args aocArgParser = Args &amp;lt;$&amp;gt; option auto ( long &amp;#34;day&amp;#34; &amp;lt;&amp;gt; help &amp;#34;The day to run code for. Use &amp;#39;0&amp;#39; to run all of the solutions.</description>
     </item>
     
   </channel>

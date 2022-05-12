@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                AoC 2021 Test Code | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/test/AoC2021Test/">AoC 2021 Test Code</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> AoC 2021 Test Code</h1>
+    <p class="meta">
+        
+        Dated Apr 11, 2022;
+        
+        last modified on Mon, 11 Apr 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents"></nav>
+        </aside>
+
+        <article id="main-article">
+            <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">module</span> <span style="color:#111">Main</span> <span style="color:#111">(</span><span style="color:#75af00">main</span><span style="color:#111">)</span> <span style="color:#00a8c8">where</span>
+
+<span style="color:#00a8c8">import</span> <span style="color:#111">AoC2021InputParser</span>
+  <span style="color:#111">(</span>
+    <span style="color:#75af00">parseBinaryDiagnosticInput</span><span style="color:#111">,</span>
+    <span style="color:#75af00">parseBingoInput</span><span style="color:#111">,</span>
+    <span style="color:#75af00">parseHydrothermalVents</span><span style="color:#111">,</span>
+    <span style="color:#75af00">parseLanternfishInternalTimers</span><span style="color:#111">,</span>
+    <span style="color:#75af00">parseHorizontalCrabPositions</span><span style="color:#111">,</span>
+    <span style="color:#75af00">parseSevenSegmentsDisplay</span><span style="color:#111">,</span>
+    <span style="color:#75af00">parseHeightMap</span>
+  <span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">BinaryDiagnostic.BinaryDiagnostic</span> <span style="color:#111">(</span><span style="color:#75af00">lifeSupportRating</span><span style="color:#111">,</span> <span style="color:#75af00">powerConsumption</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Data.String</span> <span style="color:#111">(</span><span style="color:#00a8c8">IsString</span> <span style="color:#111">(</span><span style="color:#75af00">fromString</span><span style="color:#111">))</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Dive.Dive</span> <span style="color:#111">(</span><span style="color:#75af00">productOfFinalPosition</span><span style="color:#111">,</span> <span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">GiantSquid</span> <span style="color:#111">(</span><span style="color:#75af00">scoreOfFirstWinningBoard</span><span style="color:#111">,</span> <span style="color:#75af00">scoreOfLastWinningBoard</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">HydrothermalVenture.HydrothermalVenture</span>
+  <span style="color:#111">(</span> <span style="color:#75af00">pointsWithAtLeastTwoRightSegmentOverlaps</span><span style="color:#111">,</span>
+    <span style="color:#75af00">pointsWithAtLeastTwoSegmentOverlaps</span><span style="color:#111">,</span>
+  <span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.Lanternfish</span> <span style="color:#111">(</span><span style="color:#75af00">numOfFishIn80Days</span><span style="color:#111">,</span> <span style="color:#75af00">numOfFishIn256Days</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.TreacheryOfWhales</span> <span style="color:#00a8c8">as</span> <span style="color:#111">TreacheryOfWhales</span>
+  <span style="color:#111">(</span>
+    <span style="color:#111">minFuelForAlignmentWithConstantBurnRate</span><span style="color:#111">,</span>
+    <span style="color:#111">minFuelForAlignmentWithIncreasingBurnRate</span>
+  <span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.SevenSegmentSearch</span> <span style="color:#00a8c8">as</span> <span style="color:#111">SevenSegmentSearch</span>
+  <span style="color:#111">(</span><span style="color:#111">numOf1478AppearancesInOutput</span><span style="color:#111">,</span> <span style="color:#111">sumOfOutputValues</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.SmokeBasin</span> <span style="color:#00a8c8">as</span> <span style="color:#111">SmokeBasin</span>
+  <span style="color:#111">(</span> <span style="color:#111">sumOfRiskLevelsOfLowPoints</span><span style="color:#111">,</span>
+    <span style="color:#111">productOf3LargestBasins</span>
+  <span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Paths_advent_of_code_y2021</span> <span style="color:#111">(</span><span style="color:#75af00">getDataFileName</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">SonarSweep</span> <span style="color:#111">(</span> <span style="color:#75af00">num3MeasurementIncreases</span><span style="color:#111">,</span> <span style="color:#75af00">numIncreases</span> <span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">System.IO</span> <span style="color:#111">(</span><span style="color:#00a8c8">IOMode</span> <span style="color:#111">(</span><span style="color:#00a8c8">ReadMode</span><span style="color:#111">),</span> <span style="color:#75af00">hGetContents</span><span style="color:#111">,</span> <span style="color:#75af00">withFile</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Test.HUnit</span> <span style="color:#111">(</span><span style="color:#00a8c8">Counts</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#00a8c8">Test</span> <span style="color:#111">(</span><span style="color:#00a8c8">TestCase</span><span style="color:#111">,</span> <span style="color:#00a8c8">TestLabel</span><span style="color:#111">,</span> <span style="color:#00a8c8">TestList</span><span style="color:#111">),</span> <span style="color:#75af00">assertEqual</span><span style="color:#111">,</span> <span style="color:#75af00">runTestTT</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">AoC2021Args</span> <span style="color:#111">(</span><span style="color:#00a8c8">Args</span><span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#75af00">aocArgParser</span><span style="color:#111">)</span>
+<span style="color:#00a8c8">import</span> <span style="color:#111">Options.Applicative</span>
+
+<span style="color:#75af00">testSonarSweep</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testSonarSweep</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">fp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#d88200">&#34;src/scratchpad/01-sonar-sweep.sample.txt&#34;</span>
+        <span style="color:#111">withFile</span>
+          <span style="color:#111">fp</span>
+          <span style="color:#00a8c8">ReadMode</span>
+          <span style="color:#111">(</span> <span style="color:#75af00">\</span><span style="color:#111">h</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
+              <span style="color:#111">s</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">hGetContents</span> <span style="color:#111">h</span>
+              <span style="color:#00a8c8">let</span> <span style="color:#111">ls</span> <span style="color:#f92672">=</span> <span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)</span>
+              <span style="color:#111">assertEqual</span> <span style="color:#d88200">&#34;numIncreases,&#34;</span> <span style="color:#ae81ff">7</span> <span style="color:#111">(</span><span style="color:#00a8c8">SonarSweep</span><span style="color:#f92672">.</span><span style="color:#111">numIncreases</span> <span style="color:#111">ls</span><span style="color:#111">)</span>
+              <span style="color:#111">assertEqual</span> <span style="color:#d88200">&#34;numIncreases,&#34;</span> <span style="color:#ae81ff">5</span> <span style="color:#111">(</span><span style="color:#00a8c8">SonarSweep</span><span style="color:#f92672">.</span><span style="color:#111">num3MeasurementIncreases</span> <span style="color:#111">ls</span><span style="color:#111">)</span>
+          <span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test01</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test01</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 01: Sonar Sweep&#34;</span> <span style="color:#111">testSonarSweep</span>
+
+<span style="color:#75af00">testDive</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testDive</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">fp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#d88200">&#34;src/Dive/scratchpad/sample.txt&#34;</span>
+        <span style="color:#111">withFile</span>
+          <span style="color:#111">fp</span>
+          <span style="color:#00a8c8">ReadMode</span>
+          <span style="color:#111">(</span> <span style="color:#75af00">\</span><span style="color:#111">h</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
+              <span style="color:#111">s</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">hGetContents</span> <span style="color:#111">h</span>
+              <span style="color:#00a8c8">let</span> <span style="color:#111">ls</span> <span style="color:#f92672">=</span> <span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)</span>
+              <span style="color:#111">assertEqual</span> <span style="color:#d88200">&#34;Stale Interpretation,&#34;</span> <span style="color:#ae81ff">150</span> <span style="color:#111">(</span><span style="color:#111">productOfFinalPosition</span> <span style="color:#111">ls</span><span style="color:#111">)</span>
+              <span style="color:#111">assertEqual</span>
+                <span style="color:#d88200">&#34;Correct Interpretation,&#34;</span>
+                <span style="color:#ae81ff">900</span>
+                <span style="color:#111">(</span><span style="color:#111">productOfFinalPositionWithNewIntepretation</span> <span style="color:#111">ls</span><span style="color:#111">)</span>
+          <span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test02</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test02</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 02: Dive!&#34;</span> <span style="color:#111">testDive</span>
+
+<span style="color:#75af00">testBinaryDiagnostic</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testBinaryDiagnostic</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseBinaryDiagnosticInput</span> <span style="color:#d88200">&#34;src/BinaryDiagnostic/scratchpad/sample.txt&#34;</span>
+        <span style="color:#111">assertEqual</span> <span style="color:#d88200">&#34;Power Consumption,&#34;</span> <span style="color:#ae81ff">198</span> <span style="color:#111">(</span><span style="color:#111">powerConsumption</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+        <span style="color:#111">assertEqual</span> <span style="color:#d88200">&#34;Life Support Rating,&#34;</span> <span style="color:#ae81ff">230</span> <span style="color:#111">(</span><span style="color:#111">lifeSupportRating</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test03</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test03</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 03: Binary Diagnostic&#34;</span> <span style="color:#111">testBinaryDiagnostic</span>
+
+<span style="color:#75af00">testGiantSquid</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testGiantSquid</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseBingoInput</span> <span style="color:#d88200">&#34;src/scratchpad/04-giant-squid.sample.txt&#34;</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Score of First Winning Board,&#34;</span>
+          <span style="color:#ae81ff">4512</span>
+          <span style="color:#111">(</span><span style="color:#111">scoreOfFirstWinningBoard</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Score of Last Winning Board,&#34;</span>
+          <span style="color:#ae81ff">1924</span>
+          <span style="color:#111">(</span><span style="color:#111">scoreOfLastWinningBoard</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test04</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test04</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 04: Giant Squid&#34;</span> <span style="color:#111">testGiantSquid</span>
+
+<span style="color:#75af00">testHydrothermalVenture</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testHydrothermalVenture</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseHydrothermalVents</span> <span style="color:#d88200">&#34;src/HydrothermalVenture/scratchpad/sample.txt&#34;</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Num Points w/ &gt;= 2 Right Segments Overlapping,&#34;</span>
+          <span style="color:#ae81ff">5</span>
+          <span style="color:#111">(</span><span style="color:#111">pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Num Points w/ &gt;= 2 Segments Overlapping,&#34;</span>
+          <span style="color:#ae81ff">12</span>
+          <span style="color:#111">(</span><span style="color:#111">pointsWithAtLeastTwoSegmentOverlaps</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test05</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test05</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 05: Hydrothermal Venture&#34;</span> <span style="color:#111">testHydrothermalVenture</span>
+
+<span style="color:#75af00">testLanternfish</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testLanternfish</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseLanternfishInternalTimers</span> <span style="color:#d88200">&#34;src/scratchpad/06-lanternfish.sample.txt&#34;</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Num of lantern fish in 80 days,&#34;</span>
+          <span style="color:#ae81ff">5934</span>
+          <span style="color:#111">(</span><span style="color:#00a8c8">AoC2021</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Lanternfish</span><span style="color:#f92672">.</span><span style="color:#111">numOfFishIn80Days</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Num of lantern fish in 256 days,&#34;</span>
+          <span style="color:#ae81ff">26984457539</span>
+          <span style="color:#111">(</span><span style="color:#00a8c8">AoC2021</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Lanternfish</span><span style="color:#f92672">.</span><span style="color:#111">numOfFishIn256Days</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test06</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test06</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 06: Lanternfish&#34;</span> <span style="color:#111">testLanternfish</span>
+
+<span style="color:#75af00">testTreacheryOfWhales</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testTreacheryOfWhales</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+    <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+        <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseHorizontalCrabPositions</span> <span style="color:#d88200">&#34;src/scratchpad/07-treachery-of-whales.sample.txt&#34;</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Min fuel needed to align horizontal positions &#34;</span>
+          <span style="color:#ae81ff">37</span>
+          <span style="color:#111">(</span><span style="color:#00a8c8">TreacheryOfWhales</span><span style="color:#f92672">.</span><span style="color:#111">minFuelForAlignmentWithConstantBurnRate</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+        <span style="color:#111">assertEqual</span>
+          <span style="color:#d88200">&#34;Min fuel needed to align horizontal postions under increasing burn rate &#34;</span>
+          <span style="color:#ae81ff">168</span>
+          <span style="color:#111">(</span><span style="color:#00a8c8">TreacheryOfWhales</span><span style="color:#f92672">.</span><span style="color:#111">minFuelForAlignmentWithIncreasingBurnRate</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+    <span style="color:#111">)</span>
+
+<span style="color:#75af00">test07</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test07</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 07: The Treachery Of Whales&#34;</span> <span style="color:#111">testTreacheryOfWhales</span>
+
+<span style="color:#75af00">testSevenSegmentSearch</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testSevenSegmentSearch</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+  <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+      <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseSevenSegmentsDisplay</span> <span style="color:#d88200">&#34;src/scratchpad/08-seven-segment-search.sample.txt&#34;</span>
+      <span style="color:#111">assertEqual</span>
+        <span style="color:#d88200">&#34;Num times 1, 4, 7, or 8 appears in output values &#34;</span>
+        <span style="color:#ae81ff">26</span>
+        <span style="color:#111">(</span><span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#111">numOf1478AppearancesInOutput</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+
+      <span style="color:#111">assertEqual</span>
+        <span style="color:#d88200">&#34;Sum of output values &#34;</span>
+        <span style="color:#ae81ff">61229</span>
+        <span style="color:#111">(</span><span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#111">sumOfOutputValues</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+  <span style="color:#111">)</span>
+
+<span style="color:#75af00">test08</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test08</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 08: Seven Segment Search&#34;</span> <span style="color:#111">testSevenSegmentSearch</span>
+
+<span style="color:#75af00">testSmokeBasin</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">testSmokeBasin</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestCase</span>
+  <span style="color:#111">(</span> <span style="color:#00a8c8">do</span>
+      <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseHeightMap</span> <span style="color:#d88200">&#34;src/scratchpad/09-smoke-basin.sample.txt&#34;</span>
+      <span style="color:#111">assertEqual</span>
+        <span style="color:#d88200">&#34;Sum of the risk levels of all low points on heightmap &#34;</span>
+        <span style="color:#ae81ff">15</span>
+        <span style="color:#111">(</span><span style="color:#00a8c8">SmokeBasin</span><span style="color:#f92672">.</span><span style="color:#111">sumOfRiskLevelsOfLowPoints</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+      <span style="color:#111">assertEqual</span>
+        <span style="color:#d88200">&#34;Product of the 3 largest basins &#34;</span>
+        <span style="color:#ae81ff">1134</span>
+        <span style="color:#111">(</span><span style="color:#00a8c8">SmokeBasin</span><span style="color:#f92672">.</span><span style="color:#111">productOf3LargestBasins</span> <span style="color:#111">input</span><span style="color:#111">)</span>
+  <span style="color:#111">)</span>
+
+<span style="color:#75af00">test09</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">test09</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">TestLabel</span> <span style="color:#d88200">&#34;Day 09: Smoke Basin&#34;</span> <span style="color:#111">testSmokeBasin</span>
+
+<span style="color:#75af00">tests</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Test</span>
+<span style="color:#75af00">tests</span> <span style="color:#f92672">=</span>
+  <span style="color:#00a8c8">TestList</span>
+    <span style="color:#111">[</span> <span style="color:#111">test01</span><span style="color:#111">,</span> <span style="color:#111">test02</span><span style="color:#111">,</span> <span style="color:#111">test03</span><span style="color:#111">,</span> <span style="color:#111">test04</span><span style="color:#111">,</span> <span style="color:#111">test05</span><span style="color:#111">,</span> <span style="color:#111">test06</span><span style="color:#111">,</span> <span style="color:#111">test07</span><span style="color:#111">,</span> <span style="color:#111">test08</span><span style="color:#111">,</span> <span style="color:#111">test09</span> <span style="color:#111">]</span>
+
+<span style="color:#75af00">runTest</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#00a8c8">Counts</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">tests</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test01</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test02</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test03</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test04</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test05</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">6</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test06</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test07</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test08</span>
+<span style="color:#75af00">runTest</span> <span style="color:#ae81ff">9</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">runTestTT</span> <span style="color:#111">test09</span>
+<span style="color:#75af00">runTest</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">putStrLn</span> <span style="color:#111">(</span><span style="color:#d88200">&#34;Day &#34;</span> <span style="color:#f92672">++</span> <span style="color:#111">show</span> <span style="color:#111">x</span> <span style="color:#f92672">++</span> <span style="color:#d88200">&#34; has no associated test.&#34;</span><span style="color:#111">)</span>
+  <span style="color:#111">return</span> <span style="color:#111">(</span><span style="color:#00a8c8">Counts</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
+
+<span style="color:#75af00">runAoCSolutions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Args</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#00a8c8">Counts</span>
+<span style="color:#75af00">runAoCSolutions</span> <span style="color:#111">(</span><span style="color:#00a8c8">Args</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">runTest</span> <span style="color:#111">d</span>
+
+<span style="color:#75af00">main</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#00a8c8">Counts</span>
+<span style="color:#75af00">main</span> <span style="color:#f92672">=</span> <span style="color:#111">runAoCSolutions</span> <span style="color:#f92672">=&lt;&lt;</span> <span style="color:#111">execParser</span> <span style="color:#111">opts</span>
+  <span style="color:#00a8c8">where</span>
+    <span style="color:#111">opts</span> <span style="color:#f92672">=</span> <span style="color:#111">info</span> <span style="color:#111">(</span><span style="color:#111">aocArgParser</span> <span style="color:#f92672">&lt;**&gt;</span> <span style="color:#111">helper</span><span style="color:#111">)</span>
+      <span style="color:#111">(</span> <span style="color:#111">fullDesc</span>
+     <span style="color:#f92672">&lt;&gt;</span> <span style="color:#111">progDesc</span> <span style="color:#d88200">&#34;Run tests for a given DAY of AoC 2021&#34;</span>
+     <span style="color:#f92672">&lt;&gt;</span> <span style="color:#111">header</span> <span style="color:#d88200">&#34;A module for running tests for AoC 2021&#34;</span><span style="color:#111">)</span>
+</code></pre></div>
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/">&laquo; AoC 2021 Solution Runner</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021Args/">AoC 2021 Parsing Arguments &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
