@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Classes in C&#43;&#43; | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/classes-in-cpp/">Classes in C&#43;&#43;</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Classes in C&#43;&#43;</h1>
+    <p class="meta">
+        
+        Dated May 12, 2022;
+        
+        last modified on Thu, 12 May 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#concrete-types">Concrete Types</a>
+      <ul>
+        <li><a href="#inlining">Inlining</a></li>
+        <li><a href="#default-constructors">Default Constructors</a></li>
+        <li><a href="#out-of-class-operator-definitions">Out-of-Class Operator Definitions</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Stroustrup2018"></a></span> quotes Doug McIlroy:</p>
+<blockquote>
+<p>Those types are not &ldquo;abstract&rdquo;; they are as real as <code>int</code> and <code>float</code>.</p>
+</blockquote>
+<p>What is the context of this quote?</p>
+</div>
+</div>
+
+
+<p>A class is a user-defined type provided to represent a concept in the
+code of a program. Essentially, all language facilities beyond the
+fundamental types, operators, and statements exist to help define better
+class or to use them more conveniently. <span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Sometimes I have problems defining the concept that is going to be
+encapsulated as a class. Other times, the naming is hard, and I result
+to common patterns like <code>FooManager</code>.</p>
+</div>
+</div>
+
+
+<h2 id="concrete-types">Concrete Types</h2>
+<p>The basic idea of concrete classes is that they behave &ldquo;just like
+built-in types&rdquo;. The defining characteristic of a concrete type is that
+its representation is part of its definition. If the representation
+changes in any significant way, a user must recompile. <span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+<p>For some concrete types, e.g. <code>std::vector</code> and <code>std::string</code>, the
+representation may have pointers to data stored in the free store
+(dynamic memory, heap). Such types can be considered resource handles
+with carefully crafted interfaces. <span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+<p>The &ldquo;representation is part of definition&rdquo; property allows us to:</p>
+<ul>
+<li>Place objects of concrete types on the stack and in other objects.</li>
+<li>Refer to objects directly (and not just through pointers or references).</li>
+<li>Initialize objects immediately and completely.</li>
+<li>Copy and move objects.</li>
+</ul>
+<p><span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// From Stroustrup2018
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">class</span> <span style="color:#75af00">complex</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">double</span> <span style="color:#111">re</span><span style="color:#111">,</span> <span style="color:#111">im</span><span style="color:#111">;</span> <span style="color:#75715e">// representation: two doubles
+</span><span style="color:#75715e"></span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#111">complex</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">r</span><span style="color:#111">,</span> <span style="color:#00a8c8">double</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#f92672">:</span><span style="color:#111">re</span><span style="color:#111">(</span><span style="color:#111">r</span><span style="color:#111">),</span> <span style="color:#111">im</span><span style="color:#111">(</span><span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
+  <span style="color:#111">complex</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">r</span><span style="color:#111">)</span> <span style="color:#f92672">:</span><span style="color:#111">re</span><span style="color:#111">(</span><span style="color:#111">r</span><span style="color:#111">),</span> <span style="color:#111">im</span><span style="color:#111">{</span><span style="color:#ae81ff">0</span><span style="color:#111">}</span> <span style="color:#111">{}</span>
+  <span style="color:#111">complex</span><span style="color:#111">()</span> <span style="color:#f92672">:</span><span style="color:#111">re</span><span style="color:#111">{</span><span style="color:#ae81ff">0</span><span style="color:#111">},</span> <span style="color:#111">im</span><span style="color:#111">{</span><span style="color:#ae81ff">0</span><span style="color:#111">}</span> <span style="color:#111">{}</span>
+
+  <span style="color:#00a8c8">double</span> <span style="color:#75af00">real</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">re</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+  <span style="color:#00a8c8">void</span> <span style="color:#75af00">real</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#111">re</span> <span style="color:#f92672">=</span> <span style="color:#111">d</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+  <span style="color:#00a8c8">double</span> <span style="color:#75af00">imag</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">im</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+  <span style="color:#00a8c8">void</span> <span style="color:#75af00">imag</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#111">im</span> <span style="color:#f92672">=</span> <span style="color:#111">d</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+
+  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">+=</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">z</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+    <span style="color:#111">re</span> <span style="color:#f92672">+=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">re</span><span style="color:#111">;</span>
+    <span style="color:#111">im</span> <span style="color:#f92672">+=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">im</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#f92672">*</span><span style="color:#00a8c8">this</span><span style="color:#111">;</span>
+  <span style="color:#111">}</span>
+
+  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">-=</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">z</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+    <span style="color:#111">re</span> <span style="color:#f92672">-=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">re</span><span style="color:#111">;</span>
+    <span style="color:#111">im</span> <span style="color:#f92672">-=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">im</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">return</span> <span style="color:#f92672">*</span><span style="color:#00a8c8">this</span><span style="color:#111">;</span>
+  <span style="color:#111">}</span>
+
+  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">*=</span><span style="color:#111">(</span><span style="color:#111">complex</span><span style="color:#111">);</span> <span style="color:#75715e">// defined out-of-class somewhere
+</span><span style="color:#75715e"></span>  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">/=</span><span style="color:#111">(</span><span style="color:#111">complex</span><span style="color:#111">);</span> <span style="color:#75715e">// defined out-of-class somewhere
+</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Stroustrup2018"></a></span> notes that <code>complex</code>&rsquo;s representation has
+to be compatible with what Fortran provided 60 years ago.</p>
+<p>Why is C++&rsquo;s compatibility with Fortran important? 
+<a href="https://www.intel.com/content/www/us/en/develop/documentation/onemkl-macos-developer-guide/top/language-specific-usage-options/mixed-language-programming-with-onemkl/using-complex-types-in-c-c.html"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Intel says something
+similar
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.
+It seems that mixing Fortran and C++ is commonplace, e.g. 
+<a href="https://www.ibm.com/docs/en/xl-fortran-aix/15.1.2?topic=calls-mixing-fortran"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    IBM&rsquo;s
+instructions
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+.</p>
+</div>
+</div>
+
+
+<h3 id="inlining">Inlining</h3>
+<p>Simple operations (such as constructors, <code>+=</code>, <code>imag</code>, etc.) must be
+inlined (implemented without function calls in the generated machine
+code) <span class="citation-ref"><a href="#Stroustrup2018"></a></span>. <span class="citation-ref"><a href="#isoCPPInlineFunctions"></a></span>
+paints a more subtle picture of the effect of inlining on performance.
+Inline functions might make the executable:</p>
+<ul>
+<li>Larger as the inlined functions get expanded in multiple
+places.</li>
+<li>Smaller if the expansion generates less code than the code to
+push/pop registers/parameters.</li>
+<li>Faster by removing unnecessary instructions, increasing cache
+hits because of improved locality.</li>
+<li>Slower if it&rsquo;s larger and therefore more thrashing.</li>
+</ul>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Thrashing occurs when a computer&rsquo;s virtual memory resources are
+overused, leading to a constant state of paging and page faults. <span class="citation-ref"><a href="#wikiThrashing"></a></span></p>
+</div>
+</div>
+
+
+<p>Inlining might even be irrelevant to speed because most systems are not
+CPU-bound (most are I/O-bound, database-bound, or network-bound). <span class="citation-ref"><a href="#isoCPPInlineFunctions"></a></span></p>
+<p>Compilers are not obligated to <code>inline</code> (or not to <code>inline</code>). The
+meaning of <code>inline</code> has evolved to be &ldquo;multiple definitions are
+permitted&rdquo; rather than &ldquo;inlining is preferred&rdquo;. <span class="citation-ref"><a href="#cppReferenceInlineSpecifier"></a></span></p>
+<h3 id="default-constructors">Default Constructors</h3>
+<p>By defining a default constructor (one that can be invoked without
+arguments), one eliminates the possibility of uninitialized variables of
+that type. <span class="citation-ref"><a href="#Stroustrup2018"></a></span> One can also have <code>complex() = delete;</code>, which will cause a compiler error if the default constructor
+gets selected. <span class="citation-ref"><a href="#cppReferenceDefaultConstructor"></a></span></p>
+<h3 id="out-of-class-operator-definitions">Out-of-Class Operator Definitions</h3>
+<p>Operations that do not require direct access to the representation can
+be defined separately from the class definition, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">+</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">+=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">-</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">-=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">-</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">{</span><span style="color:#f92672">-</span><span style="color:#111">a</span><span style="color:#111">.</span><span style="color:#111">real</span><span style="color:#111">(),</span> <span style="color:#f92672">-</span><span style="color:#111">a</span><span style="color:#111">.</span><span style="color:#111">imag</span><span style="color:#111">()};</span> <span style="color:#111">}</span>
+<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">*</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">*=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">/</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">/=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+</code></pre></div><p>An argument passed by value is copied, and therefore it can be modified
+without affecting the caller&rsquo;s copy. <span class="citation-ref"><a href="#Stroustrup2018"></a></span> Had
+we received the arguments by reference, implementing <code>a + b</code> as <code>a += b</code>
+because of performance may lead to buggy programs because users expect
+<code>a + b</code> to make a copy. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The <code>return a += b;</code> statement caught me off-guard. Looks like invalid
+syntax.</p>
+</div>
+</div>
+
+
+<p>ISOCPP has considered letting users define their own operators several
+times, and the answer has always been that the likely problems outweigh
+the likely benefits <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span>.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Other languages, like Haskell, allow custom operators. I&rsquo;ve sometimes
+found the syntax unintuitive, e.g. <code>&lt;|&gt;</code>.</p>
+</div>
+</div>
+
+
+<p>Some operators, e.g. <code>.</code>, <code>::</code>, <code>sizeof</code>, and <code>?:</code>, cannot be
+overridden. Furthermore, one can&rsquo;t define an operator all of whose
+operands/parameters are of primitive types. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Stroustrup2018'>
+        
+        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
+        Chapter 4. Classes<i>.</i>
+    </cite>
+    
+     Bjarne Stroustrup.
+    
+    
+    
+    
+    
+    
+    
+     2018.
+     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
+        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceInlineSpecifier'>
+        
+        inline specifier<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/inline" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 12, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceDefaultConstructor'>
+        
+        Default constructors<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/default_constructor" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 12, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='isoCPPOperatorOverloading'>
+        
+        Operator Overloading, C&#43;&#43; FAQ<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://isocpp.org/wiki/faq/operator-overloading" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy" aria-hidden="true">
+        <i>isocpp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 13, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='isoCPPInlineFunctions'>
+        
+        Inline Functions, C&#43;&#43; FAQ<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://isocpp.org/wiki/faq/inline-functions#inline-member-fns-more" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy" aria-hidden="true">
+        <i>isocpp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 13, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='wikiThrashing'>
+        
+        Thrashing (computer science)<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Thrashing_%28computer_science%29" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 13, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/stroustrup-bjarne'>Stroustrup, Bjarne</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/en.cppreference.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+            en.cppreference.com
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/isocpp.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy" aria-hidden="true">
+            isocpp.org
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
