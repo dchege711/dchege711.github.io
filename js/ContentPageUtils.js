@@ -13,7 +13,9 @@ function collectTopicSentences() {
 
     // For simplicity, we assume that sentences end with a period, question
     // mark, or exclamation mark, followed by whitespace or a quotation mark.
-    const endOfSentenceRegex = /[\.?!][\s^”]/;
+    // Avoid common false-endings like "e.g.", "i.e.", etc. because I rarely
+    // use the American comma after abbreviations.
+    const endOfSentenceRegex = /(?<!e.g)(?<!i.e)[\.?!][\s^”]/;
 
     let topicSentencesHTML = "<p>";
     for (let elem of mainArticleElem.querySelectorAll("H2, ARTICLE > P")) {

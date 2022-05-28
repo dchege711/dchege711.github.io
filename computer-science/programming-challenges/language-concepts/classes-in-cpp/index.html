@@ -116,9 +116,19 @@
   <ul>
     <li><a href="#concrete-types">Concrete Types</a>
       <ul>
-        <li><a href="#inlining">Inlining</a></li>
-        <li><a href="#default-constructors">Default Constructors</a></li>
-        <li><a href="#out-of-class-operator-definitions">Out-of-Class Operator Definitions</a></li>
+        <li><a href="#an-arithmetic-type">An Arithmetic Type</a>
+          <ul>
+            <li><a href="#inlining">Inlining</a></li>
+            <li><a href="#default-constructors">Default Constructors</a></li>
+            <li><a href="#out-of-class-operator-definitions">Out-of-Class Operator Definitions</a></li>
+          </ul>
+        </li>
+        <li><a href="#containers">Containers</a>
+          <ul>
+            <li><a href="#motivation-for-the-destructor-mechanism">Motivation for the Destructor Mechanism</a></li>
+            <li><a href="#initializing-containers">Initializing Containers</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#references">References</a></li>
@@ -131,7 +141,7 @@
 
 
 <div class="comment-holder">
-    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Stroustrup2018"></a></span> quotes Doug McIlroy:</p>
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> quotes Doug McIlroy:</p>
 <blockquote>
 <p>Those types are not &ldquo;abstract&rdquo;; they are as real as <code>int</code> and <code>float</code>.</p>
 </blockquote>
@@ -143,7 +153,7 @@
 <p>A class is a user-defined type provided to represent a concept in the
 code of a program. Essentially, all language facilities beyond the
 fundamental types, operators, and statements exist to help define better
-class or to use them more conveniently. <span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+class or to use them more conveniently. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
 
 
 
@@ -159,19 +169,21 @@ to common patterns like <code>FooManager</code>.</p>
 <p>The basic idea of concrete classes is that they behave &ldquo;just like
 built-in types&rdquo;. The defining characteristic of a concrete type is that
 its representation is part of its definition. If the representation
-changes in any significant way, a user must recompile. <span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+changes in any significant way, a user must recompile. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
 <p>For some concrete types, e.g. <code>std::vector</code> and <code>std::string</code>, the
 representation may have pointers to data stored in the free store
 (dynamic memory, heap). Such types can be considered resource handles
-with carefully crafted interfaces. <span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+with carefully crafted interfaces. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
 <p>The &ldquo;representation is part of definition&rdquo; property allows us to:</p>
 <ul>
 <li>Place objects of concrete types on the stack and in other objects.</li>
-<li>Refer to objects directly (and not just through pointers or references).</li>
+<li>Refer to objects directly (and not just through pointers or
+references).</li>
 <li>Initialize objects immediately and completely.</li>
 <li>Copy and move objects.</li>
 </ul>
-<p><span class="citation-ref"><a href="#Stroustrup2018"></a></span></p>
+<p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
+<h3 id="an-arithmetic-type">An Arithmetic Type</h3>
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// From Stroustrup2018
 </span><span style="color:#75715e"></span>
 <span style="color:#00a8c8">class</span> <span style="color:#75af00">complex</span> <span style="color:#111">{</span>
@@ -206,8 +218,8 @@ with carefully crafted interfaces. <span class="citation-ref"><a href="#Stroustr
 
 
 <div class="comment-holder">
-    <div class="comment"><p><span class="citation-ref"><a href="#Stroustrup2018"></a></span> notes that <code>complex</code>&rsquo;s representation has
-to be compatible with what Fortran provided 60 years ago.</p>
+    <div class="comment"><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> notes that <code>complex</code>&rsquo;s representation
+has to be compatible with what Fortran provided 60 years ago.</p>
 <p>Why is C++&rsquo;s compatibility with Fortran important? 
 <a href="https://www.intel.com/content/www/us/en/develop/documentation/onemkl-macos-developer-guide/top/language-specific-usage-options/mixed-language-programming-with-onemkl/using-complex-types-in-c-c.html"
     
@@ -236,19 +248,17 @@ instructions
 </div>
 
 
-<h3 id="inlining">Inlining</h3>
+<h4 id="inlining">Inlining</h4>
 <p>Simple operations (such as constructors, <code>+=</code>, <code>imag</code>, etc.) must be
 inlined (implemented without function calls in the generated machine
-code) <span class="citation-ref"><a href="#Stroustrup2018"></a></span>. <span class="citation-ref"><a href="#isoCPPInlineFunctions"></a></span>
-paints a more subtle picture of the effect of inlining on performance.
-Inline functions might make the executable:</p>
+code) <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span>. <span class="citation-ref"><a href="#isoCPPInlineFunctions"></a></span> paints a more subtle picture of the effect of inlining on
+performance. Inline functions might make the executable:</p>
 <ul>
-<li>Larger as the inlined functions get expanded in multiple
-places.</li>
-<li>Smaller if the expansion generates less code than the code to
-push/pop registers/parameters.</li>
-<li>Faster by removing unnecessary instructions, increasing cache
-hits because of improved locality.</li>
+<li>Larger as the inlined functions get expanded in multiple places.</li>
+<li>Smaller if the expansion generates less code than the code to push/pop
+registers/parameters.</li>
+<li>Faster by removing unnecessary instructions, increasing cache hits
+because of improved locality.</li>
 <li>Slower if it&rsquo;s larger and therefore more thrashing.</li>
 </ul>
 
@@ -266,12 +276,12 @@ CPU-bound (most are I/O-bound, database-bound, or network-bound). <span class="c
 <p>Compilers are not obligated to <code>inline</code> (or not to <code>inline</code>). The
 meaning of <code>inline</code> has evolved to be &ldquo;multiple definitions are
 permitted&rdquo; rather than &ldquo;inlining is preferred&rdquo;. <span class="citation-ref"><a href="#cppReferenceInlineSpecifier"></a></span></p>
-<h3 id="default-constructors">Default Constructors</h3>
+<h4 id="default-constructors">Default Constructors</h4>
 <p>By defining a default constructor (one that can be invoked without
 arguments), one eliminates the possibility of uninitialized variables of
-that type. <span class="citation-ref"><a href="#Stroustrup2018"></a></span> One can also have <code>complex() = delete;</code>, which will cause a compiler error if the default constructor
+that type. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> One can also have <code>complex() = delete;</code>, which will cause a compiler error if the default constructor
 gets selected. <span class="citation-ref"><a href="#cppReferenceDefaultConstructor"></a></span></p>
-<h3 id="out-of-class-operator-definitions">Out-of-Class Operator Definitions</h3>
+<h4 id="out-of-class-operator-definitions">Out-of-Class Operator Definitions</h4>
 <p>Operations that do not require direct access to the representation can
 be defined separately from the class definition, e.g.</p>
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">+</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">+=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
@@ -280,7 +290,7 @@ be defined separately from the class definition, e.g.</p>
 <span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">*</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">*=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
 <span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">/</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">/=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
 </code></pre></div><p>An argument passed by value is copied, and therefore it can be modified
-without affecting the caller&rsquo;s copy. <span class="citation-ref"><a href="#Stroustrup2018"></a></span> Had
+without affecting the caller&rsquo;s copy. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> Had
 we received the arguments by reference, implementing <code>a + b</code> as <code>a += b</code>
 because of performance may lead to buggy programs because users expect
 <code>a + b</code> to make a copy. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
@@ -310,6 +320,91 @@ found the syntax unintuitive, e.g. <code>&lt;|&gt;</code>.</p>
 <p>Some operators, e.g. <code>.</code>, <code>::</code>, <code>sizeof</code>, and <code>?:</code>, cannot be
 overridden. Furthermore, one can&rsquo;t define an operator all of whose
 operands/parameters are of primitive types. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
+<h3 id="containers">Containers</h3>
+<p>A <strong>container</strong> is an object holding a collection of elements. It should
+be simple to understand, establish useful invariants, and provide
+range-checked access. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
+<h4 id="motivation-for-the-destructor-mechanism">Motivation for the Destructor Mechanism</h4>
+<p>Although C++ provides an interface for plugging in a garbage collector,
+aim to use the destructor pattern to reduce headache (e.g. GC&rsquo;s
+availability not being guaranteed) <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span>:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#f92672">:</span> <span style="color:#111">elem</span><span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#00a8c8">double</span><span style="color:#111">[</span><span style="color:#111">s</span><span style="color:#111">]},</span> <span style="color:#111">sz</span><span style="color:#111">{</span><span style="color:#111">s</span><span style="color:#111">}</span> <span style="color:#111">{</span> <span style="color:#75715e">// Ctor: acquires
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// resources from the free store.
+</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">!=</span> <span style="color:#111">s</span><span style="color:#111">;</span> <span style="color:#f92672">++</span><span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#75715e">// Initialize elements
+</span><span style="color:#75715e"></span>      <span style="color:#111">elem</span><span style="color:#111">[</span><span style="color:#111">i</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+  <span style="color:#111">}</span>
+
+  <span style="color:#f92672">~</span><span style="color:#111">Vector</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#75715e">// Destructor: release resources
+</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">delete</span><span style="color:#111">[]</span> <span style="color:#111">elem</span><span style="color:#111">;</span>
+  <span style="color:#111">}</span>
+
+  <span style="color:#00a8c8">double</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#111">[](</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">);</span>
+  <span style="color:#00a8c8">int</span> <span style="color:#75af00">size</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span><span style="color:#111">;</span>
+
+ <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
+  <span style="color:#00a8c8">double</span><span style="color:#f92672">*</span> <span style="color:#111">elem</span><span style="color:#111">;</span> <span style="color:#75715e">// Points to an array of sz doubles
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">int</span> <span style="color:#111">sz</span><span style="color:#111">;</span>
+<span style="color:#111">};</span>
+</code></pre></div><p>The technique of acquiring resources in a constructor and releasing them
+in a destructor, known as <strong>Resource Acquisition Is Initialization
+(RAII)</strong>, allows us to avoid naked <code>new</code> and <code>delete</code> operations in
+general code. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
+<p>In RAII, resource acquisition must succeed for initialization to
+succeed. The resource is guaranteed to be held between when
+initialization finishes and finalization starts (holding the resources)
+is a class invariant, and to be held only when the object is alive. If
+there are no object leaks, then there are no resource leaks. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
+<p>RAII only works for resources acquired and released by stack-allocated
+objects, where there is a well-defined static object lifetime. Heap
+based objects must be deleted along all possible execution paths to
+trigger their destructor. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
+<p>In C++, stack unwinding (popping one or more frames off the stack to
+resume execution elsewhere in the program) is only guaranteed to happen
+if the exception is caught somewhere. If it&rsquo;s not caught, <code>terminate</code> is
+called and stack unwinding at this point is implementation-defined. The
+OS usually releases program resources at termination, so it usually
+works out. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
+<h4 id="initializing-containers">Initializing Containers</h4>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+    <span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">initializer_list</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">double</span><span style="color:#f92672">&gt;</span><span style="color:#111">);</span>
+    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">void</span> <span style="color:#75af00">push_back</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span><span style="color:#111">);</span> <span style="color:#75715e">// Useful for an arbitrary number of elements.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+</code></pre></div><p>The <code>std::initializer_list</code> is a standard-library type know to the
+compiler. Whenever we use a <code>{}</code>-list, the compiler creates an object of
+type <code>initializer_list</code> to give to the program, e.g. <code>Vector v = {1, 2, 3, 4, 5}</code>. The initializer-list constructor may be defined as: <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">Vector</span><span style="color:#f92672">::</span><span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">initializer_list</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">double</span><span style="color:#f92672">&gt;</span> <span style="color:#111">lst</span><span style="color:#111">)</span>
+    <span style="color:#f92672">:</span> <span style="color:#111">elem</span><span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#00a8c8">double</span><span style="color:#111">[</span><span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">size</span><span style="color:#111">()]},</span> <span style="color:#111">sz</span><span style="color:#111">{</span><span style="color:#00a8c8">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">int</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">size</span><span style="color:#111">())}</span> <span style="color:#111">{</span>
+  <span style="color:#111">copy</span><span style="color:#111">(</span><span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">begin</span><span style="color:#111">(),</span> <span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">end</span><span style="color:#111">(),</span> <span style="color:#111">elem</span><span style="color:#111">)</span> <span style="color:#75715e">// Copy from lst into elem
+</span><span style="color:#75715e"></span><span style="color:#111">}</span>
+</code></pre></div><p>An object of type <code>std::initializer_list&lt;T&gt;</code> is a lightweight proxy
+object that provides access to an array of objects of type <code>const T</code>.
+Copying a <code>std::initializer_list</code> does not copy the underlying objects.
+<span class="citation-ref"><a href="#cppReferenceInitializerList"></a></span></p>
+<p>The <code>static_cast</code> is used to convert from the unsigned <code>size_t</code> returned
+by <code>initializer_list::size()</code>. We&rsquo;re assuming that a handwritten list
+won&rsquo;t have more elements than the largest integer. <code>*cast</code>s should be
+used sparingly as they are error-prone. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Containers may define their <code>container::size_type</code> as they wish. It may
+not always be <code>std::size_t</code>. That said, <code>std::size_t</code> can store the
+maximum size of a theoretically object of any type (including array). A
+type whose size cannot be represented by <code>std::size_t</code> is ill-formed.
+<span class="citation-ref"><a href="#cppReferenceSizeT"></a></span></p>
+<p>Programs using other types, e.g. <code>unsigned int</code>, for array-indexing and
+loop counting may fail on 64-bit systems when the index exceeds
+<code>UINT_MAX</code> or if the program relies on 32-bit modular arithmetic. <span class="citation-ref"><a href="#cppReferenceSizeT"></a></span></p>
+</div>
+</div>
+
+
 <h2 id="references">References</h2>
 <ol>
 <li>
@@ -317,7 +412,7 @@ operands/parameters are of primitive types. <span class="citation-ref"><a href="
     
 
 <div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
-    <cite id='Stroustrup2018'>
+    <cite id='Stroustrup2018-Ch4'>
         
         A Tour of C&#43;&#43; (Second Edition)<i>.</i>
         Chapter 4. Classes<i>.</i>
@@ -514,6 +609,111 @@ operands/parameters are of primitive types. <span class="citation-ref"><a href="
     <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
     
      Accessed May 13, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='wikiRAII'>
+        
+        Resource acquisition is initialization - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 28, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceInitializerList'>
+        
+        std::initializer_list - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/utility/initializer_list" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 28, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceSizeT'>
+        
+        std::size_t - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/types/size_t" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 28, 2022.
     
     
 </div>
