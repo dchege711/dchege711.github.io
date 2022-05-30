@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Templates in C&#43;&#43; | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/parameterization/">Parameterization</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/parameterization/templates-cpp/">Templates in C&#43;&#43;</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Templates in C&#43;&#43;</h1>
+    <p class="meta">
+        
+        Dated May 30, 2022;
+        
+        last modified on Mon, 30 May 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#parameterized-types">Parameterized Types</a>
+      <ul>
+        <li><a href="#constrained-template-arguments-c20">Constrained Template Arguments (C++20)</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <p>A <strong>template</strong> is a class or a function that we can parameterize with a
+set of types or values. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<h2 id="parameterized-types">Parameterized Types</h2>
+<p>The 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/classes/classes-in-cpp/#containers"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    vector-of-doubles
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ can be generalized to a vector-of-anything type by making it a
+template:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// `template&lt;typename T&gt;` can be read as &#34;for all types T&#34;. Older code
+</span><span style="color:#75715e">// uses `template&lt;classs T&gt;`, which is equivalent.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#00a8c8">explicit</span> <span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">s</span><span style="color:#111">);</span>
+  <span style="color:#f92672">~</span><span style="color:#111">Vector</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#00a8c8">delete</span><span style="color:#111">[]</span> <span style="color:#111">elem</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+
+  <span style="color:#75715e">// ... copy and move operations ...
+</span><span style="color:#75715e"></span>
+  <span style="color:#111">T</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#111">[](</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">);</span>               <span style="color:#75715e">// For non-const Vectors
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">const</span> <span style="color:#111">T</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#111">[](</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#00a8c8">const</span><span style="color:#111">;</span>   <span style="color:#75715e">// For const Vectors
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">int</span> <span style="color:#75af00">size</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">sz</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+
+ <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
+  <span style="color:#111">T</span><span style="color:#f92672">*</span> <span style="color:#111">elem</span><span style="color:#111">;</span>
+  <span style="color:#00a8c8">int</span> <span style="color:#111">sz</span><span style="color:#111">;</span>
+<span style="color:#111">};</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>Member functions are defined similarly, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#111">Vector</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;::</span><span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">s</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
+    <span style="color:#00a8c8">throw</span> <span style="color:#111">Negative_size</span><span style="color:#111">{};</span>
+
+  <span style="color:#111">elem</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">T</span><span style="color:#111">[</span><span style="color:#111">s</span><span style="color:#111">];</span>
+  <span style="color:#111">sz</span> <span style="color:#f92672">=</span> <span style="color:#111">s</span><span style="color:#111">;</span>
+<span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>A template plus a set of of template arguments is called an
+<strong>instantiation</strong> or a <strong>specialization</strong>, e.g. <code>Vector&lt;char&gt;</code>. Late in
+the compilation process, at <strong>instantiation time</strong>, code is generated
+for each instantiation used in a program. Using templates incurs no
+run-time overhead compared to hand-crafted code. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>That templates are instantiated late in the compilation process may lead
+to unintuitive compiler error messages. <span class="citation-ref"><a href="#cppReferenceConstraintsAndConcepts"></a></span></p>
+</div>
+</div>
+
+
+<h3 id="constrained-template-arguments-c20">Constrained Template Arguments (C++20)</h3>
+<p>Constrained template arguments are useful when a template would only
+make sense for template arguments that meet a certain criteria. This is
+achieved using <code>template&lt;Element T&gt;</code>, which can be read as, &ldquo;For all <code>T</code>
+such that <code>Element(T)</code>&rdquo;. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p><code>Element</code> is a predicate that checks whether <code>T</code> has all the properties
+that the template class requires. Such a predicate is called a
+<strong>concept</strong>. A template argument for which a concept is specified is
+called a <strong>constrained argument</strong>, and a template for which an argument
+is constrained is called a <strong>constrained template</strong>. Older code uses
+unconstrained template arguments and leaves requirements to
+documentation. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>For example, suppose functions <code>f</code>, <code>g</code>, and <code>h</code> require that their
+arguments be hashable. We can do:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cstddef&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;concepts&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">concept</span> <span style="color:#111">Hashable</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">requires</span><span style="color:#111">(</span><span style="color:#111">T</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">{</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">hash</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span><span style="color:#111">{}(</span><span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#111">}</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">convertible_to</span><span style="color:#f92672">&lt;</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">size_t</span><span style="color:#f92672">&gt;</span><span style="color:#111">;</span>
+<span style="color:#111">};</span>
+
+<span style="color:#75715e">// One way of applying the Hashable constraint.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#111">Hashable</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">void</span> <span style="color:#111">f</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
+
+<span style="color:#75715e">// Another way of applying the constraint.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#00a8c8">requires</span> <span style="color:#111">Hashable</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">void</span> <span style="color:#111">g</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
+
+<span style="color:#75715e">//  Yet another way of applying the constraint.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">void</span> <span style="color:#111">h</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">)</span> <span style="color:#00a8c8">requires</span> <span style="color:#111">Hashable</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span> <span style="color:#111">{}</span>
+
+<span style="color:#00a8c8">struct</span> <span style="color:#75af00">Foo</span><span style="color:#111">;</span>
+
+<span style="color:#00a8c8">int</span> <span style="color:#111">main</span> <span style="color:#111">{</span>
+  <span style="color:#111">f</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">string</span><span style="color:#111">(</span><span style="color:#d88200">&#34;s&#34;</span><span style="color:#111">));</span>  <span style="color:#75715e">// OK, std::string satisfies Hashable
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// f(Foo{});          // Error: Foo does not satisfy Hashable
+</span><span style="color:#75715e"></span><span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#cppReferenceConstraintsAndConcepts"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>This is similar to Haskell&rsquo;s type classes. For example, the type of
+<code>(==)</code> is <code>(==) :: Eq a =&gt; a -&gt; a -&gt; Bool</code>, which can be read as, &ldquo;For
+any type <code>a</code>, <em>as long as <code>a</code> is an instance of <code>Eq</code></em>, <code>(==)</code> can take
+two values of type <code>a</code> and return a <code>Bool</code>. <span class="citation-ref"><a href="#cis194Spring2013TypeClasses"></a></span></p>
+<p>However, there is a loose coupling that doesn&rsquo;t exist in Haskell&rsquo;s
+version. In Haskell, a matching type <code>a</code> may be something of the form:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">data</span> <span style="color:#00a8c8">Foo</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">F</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">|</span> <span style="color:#00a8c8">G</span> <span style="color:#00a8c8">Char</span>
+  <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Eq</span><span style="color:#111">)</span>
+</code></pre></div><p><span class="citation-ref"><a href="#cis194Spring2013TypeClasses"></a></span></p>
+<p>On the other hand, the C++ type that can be passed to <code>f</code> does not need
+to reference the <code>Hashable</code> concept anywhere in its code.</p>
+</div>
+</div>
+
+
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Stroustrup2018-Ch6'>
+        
+        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
+        Chapter 6. Templates<i>.</i>
+    </cite>
+    
+     Bjarne Stroustrup.
+    
+    
+    
+    
+    
+    
+    
+     2018.
+     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
+        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceConstraintsAndConcepts'>
+        
+        Constraints and concepts (since C&#43;&#43;20) - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/constraints" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 30, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cis194Spring2013TypeClasses'>
+        
+        05-type-classes<i>.</i>
+        
+    </cite>
+    
+     Brent Yorgey.
+    
+    
+    
+    
+    <a href="https://www.cis.upenn.edu/~cis194/spring13/lectures/05-type-classes.html#type-classes" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading="lazy" aria-hidden="true">
+        <i>www.cis.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+     2013.
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 30, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/stroustrup-bjarne'>Stroustrup, Bjarne</a>
+    
+        <a href='/authors/yorgey-brent'>Yorgey, Brent</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/en.cppreference.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+            en.cppreference.com
+        </a>
+    
+        <a href='/domains/www.cis.upenn.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading="lazy" aria-hidden="true">
+            www.cis.upenn.edu
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

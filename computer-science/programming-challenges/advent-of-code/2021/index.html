@@ -21,10 +21,14 @@
         <script>
             
             const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
             hljs.addPlugin({
                 "after:highlight": (result) => {
                     result.value = result.value.replaceAll(
                         hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
                 }
             });
             hljs.highlightAll();
@@ -38,10 +42,10 @@
         <script type="text/javascript" src="/js/PlotUtils.js"></script>
         <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
         <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
 
         
-    <script type="text/javascript" src="/js/ListPageUtils.js"></script>
-
+        
     </head>
 
     <body>
@@ -104,7 +108,7 @@
             <h1>Advent of Code 2021</h1>
             <p class="meta">
                 
-                Dated Feb 18, 2022; 
+                Dated Feb 18, 2022;
                 
                 last modified on Fri, 18 Feb 2022
                 
@@ -721,7 +725,7 @@ Syntax error in navigation subsystem on line: all of them The navigation subsyst
     }
 </script>
 
-    
+
 </main>
 
 
