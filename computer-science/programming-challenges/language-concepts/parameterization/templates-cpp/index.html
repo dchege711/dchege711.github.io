@@ -129,6 +129,8 @@
     <li><a href="#parameterized-types">Parameterized Types</a>
       <ul>
         <li><a href="#constrained-template-arguments-c20">Constrained Template Arguments (C++20)</a></li>
+        <li><a href="#value-template-arguments">Value Template Arguments</a></li>
+        <li><a href="#template-argument-deduction">Template Argument Deduction</a></li>
       </ul>
     </li>
     <li><a href="#references">References</a></li>
@@ -141,7 +143,7 @@
 set of types or values. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
 <h2 id="parameterized-types">Parameterized Types</h2>
 <p>The 
-<a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/classes/classes-in-cpp/#containers"
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/#containers"
     
     
     
@@ -153,7 +155,7 @@ set of types or values. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"
  can be generalized to a vector-of-anything type by making it a
 template:</p>
 <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// `template&lt;typename T&gt;` can be read as &#34;for all types T&#34;. Older code
-</span><span style="color:#75715e">// uses `template&lt;classs T&gt;`, which is equivalent.
+</span><span style="color:#75715e">// uses `template&lt;class T&gt;`, which is equivalent.
 </span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
 <span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
@@ -223,15 +225,6 @@ arguments be hashable. We can do:</p>
 </span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#111">Hashable</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
 <span style="color:#00a8c8">void</span> <span style="color:#111">f</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
 
-<span style="color:#75715e">// Another way of applying the constraint.
-</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
-  <span style="color:#00a8c8">requires</span> <span style="color:#111">Hashable</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
-<span style="color:#00a8c8">void</span> <span style="color:#111">g</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
-
-<span style="color:#75715e">//  Yet another way of applying the constraint.
-</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
-<span style="color:#00a8c8">void</span> <span style="color:#111">h</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">)</span> <span style="color:#00a8c8">requires</span> <span style="color:#111">Hashable</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span> <span style="color:#111">{}</span>
-
 <span style="color:#00a8c8">struct</span> <span style="color:#75af00">Foo</span><span style="color:#111">;</span>
 
 <span style="color:#00a8c8">int</span> <span style="color:#111">main</span> <span style="color:#111">{</span>
@@ -258,6 +251,60 @@ to reference the <code>Hashable</code> concept anywhere in its code.</p>
 </div>
 
 
+<h3 id="value-template-arguments">Value Template Arguments</h3>
+<p>In addition to to type arguments, a template can take value arguments
+(which must be constant expressions), e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#111">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">N</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">struct</span> <span style="color:#75af00">Buffer</span> <span style="color:#111">{</span>
+  <span style="color:#75715e">// Convenience functions for accessng the template arguments.
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">using</span> <span style="color:#111">value_type</span> <span style="color:#f92672">=</span> <span style="color:#111">T</span><span style="color:#111">;</span>
+  <span style="color:#00a8c8">constexpr</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">size</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">N</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+
+  <span style="color:#111">T</span><span style="color:#111">[</span><span style="color:#111">N</span><span style="color:#111">];</span>
+  <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>Value arguments are useful in many contexts. For example, <code>Buffer</code>
+allows us to create arbitrarily sized buffers with no use of the free
+store. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<h3 id="template-argument-deduction">Template Argument Deduction</h3>
+<p>Argument deduction can help reduce redundant typing, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">Vector</span> <span style="color:#111">v1</span> <span style="color:#111">{</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#ae81ff">3</span><span style="color:#111">};</span>  <span style="color:#75715e">// Deduce v1&#39;s element type from the initializer list element type
+</span><span style="color:#75715e"></span><span style="color:#111">Vector</span> <span style="color:#111">v2</span> <span style="color:#f92672">=</span> <span style="color:#111">v1</span><span style="color:#111">;</span>       <span style="color:#75715e">// Deduce v2&#39;s element type form v1&#39;s element type
+</span><span style="color:#75715e"></span><span style="color:#111">Vector</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">int</span><span style="color:#f92672">&gt;</span> <span style="color:#111">v3</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">);</span>    <span style="color:#75715e">// Need to be explicit as no element type is mentioned
+</span></code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>But deduction can also cause surprises, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">Vector</span><span style="color:#f92672">&lt;</span><span style="color:#111">string</span><span style="color:#f92672">&gt;</span> <span style="color:#111">vs1</span> <span style="color:#111">{</span><span style="color:#d88200">&#34;Hello&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;World&#34;</span><span style="color:#111">};</span>  <span style="color:#75715e">// Vector&lt;string&gt;
+</span><span style="color:#75715e"></span><span style="color:#111">Vector</span> <span style="color:#111">vs</span> <span style="color:#111">{</span><span style="color:#d88200">&#34;Hello&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;World&#34;</span><span style="color:#111">};</span>           <span style="color:#75715e">// Deduces to Vector&lt;const char*&gt;
+</span></code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>When a template argument can&rsquo;t be deduced from the constructor
+arguments, we can provide a <strong>deduction guide</strong>, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// Template declaration
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector2</span> <span style="color:#111">{</span>
+ <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
+  <span style="color:#00a8c8">using</span> <span style="color:#111">value_type</span> <span style="color:#f92672">=</span> <span style="color:#111">T</span><span style="color:#111">;</span>
+
+  <span style="color:#111">Vector2</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">initializer_list</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span><span style="color:#111">);</span>  <span style="color:#75715e">// Initializer-list constructor
+</span><span style="color:#75715e"></span>
+  <span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">Iter</span><span style="color:#f92672">&gt;</span>
+    <span style="color:#111">Vector2</span><span style="color:#111">(</span><span style="color:#111">Iter</span> <span style="color:#111">b</span><span style="color:#111">,</span> <span style="color:#111">Iter</span> <span style="color:#111">e</span><span style="color:#111">);</span>          <span style="color:#75715e">// [b:e) range constructor
+</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+
+<span style="color:#75715e">// Additional deduction guide
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">Iter</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#111">Vector2</span><span style="color:#111">(</span><span style="color:#111">Iter</span><span style="color:#111">,</span> <span style="color:#111">Iter</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">Vector2</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">Iter</span><span style="color:#f92672">::</span><span style="color:#111">value_type</span><span style="color:#f92672">&gt;</span><span style="color:#111">;</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
+<p>The user-defined deduction guide needs not be a template, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">template</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">class</span> <span style="color:#75af00">T</span><span style="color:#f92672">&gt;</span> <span style="color:#00a8c8">struct</span> <span style="color:#75af00">S</span> <span style="color:#111">{</span>
+  <span style="color:#111">S</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#111">);</span>
+<span style="color:#111">};</span>
+<span style="color:#111">S</span><span style="color:#111">(</span><span style="color:#00a8c8">char</span> <span style="color:#00a8c8">const</span><span style="color:#f92672">*</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">S</span><span style="color:#f92672">&lt;</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">string</span><span style="color:#f92672">&gt;</span><span style="color:#111">;</span>
+
+<span style="color:#111">S</span> <span style="color:#111">s</span><span style="color:#111">{</span><span style="color:#d88200">&#34;Hello&#34;</span><span style="color:#111">};</span> <span style="color:#75715e">// Deduced to S&lt;std::string&gt;
+</span></code></pre></div><p><span class="citation-ref"><a href="#cppReferenceCTAD"></a></span></p>
+<p>The effects of deduction guides are often subtle, so limit their use;
+prefer using concepts. <span class="citation-ref"><a href="#Stroustrup2018-Ch6"></a></span></p>
 <h2 id="references">References</h2>
 <ol>
 <li>
@@ -352,6 +399,41 @@ to reference the <code>Hashable</code> concept anywhere in its code.</p>
     
     
      2013.
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 30, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceCTAD'>
+        
+        Class template argument deduction (CTAD) (since C&#43;&#43;17) - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/class_template_argument_deduction" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
     
     
     <i class='fas fa-fw fa-globe' aria-hidden="true"></i>

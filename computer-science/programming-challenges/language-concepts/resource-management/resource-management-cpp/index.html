@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Resource Management in C&#43;&#43; | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/">Resource Management</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/resource-management-cpp/">Resource Management in C&#43;&#43;</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Resource Management in C&#43;&#43;</h1>
+    <p class="meta">
+        
+        Dated May 31, 2022;
+        
+        last modified on Tue, 31 May 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#resource-handles">Resource Handles</a></li>
+    <li><a href="#stdunique_ptr-and-stdshared_ptr"><code>std::unique_ptr</code> and <code>std::shared_ptr</code></a></li>
+    <li><a href="#stdmove-and-stdforward"><code>std::move</code> and <code>std::forward</code></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="resource-handles">Resource Handles</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>RAII is also covered in 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/#motivation-for-the-destructor-mechanism"
+    
+    
+    
+    >
+    Classes in C++ &gt; Motivation for the Destructor
+Mechanism
+    
+</a>
+</p>
+</div>
+</div>
+
+
+<p>The constructor/destructor pattern enables objects defined in a scope to
+release the resources during exit from the scope, even when exceptions
+are thrown. All standard-library containers, e.g. <code>std::vector</code>, are
+implemented as resource handles. <span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<h2 id="stdunique_ptr-and-stdshared_ptr"><code>std::unique_ptr</code> and <code>std::shared_ptr</code></h2>
+<p>These &ldquo;smart pointers&rdquo; are useful in managing objects that are allocated
+on the free store (as opposed to those allocated on the stack). <span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>A <code>unique_ptr</code> ensures that an object is properly destroyed when the
+<code>unique_ptr</code> goes out of scope, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#75af00">f</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">j</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">X</span><span style="color:#f92672">*</span> <span style="color:#111">p</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">X</span><span style="color:#111">;</span>
+  <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">X</span><span style="color:#f92672">&gt;</span> <span style="color:#111">sp</span> <span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#111">X</span><span style="color:#111">};</span>
+
+  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">99</span><span style="color:#111">)</span> <span style="color:#00a8c8">throw</span> <span style="color:#111">Z</span><span style="color:#111">{};</span>  <span style="color:#75715e">// p does not get deleted when we exit f
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">j</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">77</span><span style="color:#111">)</span> <span style="color:#00a8c8">return</span><span style="color:#111">;</span>     <span style="color:#75715e">// p does not get deleted when we exit f
+</span><span style="color:#75715e"></span>
+  <span style="color:#75715e">// ... use p and sp ...
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">delete</span> <span style="color:#111">p</span><span style="color:#111">;</span>
+<span style="color:#111">}</span> <span style="color:#75715e">// sp will delete the managed X
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Admittedly, the following scheme is cleaner.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">void</span> <span style="color:#75af00">f</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">j</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">X</span> <span style="color:#111">x</span><span style="color:#111">;</span> <span style="color:#75715e">// Allocated on the stack. Will be cleaned up on exiting f.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// ...
+</span><span style="color:#75715e"></span><span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>When pointer semantics are needed, e.g. passing free-store allocated
+objects in and out of functions, a <code>unique_ptr</code> has no space or time
+overhead compared to correct use of a built-in pointer:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">X</span><span style="color:#f92672">&gt;</span> <span style="color:#111">make_X</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#75715e">// ... check i, etc. ...
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">return</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">X</span><span style="color:#f92672">&gt;</span><span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#111">X</span><span style="color:#111">{</span><span style="color:#111">i</span><span style="color:#111">}};</span>
+<span style="color:#111">}</span>
+</code></pre></div>
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Why not use a <code>std::optional</code>?</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>A <code>shared_ptr</code> is used to model shared ownership. The object is deleted
+when the last of its <code>shared_ptr</code>s is destroyed, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#75af00">f</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">shared_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">fstream</span><span style="color:#f92672">&gt;</span><span style="color:#111">);</span>
+<span style="color:#00a8c8">void</span> <span style="color:#75af00">g</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">shared_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">fstream</span><span style="color:#f92672">&gt;</span><span style="color:#111">);</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#75af00">user</span><span style="color:#111">(</span><span style="color:#00a8c8">const</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">string</span><span style="color:#f92672">&amp;</span> <span style="color:#111">name</span><span style="color:#111">,</span> <span style="color:#111">base</span><span style="color:#f92672">::</span><span style="color:#111">openmode</span> <span style="color:#111">mode</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">shared_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">fstream</span><span style="color:#f92672">&gt;</span> <span style="color:#111">fp</span> <span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#111">fstream</span><span style="color:#111">(</span><span style="color:#111">name</span><span style="color:#111">,</span> <span style="color:#111">mode</span><span style="color:#111">)};</span>
+  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#f92672">!*</span><span style="color:#111">fp</span><span style="color:#111">)</span> <span style="color:#00a8c8">throw</span> <span style="color:#111">No_file</span><span style="color:#111">{};</span>
+
+  <span style="color:#111">f</span><span style="color:#111">(</span><span style="color:#111">fp</span><span style="color:#111">);</span>
+  <span style="color:#111">g</span><span style="color:#111">(</span><span style="color:#111">fp</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>Although <code>shared_ptr</code>s are neither cost-free nor exorbitantly expensive,
+they make the lifetime of the shared object hard to predict, e.g. <code>f()</code>
+spawns a task that holds a copy of <code>fp</code> and outlives <code>user</code>. <span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>To reduce verbosity, the use of <code>new</code>, and possible bugs (e.g. passing
+a pointer of something that&rsquo;s not on the free-store), prefer to use
+<code>std::make_unique</code> and <code>std::make_shared</code>, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">struct</span> <span style="color:#75af00">S</span> <span style="color:#111">{</span> <span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">;</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">string</span> <span style="color:#111">s</span><span style="color:#111">;</span> <span style="color:#00a8c8">double</span> <span style="color:#111">d</span><span style="color:#111">;</span> <span style="color:#111">};</span>
+
+<span style="color:#00a8c8">auto</span> <span style="color:#111">p1</span> <span style="color:#f92672">=</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">make_unique</span><span style="color:#f92672">&lt;</span><span style="color:#111">S</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;Ankh Morpork&#34;</span><span style="color:#111">,</span> <span style="color:#ae81ff">4.65</span><span style="color:#111">);</span>
+
+<span style="color:#75715e">// Furthermore, `make_shared` is more efficient because it does not need
+</span><span style="color:#75715e">// a separate allocation for the use count.
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">auto</span> <span style="color:#111">p2</span> <span style="color:#f92672">=</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">make_shared</span><span style="color:#f92672">&lt;</span><span style="color:#111">S</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;Oz&#34;</span><span style="color:#111">,</span> <span style="color:#ae81ff">7.62</span><span style="color:#111">);</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>Prefer using resource handles, and only use &ldquo;smart pointers&rdquo; when
+pointer semantics are needed:</p>
+<ul>
+<li>When we share an object, we need pointers (or references) to refer to
+the shared object.</li>
+<li>When we refer to 
+<a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/#abstract-types"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    a polymorphic object
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, we need a pointer (or a reference) because we don&rsquo;t know the
+exact type of the object referred to.</li>
+<li>When using legacy APIs that return raw pointers to owned data. <span class="citation-ref"><a href="#abseilToTW187"></a></span></li>
+</ul>
+<p>In particular, a pointer is not need to return a collection of objects
+from a function. A resource handle suffices. <span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>When ownership is not transferred, a <code>std::unique_ptr</code> is likely not
+needed. Furthermore, we&rsquo;d have cognitive overhead for &ldquo;what if the
+pointer is empty?&rdquo;, and performance implications for the heap-allocated
+object (less likely to be in CPU cache). <span class="citation-ref"><a href="#abseilToTW187"></a></span></p>
+<h2 id="stdmove-and-stdforward"><code>std::move</code> and <code>std::forward</code></h2>
+<p>A <code>unique_ptr</code> is the sole owner of an object, and therefore it cannot
+be copied. It must be explicitly moved if needed elsewhere. <span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>Think of <code>std::move</code> as <code>rvalue_cast</code>. It does not move anything.
+Instead, it casts its argument to an rvalue reference, thereby saying
+that the argument will not be used again and therefore may be moved, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">template</span> <span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#f92672">&gt;</span>
+<span style="color:#00a8c8">void</span> <span style="color:#111">swap</span><span style="color:#111">(</span><span style="color:#111">T</span><span style="color:#f92672">&amp;</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">T</span><span style="color:#f92672">&amp;</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">T</span> <span style="color:#111">tmp</span> <span style="color:#111">{</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">move</span><span style="color:#111">(</span><span style="color:#111">a</span><span style="color:#111">)};</span>   <span style="color:#75715e">// The T constructor sees an rvalue and moves
+</span><span style="color:#75715e"></span>  <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">move</span><span style="color:#111">(</span><span style="color:#111">b</span><span style="color:#111">);</span>       <span style="color:#75715e">// The T assignment sees an rvalue and moves
+</span><span style="color:#75715e"></span>  <span style="color:#111">b</span> <span style="color:#f92672">=</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">move</span><span style="color:#111">(</span><span style="color:#111">tmp</span><span style="color:#111">);</span>     <span style="color:#75715e">// The T assignment sees an rvalue and moves
+</span><span style="color:#75715e"></span><span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p>Unless you can demonstrate significant and necessary perf improvements,
+avoid uses of <code>std::move</code> that leave behind a moved-from object that
+may get used again. The state of a moved-from object is generally
+unspecified, but STL moved-from objects are in a state where they can
+be destroyed and assigned to, and furthermore, STL containers are in an
+&ldquo;empty&rdquo; state. <span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<p><code>std::forward</code> is useful when transmitting a set of arguments on to
+another function without changing anything. Once you forward an object,
+don&rsquo;t use it again (including forwarding it a second time).
+<code>std::forward</code> is also a bit more sophisticated than <code>std::move</code> when
+handling lvalue and rvalue subtleties.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">template</span> <span style="color:#f92672">&lt;</span><span style="color:#00a8c8">typename</span> <span style="color:#111">T</span><span style="color:#111">,</span> <span style="color:#00a8c8">typename</span><span style="color:#111">...</span> <span style="color:#111">Args</span><span style="color:#f92672">&gt;</span>
+<span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span> <span style="color:#111">make_unique</span><span style="color:#111">(</span><span style="color:#111">Args</span><span style="color:#f92672">&amp;&amp;</span><span style="color:#111">...</span> <span style="color:#111">args</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">return</span> <span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">T</span><span style="color:#f92672">&gt;</span><span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#111">T</span><span style="color:#111">{</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">forward</span><span style="color:#f92672">&lt;</span><span style="color:#111">Args</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#111">args</span><span style="color:#111">)...}};</span>
+<span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch13"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Stroustrup2018-Ch13'>
+        
+        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
+        Chapter 13. Utilities<i>.</i>
+    </cite>
+    
+     Bjarne Stroustrup.
+    
+    
+    
+    
+    
+    
+    
+     2018.
+     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
+        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='abseilToTW187'>
+        
+        abseil / Tip of the Week #187: std::unique_ptr Must Be Moved<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://abseil.io/tips/187#fn:unique" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
+        <i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 31, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/stroustrup-bjarne'>Stroustrup, Bjarne</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/abseil.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
+            abseil.io
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

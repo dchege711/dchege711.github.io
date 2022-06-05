@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Enumerations in C&#43;&#43; | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/">Type Systems</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/">User-Defined Types</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/enumerations-in-cpp/">Enumerations in C&#43;&#43;</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Enumerations in C&#43;&#43;</h1>
+    <p class="meta">
+        
+        Dated Jun 4, 2022;
+        
+        last modified on Sat, 04 Jun 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#unscoped-or-plain-or-c-style-enumerations">Unscoped (or Plain or C-Style) Enumerations</a></li>
+    <li><a href="#scoped-enumerations">Scoped Enumerations</a></li>
+    <li><a href="#underlying-type">Underlying Type</a></li>
+    <li><a href="#operators-for-enumerations">Operators for Enumerations</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="unscoped-or-plain-or-c-style-enumerations">Unscoped (or Plain or C-Style) Enumerations</h2>
+<p>Plain (or C-style) enums are entered in the same scope as the name of
+their enum, and implicitly convert to their integer value, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#75af00">Color</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">green</span><span style="color:#111">,</span> <span style="color:#111">blue</span> <span style="color:#111">};</span>
+<span style="color:#00a8c8">int</span> <span style="color:#111">col</span> <span style="color:#f92672">=</span> <span style="color:#111">green</span><span style="color:#111">;</span>
+
+<span style="color:#00a8c8">enum</span> <span style="color:#75af00">CardColor</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">black</span> <span style="color:#111">};</span> <span style="color:#75715e">// Error: &#34;red&#34; conflicts with a previous declaration
+</span></code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<p>The name can be omitted if it&rsquo;s not going to be used, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">green</span><span style="color:#111">,</span> <span style="color:#111">blue</span> <span style="color:#111">};</span>
+<span style="color:#00a8c8">int</span> <span style="color:#111">col</span> <span style="color:#f92672">=</span> <span style="color:#111">red</span><span style="color:#111">;</span>
+</code></pre></div><p><span class="citation-ref"><a href="#cppReferenceEnumerationDeclaration"></a></span></p>
+<p>The enumerator values can be specified. If omitted, the default values
+are zero for the first enum, and then</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#75af00">Foo</span> <span style="color:#111">{</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">b</span><span style="color:#111">,</span> <span style="color:#111">c</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#111">d</span><span style="color:#111">,</span> <span style="color:#111">e</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span><span style="color:#111">,</span> <span style="color:#111">f</span> <span style="color:#f92672">=</span> <span style="color:#111">b</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">30</span><span style="color:#111">};</span>
+<span style="color:#75715e">// a = 0, b = 1, c = 0, d = 1, e = 10, f = 31
+</span></code></pre></div><p><span class="citation-ref"><a href="#cppReferenceEnumerationDeclaration"></a></span></p>
+<h2 id="scoped-enumerations">Scoped Enumerations</h2>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#00a8c8">class</span> <span style="color:#75af00">Color</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">blue</span><span style="color:#111">,</span> <span style="color:#111">green</span> <span style="color:#111">};</span>
+
+<span style="color:#00a8c8">enum</span> <span style="color:#00a8c8">class</span> <span style="color:#75af00">TrafficLight</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">green</span><span style="color:#111">,</span> <span style="color:#111">yellow</span> <span style="color:#111">};</span>
+
+<span style="color:#75715e">// The keywords `class` and `struct` are exactly equivalent.
+</span><span style="color:#75715e">// &lt;span class=&#34;citation-ref&#34;&gt;&lt;a href=&#34;#cppReferenceEnumerationDeclaration&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">enum</span> <span style="color:#75af00">struct</span> <span style="color:#111">CardColor</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">black</span> <span style="color:#111">};</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<p>A scoped enumeration is strongly typed (<code>Color c = 2;</code> is a compiler
+error), and its enumerators are scoped (<code>Color c = Color::red;</code>
+compiles, but not <code>Color c = red;</code>) <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<p>The scoping prevents collisions between enumerator names, e.g.
+<code>Color::red</code> is different from and can co-exist with
+<code>TrafficLight::red</code>. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<h2 id="underlying-type">Underlying Type</h2>
+<p>By default <code>enum Color { one, two }</code> is backed by an
+implementation-defined integral type that can represent all enumerator
+values. If no integral type can represent all the enumerator values, the
+enumeration is ill-formed. <span class="citation-ref"><a href="#cppReferenceEnumerationDeclaration"></a></span></p>
+<p>Unscoped enums can implicit convert to their underlying type, but need a
+static cast when being initialized from the underlying type, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#75af00">Color</span> <span style="color:#111">{</span> <span style="color:#111">red</span><span style="color:#111">,</span> <span style="color:#111">green</span><span style="color:#111">,</span> <span style="color:#111">blue</span> <span style="color:#111">};</span>
+<span style="color:#00a8c8">int</span> <span style="color:#111">c1</span> <span style="color:#f92672">=</span> <span style="color:#111">green</span><span style="color:#111">;</span> <span style="color:#75715e">// Often undesirable as bugs may creep in.
+</span><span style="color:#75715e"></span><span style="color:#111">Color</span> <span style="color:#111">c2</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span> <span style="color:#75715e">// error: invalid conversion from &#39;int&#39; to &#39;Color&#39;
+</span><span style="color:#75715e"></span><span style="color:#111">Color</span> <span style="color:#111">c3</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#111">Color</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#ae81ff">999</span><span style="color:#111">);</span> <span style="color:#75715e">// OK, even if 999 is not a named enumerator
+</span></code></pre></div><p><span class="citation-ref"><a href="#cppReferenceEnumerationDeclaration"></a></span></p>
+<p>From C++17, an enum may be initialized from an integer, without a cast,
+via list initialization, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#75af00">Foo</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">unsigned</span> <span style="color:#00a8c8">char</span> <span style="color:#111">{};</span> <span style="color:#75715e">// Foo can hold enumerators w/ values in [0, 255]
+</span><span style="color:#75715e"></span>
+<span style="color:#111">Foo</span> <span style="color:#111">f1</span><span style="color:#111">{</span><span style="color:#ae81ff">255</span><span style="color:#111">};</span> <span style="color:#75715e">// OK
+</span><span style="color:#75715e"></span>
+<span style="color:#111">Foo</span> <span style="color:#111">f2</span><span style="color:#111">{</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">};</span> <span style="color:#75715e">// error: narrowing conversion of &#39;-1&#39; from &#39;int&#39; to &#39;unsigned char&#39; [-Wnarrowing]
+</span><span style="color:#75715e"></span><span style="color:#111">Foo</span> <span style="color:#111">f3</span><span style="color:#111">{</span><span style="color:#ae81ff">256</span><span style="color:#111">};</span> <span style="color:#75715e">// error: narrowing conversion of &#39;256&#39; from &#39;int&#39; to &#39;unsigned char&#39; [-Wnarrowing]
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">int</span> <span style="color:#75af00">bar</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#ae81ff">255</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+<span style="color:#111">Foo</span> <span style="color:#111">f4</span><span style="color:#111">{</span><span style="color:#111">bar</span><span style="color:#111">()};</span> <span style="color:#75715e">// warning: narrowing conversion of &#39;bar()&#39; from &#39;int&#39; to &#39;unsigned char&#39; [-Wnarrowing]
+</span></code></pre></div><p><span class="citation-ref"><a href="#cppReferenceEnumerationDeclaration"></a></span></p>
+<p>To get the underlying value, one can use the <code>underlying_type</code> utils:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">enum</span> <span style="color:#75af00">Foo</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">char</span> <span style="color:#111">{};</span>
+
+<span style="color:#111">Foo</span> <span style="color:#111">f</span><span style="color:#111">{</span><span style="color:#d88200">&#39;b&#39;</span><span style="color:#111">};</span>
+
+<span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">underlying_type_t</span><span style="color:#f92672">&lt;</span><span style="color:#111">Foo</span><span style="color:#f92672">&gt;</span> <span style="color:#111">v1</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">underlying_type_t</span><span style="color:#f92672">&lt;</span><span style="color:#111">Foo</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#111">(</span><span style="color:#111">f</span><span style="color:#111">);</span>
+<span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">underlying_type_t</span><span style="color:#f92672">&lt;</span><span style="color:#111">Foo</span><span style="color:#f92672">&gt;</span> <span style="color:#111">v2</span> <span style="color:#f92672">=</span> <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">to_underlying</span><span style="color:#111">(</span><span style="color:#111">f</span><span style="color:#111">);</span> <span style="color:#75715e">// Shorthand; C++23
+</span><span style="color:#75715e"></span>
+<span style="color:#00a8c8">static_assert</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">is_same_v</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">char</span><span style="color:#111">,</span> <span style="color:#00a8c8">decltype</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">to_underlying</span><span style="color:#111">(</span><span style="color:#111">f</span><span style="color:#111">))</span><span style="color:#f92672">&gt;</span><span style="color:#111">);</span>
+</code></pre></div><p><span class="citation-ref"><a href="#cppReferenceToUnderlying"></a></span></p>
+<h2 id="operators-for-enumerations">Operators for Enumerations</h2>
+<p>By default, an <code>enum class</code> only has assignment, initialization, and
+comparisons. However, it is a user-defined type, and so we can define
+operators for it, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">TrafficLight</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">++</span><span style="color:#111">(</span><span style="color:#111">TrafficLight</span><span style="color:#f92672">&amp;</span> <span style="color:#111">t</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">switch</span> <span style="color:#111">(</span><span style="color:#111">t</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+    <span style="color:#00a8c8">case</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">green</span><span style="color:#111">:</span>   <span style="color:#00a8c8">return</span> <span style="color:#111">t</span> <span style="color:#f92672">=</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">yellow</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">case</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">yellow</span><span style="color:#111">:</span>  <span style="color:#00a8c8">return</span> <span style="color:#111">t</span> <span style="color:#f92672">=</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">red</span><span style="color:#111">;</span>
+    <span style="color:#00a8c8">case</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">red</span><span style="color:#111">:</span>     <span style="color:#00a8c8">return</span> <span style="color:#111">t</span> <span style="color:#f92672">=</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">green</span><span style="color:#111">;</span>
+  <span style="color:#111">}</span>
+<span style="color:#111">}</span>
+
+<span style="color:#75715e">// Sample usage
+</span><span style="color:#75715e"></span><span style="color:#111">TrafficLight</span> <span style="color:#111">light</span> <span style="color:#f92672">=</span> <span style="color:#111">TrafficLight</span><span style="color:#f92672">::</span><span style="color:#111">red</span><span style="color:#111">;</span>
+<span style="color:#111">TrafficLight</span> <span style="color:#111">next</span> <span style="color:#f92672">=</span> <span style="color:#f92672">++</span><span style="color:#111">light</span><span style="color:#111">;</span> <span style="color:#75715e">// next becomes `TrafficLight::green`.
+</span></code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Stroustrup2018-Ch2'>
+        
+        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
+        Chapter 2. User-Defined Types<i>.</i>
+    </cite>
+    
+     Bjarne Stroustrup.
+    
+    
+    
+    
+    
+    
+    
+     2018.
+     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
+        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceEnumerationDeclaration'>
+        
+        Enumeration declaration - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/language/enum" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 5, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='cppReferenceToUnderlying'>
+        
+        std::to_underlying - cppreference.com<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/utility/to_underlying" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://en.cppreference.com/w/cpp/types/underlying_type" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 5, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/stroustrup-bjarne'>Stroustrup, Bjarne</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/en.cppreference.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
+            en.cppreference.com
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/">&laquo; Structures in C&#43;&#43;</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/">Unions in C&#43;&#43; &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

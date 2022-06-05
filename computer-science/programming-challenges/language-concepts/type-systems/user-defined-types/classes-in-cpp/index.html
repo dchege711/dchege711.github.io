@@ -75,6 +75,8 @@
 
 
 
+
+
 <li>
   <a href="https://www.curiosities.dev/">Home</a>
 </li>
@@ -96,12 +98,17 @@
 
 
 <li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/classes/">Classes</a>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/">Type Systems</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/">User-Defined Types</a>
 </li>
 
 
 <li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/classes/classes-in-cpp/">Classes in C&#43;&#43;</a>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/">Classes in C&#43;&#43;</a>
 </li>
 
     </ul>
@@ -133,6 +140,7 @@
             <li><a href="#inlining">Inlining</a></li>
             <li><a href="#default-constructors">Default Constructors</a></li>
             <li><a href="#out-of-class-operator-definitions">Out-of-Class Operator Definitions</a></li>
+            <li><a href="#defining-instance-variables">Defining Instance Variables</a></li>
           </ul>
         </li>
         <li><a href="#containers">Containers</a>
@@ -186,6 +194,9 @@ to common patterns like <code>FooManager</code>.</p>
 </div>
 
 
+<p>A class is the language mechanism for separating the interface to a type
+(to be used by all), and its implementation (which has access to
+otherwise inaccessible data). <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
 <h2 id="concrete-types">Concrete Types</h2>
 <p>The basic idea of concrete classes is that they behave &ldquo;just like
 built-in types&rdquo;. The defining characteristic of a concrete type is that
@@ -341,6 +352,92 @@ found the syntax unintuitive, e.g. <code>&lt;|&gt;</code>.</p>
 <p>Some operators, e.g. <code>.</code>, <code>::</code>, <code>sizeof</code>, and <code>?:</code>, cannot be
 overridden. Furthermore, one can&rsquo;t define an operator all of whose
 operands/parameters are of primitive types. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
+<h4 id="defining-instance-variables">Defining Instance Variables</h4>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>Bar</code></th>
+<th><code>optional&lt;Bar&gt;</code></th>
+<th><code>unique_ptr&lt;Bar&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supports delayed construction</td>
+<td></td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Always safe to access</td>
+<td>✅</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Can transfer ownership of <code>Bar</code></td>
+<td></td>
+<td></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Can store subclasses of <code>Bar</code></td>
+<td></td>
+<td></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Movable</td>
+<td>If <code>Bar</code> is movable</td>
+<td>If <code>Bar</code> is movable</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Copyable</td>
+<td>If <code>Bar</code> is copyable</td>
+<td>If <code>Bar</code> is copyable</td>
+<td></td>
+</tr>
+<tr>
+<td>Friendly to CPU caches</td>
+<td>✅</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>No heap allocation</td>
+<td>✅</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr>
+<td>Memory usage</td>
+<td><code>sizeof(Bar)</code></td>
+<td><code>sizeof(Bar) + sizeof(bool)</code> (+ padding)</td>
+<td><code>sizeof(Bar*)</code> (+ non-empty custom deleter if present) when null; <code>sizeof(Bar*) + sizeof(Bar)</code> otherwise</td>
+</tr>
+<tr>
+<td>Object lifetime</td>
+<td>Same as enclosing scope</td>
+<td>Restricted to enclosing scope</td>
+<td>Unrestricted</td>
+</tr>
+<tr>
+<td>Call <code>f(Bar*)</code></td>
+<td><code>f(&amp;bar_)</code></td>
+<td><code>f(opt_.value())</code> or <code>f(&amp;*opt_)</code></td>
+<td><code>f(ptr_.get())</code> or <code>f(&amp;*ptr_)</code></td>
+</tr>
+<tr>
+<td>Remove value</td>
+<td>N/A</td>
+<td><code>opt_.reset()</code> or <code>opt_ = nullopt</code></td>
+<td><code>ptr_.reset()</code> or <code>ptr_ = nullptr</code></td>
+</tr>
+</tbody>
+</table>
+<p><span class="citation-ref"><a href="#abseilToTW123"></a></span></p>
 <h3 id="containers">Containers</h3>
 <p>A <strong>container</strong> is an object holding a collection of elements. It should
 be simple to understand, establish useful invariants, and provide
@@ -381,6 +478,10 @@ there are no object leaks, then there are no resource leaks. <span class="citati
 objects, where there is a well-defined static object lifetime. Heap
 based objects must be deleted along all possible execution paths to
 trigger their destructor. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
+<p>Notice that regardless of the number of elements, the <code>Vector</code> object
+itself is always the same size. A fixed-size handle referring to a
+variable amount of data &ldquo;elsewhere&rdquo; is a common technique for handling
+varying amounts of information in C++. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
 <p>In C++, stack unwinding (popping one or more frames off the stack to
 resume execution elsewhere in the program) is only guaranteed to happen
 if the exception is caught somewhere. If it&rsquo;s not caught, <code>terminate</code> is
@@ -754,6 +855,38 @@ function. But there&rsquo;s a difference, the derived class indeed can&rsquo;t
 
 <h2 id="references">References</h2>
 <ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Stroustrup2018-Ch2'>
+        
+        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
+        Chapter 2. User-Defined Types<i>.</i>
+    </cite>
+    
+     Bjarne Stroustrup.
+    
+    
+    
+    
+    
+    
+    
+     2018.
+     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
+        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
 <li>
 
     
@@ -1386,6 +1519,41 @@ function. But there&rsquo;s a difference, the derived class indeed can&rsquo;t
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='abseilToTW123'>
+        
+        abseil / Tip of the Week #123: absl::optional and std::unique_ptr<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://abseil.io/tips/123" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
+        <i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed May 31, 2022.
+    
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -1414,6 +1582,11 @@ function. But there&rsquo;s a difference, the derived class indeed can&rsquo;t
 
 <aside id="domains-holder" style="margin: 0 0 2% 0;">
     Cited Domains:
+    
+        <a href='/domains/abseil.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
+            abseil.io
+        </a>
     
         <a href='/domains/clang.llvm.org' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading="lazy" aria-hidden="true">
@@ -1468,6 +1641,8 @@ function. But there&rsquo;s a difference, the derived class indeed can&rsquo;t
         
 
         
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/">Structures in C&#43;&#43; &raquo;</a>
         
 
     </footer>

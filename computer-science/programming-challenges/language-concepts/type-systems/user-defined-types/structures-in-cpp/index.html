@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Structures in C&#43;&#43; | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/">Type Systems</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/">User-Defined Types</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/">Structures in C&#43;&#43;</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Structures in C&#43;&#43;</h1>
+    <p class="meta">
+        
+        Dated Jun 4, 2022;
+        
+        last modified on Sat, 04 Jun 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents"></nav>
+        </aside>
+
+        <article id="main-article">
+            <p>A <strong>struct</strong> helps us organize the elements that a type needs into a
+data structure, e.g.</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">struct</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">int</span> <span style="color:#111">sz</span><span style="color:#111">;</span>         <span style="color:#75715e">// number of elements
+</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">double</span><span style="color:#f92672">*</span> <span style="color:#111">elem</span><span style="color:#111">;</span>   <span style="color:#75715e">// pointer to elements on the free store
+</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+
+<span style="color:#00a8c8">void</span> <span style="color:#75af00">vector_init</span><span style="color:#111">(</span><span style="color:#111">Vector</span><span style="color:#f92672">&amp;</span> <span style="color:#111">v</span><span style="color:#111">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#111">v</span><span style="color:#111">.</span><span style="color:#111">elem</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#00a8c8">double</span><span style="color:#111">[</span><span style="color:#111">s</span><span style="color:#111">];</span>
+  <span style="color:#111">v</span><span style="color:#111">.</span><span style="color:#111">sz</span> <span style="color:#f92672">=</span> <span style="color:#111">s</span><span style="color:#111">;</span>
+<span style="color:#111">}</span>
+</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<p>However, notice that a user of <code>Vector</code> has to know every detail of a
+<code>Vector</code>&rsquo;s representation. We can improve on this. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<p>There is no fundamental difference between a <code>struct</code> and a <code>class</code>; a
+<code>struct</code> is simply a <code>class</code> with members public by default. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
+<ol>
+<li>
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Stroustrup2018-Ch2'>
+        
+        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
+        Chapter 2. User-Defined Types<i>.</i>
+    </cite>
+    
+     Bjarne Stroustrup.
+    
+    
+    
+    
+    
+    
+    
+     2018.
+     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
+        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/stroustrup-bjarne'>Stroustrup, Bjarne</a>
+    
+</aside>
+
+
+
+
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/">&laquo; Classes in C&#43;&#43;</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/enumerations-in-cpp/">Enumerations in C&#43;&#43; &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
