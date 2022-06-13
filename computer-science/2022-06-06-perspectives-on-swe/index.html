@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Perspectives on Software Engineering | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/2022-06-06-perspectives-on-swe/">Perspectives on Software Engineering</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Perspectives on Software Engineering</h1>
+    <p class="meta">
+        
+        Dated Jun 6, 2022;
+        
+        last modified on Sat, 11 Jun 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#on-the-clean-code-movement">On the Clean Code Movement</a></li>
+    <li><a href="#code-contributions-from-senior-devs">Code Contributions from Senior Devs</a></li>
+    <li><a href="#misc">Misc</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="on-the-clean-code-movement">On the Clean Code Movement</h2>
+<p>Good enough is good enough. The architectural choices and bugs in the
+implementation tend to be more impactful, so focus more on those. <span class="citation-ref"><a href="#Lent2019"></a></span></p>
+<p>Be conservative in what you consider technical debt. It should be something that
+slows down current/future changes, and not code that doesn&rsquo;t &ldquo;feel nice&rdquo;. A code
+base that is free if technical debt is likely over-emphasizing polish over
+delivery. <span class="citation-ref"><a href="#Lent2019"></a></span></p>
+<p>Abstractions and indirections in the name of future-proofing tend to be wrong
+especially when treading new paths, where you can&rsquo;t reliably predict the future.
+A lot of value is in knowing the design guidelines well enough, that you know
+when/if to deviate to better suit the current problem. <span class="citation-ref"><a href="#HNLent2019"></a></span></p>
+<p>Code history can be used to determine hot spots (which tend to be updated
+frequently and therefore should be clean and well-abstracted) and the long tail
+(where we can take shortcuts without much cost). <span class="citation-ref"><a href="#Tornhill2019"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Tornhill2019"></a></span> uses 
+<a href="https://codescene.com/overview"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    CodeScene
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+,
+which has hotspot detection and code-health metrics, and can be integrated into
+CI pipelines. It has a free edition for publicly available repositories. The
+pro version is €27 per active dev per month.</p>
+</div>
+</div>
+
+
+<h2 id="code-contributions-from-senior-devs">Code Contributions from Senior Devs</h2>
+<p>Being a senior dev takes more than just programming prowess. Other skills are
+communication, defining the problem, dependency management, sharing context,
+project management, estimation, collaborating with non-dev peers, etc.. <span class="citation-ref"><a href="#Lent2019"></a></span> <span class="citation-ref"><a href="#HNLent2019"></a></span></p>
+<p>Re: experienced devs drafting the approach, and leaving it to the junior devs to
+write the actual code. The senior dev might not have enough coding time, that
+their inconsistent coding efforts are harmful to the project. Reviewing the
+resulting PRs is more impactful. <span class="citation-ref"><a href="#HNLent2019"></a></span></p>
+<p>The skill of experienced devs is far more helpful when it can be applied to
+large parts of the code-base, and hence the meetings get folks on the same page.
+However, companies may tend to being overly bureaucratic that communication
+<em>quantity</em> is overstated. <span class="citation-ref"><a href="#HNLent2019"></a></span></p>
+<h2 id="misc">Misc</h2>
+<p>Aim to be in a supportive team. The feedback (e.g. in code reviews) will
+accelerate your learning by a lot compared to coding on your own. <span class="citation-ref"><a href="#Lent2019"></a></span></p>
+<p>Over-documenting tends to lead to staleness. Tests or other forms of automation
+are less likely to go out of sync with the actual code. <span class="citation-ref"><a href="#Lent2019"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Lent2019'>
+        
+        7 Absolute Truths I Unlearned as Junior Developer<i>.</i>
+        
+    </cite>
+    
+     Monica Lent.
+    
+    
+    
+    
+    <a href="https://monicalent.com/blog/2019/06/03/absolute-truths-unlearned-as-junior-developer/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading="lazy" aria-hidden="true">
+        <i>monicalent.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     Jun 3, 2019.
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 6, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HNLent2019'>
+        
+        Absolute truths I unlearned as junior developer (2019) | Hacker News<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://news.ycombinator.com/item?id=31636812" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
+        <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 6, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Tornhill2019'>
+        
+        Why I Write Dirty Code: Code quality in context<i>.</i>
+        
+    </cite>
+    
+     Adam Tornhill.
+    
+    
+    
+    
+    <a href="https://www.adamtornhill.com/articles/code-quality-in-context/why-i-write-dirty-code.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.adamtornhill.com" loading="lazy" aria-hidden="true">
+        <i>www.adamtornhill.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+     2019.
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 9, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/lent-monica'>Lent, Monica</a>
+    
+        <a href='/authors/tornhill-adam'>Tornhill, Adam</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/monicalent.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading="lazy" aria-hidden="true">
+            monicalent.com
+        </a>
+    
+        <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
+            news.ycombinator.com
+        </a>
+    
+        <a href='/domains/www.adamtornhill.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.adamtornhill.com" loading="lazy" aria-hidden="true">
+            www.adamtornhill.com
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/2021-10-28-socio-economic-equity-in-tech/">&laquo; Socio-Economic Equity in Tech</a>
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/">Testing Your Code &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

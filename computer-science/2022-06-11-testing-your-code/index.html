@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Testing Your Code | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/">Testing Your Code</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> Testing Your Code</h1>
+    <p class="meta">
+        
+        Dated Jun 11, 2022;
+        
+        last modified on Mon, 13 Jun 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#why-write-tests">Why Write Tests</a></li>
+    <li><a href="#designing-a-test-suite">Designing a Test Suite</a></li>
+    <li><a href="#improving-testing-culture">Improving Testing Culture</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="why-write-tests">Why Write Tests</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Helps catch bugs in the code, and in the programmer&rsquo;s mental model of what the
+code does. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+</div>
+</div>
+
+
+<p>The later a bug is caught in the development cycle, the more expensive it is to
+fix it. A good test today is a future debugging session saved. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>The test is the first client of your code. It uncovers sub-optimal design
+choices, tight couplings, missed cases, etc.. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Some test failures are hard to debug, and slow down development, e.g. flaky
+tests.</p>
+</div>
+</div>
+
+
+<p>As a code base grows, poorly written test suites become counter-productive, e.g.
+instability, slowness, etc.. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>As the team size grows, programmer ability is insufficient to avoid defects. For
+instance, a 100-person team of devs that only write a single bug each month will
+have 5 new bugs every workday. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Catches regressions in functionality, e.g. during refactoring, syncing with an
+upstream project, etc.. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+</div>
+</div>
+
+
+<p>Automated testing turns the team members' collective wisdom into a benefit for
+the entire team. Everyone can run the test and will benefit when it detects an
+issue. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>Manual testing (e.g. QA department) doesn&rsquo;t scale well, especially when the
+software has multiple libraries/frameworks, platforms, user configurations, and
+intra-day releases. However, some tests, e.g. testing the quality of search
+results, often involves qualitative human judgment. Humans are also better at
+searching for complex security vulnerabilities, which can then be added to an
+automated security testing system, once the flaw is understood. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>Expressing tests as code instead of a series of manual steps allows us to run
+the tests each time the code changes, and modularize the tests to be executed
+in various environments. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Up-to-date documentation of how a class or function is meant to be used. Less
+likely to go stale compared to comments. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+</div>
+</div>
+
+
+<p>Tests work best as documentation only if the tests are kept clear and concise.
+<span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>Tests help simplify reviews. A code reviewer need not mentally walk through
+scenarios to check code correctness, edge cases, and error conditions. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Sometimes I do the opposite: be meticulous when reviewing code, and then blaze
+through the test files assuming that if the tests are wrong, then they&rsquo;d fail in
+CI. I need to get better at reviewing test files, and identifying holes in
+tests.</p>
+</div>
+</div>
+
+
+<p>The reason for the lack of automated tests may be more nuanced, e.g. pain from
+legacy tests, early stages where it&rsquo;s about validating the idea, etc.. <span class="citation-ref"><a href="#Lent2019"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Designing code that has testable interfaces, such that writing the tests is not
+arduous. Also important is not over-complicating the code just to allow for
+testing. <span class="citation-ref"><a href="#HNLent2019"></a></span></p>
+</div>
+</div>
+
+
+<h2 id="designing-a-test-suite">Designing a Test Suite</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>A test suite is a collection of tests that is ran to verify that a feature is
+working correctly.</p>
+<p>My opinions on what makes a good test suite is influenced by my experiences with
+Google Test (C++), Jest (TS, JS), Mocha (TS, JS), PyTest (Python), and HUnit
+(Haskell).</p>
+</div>
+</div>
+
+
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Each programming language has competing frameworks for writing tests. The
+languages themselves seldom come with adequate frameworks. Learning the specific
+framework becomes yet another thing, but framework share some commonalities,
+e.g. pre-test setup functions, hierarchical tests, etc..</p>
+</div>
+</div>
+
+
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>There are 3 modes of testing: unit tests, integration tests and black-box tests.
+The first two are aware of the source code details, while the third one is
+performed on an already-compiled program.</p>
+</div>
+</div>
+
+
+<p>The <strong>size</strong> of a test refers to the resources required to run a test, e.g.
+memory, processes, time, etc.. The <strong>scope</strong> of a test refers to the specific
+code paths that are verified (and not just executed!) in the test. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>A taxonomy based on size (rather than &ldquo;unit&rdquo;, &ldquo;integration&rdquo;, etc.) is more
+useful because speed and determinism of the test suite matter, regardless of the
+scope of the test. Sources of test slowness and/or non-determinism (flakiness)
+include blocking calls (e.g. <code>sleep</code>), clock time, thread scheduling, network
+access and latency, disk access, and third-party processes. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p><strong>Small tests</strong>, must run on the same process as the code being tested. Any
+network or disk access must be to a hermetic in-memory implementation. <strong>Medium
+tests</strong> must be contained within a single machine, but can span multiple
+processes (e.g. a real database instance), use threads, make blocking calls, and
+make network calls to <code>localhost</code>. <strong>Large tests</strong> do not have the <code>localhost</code>
+restriction, and can span multiple machines. Tooling can be configured to
+enforce size constraints, e.g. a custom test runner that fails small tests that
+attempt to establish a network connection. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p><strong>Narrow-scoped tests</strong> (<em>unit tests</em>) validate the logic in an individual class
+or method. <strong>Medium-scoped tests</strong> (<em>integration tests</em>) verify interactions
+between a small number of components, e.g. server and database. <strong>Large-scoped
+tests</strong> (<em>functional tests, end-to-end tests, system tests</em>) validate
+interaction of several distinct parts of the system, and emergent behaviors that
+aren&rsquo;t expressed in a single class or method. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<p>Ideally, most of the tests should be narrow-scoped unit tests that validate
+business logic, and then medium-scoped integration tests, and finally few
+large-scoped end-to-end tests. Suites with many end-to-end tests but few
+integration and unit tests are a symptom of rushing to production without
+addressing testing debt. Suites with many end-to-end and unit-tests but few
+integration tests may suffer from tightly coupled components. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>A good test suite should support running a subset of tests (multiple times if
+need be), hooks for setting up and tearing down a test case, independence of
+various test cases (the order of running the tests shouldn&rsquo;t matter), and
+temporarily disabling tests.</p>
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#SWEGoogleCh11"></a></span> uses &ldquo;hermetic&rdquo; to describe tests that contain all of
+the information necessary to set up, execute and tear down their environments.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<p>A test should be obvious upon introspection. There are no tests for the tests
+themselves, so avoid complex test flows, e.g. conditionals and loops. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>The test suite should support analyses such as: identifying flaky tests,
+generating code coverage reports, surfacing troubleshooting info (e.g. logs,
+repro commands), etc.</p>
+</div>
+</div>
+
+
+<p>Flaky tests are expensive. If each test has a 0.1% of failing when it should
+not, and one runs 10,000 tests per day, then there will be 10 flakes to
+investigate each day. As flakiness increases (past 1%), devs stop reacting to
+test failures. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Attaining 100% test coverage, especially covering all possible code paths, is
+difficult in large code bases. Are there tools that help developers be more
+judicious as to which code paths are tested?</p>
+</div>
+</div>
+
+
+<p>Code coverage can flag untested code, but it shouldn&rsquo;t be used as a proxy for
+how well a system is tested. Code coverage measures code that was invoked, and
+not code that was validated. Coverage should be used for small tests to avoid
+coverage inflation. Even further, devs tend to treat coverage targets as
+ceilings rather than floors, i.e. not adding tests as soon as the coverage
+threshold is met. Instead of relying on coverage numbers, assess your confidence
+that everything your customers expect to work will work, given that the tests
+are passing. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Choosing what to test is sometimes not obvious. Some tests are almost
+tautological or paranoid.</p>
+</div>
+</div>
+
+
+<p>The Beyoncé Rule: <em>If you liked it, then you shoulda put a test on it.</em>
+Everything that you don&rsquo;t want to break should be in a test, e.g. performance,
+behavioral correctness, accessibility, security, etc.. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Sometimes it&rsquo;s hard to get a 100% true representation of what the end-user sees.
+Tests frequently mock out parts of the systems that are being tested.</p>
+</div>
+</div>
+
+
+<p>Brittle tests - those that over-specify expected outcomes or rely on extensive
+and complicated boilerplate - can resist change. The misuse of mock objects is
+a prolific source of brittleness. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Running tests before checking in code is usually provided by some paid service
+like Travis CI. Some projects, e.g. personal ones, may not have such funds.</p>
+<div class="comment-holder">
+    <div class="comment"><p>Maybe this is not a concern for feature teams? Neither <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span> nor <span class="citation-ref"><a href="#Lent2019"></a></span> address this. Maybe I&rsquo;m over-exaggerating the cost
+of running CI tests, especially when weighed against the cost of <em>not</em> running
+CI tests.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<h2 id="improving-testing-culture">Improving Testing Culture</h2>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Learn how to spot and use momentum from Watershed moments. In 2005, the Google
+Web Server project lead instituted a policy of engineer-driven, automated
+testing, e.g. new code had to have tests, and tests would be run continuously.
+Within a year of the policy, despite record numbers of new changes, the number
+of emergency pushes dropped by half. However, instead of issuing similar
+mandates to the rest of Google, the Testing Grouplet was focused on
+demonstrating success, in the belief that successful ideas would spread. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+</div>
+</div>
+
+
+<p>During orientation, new engineers were taught about testing as if it were
+standard practice at Google. The new engineers would quickly outnumber existing
+team members, and helped bring about cultural change. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#Lent2019"></a></span> had a different experience. As a new hire, she was very
+keen at testing, but lost steam due to existing team members' disinclinations.</p>
+</div>
+</div>
+
+
+<p>A &ldquo;Test Certified&rdquo; program with levels 1 to 5, and each level having goals
+achievable in a quarter. Level 1: set up a continuous build; start tracking code
+coverage; classify all tests as small, medium, or large; identify flaky tests;
+create a set of fast tests. Level 5: all tests are automated; fast tests ran
+before every commit; all non-determinism removed; every behavior covered. An
+internal dashboard showing the level of each team sparked competition. &ldquo;Test
+Certified&rdquo; was later replaced with an automated approach: Project Health (pH).
+<span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>To improve testing culture, there was support in terms of dedicated teams, e.g.
+The Testing Grouplet; various engineering productivity teams <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span>. Being able to have a dedicated group seems crucial.</p>
+</div>
+</div>
+
+
+<p>Testing on the Toilet (TotT). Weekly flyers on how to improve testing were
+placed in restroom stalls. An email newsletter would have been lost in the
+noise. TotT&rsquo;s reception was polarized (e.g. invasion of personal space), but the
+uproar subsided. <span class="citation-ref"><a href="#TotT"></a></span> has online versions of the flyers. <span class="citation-ref"><a href="#SWEGoogleCh11"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='SWEGoogleCh11'>
+        
+        Software Engineering at Google: Lessons Learned From Programming Over Time<i>.</i>
+        Ch 11. Testing Overview<i>.</i>
+    </cite>
+     Adam Bender; Tom Manshreck.
+    
+    
+    
+    
+    
+    <a href="https://abseil.io/resources/swe-book/html/ch11.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
+        <i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     Feb 28, 2020.
+    
+     <a href="https://openlibrary.org/search?isbn=9781492082743" target="_blank" rel="noopener">
+        ISBN: 9781492082743 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Lent2019'>
+        
+        7 Absolute Truths I Unlearned as Junior Developer<i>.</i>
+        
+    </cite>
+    
+     Monica Lent.
+    
+    
+    
+    
+    <a href="https://monicalent.com/blog/2019/06/03/absolute-truths-unlearned-as-junior-developer/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading="lazy" aria-hidden="true">
+        <i>monicalent.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     Jun 3, 2019.
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 6, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HNLent2019'>
+        
+        Absolute truths I unlearned as junior developer (2019) | Hacker News<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://news.ycombinator.com/item?id=31636812" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
+        <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 6, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='TotT'>
+        
+        Google Testing Blog: TotT<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://testing.googleblog.com/search/label/TotT" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading="lazy" aria-hidden="true">
+        <i>testing.googleblog.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jun 13, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/authors/bender-adam'>Bender, Adam</a>
+    
+        <a href='/authors/lent-monica'>Lent, Monica</a>
+    
+        <a href='/authors/manshreck-tom'>Manshreck, Tom</a>
+    
+</aside>
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/abseil.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
+            abseil.io
+        </a>
+    
+        <a href='/domains/monicalent.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading="lazy" aria-hidden="true">
+            monicalent.com
+        </a>
+    
+        <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
+            news.ycombinator.com
+        </a>
+    
+        <a href='/domains/testing.googleblog.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading="lazy" aria-hidden="true">
+            testing.googleblog.com
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+            <a href="https://www.curiosities.dev/computer-science/2022-06-06-perspectives-on-swe/">&laquo; Perspectives on Software Engineering</a>
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
