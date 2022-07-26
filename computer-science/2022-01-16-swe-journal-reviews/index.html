@@ -96,7 +96,7 @@
         
         Dated Jan 15, 2022;
         
-        last modified on Thu, 17 Feb 2022
+        last modified on Sat, 02 Jul 2022
         
     </p>
     </header>
@@ -107,7 +107,6 @@
   <ul>
     <li><a href="#formal-software-design">Formal Software Design</a></li>
     <li><a href="#dynamic-program-analysis">Dynamic Program Analysis</a></li>
-    <li><a href="#software-debugging">Software Debugging</a></li>
     <li><a href="#probabilistic-programming">Probabilistic Programming</a></li>
     <li><a href="#version-control-systems-vcs">Version Control Systems (VCS)</a></li>
     <li><a href="#workplace-dynamics">Workplace Dynamics</a></li>
@@ -244,116 +243,6 @@ ecosystems
 
 </div>
 
-<h2 id="software-debugging">Software Debugging</h2>
-<p>In delta debugging, we want to reduce an object while preserving a certain
-property. More formally, let \(\mathbb{X}\) be a universe of all objects of
-interest, \(\phi: \mathbb{X} \to \{ \text{TRUE}, \text{FALSE} \} \) be a
-test function that determines whether an object \(X \in \mathbb{X}\) exhibits
-a given property or not, and \(|X|\) be the size of \(X\). The goal is to
-find an object \(X'\) such that \(|X'|\) is as small as possible, and
-\(\phi(X') = \text{TRUE}\). <span class="citation-ref"><a href="#Wang2021"></a></span></p>
-
-<div class="flashcard">
-    <div class="flashcard-link-holder" id='card-61f16bba26dc320004be391c'>
-    <a href='https://cards.c13u.com/browse/?cardID=61f16bba26dc320004be391c' title='Flashcard: In delta debugging, we want to reduce an object while preserving a certain property. How can we use probabilistic techniques to be more efficient?' target="_blank">
-        <span aria-hidden="true"> 📑 </span>
-    </a>
-</div>
-<p><span class="citation-ref"><a href="#Wang2021"></a></span> propose a probabilistic delta debugging algorithm (ProbDD)
-to improve on <span class="citation-ref"><a href="#Zeller2002"></a></span>&rsquo;s widely-used <em>ddmin</em> algorithm. The
-<em>ddmin</em> algorithm follows a predefined sequence of steps to remove items from a
-sequence, while ProbDD learns a probabilistic model to select which items to
-remove in the next iteration. The worst-case asymptotic number of tests while
-using ProDD is \(O(n)\), while that of <em>ddmin</em> is \(O(n^2)\). ProbDD also
-tends to produce smaller final artifacts than those produced by <em>ddmin</em>.</p>
-
-</div>
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>In the space of probabilistic algorithms, ProbDD is probabilistic in running
-time, but not in the answer produced. <span class="citation-ref"><a href="#Wang2021"></a></span> provide a proof of
-correctness.</p>
-</div>
-</div>
-
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Delta debugging reminds me of 
-<a href="https://git-scm.com/docs/git-bisect"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    git-bisect
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-,
-which uses binary search to find the commit that introduced a bug. <span class="citation-ref"><a href="#Wang2021"></a></span> do not mention git-bisect. Assuming that at each each commit, the
-code is in a state that provides a useful answer<sup>1</sup>, git-bisect takes
-at most \(O(lg N)\) steps. ProbDD looks useful where git history is absent or
-not useful (e.g. finding the fault within a commit that changed a lot of
-things).</p>
-<p><sup>1</sup> For example, if we&rsquo;re looking for a feature bug, then the code must
-be buildable at each commit. Otherwise, we won&rsquo;t know whether that commit broke
-the feature.</p>
-</div>
-</div>
-
-
-
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p>Read <span class="citation-ref"><a href="#Zeller2002"></a></span>. There are mentions of binary search, so maybe
-that&rsquo;s why <span class="citation-ref"><a href="#Wang2021"></a></span> did not concern themselves with it.</p>
-</div>
-</div>
-
-
-<p>Statistical Fault Localization (SFL) techniques use execution profiles and
-success/failure information from execution data to predict which program
-elements are likely to be faulty. <span class="citation-ref"><a href="#Kucuk2021"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>SFL is one of the techniques for Automated Software Fault Localization (AFL).
-The goal of AFL is to compute suspiciousness scores for program statements and
-other elements, and present those to the developers for deeper investigation.
-SFL is not used widely in industry because most techniques do not consistently
-locate faults with enough precision. <span class="citation-ref"><a href="#Kucuk2021"></a></span></p>
-</div>
-</div>
-
-
-<p><span class="citation-ref"><a href="#Kucuk2021"></a></span> note that most SFL techniques measure correlation, and
-are thus susceptible to confounding bias.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Let \(X\) be some independent variable, and \(Y\) some dependent variable.
-To estimate the effect of \(X\) on \(Y\), the statistician must suppress the
-effects of extraneous variables that influence both \(X\) and \(Y\). We say
-that \(X\) and \(Y\) are confounded by some other variable \(Z\) whenever
-\(Z\) causally influences both \(X\) and \(Y\). <span class="citation-ref"><a href="#WikiConfounding"></a></span></p>
-</div>
-</div>
-
-
-<p><span class="citation-ref"><a href="#Kucuk2021"></a></span> propose UniVal, an SFL technique that uses causal
-inference techniques and ML to integrate information about <em>both</em> predicate
-outcomes and variable values. UniVal&rsquo;s key insight is to transform the program
-under analysis so that branch and loop predicate outcomes become variable
-values, so that one causally sound value-based SFL technique can be applied to
-both variable assignments and predicates.</p>
 <h2 id="probabilistic-programming">Probabilistic Programming</h2>
 <p><span class="citation-ref"><a href="#Sidiroglou-Douskos2011"></a></span> propose loop perforation, a general
 technique to trade accuracy for performance by transforming loops to execute a
@@ -789,95 +678,6 @@ ones.</p>
 
     
 
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='1'>
-    <cite id='Wang2021'>
-        
-        Probabilistic Delta debugging<i>.</i>
-        
-    </cite>
-     Guancheng Wang; Ruobing Shen; Junjie Chen; Yingfei Xiong; Lu Zhang.
-    
-     European Software Engineering Conference and Symposium on the Foundations of Software Engineering, Proceedings of the 29th, Aug 2021, pp. 881-892.
-    
-     Peking University; Tianjin University.
-    
-    <a href="https://doi.org/10.1145/3468264.3468625" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
-        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Awang%2Cshen&#43;Probabilistic&#43;Delta&#43;debugging&amp;btnG=" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy" aria-hidden="true">
-        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://github.com/Amocy-Wang/ProbDD" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
-        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
-    
-    
-    
-    Cited 1 times as of Jan 26, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='1100'>
-    <cite id='Zeller2002'>
-        
-        Simplifying and Isolating Failure-Inducing Input<i>.</i>
-        
-    </cite>
-     Andreas Zeller; Ralf Hildebrandt.
-    
-     IEEE Transactions on Software Engineering, vol. 28, no. 2, pp. 183-200, Feb. 2002.
-    
-     Univeristät des Saarlandes; DeTeLine - Deutsche Telekom Kommunikationsnetze.
-    
-    <a href="https://doi.org/10.1109/32.988498" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
-        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C48&amp;q=author%3Azeller&#43;Simplifying&#43;and&#43;isolating&#43;failure-inducing&#43;input&amp;btnG=" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy" aria-hidden="true">
-        <i>scholar.google.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
-    
-    
-    
-    Cited 1100 times as of Jan 26, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
 <div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='585'>
     <cite id='Sidiroglou-Douskos2011'>
         
@@ -1030,73 +830,6 @@ ones.</p>
 </div>
 
 </li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count='4'>
-    <cite id='Kucuk2021'>
-        
-        Improving Fault Localization by Integrating Value and Predicate-Based Causal Inference Techniques.<i></i>
-        
-    </cite>
-     Küçük, Yiğit; Tim AD Henderson; Andy Podgurski.
-    
-     International Conference on Software Engineering, 43rd, 2021, pp. 649-660.
-    
-     Case Western Reserve University; Google.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
-    
-    
-    
-    Cited 4 times as of Feb 16, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='WikiConfounding'>
-        
-        Confounding - Wikipedia<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Confounding" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 16, 2022.
-    
-    
-</div>
-
-</li>
 </ol>
 
         </article>
@@ -1116,8 +849,6 @@ ones.</p>
     
         <a href='/authors/bradley-nick-c.'>Bradley, Nick C.</a>
     
-        <a href='/authors/chen-junjie'>Chen, Junjie</a>
-    
         <a href='/authors/chowdhury-shaiful'>Chowdhury, Shaiful</a>
     
         <a href='/authors/ford-denae'>Ford, Denae</a>
@@ -1130,17 +861,11 @@ ones.</p>
     
         <a href='/authors/heller-veit'>Heller, Veit</a>
     
-        <a href='/authors/henderson-tim-ad'>Henderson, Tim AD</a>
-    
-        <a href='/authors/hildebrandt-ralf'>Hildebrandt, Ralf</a>
-    
         <a href='/authors/hoffmann-henry'>Hoffmann, Henry</a>
     
         <a href='/authors/holmes-reid'>Holmes, Reid</a>
     
         <a href='/authors/kang-eunsuk'>Kang, Eunsuk</a>
-    
-        <a href='/authors/k%c3%bc%c3%a7%c3%bck-yi%c4%9fit'>Küçük, Yiğit</a>
     
         <a href='/authors/manquinho-vasco'>Manquinho, Vasco</a>
     
@@ -1154,15 +879,11 @@ ones.</p>
     
         <a href='/authors/orvalho-pedro'>Orvalho, Pedro</a>
     
-        <a href='/authors/podgurski-andy'>Podgurski, Andy</a>
-    
         <a href='/authors/rinard-martin'>Rinard, Martin</a>
     
         <a href='/authors/rinard-martin-c.'>Rinard, Martin C.</a>
     
         <a href='/authors/rodeghero-paige'>Rodeghero, Paige</a>
-    
-        <a href='/authors/shen-ruobing'>Shen, Ruobing</a>
     
         <a href='/authors/sidiroglou-douskos-stelios'>Sidiroglou-Douskos, Stelios</a>
     
@@ -1172,15 +893,7 @@ ones.</p>
     
         <a href='/authors/wagner-ryan'>Wagner, Ryan</a>
     
-        <a href='/authors/wang-guancheng'>Wang, Guancheng</a>
-    
-        <a href='/authors/xiong-yingfei'>Xiong, Yingfei</a>
-    
-        <a href='/authors/zeller-andreas'>Zeller, Andreas</a>
-    
         <a href='/authors/zhang-changjian'>Zhang, Changjian</a>
-    
-        <a href='/authors/zhang-lu'>Zhang, Lu</a>
     
         <a href='/authors/zimmermann-thomas'>Zimmermann, Thomas</a>
     
@@ -1195,8 +908,6 @@ ones.</p>
     
         <a href='/publications/european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
     
-        <a href='/publications/ieee-transactions-on-software-engineering'>IEEE Transactions on Software Engineering</a>
-    
         <a href='/publications/international-conference-on-software-engineering'>International Conference on Software Engineering</a>
     
 </aside>
@@ -1207,13 +918,7 @@ ones.</p>
     
         <a href='/affiliations/carnegie-mellon-university'>Carnegie Mellon University</a>
     
-        <a href='/affiliations/case-western-reserve-university'>Case Western Reserve University</a>
-    
         <a href='/affiliations/clemson-university'>Clemson University</a>
-    
-        <a href='/affiliations/deteline---deutsche-telekom-kommunikationsnetze'>DeTeLine - Deutsche Telekom Kommunikationsnetze</a>
-    
-        <a href='/affiliations/google'>Google</a>
     
         <a href='/affiliations/massachusetts-institute-of-technology'>Massachusetts Institute of Technology</a>
     
@@ -1221,15 +926,9 @@ ones.</p>
     
         <a href='/affiliations/new-college-of-florida'>New College of Florida</a>
     
-        <a href='/affiliations/peking-university'>Peking University</a>
-    
         <a href='/affiliations/technical-university-of-crete'>Technical University of Crete</a>
     
-        <a href='/affiliations/tianjin-university'>Tianjin University</a>
-    
         <a href='/affiliations/unaffiliated'>Unaffiliated</a>
-    
-        <a href='/affiliations/univerist%c3%a4t-des-saarlandes'>Univeristät des Saarlandes</a>
     
         <a href='/affiliations/universidade-de-lisboa'>Universidade de Lisboa</a>
     
@@ -1286,10 +985,10 @@ ones.</p>
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">&laquo; Software Dependencies</a>
+            <a href="https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/">&laquo; Testing Your Code</a>
         
         
-            <a href="https://www.curiosities.dev/computer-science/2021-10-28-socio-economic-equity-in-tech/">Socio-Economic Equity in Tech &raquo;</a>
+            <a href="https://www.curiosities.dev/computer-science/computer-graphics/2021-01-03-potpourri/">Computer Graphics Potpourri &raquo;</a>
         
 
     </footer>
