@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                General Tips on Performance and Optimization | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+
+        
+
+
+    </head>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/performance/">Performance</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/performance/general-tips/">General Tips on Performance and Optimization</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> General Tips on Performance and Optimization</h1>
+    <p class="meta">
+        
+        Dated Jul 26, 2022;
+        
+        last modified on Tue, 26 Jul 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents"></nav>
+        </aside>
+
+        <article id="main-article">
+            <p>Trying to optimize may lead to errors and high-maintenance/change-resistant
+code. If there&rsquo;s no need to optimize, let the code be. <span class="citation-ref"><a href="#isoCPPPerformance"></a></span></p>
+<p>Only optimize performance-critical parts of a program. If your program spends 4%
+of its processing time doing computation A, and 40% of its time doing
+computation B, a 50% improvement on A is only as impactful as a 5% improvement
+on B. <span class="citation-ref"><a href="#isoCPPPerformance"></a></span></p>
+<p>Complicated and/or low-level code is not necessarily faster than simple code.
+Optimizers sometimes do marvels with simple and/or high-level code. <span class="citation-ref"><a href="#isoCPPPerformance"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Where can I find latest compiler tips and tricks, so that I can gain an
+intuition of what the compiler likes?</p>
+</div>
+</div>
+
+
+<p>Don&rsquo;t make claims about performance without measuring your code. Tools include:
+microbenchmarks, e.g., using Unix <code>time</code>; profilers, to identify performance
+critical parts of your system, etc. <span class="citation-ref"><a href="#isoCPPPerformance"></a></span></p>
+<p>Pass sufficient information in the interface for a good implementation to be
+chosen. For example, <code>void qsort(void* base, size_t num, size_t size, int (*compar)(const void*, const void*));</code> throws away useful information (e.g., the
+element type), forces the user to repeat already-known information (e.g., the
+element size), and forces the user to write extra code (e.g., a function to
+compare two elements). Given that the compiler knows about the size of the
+array, the type of elements, and how to elements, an interface like
+<code>template&lt;typename Iter&gt; void sort(Iter b, Iter e)</code> is better. <span class="citation-ref"><a href="#isoCPPPerformance"></a></span></p>
+<ol>
+<li>
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='isoCPPPerformance'>
+        
+        C&#43;&#43; Core Guidelines &gt; Per: Performance<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-performance" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=isocpp.github.io" loading="lazy" aria-hidden="true">
+        <i>isocpp.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Jul 26, 2022.
+    
+    
+</div>
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/isocpp.github.io' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=isocpp.github.io" loading="lazy" aria-hidden="true">
+            isocpp.github.io
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
