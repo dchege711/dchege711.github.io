@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                01. The Shell | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
+
+        
+
+
+    </head>
+
+    <svg id="background-svg"></svg>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/the-missing-cs-semester/">The Missing Semester of your CS Education</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/the-missing-cs-semester/01-the-shell/">01. The Shell</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> 01. The Shell</h1>
+    <p class="meta">
+        
+        Dated Feb 6, 2020;
+        
+        last modified on Sun, 18 Sep 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-the-shell">What is the Shell?</a></li>
+    <li><a href="#potpourri-of-shell-utilities-and-programs">Potpourri of Shell Utilities and Programs</a></li>
+    <li><a href="#connecting-programs">Connecting Programs</a></li>
+    <li><a href="#too-much-powaah">Too Much Powaah</a></li>
+    <li><a href="#the-shell-prompt">The Shell Prompt</a></li>
+    <li><a href="#the-curious-case-of-tmp">The Curious Case of <code>/tmp</code></a></li>
+    <li><a href="#terminal-escaping">Terminal Escaping</a></li>
+    <li><a href="#proper-use-of-chmod">Proper Use of <code>chmod</code></a></li>
+    <li><a href="#string-matching-exercise">String Matching Exercise</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id=''>
+        
+        Topic 1: The Shell<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://missing.csail.mit.edu/2020/course-shell/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=missing.csail.mit.edu" loading="lazy" aria-hidden="true">
+        <i>missing.csail.mit.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+<h2 id="what-is-the-shell">What is the Shell?</h2>
+<p>At their very core, shells are all roughly the same: <em>they allow you to run programs, give them input, and inspect their output in a semi-structured way.</em></p>
+<h2 id="potpourri-of-shell-utilities-and-programs">Potpourri of Shell Utilities and Programs</h2>
+<p>We can find out which file is executed for a given program name using the <code>which</code> program, e.g. <code>$ which python</code> gives me <code>/Users/dchege711/anaconda3/bin/python</code></p>
+<h2 id="connecting-programs">Connecting Programs</h2>
+<p>While <code>&gt;</code> overwrites a file&rsquo;s content, <code>&gt;&gt;</code> appends to a file.</p>
+<p><code>|</code> lets me chain programs such that the output of one is the input of another. This is where the shell shines.</p>
+<h2 id="too-much-powaah">Too Much Powaah</h2>
+<p>One rarely logs into the system as the root user since it&rsquo;s too easy to accidentally break things. The <code>sudo</code> command lets you &lsquo;do&rsquo; something as &lsquo;su&rsquo; - the super user.</p>
+<p>To write to the <code>sysfs</code> file system mounted under <code>sys</code>, you need to be root. For instance, here&rsquo;s a recipe to change the brightness of your laptop&rsquo;s screen:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-shell" data-lang="shell">$ sudo find -L /sys/class/backlight -maxdepth <span style="color:#ae81ff">2</span> -name <span style="color:#d88200">&#39;*brightness*&#39;</span>
+/sys/class/backlight/thinkpad_screen/brightness
+$ <span style="color:#111">cd</span> /sys/class/backlight/thinkpad_screen
+</code></pre></div><p><code>$ sudo echo 3 &gt; brightness</code> would fail because <code>sudo</code> only applies to the <code>echo</code> command. Since the shell does not run as root, you need <code>$ echo 3 | sudo tee brightness</code>.</p>
+<p>The <code>tee</code> utility copies standard input to standard output, making a copy in zero or more files. <code>tee</code> runs as the root user, so permissions work out.</p>
+<p>But since I&rsquo;m on MacOS, I do not have the <code>sysfs</code>. These damned walled gardens!</p>
+<h2 id="the-shell-prompt">The Shell Prompt</h2>
+<p>The prompt 
+<a href="http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    can be customized
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ to provide more useful information. 
+<a href="https://ohmyz.sh/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Oh My Zsh
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+ offers further customization, e.g. support for Git, but I&rsquo;ll stay vanilla for now. I think the shell is too powerful for me to 
+<a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    add dependencies
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+. My ZSH shell is now:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-zsh" data-lang="zsh"><span style="color:#75715e"># If I&#39;m root, show a red &#39;#&#39;, otherwise show a green &#39;$&#39;. &#39;%f&#39; resets the color</span>
+<span style="color:#111">USER_ROOT_OR_NOT</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;%(!.%F{red}#%f.%F{green}</span>$<span style="color:#d88200">%f)&#34;</span>
+<span style="color:#75715e"># %~ gives current directory, replacing $HOME with ~</span>
+<span style="color:#111">PROMPT</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;%F{cyan}%~%f </span><span style="color:#d88200">${</span><span style="color:#111">USER_ROOT_OR_NOT</span><span style="color:#d88200">}</span><span style="color:#d88200"> %f&#34;</span>
+</code></pre></div><h2 id="the-curious-case-of-tmp">The Curious Case of <code>/tmp</code></h2>
+<p>I&rsquo;m surprised that it&rsquo;s not the same as the <code>TMPDIR</code> environment variable. On my machine, <code>TMPDIR = /var/folders/gc/p6lgv5555nnfsggg7_wwwn440000gn/T/</code></p>
+<p>
+<a href="https://apple.stackexchange.com/questions/22694/private-tmp-vs-private-var-tmp-vs-tmpdir"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    According to /u/nohillside (apple.stackexchange.com)
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, <code>TMPDIR</code> is only available to the logged in user.</p>
+<p><code>/etc/defaults/periodic.conf</code> (described in 
+<a href="https://www.freebsd.org/cgi/man.cgi?periodic.conf%285%29"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    the periodic.conf(5) man page
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+) shows that my any file in my <code>/tmp</code> folder that hasn&rsquo;t been accessed in 3 days gets deleted.</p>
+<h2 id="terminal-escaping">Terminal Escaping</h2>
+<p><code>$ echo &quot;!/bin/sh&quot; &gt; somefile.txt</code> doesn&rsquo;t work</p>
+<p>Double quotes preserve the literal value of all characters within the quotes except &lsquo;$&rsquo;, &lsquo;`&rsquo;, &lsquo;' and, when history expansion is enabled, &lsquo;!&rsquo;. 
+<a href="https://www.gnu.org/software/bash/manual/html_node/Single-Quotes.html#Single-Quotes"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Single Quotes (gnu.org)
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+</p>
+<p>In contrast, single quotes preserve the literal value of each character. A single quote may not occur between single quotes, even when preceded by a backslash. 
+<a href="https://www.gnu.org/software/bash/manual/html_node/Double-Quotes.html#Double-Quotes"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Double Quotes (gnu.org)
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+</p>
+<h2 id="proper-use-of-chmod">Proper Use of <code>chmod</code></h2>
+<p>​​All this time I&rsquo;d been using <code>chmod</code> wrong. I blindly ran <code>$ chmod 700 myfile</code> and consequently locked everyone out.</p>
+<p>According to the man page, we&rsquo;d arrive at 700 from 400 (owner can read) + 200 (owner can write) + 100 (owner can execute). But I <em>think</em> we can interpret it as the bit that is set in the <code>rwx</code> triple, e.g. <code>111 = 7</code></p>
+<p>The default settings are <code>-rw-r--r--</code>. To give myself executing permissions, I should run chmod with a value of (400 + 200 + 100) + (40) + (4) = 744, to make it <code>-rwxr--r--</code></p>
+<h2 id="string-matching-exercise">String Matching Exercise</h2>
+<p>Challenge: <em>Use | and &gt; to write the &ldquo;last modified&rdquo; date output by <code>semester</code> into a file called <code>last-modified.txt</code> in your home directory.</em></p>
+<p>The contents of <code>semester</code> were:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-zsh" data-lang="zsh"><span style="color:#75715e">#!/bin/sh
+</span><span style="color:#75715e"></span>curl --head --silent https://missing.csail.mit.edu
+</code></pre></div><p>​​I had trouble with this. What program should I pipe <code>semester</code>&rsquo;s output so that the end result is the &ldquo;last modified&rdquo; line only?</p>
+<p>Took me some time to find it: <code>$ ./semester | grep --regexp=Last-Modified*</code>. I knew grep did some regex matching, but I didn&rsquo;t know it matched per line. That&rsquo;s neat!</p>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+
+
+
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/missing.csail.mit.edu' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=missing.csail.mit.edu" loading="lazy" aria-hidden="true">
+            missing.csail.mit.edu
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+            <a href="https://www.curiosities.dev/computer-science/the-missing-cs-semester/02-shell-tools/">02. Shell Tools &raquo;</a>
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

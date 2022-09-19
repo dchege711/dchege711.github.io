@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                chem.tufts.edu | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
+
+        
+        
+    </head>
+
+    <svg id="background-svg"></svg>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/domains/">Cited Domains</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/domains/chem.tufts.edu/">chem.tufts.edu</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<main>
+    <article>
+        <header>
+            <h1><img src="https://www.google.com/s2/favicons?domain=chem.tufts.edu" loading="lazy"> chem.tufts.edu</h1>
+        </header>
+        
+        
+        
+    </article>
+
+    
+    <table border="0">
+        <tr class="no-decoration" id="randomSelectorContainer">
+            <td class="no-decoration"></td>
+            <td class="no-decoration"></td>
+            <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
+        </tr>
+        
+        
+        
+            
+                
+    <tr class="no-decoration">
+        <td class="no-decoration">Sep 1, 1989</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.curiosities.dev/knowing/1989-09-01-asimov-relativity-of-wrong/">[Summary] (Asimov) The Relativity of Wrong</a>
+            
+                
+                    <span class="meta">
+                    2 min; updated Sep 18, 2022 
+                    <button 
+                        id="22542a7154f3407728eba710642730bd-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="22542a7154f3407728eba710642730bd-summary" style="display: none;">
+                        The Relativity of Wrong.  Isaac Asimov. chem.tufts.edu  . Sep 1, 1989.   John, when people thought the earth was flat, they were wrong. When people thought the earth was spherical, they were wrong. But if you think that thinking the earth is spherical is just as wrong as thinking the earth is flat, then your view is wronger than both of them put together.
+The Flat Earthers Earth&rsquo;s curvature is nearly 0....
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
+        
+        
+    </table>
+
+    <script>
+    let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+            if (!node) return;
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+        })
+        .then(() => {
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
+
+    function goToRandomPage() {
+        
+        
+        let idx = Math.floor(Math.random() * (pageURLs.length));
+        window.open(pageURLs[idx], "_self");
+    }
+</script>
+
+
+</main>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
