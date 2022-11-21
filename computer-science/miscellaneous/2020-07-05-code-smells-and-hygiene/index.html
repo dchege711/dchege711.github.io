@@ -106,7 +106,7 @@
         
         Dated Jul 5, 2020;
         
-        last modified on Mon, 05 Sep 2022
+        last modified on Sun, 20 Nov 2022
         
     </p>
     </header>
@@ -116,6 +116,22 @@
             <nav id="TableOfContents">
   <ul>
     <li><a href="#on-abstractions">On Abstractions</a></li>
+    <li><a href="#quantitative-metrics">Quantitative Metrics</a>
+      <ul>
+        <li><a href="#source-lines-of-code">Source Lines of Code</a></li>
+        <li><a href="#abc-score">ABC Score</a></li>
+        <li><a href="#function-point">Function Point</a></li>
+        <li><a href="#coverage">Coverage</a></li>
+        <li><a href="#cyclomatic-complexity-mccabes-complexity">Cyclomatic Complexity (McCabe&rsquo;s Complexity)</a></li>
+        <li><a href="#connascence">Connascence</a></li>
+        <li><a href="#cohesion">Cohesion</a></li>
+        <li><a href="#coupling">Coupling</a></li>
+        <li><a href="#comment-density">Comment Density</a></li>
+        <li><a href="#halstead-complexity-measures">Halstead Complexity Measures</a></li>
+        <li><a href="#weighted-micro-function-points">Weighted Micro Function Points</a></li>
+      </ul>
+    </li>
+    <li><a href="#code-quality-as-an-industry">Code Quality as an Industry</a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -123,14 +139,360 @@
 
         <article id="main-article">
             <h2 id="on-abstractions">On Abstractions</h2>
-<p>If you find yourself adding more parameters and if-statements to an existing abstraction, is the abstraction still apt? Why not remove the old abstraction and re-extract a new [more apt] abstraction? Devs frequently succumb to the sunken cost fallacy thinking that there must have been a reason that the code was written in a certain way. <span class="citation-ref"><a href="#sandimetzWrongAbstraction"></a></span></p>
+<p>If you find yourself adding more parameters and if-statements to an existing
+abstraction, is the abstraction still apt? Why not remove the old abstraction
+and re-extract a new [more apt] abstraction? Devs frequently succumb to the
+sunken cost fallacy thinking that there must have been a reason that the code
+was written in a certain way. <span class="citation-ref"><a href="#Metz2016"></a></span></p>
+<p><span class="citation-ref"><a href="#Metz2016"></a></span> is straw-manning though. It&rsquo;s less of a sunk cost fallacy,
+and more of a Chesterton&rsquo;s Fence situation: <em>Do not remove a fence until you
+know why it was put up in the first place.</em> Unless we know why someone made a
+decision, we can&rsquo;t safely change it or conclude that they were wrong. <span class="citation-ref"><a href="#fsChestertonsFence"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Software tends to have an advantage in figuring out why the fence existed in the
+first place: version control. With VC, one can track when the change was made,
+and who made the change, and why &ndash; assuming meaningful commit history. Also, if
+the code base is strongly typed and has tests, evaluating the effect of the
+change is more tractable. That said, evaluating a change is hard, and hence the
+need for progressive rollout of software, instead of an all-out deployment.</p>
+</div>
+</div>
+
+
+<h2 id="quantitative-metrics">Quantitative Metrics</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Qualitative code quality metrics are good guides in code review. For example:</p>
+<ul>
+<li>How easy is it to achieve a task, e.g., disable feature X.
+<ul>
+<li>Shouldn&rsquo;t need to pull in a bunch of components at high levels of
+abstraction.</li>
+</ul>
+</li>
+<li>How tightly are the components coupled?
+<ul>
+<li>Do the tests need workarounds like mocks and access to private members?</li>
+</ul>
+</li>
+<li>How readable is the code?
+<ul>
+<li>For a given function, how much branching and state mutation occurs?</li>
+</ul>
+</li>
+<li>Files in which other people are not confident to make changes?'</li>
+</ul>
+<p>However, qualitative metrics don&rsquo;t scale well because they need active human
+input.</p>
+<p>Quantitative metrics can be collected passively, and ring alarm bells if
+necessary. However, we lose accuracy because the quantitative models simplify
+the more complex/rich reality.</p>
+<p>To avoid the metrics being goals in and of themselves, paying attention to
+warnings rather than &ldquo;good&rdquo; values seems prudent. For example, a low readability
+score is more important/informative than a high one, as the low score provides a
+starting point for focusing improvement efforts.</p>
+</div>
+</div>
+
+
+<p>Wikipedia&rsquo;s 
+<a href="https://en.wikipedia.org/wiki/Software_metric"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    Software metric
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+
+page links to a couple of metrics, and is a launchpad for more targeted
+investigations.</p>
+<p><strong>Control-flow graphs</strong> come up in metrics discussions. A control-flow graph
+(CFG) is a graphical representation of all paths that might be traversed through
+a program during its execution. CFGs are essential to many compiler
+optimizations and static analysis tools. <span class="citation-ref"><a href="#WikiCFG"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>Does using Visual Studio, instead of Visual Studio Code, help identify potential
+fixes based on some of these metrics? VS Code is pretty barebones as far as C++
+goes.</p>
+</div>
+</div>
+
+
+<h3 id="source-lines-of-code">Source Lines of Code</h3>
+<p><strong>Source Lines of Code</strong> is used to measure the size of a program by counting
+the number of lines. Useful comparisons tend to involve the order of magnitude
+of LOC, e.g., comparing 10K LOC project to a 100K LOC project is far more useful
+than comparing a 20K LOC project to a 21K LOC project. <span class="citation-ref"><a href="#WikiLOC"></a></span></p>
+<p>The most common definition of <strong>physical SLOC (LOC)</strong> is a count of lines in the
+text of the program&rsquo;s source code, excluding comment lines. <strong>Logical SLOC
+(LLOC)</strong> tries to measure the number of executable statement and can vary by
+language. For example,</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-c" data-lang="c"><span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">100</span><span style="color:#111">;</span> <span style="color:#111">i</span><span style="color:#f92672">++</span><span style="color:#111">)</span> <span style="color:#111">printf</span><span style="color:#111">(</span><span style="color:#d88200">&#34;Hello&#34;</span><span style="color:#111">);</span> <span style="color:#75715e">/* How many LOC is this? */</span>
+</code></pre></div><p>&hellip; has 1 physical LOC, 2 LLOC (<code>for</code> statement and <code>printf</code> statement), and 1
+comment line. <span class="citation-ref"><a href="#WikiLOC"></a></span></p>
+<p>LOC, especially physical LOC, can be automatically determined, is intuitive, and
+is ubiquitous given its early debut. However:</p>
+<ul>
+<li>There is no standard definition of what a line of code is, e.g., are data
+declarations included?</li>
+<li>As a measure of productivity, it&rsquo;s limited, e.g., the coding phase accounts
+for ~30% of the overall effort; skilled devs may achieve high functionality
+with lower LOC.</li>
+<li>Different languages (or even GUI tools) have different verbosities.
+Furthermore, some projects use multiple languages, and this nuance is lost
+when LOC are combined.</li>
+</ul>
+<p><span class="citation-ref"><a href="#WikiLOC"></a></span></p>
+<h3 id="abc-score">ABC Score</h3>
+<p>The <strong>ABC score</strong> is represented by a 3-D vector <code>&lt;Assignments (A), Branches (B), Conditionals (C)&gt;</code>. Unlike the Source Lines of Code (SLOC) measure, the ABC
+score is independent of the coding style, and therefore a more robust measure of
+code size. <span class="citation-ref"><a href="#WikiABCSoftwareMetric"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>LoC is quite a popular measure. Part of it is the ease in counting. For
+instance, I can count the LoC that I&rsquo;ve introduced to a repository with some
+git-fu and stream processing. Doing the same for the ABC score is not as
+straightforward.</p>
+</div>
+</div>
+
+
+<h3 id="function-point">Function Point</h3>
+<p>The <strong>function point</strong> expresses the amount of business functionality an
+information system (as a product) provides to a user. Compared to using LOC,
+using function points avoids inflated LOC if used as a productivity metric, is
+agnostic to the programming language, and is more predictable early on as it can
+be derived from requirements. <span class="citation-ref"><a href="#WikiFunctionPoint"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Counting function points seems tedious. I&rsquo;ve read 
+<a href="https://en.wikipedia.org/wiki/The_Simple_Function_Point_method"
+    
+    
+    
+        target="_blank" rel="noopener"
+    >
+    The Simple Function Point
+method
+     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+</a>
+, which
+was meant to be more palatable, and I still don&rsquo;t have a good idea of how to
+proceed.</p>
+</div>
+</div>
+
+
+<h3 id="coverage">Coverage</h3>
+<p><strong>Coverage</strong> measures what percentage of code has been executed by a test suite.
+<strong>Function coverage</strong> checks if each function in the program has been called.
+<strong>Statement coverage</strong> checks if each statement in the program has been
+executed. <strong>Edge coverage</strong> checks if each edge in the control-flow graph has
+been executed. <strong>Condition coverage</strong> checks if each Boolean sub-expression
+evaluated to both <code>true</code> and <code>false</code>. <span class="citation-ref"><a href="#WikiCodeCoverage"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>More discussion about test coverage in 
+<a href="https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/#CodeCoverage"
+    
+    
+    
+    >
+    Testing Your Code
+    
+</a>
+.</p>
+</div>
+</div>
+
+
+<h3 id="cyclomatic-complexity-mccabes-complexity">Cyclomatic Complexity (McCabe&rsquo;s Complexity)</h3>
+<p>Cyclomatic complexity is a measure of the number of linearly independent paths
+through a program&rsquo;s source code. Two paths in the CFG are linearly independent
+if the symmetric difference (union minus intersection) of their edge sets is
+non-empty. Applications include:</p>
+<ul>
+<li>Limiting the cyclomatic complexity of a module to say 10, or provide a written
+explanation of why the limit was exceeded.</li>
+<li>Measuring how well a program is structured by iteratively condensing all
+subgraphs that have a single-entry and a single-exit point. Once the graph is
+irreducible, the cyclomatic complexity will be precisely 1 for structured
+programs will be 1, and greater than 1 for non-structured programs.</li>
+<li>Given that branch coverage \(\le\) cyclomatic complexity \(\le\) number of
+paths, generating test cases for the linearly independent paths (basis path
+testing) guarantees complete branch coverage, without covering all possible
+paths in the CFG. Covering all possible paths is usually too costly.</li>
+<li>Controlled for program size (typically measured in LoC), the jury is still out
+on whether lower cyclomatic complexity reduces the number of defects in code.</li>
+</ul>
+<p><span class="citation-ref"><a href="#WikiCyclomaticComplexity"></a></span></p>
+<h3 id="connascence">Connascence</h3>
+<p>Two components are <strong>connascent</strong> if a change in one requires the other to be
+modified in order to maintain the overall correctness of the system. <strong>Static
+connascences</strong> include: name of an entity, type of an entity, conventions (e.g.
+<code>-1</code> to mean &ldquo;invalid&rdquo;), order of values (e.g. positional parameters), choice of
+algorithm (e.g. message authentication codes). <strong>Dynamic connascences</strong> include:
+when order of execution of multiple components is important; when timing of the
+execution of multiple components is important; when several values much change
+together; when multiple components must reference the same entity. <span class="citation-ref"><a href="#WikiConnascence"></a></span></p>
+<h3 id="cohesion">Cohesion</h3>
+<p><strong>Cohesion</strong> refers to the degree to which elements inside a module belong
+together. How much in common do the methods of a class have? Do methods carry
+out a small number of related activities. Are related methods in the same source
+file/folder? <span class="citation-ref"><a href="#WikiCohesionCS"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#WikiCohesionCS"></a></span> ranks <strong>coincidental cohesion</strong> as the worst:
+<em>Coincidental cohesion is when parts of a module are grouped arbitrarily; the
+only relationship between the parts is that they have been grouped together
+(e.g., a <code>Utilities</code> class).</em></p>
+<p>Granted, I&rsquo;ve not written tons of utility files, but it&rsquo;s easy to stash a
+function in a utilities file because there is no better place to put it. Maybe a
+util file is the dev equivalent of &ldquo;every toggle/setting in a program is a sign
+of a product manager that failed to make a decision.&rdquo;</p>
+</div>
+</div>
+
+
+<h3 id="coupling">Coupling</h3>
+<p><strong>Coupling</strong> is a measure of how closely connected two routines or modules are.
+Low coupling often correlates with high cohesion and vice-versa. Tightly coupled
+systems exhibit: 
+<a href="#connascence"
+    
+    
+    
+    >
+    connascence
+    
+</a>
+, higher cost of assembling modules,
+low reusability and testability as dependent modules must also be included. <span class="citation-ref"><a href="#WikiCoupling"></a></span></p>
+<h3 id="comment-density">Comment Density</h3>
+<p><strong>Comment density</strong>, the percentage of comment lines within the code, is a
+measure of the code readability, self-descriptiveness, and understandability.
+<span class="citation-ref"><a href="#DIMetricThresholds"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Was introduced to this metric in a code review at my first industry job. At the
+time, I didn&rsquo;t realize that too many comments was a symptom of unnecessary
+complexity. That incident has stayed with me since.</p>
+</div>
+</div>
+
+
+<h3 id="halstead-complexity-measures">Halstead Complexity Measures</h3>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p><span class="citation-ref"><a href="#WikiHalstead"></a></span> describes Halstead&rsquo;s goal as more than just complexity
+metrics: to identify measurable properties of software, and the relations
+between them.</p>
+</div>
+</div>
+
+
+<p>Given a C program like:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-c" data-lang="c"><span style="color:#111">main</span><span style="color:#111">()</span> <span style="color:#111">{</span>
+    <span style="color:#00a8c8">int</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">b</span><span style="color:#111">,</span> <span style="color:#111">c</span><span style="color:#111">,</span> <span style="color:#111">avg</span><span style="color:#111">;</span>
+    <span style="color:#111">scanf</span><span style="color:#111">(</span><span style="color:#d88200">&#34;%d %d %d&#34;</span><span style="color:#111">,</span> <span style="color:#f92672">&amp;</span><span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#f92672">&amp;</span><span style="color:#111">b</span><span style="color:#111">,</span> <span style="color:#f92672">&amp;</span><span style="color:#111">c</span><span style="color:#111">);</span>
+    <span style="color:#111">avg</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">a</span> <span style="color:#f92672">+</span> <span style="color:#111">b</span> <span style="color:#f92672">+</span> <span style="color:#111">c</span><span style="color:#111">)</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">3</span><span style="color:#111">;</span>
+    <span style="color:#111">printf</span><span style="color:#111">(</span><span style="color:#d88200">&#34;avg = %d&#34;</span><span style="color:#111">,</span> <span style="color:#111">avg</span><span style="color:#111">);</span>
+<span style="color:#111">}</span>
+</code></pre></div><ul>
+<li>The distinct operators are <code>main</code>, <code>()</code>, <code>{}</code>, <code>int</code>, <code>,</code>, <code>;</code>, <code>scanf</code>, <code>&amp;</code>,
+<code>=</code>, <code>+</code>, and <code>/</code>; \(\eta_1 = 12\).</li>
+<li>The distinct operands are <code>a</code>, <code>b</code>, <code>c</code>, <code>avg</code>, <code>&quot;%d %d %d&quot;</code>, <code>3</code>, and <code>&quot;avg = %d&quot;</code>; \(\eta_2 = 7\).</li>
+<li>The total number of operators, \(N_1\), is \(27\).</li>
+<li>The total number of operands, \(N_2\), is \(15\).</li>
+</ul>
+<p>With \(\eta_1, \eta_2, N_1, N_2\), several measures can be computed, e.g.:</p>
+<ul>
+<li>Estimated program length: \(\hat{N} = \eta_1 \cdot lg\ \eta_1 + \eta_2 \cdot
+lg\ \eta_2 = 12\ lg\ 12 + 7\ lg\ 7 = 62.67\)</li>
+<li>Difficulty to write/understand: \(D = \frac{\eta_1}{2} \times
+\frac{N_2}{\eta_2} = \frac{12}{2} \times \frac{15}{7} = 12.85\).</li>
+</ul>
+<p><span class="citation-ref"><a href="#WikiHalstead"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Given a project, comparing \(D\) scores while controlling for \(\hat{N}\)
+seems like a good way of knowing where to focus improvement efforts. \(D =
+12.85\) doesn&rsquo;t mean much by itself.</p>
+</div>
+</div>
+
+
+<h3 id="weighted-micro-function-points">Weighted Micro Function Points</h3>
+<p><strong>Weighted Micro Function Points (WMFP)</strong> is an algorithm that parses source
+code, breaks it down into micro functions, and derives complexity &amp; volume
+metrics which are interpolated into a final effort score. <span class="citation-ref"><a href="#WikiWMFP"></a></span></p>
+<h2 id="code-quality-as-an-industry">Code Quality as an Industry</h2>
+<p>Promises include:</p>
+<ul>
+<li>Providing standard, objective, reproducible, and comparable time and cost
+estimates.</li>
+<li>Differential comparisons between different code versions, e.g. linear WMFP
+algorithm.</li>
+<li>Supporting multiple languages, or diving deep into a specific one.</li>
+<li>Implementations of various effort and cost estimates, e.g. WMFP.</li>
+<li>Computation of code metrics, e.g. LLOC.</li>
+<li>Early warning signs, e.g. insufficient comments, complexity, etc.</li>
+<li>On-device computation without sending code to a server.</li>
+<li>Speed of analyzing the code base, e.g. integration into IDE.</li>
+<li>Setting a baseline upon which to propose improvements, instead of proposing
+thousands of fixes.</li>
+<li>Integration with CI/CD to gate incoming code per a quality criterion.</li>
+<li>Code visualization, e.g., dependency graphs, trend charts, dependency
+matrices, etc.</li>
+</ul>
+<p><span class="citation-ref"><a href="#ProjectCodeMeter"></a></span> <span class="citation-ref"><a href="#NDepend"></a></span> <span class="citation-ref"><a href="#SonarQube"></a></span></p>
+<p>Some IDEs have more bells and whistles. For example, Visual Studio has C++ code
+analysis support, and for .NET code, computes the metrics such as
+maintainability index, cyclomatic complexity, depth of inheritance, class
+coupling, SLOC, etc. <span class="citation-ref"><a href="#VisualStudio"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The C++ Code analysis support seems enticing to prompt the jump from VS Code to
+Visual Studio. In VS Code, I have Clang-Tidy diagnostics, but Visual Studio
+promises Clang-Tidy, C++ Core Guidelines, SAL annotations, and more.</p>
+</div>
+</div>
+
+
 <h2 id="references">References</h2>
 <ol>
 <li>
+
     
 
 <div class="citation" citation-icon-class='far fa-fw fa-newspaper' cited-by-count=''>
-    <cite id='sandimetzWrongAbstraction'>
+    <cite id='Metz2016'>
         
         The Wrong Abstraction<i>.</i>
         
@@ -163,6 +525,647 @@
     
     
 </div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='fsChestertonsFence'>
+        
+        Chesterton’s Fence: A Lesson in Second Order Thinking<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://fs.blog/chestertons-fence/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=fs.blog" loading="lazy" aria-hidden="true">
+        <i>fs.blog</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiCFG'>
+        
+        Control-flow graph<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Control-flow_graph" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiABCSoftwareMetric'>
+        
+        ABC Software Metric<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/ABC_Software_Metric" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiCodeCoverage'>
+        
+        Code coverage<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Code_coverage" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiCohesionCS'>
+        
+        Cohesion (computer science)<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Cohesion_%28computer_science%29" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='DIMetricThresholds'>
+        
+        DI - Metric Thresholds<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://archive.ph/20110706175332/http://www.lsec.dnd.ca/qsd_current_version/eng_support/di/metrics.htm" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=archive.ph" loading="lazy" aria-hidden="true">
+        <i>archive.ph</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="http://www.lsec.dnd.ca/qsd_current_version/eng_support/di/metrics.htm" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.lsec.dnd.ca" loading="lazy" aria-hidden="true">
+        <i>www.lsec.dnd.ca</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiConnascence'>
+        
+        Connascence<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Connascence" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 19, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiCoupling'>
+        
+        Coupling (computer programming)<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Coupling_%28computer_programming%29" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiCyclomaticComplexity'>
+        
+        Cyclomatic complexity<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiLOC'>
+        
+        Source lines of code<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Source_lines_of_code" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiFunctionPoint'>
+        
+        Function point<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Function_point" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiHalstead'>
+        
+        Halstead complexity measures<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Halstead_complexity_measures" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiWMFP'>
+        
+        Weighted Micro Function Points - Wikipedia<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Weighted_Micro_Function_Points" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ProjectCodeMeter'>
+        
+        Documentation - ProjectCodeMeter Software Sizing for Outsourcing Work Hours Assessment and Development Cost Estimation<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="http://www.projectcodemeter.com/cost_estimation/kop3.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.projectcodemeter.com" loading="lazy" aria-hidden="true">
+        <i>www.projectcodemeter.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='NDepend'>
+        
+        Improve your .NET code quality with NDepend<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://www.ndepend.com/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=www.ndepend.com" loading="lazy" aria-hidden="true">
+        <i>www.ndepend.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Schmitt2022'>
+        
+        Code quality metrics: How to evaluate and improve your code<i>.</i>
+        
+    </cite>
+    
+     Jacob Schmitt.
+    
+    
+    
+    
+    <a href="https://circleci.com/blog/ci-cd-code-quality-metrics/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=circleci.com" loading="lazy" aria-hidden="true">
+        <i>circleci.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='SonarQube'>
+        
+        SonarQube Documentation | SonarQube Docs<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://docs.sonarqube.org/latest/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=docs.sonarqube.org" loading="lazy" aria-hidden="true">
+        <i>docs.sonarqube.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='VisualStudio'>
+        
+        C/C&#43;&#43; code analyzers | Microsoft Learn<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170&amp;viewFallbackFrom=vs-2022" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading="lazy" aria-hidden="true">
+        <i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    <a href="https://learn.microsoft.com/en-us/visualstudio/code-quality/code-metrics-values?view=vs-2022" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading="lazy" aria-hidden="true">
+        <i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 20, 2022.
+    
+    
+</div>
+
 </li>
 </ol>
 
@@ -176,6 +1179,8 @@
     
         <a href='/cited-authors/metz-sandi'>Metz, Sandi</a>
     
+        <a href='/cited-authors/schmitt-jacob'>Schmitt, Jacob</a>
+    
 </aside>
 
 
@@ -185,9 +1190,54 @@
 <aside id="domains-holder" style="margin: 0 0 2% 0;">
     Cited Domains:
     
+        <a href='/domains/archive.ph' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=archive.ph" loading="lazy" aria-hidden="true">
+            archive.ph
+        </a>
+    
+        <a href='/domains/circleci.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=circleci.com" loading="lazy" aria-hidden="true">
+            circleci.com
+        </a>
+    
+        <a href='/domains/docs.sonarqube.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=docs.sonarqube.org" loading="lazy" aria-hidden="true">
+            docs.sonarqube.org
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/fs.blog' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=fs.blog" loading="lazy" aria-hidden="true">
+            fs.blog
+        </a>
+    
+        <a href='/domains/learn.microsoft.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading="lazy" aria-hidden="true">
+            learn.microsoft.com
+        </a>
+    
         <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
             <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
             news.ycombinator.com
+        </a>
+    
+        <a href='/domains/www.lsec.dnd.ca' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.lsec.dnd.ca" loading="lazy" aria-hidden="true">
+            www.lsec.dnd.ca
+        </a>
+    
+        <a href='/domains/www.ndepend.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.ndepend.com" loading="lazy" aria-hidden="true">
+            www.ndepend.com
+        </a>
+    
+        <a href='/domains/www.projectcodemeter.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=www.projectcodemeter.com" loading="lazy" aria-hidden="true">
+            www.projectcodemeter.com
         </a>
     
         <a href='/domains/www.sandimetz.com' style="margin: 0px 2px;">
@@ -208,10 +1258,8 @@
         
 
         
-            <a href="https://www.curiosities.dev/computer-science/miscellaneous/2018-10-01-digital-humanities-with-kernighan/">&laquo; Kernighan&#39;s Remarks on the Digital Humanities</a>
+            <a href="https://www.curiosities.dev/computer-science/miscellaneous/2020-04-24-on-data-science/">&laquo; On Data Science</a>
         
-        
-            <a href="https://www.curiosities.dev/computer-science/miscellaneous/2020-04-11-apis-are-not-in-the-efficiency-business/">APIs Are Not In the Efficiency Business &raquo;</a>
         
 
     </footer>
