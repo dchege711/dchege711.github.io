@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                C&#43;&#43; Meta-Programming | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
+
+        
+
+
+    </head>
+
+    <svg id="background-svg"></svg>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/meta-programming/">Meta-Programming</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/meta-programming/cpp-metaprogramming/">C&#43;&#43; Meta-Programming</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<section>
+    <header>
+    <h1> C&#43;&#43; Meta-Programming</h1>
+    <p class="meta">
+        
+        Dated Nov 28, 2022;
+        
+        last modified on Mon, 28 Nov 2022
+        
+    </p>
+    </header>
+
+    <div id="toc-then-article">
+        <aside id="toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#clang-llvm-gcc-and-msvc">Clang, LLVM, GCC, and MSVC</a></li>
+    <li><a href="#improving-code-using-clang-tools">Improving Code Using Clang Tools</a>
+      <ul>
+        <li><a href="#clang-static-analyzer">Clang Static Analyzer</a>
+          <ul>
+            <li><a href="#false-positives">False Positives</a></li>
+            <li><a href="#static-analyzer-algorithms">Static Analyzer Algorithms</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+        </aside>
+
+        <article id="main-article">
+            <h2 id="clang-llvm-gcc-and-msvc">Clang, LLVM, GCC, and MSVC</h2>
+<p><strong>LLVM</strong> is an umbrella project, with several sub-projects, e.g. LLVM Core and
+Clang. <strong>LLVM Core</strong> libraries provide an optimizer and code generator for
+different CPUs. <strong>Clang</strong> is an &ldquo;LLVM native&rdquo; C/C++/Objective-C compiler which
+aims for fast compilation, useful error and warning messages, and a platform for
+building source-level tools. The <strong>Clang Static Analyzer</strong> and <strong>clang-tidy</strong>
+are examples of such tools. <span class="citation-ref"><a href="#LLVM"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>So if I were to create a programming language, I can define a transformation
+into LLVM intermediate representation (LLVM IR), and that will make use of LLVM
+core to optimize it? Sweet!</p>
+</div>
+</div>
+
+
+<p><strong>Microsoft Visual C++ (MSVC)</strong> is Microsoft&rsquo;s proprietary compiler for C, C++
+and C++/CX. It is bundled with Visual Studio. <span class="citation-ref"><a href="#WikiMSVC"></a></span></p>
+<p><strong>GNU&rsquo;s Compiler Collection (GCC)</strong> includes front ends for C, C++, Objective-C,
+Fortran, Ada, Go, and D. <span class="citation-ref"><a href="#GCC"></a></span></p>
+<p>LLVM, MSVC and GCC also have implementations (<code>libc++</code>, <code>MSVC STL</code>, and
+<code>libstdc++</code>, respectively) of the C++ standard library. <span class="citation-ref"><a href="#WikiCppStdLib"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Found myself with Clang, probably by the fact that I work on a Chromium-based
+browser, which already uses Clang. I expect that a lot of research will be on
+the open-source Clang and GCC compilers, as opposed to proprietary ones such as
+MSVC.</p>
+<p>When Chrome/Chromium moved to Clang, <span class="citation-ref"><a href="#HNChromeClang2017"></a></span> bore
+sentiment of Google being more invested in LLVM/Clang than in GNU/GCC. There are
+politics when it comes to C++ toolchains.</p>
+</div>
+</div>
+
+
+<h2 id="improving-code-using-clang-tools">Improving Code Using Clang Tools</h2>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Anticipated capabilities from clang tools:</p>
+<ul>
+<li>Remove branches that are never executed in practice (reduces complexity).</li>
+<li>Increase <code>const</code> correctness to allow clients to pass around <code>const</code>
+references/pointers.</li>
+<li>Increase cohesiveness within a module, and reduce coupling with other modules.</li>
+<li>Flag/Fix violations of rules of thumb from static analyzers.</li>
+<li>Remove unused includes from source files.</li>
+</ul>
+</div>
+</div>
+
+
+<p>The Chromium project has examples of &ldquo;real-world&rdquo; improvements via Clang tools,
+e.g.:</p>
+<ul>
+<li>Adding <code>std::move</code> after running some heuristics, e.g., local variable or
+param, no qualifiers, not a reference nor pointer, not a constructor, is not
+captured by a lambda, etc.</li>
+<li>Updating conventions, e.g., <code>int mySuperVariable</code> to <code>int my_super_variable</code>
+and <code>const int maxThings</code> to <code>const int kMaxThings</code>.</li>
+<li>Updating API usage, e.g., <code>::base::ListValue::GetSize</code> to <code>GetList().size</code>,
+<code>std::string(&quot;&quot;)</code> to <code>std::string()</code>.</li>
+</ul>
+<p><span class="citation-ref"><a href="#ChromiumClangScripts"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The vibe that I&rsquo;m getting is that one can only go so far with find + replace.
+Some changes require treating the source files as C++ source code instead of
+simply text. For such changes, trying to craft a regex (or multiple passes) will
+become too tedious, buggy, or even outright infeasible.</p>
+</div>
+</div>
+
+
+<h3 id="clang-static-analyzer">Clang Static Analyzer</h3>
+<p>Uses a collection of algorithms and techniques to analyze source code in order
+to find bugs that are traditionally found using run-time debugging techniques
+such as testing. Slower than compilation. May have false positives. <span class="citation-ref"><a href="#ClangStaticAnalyzer"></a></span></p>
+<h4 id="false-positives">False Positives</h4>
+<p>False positives may occur due to analysis imprecision, e.g. false paths,
+insufficient knowledge about the program. A sample false paths analysis:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-c" data-lang="c"><span style="color:#00a8c8">int</span> <span style="color:#75af00">f</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#111">{</span>
+  <span style="color:#00a8c8">int</span> <span style="color:#111">x</span><span style="color:#111">;</span>
+
+  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span>
+
+  <span style="color:#111">printf</span><span style="color:#111">(</span><span style="color:#d88200">&#34;%d</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">);</span>
+
+  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">y</span><span style="color:#111">)</span> <span style="color:#00a8c8">return</span> <span style="color:#111">x</span><span style="color:#111">;</span>
+
+  <span style="color:#00a8c8">return</span> <span style="color:#111">y</span><span style="color:#111">;</span>
+<span style="color:#111">}</span>
+</code></pre></div><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-shell" data-lang="shell">$ clang -warn-uninit-values /tmp/test.c
+t.c:13:12: warning: use of uninitialized variable
+  <span style="color:#00a8c8">return</span> x<span style="color:#111">;</span>
+         ^
+</code></pre></div><p>There are two feasible paths: neither branch taken <code>(y == 0)</code>, and both branches
+taken <code>(y != 0)</code>, but the analyzer issues a bogus warning on an infeasible path
+(not taking the first branch, but taking the second). <span class="citation-ref"><a href="#Kremenek2008"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>The analyzer has gotten smarter since <span class="citation-ref"><a href="#Kremenek2008"></a></span>. <code>clang -Wuninitialized /tmp/test.c</code> no longer issues that bogus warning.</p>
+</div>
+</div>
+
+
+<h4 id="static-analyzer-algorithms">Static Analyzer Algorithms</h4>
+<p>More precise analysis can reduce false positives. <span class="citation-ref"><a href="#Kremenek2008"></a></span></p>
+<p><strong>Flow-Sensitive Analyses</strong> reason about the flow of values without considering
+path-specific information:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-c" data-lang="c"><span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#f92672">++</span><span style="color:#111">x</span><span style="color:#111">;</span>  <span style="color:#75715e">// x == ?
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">else</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#111">;</span>       <span style="color:#75715e">// x == 2
+</span><span style="color:#75715e"></span><span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span><span style="color:#111">;</span>            <span style="color:#75715e">// x == ?, y == ?
+</span></code></pre></div><p>&hellip; but they are linear-time algorithms. <span class="citation-ref"><a href="#Kremenek2008"></a></span></p>
+<p><strong>Path-Sensitive Analyses</strong> reason about individual paths and guards on
+branches:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-c" data-lang="c"><span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">x</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#f92672">++</span><span style="color:#111">x</span><span style="color:#111">;</span>  <span style="color:#75715e">// x == 1
+</span><span style="color:#75715e"></span><span style="color:#00a8c8">else</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#111">;</span>       <span style="color:#75715e">// x == 2
+</span><span style="color:#75715e"></span><span style="color:#111">y</span> <span style="color:#f92672">==</span> <span style="color:#111">x</span><span style="color:#111">;</span>           <span style="color:#75715e">// (x == 1, y == 1) or (x == 2, y == 2)
+</span></code></pre></div><p>&hellip; and can therefore avoid false positives based on infeasible paths. However,
+they have a worst-case exponential-time, but there are tricks to reduce
+complexity in practice. <span class="citation-ref"><a href="#Kremenek2008"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>At this point, the takeaway can be, &ldquo;Figure out how to run Clang&rsquo;s static
+analyzer on your codebase, read the report, and then fix the legitimate issues.&rdquo;
+Further reading might help illuminate the root cause of a false positive, but
+that can be deferred until you encounter the false positive.</p>
+</div>
+</div>
+
+
+<p><span class="citation-ref"><a href="#ClangStaticAnalyzerDocs"></a></span></p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='LLVM'>
+        
+        The LLVM Compiler Infrastructure Project<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://llvm.org/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=llvm.org" loading="lazy" aria-hidden="true">
+        <i>llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 28, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiMSVC'>
+        
+        Microsoft Visual C&#43;&#43;<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='GCC'>
+        
+        GCC, the GNU Compiler Collection - GNU Project<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://gcc.gnu.org/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=gcc.gnu.org" loading="lazy" aria-hidden="true">
+        <i>gcc.gnu.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ChromiumClangScripts'>
+        
+        tools/clang/ - Chromium Code Search<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://source.chromium.org/chromium/chromium/src/&#43;/main:tools/clang/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy" aria-hidden="true">
+        <i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='WikiCppStdLib'>
+        
+        C&#43;&#43; Standard Library<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://en.wikipedia.org/wiki/C%2B%2B_Standard_Library" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='HNChromeClang2017'>
+        
+        Chrome now uses clang for production builds on Linux | Hacker News<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://news.ycombinator.com/item?id=8618779" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
+        <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+     Nov 17, 2014.
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ClangStaticAnalyzer'>
+        
+        Clang Static Analyzer<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://clang-analyzer.llvm.org/" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=clang-analyzer.llvm.org" loading="lazy" aria-hidden="true">
+        <i>clang-analyzer.llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='ClangStaticAnalyzerDocs'>
+        
+        Clang Static Analyzer — Clang 14.0.0 documentation<i>.</i>
+        
+    </cite>
+    
+    
+    
+    
+    
+    
+    <a href="https://releases.llvm.org/14.0.0/tools/clang/docs/ClangStaticAnalyzer.html" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=releases.llvm.org" loading="lazy" aria-hidden="true">
+        <i>releases.llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+    
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 29, 2022.
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
+    <cite id='Kremenek2008'>
+        
+        Finding Software Bugs with the Clang Static Analyzer<i>.</i>
+        
+    </cite>
+    
+     Ted Kremenek.
+    
+     Apple.
+    
+    
+    <a href="https://llvm.org/devmtg/2008-08/Kremenek_StaticAnalyzer.pdf" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=llvm.org" loading="lazy" aria-hidden="true">
+        <i>llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+     2008.
+    
+    
+    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
+    
+     Accessed Nov 30, 2022.
+    
+    
+</div>
+
+</li>
+</ol>
+
+        </article>
+
+        <div style="font-size: smaller;">
+
+<aside id="tags-holder" style="margin: 0 0 2% 0;">
+    Tags:
+    
+        <a href="/tags/code-hygiene">#code-hygiene</a>
+    
+</aside>
+
+
+<aside id="authors-holder" style="margin: 0 0 2% 0;">
+    Cited Authors:
+    
+        <a href='/cited-authors/kremenek-ted'>Kremenek, Ted</a>
+    
+</aside>
+
+
+
+
+<aside id="affiliations-holder" style="margin: 0 0 2% 0;">
+    Cited Authors' Affiliations:
+    
+        <a href='/affiliations/apple'>Apple</a>
+    
+</aside>
+
+
+<aside id="domains-holder" style="margin: 0 0 2% 0;">
+    Cited Domains:
+    
+        <a href='/domains/clang-analyzer.llvm.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=clang-analyzer.llvm.org" loading="lazy" aria-hidden="true">
+            clang-analyzer.llvm.org
+        </a>
+    
+        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
+            en.wikipedia.org
+        </a>
+    
+        <a href='/domains/gcc.gnu.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=gcc.gnu.org" loading="lazy" aria-hidden="true">
+            gcc.gnu.org
+        </a>
+    
+        <a href='/domains/llvm.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=llvm.org" loading="lazy" aria-hidden="true">
+            llvm.org
+        </a>
+    
+        <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
+            news.ycombinator.com
+        </a>
+    
+        <a href='/domains/releases.llvm.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=releases.llvm.org" loading="lazy" aria-hidden="true">
+            releases.llvm.org
+        </a>
+    
+        <a href='/domains/source.chromium.org' style="margin: 0px 2px;">
+            <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy" aria-hidden="true">
+            source.chromium.org
+        </a>
+    
+</aside>
+
+</div>
+
+    </div>
+    <footer>
+        
+        
+        
+            
+        
+
+        
+        
+
+    </footer>
+</section>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>

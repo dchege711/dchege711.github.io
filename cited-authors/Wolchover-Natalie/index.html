@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>
+            
+                Wolchover, Natalie | curiosities.dev
+            
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
+        
+        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+
+        <link rel="stylesheet" href="/css/vs.css">
+        <script type="text/javascript" src="/js/highlight.min.js"></script>
+        <script>
+            
+            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
+            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+            hljs.addPlugin({
+                "after:highlight": (result) => {
+                    result.value = result.value.replaceAll(
+                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
+                    console.log(result.value);
+                    result.value = result.value.replaceAll(
+                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
+                }
+            });
+            hljs.highlightAll();
+        </script>
+
+        <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+
+        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
+        <script type="text/javascript" src="/js/PlotUtils.js"></script>
+        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
+        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
+        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
+        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
+
+        
+        
+    </head>
+
+    <svg id="background-svg"></svg>
+
+    <body>
+
+        <div class="container" id="main_div">
+
+            
+            <form action="/search" method="get" id="globalSearchForm">
+                <input type="text" id="q" name="q" title="Search Query">
+                <input type="submit" id="submitButton" value="Search">
+            </form>
+
+            
+
+            <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ul>
+        
+
+
+
+
+
+<li>
+  <a href="https://www.curiosities.dev/">Home</a>
+</li>
+
+
+<li>
+  <a href="https://www.curiosities.dev/cited-authors/">Cited Authors</a>
+</li>
+
+
+<li class="active">
+  <a href="https://www.curiosities.dev/cited-authors/Wolchover-Natalie/">Wolchover, Natalie</a>
+</li>
+
+    </ul>
+</nav>
+
+
+
+            
+<main>
+    <article>
+        <header>
+            <h1>Wolchover, Natalie</h1>
+        </header>
+        
+        
+        
+    </article>
+
+    
+    <table border="0">
+        <tr class="no-decoration" id="randomSelectorContainer">
+            <td class="no-decoration"></td>
+            <td class="no-decoration"></td>
+            <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
+        </tr>
+        
+        
+        
+            
+                
+    <tr class="no-decoration">
+        <td class="no-decoration">Jun 15, 2021</td>
+        <td class="no-decoration">&raquo; </td>
+        <td class="no-decoration">
+            <a href="https://www.curiosities.dev/knowing/2021-06-15-on-academic-research/">Thoughts on Academic Research</a>
+            
+                
+                    <span class="meta">
+                    7 min; updated Dec 3, 2022 
+                    <button 
+                        id="f752a681066cb053b5b56a4f137ff67d-summary-controller"
+                        onclick="toggleSummaryDisplay(this);">
+                            <i class="fas fa-chevron-down"></i>
+                    </button>
+                    </span>
+                    <p class="meta" id="f752a681066cb053b5b56a4f137ff67d-summary" style="display: none;">
+                        Going to a talk is difficult for everyone because nobody understands the whole thing, but it&rsquo;s especially difficult for undergraduates because they still expect to. 
+   is a rich resource for understanding scholarly literature. Browse it. Some of the listed items are familiar, e.g. Google Scholar, SCImago, Sci-Hub, but it&rsquo;d be informative to zoom out to the larger picture, e.g. good alternatives to Google Scholar.
+  Why Even Read Papers?...
+                    </p>
+                
+            
+        </td>
+    </tr>
+
+
+            
+        
+        
+    </table>
+
+    <script>
+    let pageURLs = [];
+    const alternateOrganizations = new Set([
+        "tags", "categories", "domains", "authors", "publications"]);
+    fetch("/json/site_tree.json")
+        .then(response => response.json())
+        .then(siteTree => {
+            const currentPath = document.location.pathname;
+            let node = siteTree;
+            currentPath.split("/").forEach((subpath) => {
+                if (!subpath) return;
+                node = node[subpath];
+            });
+            if (!node) return;
+
+            function populateRelevantURLs(partialURL, currentNode) {
+                const currentNodeKeys = Object.keys(currentNode);
+                currentNodeKeys.forEach((key) => {
+                    
+                    if (key === "_meta") return;
+
+                    
+                    
+                    
+                    
+                    
+                    if (currentPath === "/" && alternateOrganizations.has(key))
+                        return;
+
+                    
+                    
+                    let nextPartialURL = partialURL === ""
+                                            ? key
+                                            : `${partialURL}/${key}`;
+
+                    populateRelevantURLs(nextPartialURL, currentNode[key]);
+                });
+
+                // A node that has no children is a regular page, and therefore
+                
+                
+                if (currentNodeKeys.length === 0 && partialURL) {
+                    pageURLs.push(partialURL);
+                }
+            }
+            populateRelevantURLs("", node);
+        })
+        .then(() => {
+            
+            
+            
+            
+            if (pageURLs.length === 0) {
+                document.getElementById("randomSelectorContainer").style.display = "none";
+            }
+        });
+
+    function goToRandomPage() {
+        
+        
+        let idx = Math.floor(Math.random() * (pageURLs.length));
+        window.open(pageURLs[idx], "_self");
+    }
+</script>
+
+
+</main>
+
+
+        </div>
+
+        <footer>
+            <a href="mailto:d.chege711@gmail.com">Email</a>
+            
+            <a href="/about">About</a>
+            <a href="/search">Search</a>
+        </footer>
+
+    </body>
+
+</html>
