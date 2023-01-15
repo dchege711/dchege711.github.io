@@ -99,7 +99,7 @@
         
         Dated Dec 16, 2022;
         
-        last modified on Tue, 20 Dec 2022
+        last modified on Sat, 14 Jan 2023
         
     </p>
     </header>
@@ -108,14 +108,206 @@
         <aside id="toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#self-monitoring">Self-Monitoring</a></li>
+    <li><a href="#measuring-productivity">Measuring Productivity</a>
+      <ul>
+        <li><a href="#devs-diverging-perceptions-of-productivity">Devs' Diverging Perceptions of Productivity</a></li>
+      </ul>
+    </li>
+    <li><a href="#factors-that-are-causally-linked-with-perceived-productivity">Factors that Are Causally Linked with Perceived Productivity</a></li>
+    <li><a href="#best-practices">Best Practices</a>
+      <ul>
+        <li><a href="#self-monitoring">Self-Monitoring</a></li>
+      </ul>
+    </li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
         </aside>
 
         <article id="main-article">
-            <h2 id="self-monitoring">Self-Monitoring</h2>
+            <h2 id="measuring-productivity">Measuring Productivity</h2>
+<h3 id="devs-diverging-perceptions-of-productivity">Devs' Diverging Perceptions of Productivity</h3>
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>Got interested in measuring it two years into my SWE career.</p>
+<p>Initially rated myself based on % of completed daily objectives. The objectives
+didn&rsquo;t necessarily correspond to work items. Stopped because the numbers were
+high even on days when I didn&rsquo;t feel productive.</p>
+<p>Switched to &ldquo;stuff that affects others&rdquo; (later came to know these are &ldquo;function
+points&rdquo;). More intuitively captures non-code objectives, e.g., aligning folks on
+feature specs. Numbers seem low; never a double digit month. Open question on
+how to incorporate code reviews into my daily rating.</p>
+<p>Burn-down chart is underwhelming. Maybe the items are too broad? Or am I not as
+productive as I presume?</p>
+</div>
+</div>
+
+
+<p>Majority of the scholarship is on top-down perspectives that measure artifact
+output per unit of time, e.g., LoC modification per hour, resolution time for
+modification requests, function points created per month, etc. However, this
+misses developers' individual work roles, practices, work fragmentation,
+tooling, office environment, etc. For example, a dev who spends a lot of time
+supporting co-workers might develop less code, and appear less productive. In
+contrast, a bottom-up approach better understands individual work habits, how
+they relate to productivity perceptions, and which factors are most important
+for a dev&rsquo;s productivity. <span class="citation-ref"><a href="#Zimmermann2019-Ch12"></a></span></p>
+<p>Devs context switch on average 13 times an hour. They may still feel productive,
+because the cost of context switching varies. Writing a quick email while
+waiting for a build to complete does not harm productivity, while discussing an
+unrelated topic with a co-worker is a costly context switch. <span class="citation-ref"><a href="#Zimmermann2019-Ch12"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>It would actually feel unproductive to <em>not</em> switch contexts when waiting on a
+build to complete.</p>
+</div>
+</div>
+
+
+
+
+
+<div class="priors-holder">
+    <div class="priors"><p>What is unproductive work?</p>
+<ul>
+<li>Fighting with CI over linting that can&rsquo;t be semi-automated.</li>
+<li>Meetings w/o a scoped agenda.</li>
+<li>Incidental costs, e.g., flaky tests, merge conflicts.</li>
+<li>Wrangling with tools, e.g., long compilation times.</li>
+</ul>
+</div>
+</div>
+
+
+<p>On an average 8.4h workday, devs spend on average 4.3h on their computer, with
+\(\approx\) 2.1h on coding-related activities. Majority consider coding as the
+most productive activity. Meetings were the most controversial; opposers cited
+lack of goals/outcomes, and too many attendees. No single activity was
+unanimously considered exclusively productive or unproductive, e.g., coding is
+not productive when the dev is blocked on a task. <span class="citation-ref"><a href="#Zimmermann2019-Ch12"></a></span></p>
+<p>Asked to quantify their productivity, most want number of completed tasks to be
+augmented by other measures, e.g., LoC, # bugs found/fixed, emails sent, etc. No
+single measure or combination of measures were consistently rated higher by
+most. The measures depend on the context, e.g., using the number of tasks
+completed is accurate for a dev that spends most of their time coding, as
+opposed to meetings or helping co-workers. <span class="citation-ref"><a href="#Zimmermann2019-Ch12"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment open-comment"><p>How can trends be gleaned? Consecutive days may have different contexts, e.g.
+Monday is meeting-heavy, and Tuesday is coding-heavy. If rating each day to a
+percentage, how is 100% determined?</p>
+</div>
+</div>
+
+
+<p>From hourly self-reports of productivity ratings, three clusters that are
+similar to the circadian rhythm emerge: morning people (20%), low-at-lunch
+people, and afternoon-people (%40). Asked to rate what is productive vs.
+unproductive, six clusters emerged:</p>
+<ul>
+<li><em>Social developers</em> love collaborating and doing code reviews.</li>
+<li><em>Lone developers</em> avoid interruptions like noise, email, meetings, and code
+reviews, preferring quiet.</li>
+<li><em>Focused developers</em> feel productive while working efficiently, and
+unproductive when stuck or interrupted.</li>
+<li><em>Balanced developers</em> are less affected by distractions, but feel unproductive
+when tasks are unclear or unfamiliar, or causing overhead.</li>
+<li><em>Leading developers</em> prefer meetings, emails, writing specs, and feel less
+productive with coding activities.</li>
+<li><em>Goal-oriented developers</em> feel productive when they cross off (or make
+progress on) tasks.</li>
+</ul>
+<p>These clusters can be used to tailor process improvements to the different types
+of developers. <span class="citation-ref"><a href="#Zimmermann2019-Ch12"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>So far, I&rsquo;m interested in what I, as an non-manager, can do to boost the team&rsquo;s
+productivity in a mostly C++ environment. So far, most of this feels actionable
+only from a managerial position.</p>
+</div>
+</div>
+
+
+<h2 id="factors-that-are-causally-linked-with-perceived-productivity">Factors that Are Causally Linked with Perceived Productivity</h2>
+<p><span class="citation-ref"><a href="#Cheng2022"></a></span> draws stronger causal inferences (with fewer confounding
+factors) about productivity drivers in ecologically valid settings (as opposed
+to non-representative dev environments) than prior works.</p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>To draw stronger causal inferences, <span class="citation-ref"><a href="#Cheng2022"></a></span> use <strong>panel data
+analysis</strong> instead of the more typical cross-sectional data analysis. The data
+came from tooling logs (e.g. code review tool), and the company-wide Engineering
+Satisfaction survey.</p>
+<p>The dependent variable, productivity, was coded from the dev&rsquo;s answer to the
+&ldquo;Overall, in the past 3 months, how productive have you felt at
+Google/Alphabet?&rdquo; question in the EngSat survey. Subjective measures of
+productivity are easy to collect, have more literature, and have been shown to
+be correlated with objective measures like the median active coding time.</p>
+<p>For the independent variables, both subjective and objective measures were used,
+e.g. satisfaction with project code quality, project tech debt, innovativeness
+of tools and infrastructure, 50th and 90th percentile of rounds of code review,
+total time spent in meetings, etc.</p>
+<p>In panel data analysis, the delta in each individual&rsquo;s responses and metrics are
+tracked. This should eliminate time invariant effects, e.g. prior education,
+that must explicitly accounted for in longitudinal studies lest they be
+confounding factors. That said, time variant effects, e.g. Alice getting a
+mentor who impacts her productivity, cannot be ruled out by the analysis.</p>
+<p><span class="citation-ref"><a href="#Cheng2022"></a></span></p>
+</div>
+</div>
+
+
+<figure>
+    <img src="/img/computer-science/cheng-2022-quadrant-of-productivity-factors.jpg"
+         alt="Cheng2022&amp;rsquo;s quadrant of productivity factors in effect size (how much bang for the buck) and statistical significance (most consistent) as observed at Google."/> <figcaption>
+            <p>Cheng2022&rsquo;s quadrant of productivity factors in effect size (how much bang for the buck) and statistical significance (most consistent) as observed at Google.</p>
+        </figcaption>
+</figure>
+
+<p>Lower perceived productivity is causally related to satisfaction with project
+(but not dependencies) code quality, perceived technical debt, non-innovative
+tools/infra, too many/few choices of tools/infra, pace of change in dev tool
+stack that is too fast/slow, having to learn new tooling/infra/framework, longer
+build times, longer build &amp; test cycle, multiple rounds of reviews per code
+review, slow code review, shifting project priorities, more changes of direct
+managers, hindrance by team and organizational reasons, and complicated team
+processes. <span class="citation-ref"><a href="#Cheng2022"></a></span></p>
+
+
+
+<div class="comment-holder">
+    <div class="comment"><p>Conventional panel data analysis can only establish the presence of a causal
+relation, but not the direction of the causality. <span class="citation-ref"><a href="#Cheng2022"></a></span> do
+lagged panel analysis to tease out directionality for the relationship between
+code quality and productivity. A 100% increase of satisfaction with project code
+quality at time \(T-1\) was associated with a \(10\%\) decrease of median
+coding time per change-list (CL), a \(12\%\) decrease of median wall-clock
+time from creating to mailing a CL, and a \(22\%\) decrease of median
+wall-clock time from submitting to deploying a CL at time \(T\). On the other
+hand, changes in satisfaction with project code quality in time \(T\) were not
+associated with any of the productivity metrics in time \(T-1\). The data
+supports the hypothesis that changes in code quality during time \(T-1\) are
+correlated with changes in productivity at time \(T\). <span class="citation-ref"><a href="#Cheng2022"></a></span></p>
+</div>
+</div>
+
+
+<p>Some notable factors that did not have a statistically significant relationship
+with perceived productivity: poor/missing documentation, actual time spent in
+meetings, physical distance from manager, physical distance from code reviewers,
+and organizational distance from code reviewers. <span class="citation-ref"><a href="#Cheng2022"></a></span></p>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="self-monitoring">Self-Monitoring</h3>
 
 
 
@@ -170,13 +362,13 @@ spent in different applications;
 </a>
  visualizes
 time spent inside the IDE in different code projects. But little is known about
-devs' expectations and experiences with self-monitoring in the workplace. <span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span></p>
+devs' expectations and experiences with self-monitoring in the workplace. <span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span></p>
 
 
 
 <div class="comment-holder">
-    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span> mentions <span class="citation-ref"><a href="#Humphrey1995"></a></span>&rsquo;s work to help
-developers track their estimated and actual development of code. See what
+    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span> mentions <span class="citation-ref"><a href="#Humphrey1995"></a></span>&rsquo;s work to
+help developers track their estimated and actual development of code. See what
 Humphrey has to say?</p>
 </div>
 </div>
@@ -187,10 +379,11 @@ Humphrey has to say?</p>
 
 <div class="comment-holder">
     <div class="comment"><p>Following a literature review, 400-dev survey, and 5 pilot studies with 20 devs,
-<span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span> built (and later open-sourced) PersonalAnalytics.
-It collects data in the background about application use, documents assessed,
-sites visited, code reviews, emails, etc. Every hour, it prompts the dev to rate
-their productivity. Captured data is visualized in the app.</p>
+<span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span> built (and later open-sourced)
+PersonalAnalytics. It collects data in the background about application use,
+documents assessed, sites visited, code reviews, emails, etc. Every hour, it
+prompts the dev to rate their productivity. Captured data is visualized in the
+app.</p>
 </div>
 </div>
 
@@ -199,18 +392,18 @@ their productivity. Captured data is visualized in the app.</p>
 engagement. Devs wanted to personalize which measures were tracked and
 visualized. They requested for more data, e.g. comparison with teammates,
 correlating with biometric data such as stress level, sleep, and exercise, etc.
-<span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span></p>
+<span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span></p>
 <p>The popup asking to self-report productivity for the past hour increases
 awareness about efficiency, and prompts a change tactics if need be. They valued
 that they&rsquo;re the ones who rate their productivity, as an automated measure
-wouldn&rsquo;t accurately capture. <span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span></p>
+wouldn&rsquo;t accurately capture. <span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span></p>
 <p>The retrospection increases self-awareness and provided novel insights, e.g.,
 time actually spent with emails, misconceptions that they&rsquo;re more productive in
-the morning, etc. <span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span></p>
+the morning, etc. <span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span></p>
 <p>Actionability was ambivalent. Half were able to update behavior, e.g. taking
 advantage of more productive afternoons. Others requested that the tool provide
 recommendations based on the data collected. Even better, being able to set a
-goal and then monitor their progress towards reaching it. <span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span></p>
+goal and then monitor their progress towards reaching it. <span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span></p>
 <p>Focusing only on individual insights may miss team opportunities, e.g.,
 scheduling meetings when everyone is least productive, and sometimes harm team
 productivity, e.g., dev blocking out interruptions at inopportune times. To
@@ -218,12 +411,12 @@ account for privacy, the tool only stored the logs locally on the user&rsquo;s
 machine. While some devs voluntarily shared their visualizations and insights
 with teammates to compare themselves, some said they&rsquo;d start to game the tool,
 or even leave the company if their manager forced them to run a tracking tool
-that would ignore their privacy concerns. <span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span></p>
+that would ignore their privacy concerns. <span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span></p>
 
 
 
 <div class="comment-holder">
-    <div class="comment"><p><span class="citation-ref"><a href="#Sadowski2019-Ch22"></a></span> mention sharing anonymized or aggregated data
+    <div class="comment"><p><span class="citation-ref"><a href="#Zimmermann2019-Ch22"></a></span> mention sharing anonymized or aggregated data
 with the rest of the team as a future improvement to the tool. Isn&rsquo;t this
 something that 
 <a href="https://www.curiosities.dev/computer-science/cos432-information-security/14-privacy/privacy-enhancing-tech/differential-privacy/"
@@ -246,16 +439,16 @@ something that
     
 
 <div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
-    <cite id='Sadowski2019-Ch22'>
+    <cite id='Zimmermann2019-Ch22'>
         
         Rethinking Productivity in Software Engineering<i>.</i>
         Chapter 22. Fitbit for Developers: Self-Monitoring at Work<i>.</i>
     </cite>
-     Caitlin Sadowski; Thomas Zimmermann.
+     André Meyer; Thomas Fritz; Thomas Zimmermann.
     
     
     
-    
+     University of Zurich; Microsoft.
     
     <a href="https://doi.org/10.1007/978-1-4842-4221-6" target="_blank" rel="noopener">
         <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
@@ -310,6 +503,78 @@ something that
 </div>
 
 </li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
+    <cite id='Zimmermann2019-Ch12'>
+        
+        Rethinking Productivity in Software Engineering<i>.</i>
+        Chapter 12. Developers&#39; Diverging Perceptions of Productivity<i>.</i>
+    </cite>
+     André Meyer; Gail Murphy; Thomas Fritz; Thomas Zimmermann.
+    
+    
+    
+     University of Zurich; University of British Columbia; Microsoft.
+    
+    <a href="https://doi.org/10.1007/978-1-4842-4221-6" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+     2019.
+     <a href="https://openlibrary.org/search?isbn=978-1-4842-4221-6" target="_blank" rel="noopener">
+        ISBN: 978-1-4842-4221-6 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
+    
+    
+    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
+<li>
+
+    
+
+<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
+    <cite id='Cheng2022'>
+        
+        What Improves Developer Productivity at Google? Code Quality<i>.</i>
+        
+    </cite>
+     Lan Cheng; Emerson Murphy-Hill; Mark Canning; Ciera Jaspan; Collin Green; Andrea Knight; Nan Zhang; Elizabeth Kammer.
+    
+     ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering, 30th.
+    
+     Google.
+    
+    <a href="https://doi.org/10.1145/3540250.3558940" target="_blank" rel="noopener">
+        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
+        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
+    </a>.
+    
+    
+    
+    
+     2022.
+    
+    
+    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
+    
+    
+    
+    
+</div>
+
+</li>
 </ol>
 
         </article>
@@ -320,9 +585,29 @@ something that
 <aside id="authors-holder" style="margin: 0 0 2% 0;">
     Cited Authors:
     
+        <a href='/cited-authors/canning-mark'>Canning, Mark</a>
+    
+        <a href='/cited-authors/cheng-lan'>Cheng, Lan</a>
+    
+        <a href='/cited-authors/fritz-thomas'>Fritz, Thomas</a>
+    
+        <a href='/cited-authors/green-collin'>Green, Collin</a>
+    
         <a href='/cited-authors/humphrey-watts'>Humphrey, Watts</a>
     
-        <a href='/cited-authors/sadowski-caitlin'>Sadowski, Caitlin</a>
+        <a href='/cited-authors/jaspan-ciera'>Jaspan, Ciera</a>
+    
+        <a href='/cited-authors/kammer-elizabeth'>Kammer, Elizabeth</a>
+    
+        <a href='/cited-authors/knight-andrea'>Knight, Andrea</a>
+    
+        <a href='/cited-authors/meyer-andr%c3%a9'>Meyer, André</a>
+    
+        <a href='/cited-authors/murphy-gail'>Murphy, Gail</a>
+    
+        <a href='/cited-authors/murphy-hill-emerson'>Murphy-Hill, Emerson</a>
+    
+        <a href='/cited-authors/zhang-nan'>Zhang, Nan</a>
     
         <a href='/cited-authors/zimmermann-thomas'>Zimmermann, Thomas</a>
     
@@ -330,6 +615,26 @@ something that
 
 
 
+<aside id="publications-holder" style="margin: 0 0 2% 0;">
+    Cited Publications:
+    
+        <a href='/publications/acm-joint-european-software-engineering-conference-and-symposium-on-the-foundations-of-software-engineering'>ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering</a>
+    
+</aside>
+
+
+<aside id="affiliations-holder" style="margin: 0 0 2% 0;">
+    Cited Authors' Affiliations:
+    
+        <a href='/affiliations/google'>Google</a>
+    
+        <a href='/affiliations/microsoft'>Microsoft</a>
+    
+        <a href='/affiliations/university-of-british-columbia'>University of British Columbia</a>
+    
+        <a href='/affiliations/university-of-zurich'>University of Zurich</a>
+    
+</aside>
 
 
 <aside id="domains-holder" style="margin: 0 0 2% 0;">
