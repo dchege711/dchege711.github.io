@@ -1,347 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Modular Arithmetic | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/mathematics/">Mathematics</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/mathematics/cryptography/">Cryptography</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/mathematics/cryptography/modular-arithmetic/">Modular Arithmetic</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Modular Arithmetic</h1>
-    <p class="meta">
-        
-        Dated Jan 2, 2022;
-        
-        last modified on Mon, 10 Jan 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#what-is-modular-arithmetic">What is Modular Arithmetic?</a></li>
-    <li><a href="#congruence-modulo">Congruence Modulo</a></li>
-    <li><a href="#congruence-modulo-is-an-equivalence-relation">Congruence Modulo is an Equivalence Relation</a></li>
-    <li><a href="#programmers-note-span-classcitation-refa-hrefwikimoduloopaspan">Programmer&rsquo;s Note <span class="citation-ref"><a href="#WikiModuloOp"></a></span></a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-
-
-
-
-
-
-
-
-
-
-<p>Main resource: <span class="citation-ref"><a href="#KhanAcademyModularArithmetic"></a></span>.</p>
-<h2 id="what-is-modular-arithmetic">What is Modular Arithmetic?</h2>
-<p>Where \(A\) and \(B\) are integers, we can write:</p>
-<p>$$ \frac{A}{B} = Q \text{ remainder } R $$</p>
-<p>Using the same \(A, B, Q, \text{ and } R\) as above, we have:</p>
-<p>$$ A \text{ mod } B = R $$</p>
-<p>\(A \text{ mod } B\) can be visualized as taking \(A\) steps on a clock that
+<!doctype html><html lang=en><head><title>Modular Arithmetic | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/mathematics/>Mathematics</a></li><li><a href=https://www.curiosities.dev/mathematics/cryptography/>Cryptography</a></li><li class=active><a href=https://www.curiosities.dev/mathematics/cryptography/modular-arithmetic/>Modular Arithmetic</a></li></ul></nav><section><header><h1>Modular Arithmetic</h1><p class=meta>Dated Jan 2, 2022;
+last modified on Mon, 10 Jan 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#what-is-modular-arithmetic>What is Modular Arithmetic?</a></li><li><a href=#congruence-modulo>Congruence Modulo</a></li><li><a href=#congruence-modulo-is-an-equivalence-relation>Congruence Modulo is an Equivalence Relation</a></li><li><a href=#programmers-note-span-classcitation-refa-hrefwikimoduloopaspan>Programmer&rsquo;s Note <span class=citation-ref><a href=#WikiModuloOp></a></span></a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>Main resource: <span class=citation-ref><a href=#KhanAcademyModularArithmetic></a></span>.</p><h2 id=what-is-modular-arithmetic>What is Modular Arithmetic?</h2><p>Where \(A\) and \(B\) are integers, we can write:</p><p>$$ \frac{A}{B} = Q \text{ remainder } R $$</p><p>Using the same \(A, B, Q, \text{ and } R\) as above, we have:</p><p>$$ A \text{ mod } B = R $$</p><p>\(A \text{ mod } B\) can be visualized as taking \(A\) steps on a clock that
 runs from \(0\) to \(B-1\). If the number is positive we step clockwise, if
-it&rsquo;s negative we step counterclockwise.</p>
-<p>Examples: \(23 \text{ mod } 6  = 5; -17 \text{ mod } 7 = 4 \)</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Without visualizing a clock \(-17 \text{ mod } 7 = -3 \), but our mod operator
-is defined to give positive results. We therefore do \(7 - 3 = 4\).</p>
-</div>
-</div>
-
-
-<p>If we have \(A \text{ mod } B\) and we increase \(A\) by a multiple of \(B\),
-we will end up in the same spot, i.e.</p>
-<p>$$ A \text{ mod } B = (A + K \cdot B) \text{ mod } B \text{ for any integer } K $$</p>
-<h2 id="congruence-modulo">Congruence Modulo</h2>
-<p>\(11 \text{ mod } 5 = 1\), and \(16 \text{ mod } 5 = 1\). Therefore,
+it&rsquo;s negative we step counterclockwise.</p><p>Examples: \(23 \text{ mod } 6 = 5; -17 \text{ mod } 7 = 4 \)</p><div class=comment-holder><div class=comment><p>Without visualizing a clock \(-17 \text{ mod } 7 = -3 \), but our mod operator
+is defined to give positive results. We therefore do \(7 - 3 = 4\).</p></div></div><p>If we have \(A \text{ mod } B\) and we increase \(A\) by a multiple of \(B\),
+we will end up in the same spot, i.e.</p><p>$$ A \text{ mod } B = (A + K \cdot B) \text{ mod } B \text{ for any integer } K $$</p><h2 id=congruence-modulo>Congruence Modulo</h2><p>\(11 \text{ mod } 5 = 1\), and \(16 \text{ mod } 5 = 1\). Therefore,
 \(11\) and \(16\) are in the equivalence class for \(1\). This is
 expressed mathematically as \(16 \equiv 11 \text{ mod } 5)\), and read as, &ldquo;16
-is congruent to 11 modulo 5&rdquo;.</p>
-<p>More generally:</p>
-<p>$$ A \equiv B \ (\text{mod } C) $$</p>
-<p>Note that the \((\text{mod } C)\) is applied to <strong>both</strong> \(A\) and \(B\).
-This is different from \(A \text{ mod } C\): \(16 \ne 11 \text{ mod } 5\).</p>
-<p>Notice that in the same equivalence class, the difference between any two values
+is congruent to 11 modulo 5&rdquo;.</p><p>More generally:</p><p>$$ A \equiv B \ (\text{mod } C) $$</p><p>Note that the \((\text{mod } C)\) is applied to <strong>both</strong> \(A\) and \(B\).
+This is different from \(A \text{ mod } C\): \(16 \ne 11 \text{ mod } 5\).</p><p>Notice that in the same equivalence class, the difference between any two values
 is some multiple of \(C\), e.g. in the equivalence class for \(1\), we have:
-\(&hellip;, 1 - 3C, 1 - 2C, 1 - C, 1 + C, 1 + 2C, 1 + 3C, &hellip;\)</p>
-<p>Therefore, the following statements are equivalent:</p>
-<p>$$ A \equiv B \ (\text{mod } C) $$
+\(&mldr;, 1 - 3C, 1 - 2C, 1 - C, 1 + C, 1 + 2C, 1 + 3C, &mldr;\)</p><p>Therefore, the following statements are equivalent:</p><p>$$ A \equiv B \ (\text{mod } C) $$
 $$ A \text{ mod } C = B \text{ mod } C $$
 $$ C | (A - B) \text{ (The | symbol means divides, or is a factor of)} $$
-$$ A = B + K \cdot C \text{ (where } K \text{ is some integer)} $$</p>
-<h2 id="congruence-modulo-is-an-equivalence-relation">Congruence Modulo is an Equivalence Relation</h2>
-<p>An equivalence relation defines how we can partition our set of values into
+$$ A = B + K \cdot C \text{ (where } K \text{ is some integer)} $$</p><h2 id=congruence-modulo-is-an-equivalence-relation>Congruence Modulo is an Equivalence Relation</h2><p>An equivalence relation defines how we can partition our set of values into
 equivalence classes. The <strong>congruence modulo \(C\)</strong> is an equivalence
 relation that partitions the integers into \(C\) different equivalent classes,
 where in each equivalence class, all contained values are congruent modulo
-\(C\).</p>
-<p>Equivalence relations have the following properties:</p>
-<ul>
-<li>They are reflexive: \(A\) is related to \(A\).</li>
-<li>They are symmetric: if \(A\) is related to \(B\), then \(B\) is related
-to \(A\).</li>
-<li>They are transitive: if \(A\) is related to \(B\), and \(B\) is related
-to \(C\), then \(A\) is related to \(C\).</li>
-</ul>
-<p>Specifically, for the congruence modulo \(C\) equivalence relation:</p>
-<ul>
-<li>\(A \equiv A \ (\text{mod }C) \)</li>
-<li>If \(A \equiv B \ (\text{mod }C)\), then \(B \equiv A \ (\text{mod }C)\)</li>
-<li>If \(A \equiv B \ (\text{mod }C)\), and \(B \equiv D \ (\text{mod }C)\),
-then \(A \equiv D \ (\text{mod }C)\)</li>
-</ul>
-<h2 id="programmers-note-span-classcitation-refa-hrefwikimoduloopaspan">Programmer&rsquo;s Note <span class="citation-ref"><a href="#WikiModuloOp"></a></span></h2>
-<p>The result of the modulo operation is an equivalence class, and any member of
-the class may be chosen as representative.</p>
-<figure>
-    <img src="/img/mathematics/cryptography/modular-arithmetic/equiv-class-mod-5.png"
-         alt="The equivalence classes for the congruence modulo 5 equivalence relation. Credits: Khan Academy"/> <figcaption>
-            <p>The equivalence classes for the congruence modulo 5 equivalence relation. Credits: Khan Academy</p>
-        </figcaption>
-</figure>
-
-<p>The usual representative is the least positive residue, e.g. \(-16 \text{ mod }
-5 = 19 \text{ mod } 5 = 4\).</p>
-<p>However, programming languages and calculators have various ways of storing and
+\(C\).</p><p>Equivalence relations have the following properties:</p><ul><li>They are reflexive: \(A\) is related to \(A\).</li><li>They are symmetric: if \(A\) is related to \(B\), then \(B\) is related
+to \(A\).</li><li>They are transitive: if \(A\) is related to \(B\), and \(B\) is related
+to \(C\), then \(A\) is related to \(C\).</li></ul><p>Specifically, for the congruence modulo \(C\) equivalence relation:</p><ul><li>\(A \equiv A \ (\text{mod }C) \)</li><li>If \(A \equiv B \ (\text{mod }C)\), then \(B \equiv A \ (\text{mod }C)\)</li><li>If \(A \equiv B \ (\text{mod }C)\), and \(B \equiv D \ (\text{mod }C)\),
+then \(A \equiv D \ (\text{mod }C)\)</li></ul><h2 id=programmers-note-span-classcitation-refa-hrefwikimoduloopaspan>Programmer&rsquo;s Note <span class=citation-ref><a href=#WikiModuloOp></a></span></h2><p>The result of the modulo operation is an equivalence class, and any member of
+the class may be chosen as representative.</p><figure><img src=/img/mathematics/cryptography/modular-arithmetic/equiv-class-mod-5.png alt="The equivalence classes for the congruence modulo 5 equivalence relation. Credits: Khan Academy"><figcaption><p>The equivalence classes for the congruence modulo 5 equivalence relation. Credits: Khan Academy</p></figcaption></figure><p>The usual representative is the least positive residue, e.g. \(-16 \text{ mod }
+5 = 19 \text{ mod } 5 = 4\).</p><p>However, programming languages and calculators have various ways of storing and
 representing numbers, so their convention may differ. Some languages like C++
 have the result of a modulo operation share the same sign as the dividend, e.g.
-<code>-16 % 5 == -1</code> and <code>19 % 5 == 4</code>.</p>
-<p>Failing to understand this difference may lead to bugs, e.g. a program such as:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">bool</span> <span style="color:#75af00">is_odd</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">n</span><span style="color:#111">)</span> <span style="color:#111">{</span>
-  <span style="color:#75715e">// If n is -ve, then n % 2 may return -1, reporting an incorrect result.
-</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">return</span> <span style="color:#111">n</span> <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span><span style="color:#111">;</span>
-<span style="color:#111">}</span>
-</code></pre></div><h2 id="references">References</h2>
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='KhanAcademyModularArithmetic'>
-        
-        Cryptography | Computer science | Computing | Khan Academy<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://www.khanacademy.org/computing/computer-science/cryptography#modarithmetic" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading="lazy" aria-hidden="true">
-        <i>www.khanacademy.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jan 8, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='WikiModuloOp'>
-        
-        Modulo operation - Wikipedia<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Modulo_operation" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jan 8, 2022.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-            en.wikipedia.org
-        </a>
-    
-        <a href='/domains/www.khanacademy.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading="lazy" aria-hidden="true">
-            www.khanacademy.org
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<code>-16 % 5 == -1</code> and <code>19 % 5 == 4</code>.</p><p>Failing to understand this difference may lead to bugs, e.g. a program such as:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>bool</span> <span style=color:#75af00>is_odd</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>n</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+  <span style=color:#75715e>// If n is -ve, then n % 2 may return -1, reporting an incorrect result.
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>return</span> <span style=color:#111>n</span> <span style=color:#f92672>%</span> <span style=color:#ae81ff>2</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+</code></pre></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=KhanAcademyModularArithmetic>Cryptography | Computer science | Computing | Khan Academy<i>.</i></cite>
+<a href=https://www.khanacademy.org/computing/computer-science/cryptography#modarithmetic target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading=lazy aria-hidden=true>
+<i>www.khanacademy.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jan 8, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=WikiModuloOp>Modulo operation - Wikipedia<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Modulo_operation target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jan 8, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+en.wikipedia.org</a>
+<a href=/domains/www.khanacademy.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading=lazy aria-hidden=true>
+www.khanacademy.org</a></aside></div></div><footer></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

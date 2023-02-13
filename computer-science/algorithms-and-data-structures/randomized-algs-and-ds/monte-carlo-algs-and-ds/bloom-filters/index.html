@@ -1,570 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Bloom Filters | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/">Algorithms and Data Structures</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/">Randomized Algorithms and Data Structures</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/monte-carlo-algs-and-ds/">&#39;Monte Carlo&#39; Algorithms and Data Structures</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/monte-carlo-algs-and-ds/bloom-filters/">Bloom Filters</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Bloom Filters</h1>
-    <p class="meta">
-        
-        Dated Nov 7, 2021;
-        
-        last modified on Mon, 05 Sep 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#bloom-filters">Bloom Filters</a>
-      <ul>
-        <li><a href="#motivation">Motivation</a></li>
-        <li><a href="#pseuodocode">Pseuodocode</a></li>
-        <li><a href="#false-positive-rate">False-Positive Rate</a></li>
-      </ul>
-    </li>
-    <li><a href="#primary-references">Primary References</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-
-
-
-
-
-
-
-
-
-
-<h2 id="bloom-filters">Bloom Filters</h2>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>In true fashion to Stigler&rsquo;s Law of Eponymy (no scientific discovery is named
-after its original discoverer <span class="citation-ref"><a href="#WikiStiglersLaw"></a></span>), Ross Ashby (1960)
+<!doctype html><html lang=en><head><title>Bloom Filters | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/>Algorithms and Data Structures</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/>Randomized Algorithms and Data Structures</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/monte-carlo-algs-and-ds/>'Monte Carlo' Algorithms and Data Structures</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/monte-carlo-algs-and-ds/bloom-filters/>Bloom Filters</a></li></ul></nav><section><header><h1>Bloom Filters</h1><p class=meta>Dated Nov 7, 2021;
+last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#bloom-filters>Bloom Filters</a><ul><li><a href=#motivation>Motivation</a></li><li><a href=#pseuodocode>Pseuodocode</a></li><li><a href=#false-positive-rate>False-Positive Rate</a></li></ul></li><li><a href=#primary-references>Primary References</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=bloom-filters>Bloom Filters</h2><div class=comment-holder><div class=comment><p>In true fashion to Stigler&rsquo;s Law of Eponymy (no scientific discovery is named
+after its original discoverer <span class=citation-ref><a href=#WikiStiglersLaw></a></span>), Ross Ashby (1960)
 did a probabilistic analysis of Calvin Mooers&rsquo;s Zatocoding (1947) (coding system
-for library cards). This predates Burton Bloom&rsquo;s work (1970). <span class="citation-ref"><a href="#EricksonFilteringStreaming"></a></span></p>
-</div>
-</div>
-
-
-<h3 id="motivation">Motivation</h3>
-<p>A Bloom filter for a set \(X: \{x_1, x_2, &hellip;, x_n\} \) from some universe
+for library cards). This predates Burton Bloom&rsquo;s work (1970). <span class=citation-ref><a href=#EricksonFilteringStreaming></a></span></p></div></div><h3 id=motivation>Motivation</h3><p>A Bloom filter for a set \(X: \{x_1, x_2, &mldr;, x_n\} \) from some universe
 \(\mathbb{U}\) allows one to test whether a given item \(x \in \mathbb{B}\)
 is an element of \(X\). Hash tables can already answer \(x \in X\) queries
-in \(O(1)\) expected time, and \(O(n)\) space.</p>
-<p>Bloom filters allow us to answer queries in \(O(1)\) time, but with
+in \(O(1)\) expected time, and \(O(n)\) space.</p><p>Bloom filters allow us to answer queries in \(O(1)\) time, but with
 considerably less space, but at the cost of allowing the possibility of
 false-positives. False-positives make Bloom filters unsuitable as an exact
 membership data structure, but they are commonly used as filters or sanity
-checks for more complex data structures.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><h4 id="sample-real-world-use-case">Sample Real-World Use-Case</h4>
-<p>The Chromium project has an <code>optimization_guide::BloomFilter</code> class that keeps
+checks for more complex data structures.</p><div class=comment-holder><div class=comment><h4 id=sample-real-world-use-case>Sample Real-World Use-Case</h4><p>The Chromium project has an <code>optimization_guide::BloomFilter</code> class that keeps
 track of a set of strings, e.g. list of domains provided by some
 blocklist/allowlist server. <code>WTF::BloomFilter</code> keeps track of unsigned data,
-e.g. hashes of CSS selectors for the purpose of getting a unique selector. <span class="citation-ref"><a href="#ChromiumBloomFilter"></a></span></p>
-</div>
-</div>
+e.g. hashes of CSS selectors for the purpose of getting a unique selector. <span class=citation-ref><a href=#ChromiumBloomFilter></a></span></p></div></div><h3 id=pseuodocode>Pseuodocode</h3><p>A Bloom filter consists of an array \(B[0 .. m-1]\) of bits, together with
+\(k\) hash functions \(h_1, h_2, &mldr;, h_k: \mathbb{U} \to \{0, 1, &mldr;,
+m-1\}\).</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-py data-lang=py><span style=color:#00a8c8>def</span> <span style=color:#75af00>make_bloom_filter</span><span style=color:#111>([</span><span style=color:#111>x_1</span><span style=color:#111>,</span> <span style=color:#f92672>...</span><span style=color:#111>,</span> <span style=color:#111>x_n</span><span style=color:#111>]):</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>h</span> <span style=color:#f92672>in</span> <span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#f92672>...</span><span style=color:#111>,</span> <span style=color:#111>m</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>]:</span>
+    <span style=color:#111>B</span><span style=color:#111>[</span><span style=color:#111>h</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span> <span style=color:#75715e># Zero-out all bits in B</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>x_i</span> <span style=color:#f92672>in</span> <span style=color:#111>[</span><span style=color:#111>x_1</span><span style=color:#111>,</span> <span style=color:#f92672>...</span><span style=color:#111>,</span> <span style=color:#111>x_n</span><span style=color:#111>]:</span> <span style=color:#75715e># For each member of X</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>h_j</span> <span style=color:#f92672>in</span> <span style=color:#111>[</span><span style=color:#111>h_1</span><span style=color:#111>,</span> <span style=color:#f92672>...</span><span style=color:#111>,</span> <span style=color:#111>h_k</span><span style=color:#111>]:</span> <span style=color:#75715e># For each hash function</span>
+      <span style=color:#111>B</span><span style=color:#111>[</span><span style=color:#111>h_j</span><span style=color:#111>(</span><span style=color:#111>x_i</span><span style=color:#111>)]</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span> <span style=color:#75715e># Set the bit that the hash fn and specific x map to</span>
+  <span style=color:#00a8c8>return</span> <span style=color:#111>B</span>
 
-
-<h3 id="pseuodocode">Pseuodocode</h3>
-<p>A Bloom filter consists of an array \(B[0 .. m-1]\) of bits, together with
-\(k\) hash functions \(h_1, h_2, &hellip;, h_k: \mathbb{U} \to \{0, 1, &hellip;,
-m-1\}\).</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-py" data-lang="py"><span style="color:#00a8c8">def</span> <span style="color:#75af00">make_bloom_filter</span><span style="color:#111">([</span><span style="color:#111">x_1</span><span style="color:#111">,</span> <span style="color:#f92672">...</span><span style="color:#111">,</span> <span style="color:#111">x_n</span><span style="color:#111">]):</span>
-  <span style="color:#00a8c8">for</span> <span style="color:#111">h</span> <span style="color:#f92672">in</span> <span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#f92672">...</span><span style="color:#111">,</span> <span style="color:#111">m</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">]:</span>
-    <span style="color:#111">B</span><span style="color:#111">[</span><span style="color:#111">h</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e"># Zero-out all bits in B</span>
-  <span style="color:#00a8c8">for</span> <span style="color:#111">x_i</span> <span style="color:#f92672">in</span> <span style="color:#111">[</span><span style="color:#111">x_1</span><span style="color:#111">,</span> <span style="color:#f92672">...</span><span style="color:#111">,</span> <span style="color:#111">x_n</span><span style="color:#111">]:</span> <span style="color:#75715e"># For each member of X</span>
-    <span style="color:#00a8c8">for</span> <span style="color:#111">h_j</span> <span style="color:#f92672">in</span> <span style="color:#111">[</span><span style="color:#111">h_1</span><span style="color:#111">,</span> <span style="color:#f92672">...</span><span style="color:#111">,</span> <span style="color:#111">h_k</span><span style="color:#111">]:</span> <span style="color:#75715e"># For each hash function</span>
-      <span style="color:#111">B</span><span style="color:#111">[</span><span style="color:#111">h_j</span><span style="color:#111">(</span><span style="color:#111">x_i</span><span style="color:#111">)]</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># Set the bit that the hash fn and specific x map to</span>
-  <span style="color:#00a8c8">return</span> <span style="color:#111">B</span>
-
-<span style="color:#00a8c8">def</span> <span style="color:#75af00">maybe_in_X</span><span style="color:#111">(</span><span style="color:#111">B</span><span style="color:#111">,</span> <span style="color:#111">y</span><span style="color:#111">):</span>
-  <span style="color:#00a8c8">for</span> <span style="color:#111">h_j</span> <span style="color:#f92672">in</span> <span style="color:#111">[</span><span style="color:#111">h_1</span><span style="color:#111">,</span> <span style="color:#f92672">...</span><span style="color:#111">,</span> <span style="color:#111">h_k</span><span style="color:#111">]:</span>
-    <span style="color:#00a8c8">if</span> <span style="color:#111">B</span><span style="color:#111">[</span><span style="color:#111">h_j</span><span style="color:#111">(</span><span style="color:#111">y</span><span style="color:#111">)]</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#111">:</span> <span style="color:#00a8c8">return</span> <span style="color:#111">False</span> <span style="color:#75715e"># Guaranteed correct</span>
-  <span style="color:#00a8c8">return</span> <span style="color:#111">True</span> <span style="color:#75715e"># Not necessarily correct</span>
-</code></pre></div>
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Going by the 
-<a href="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/monte-carlo-algs-and-ds/"
-    
-    
-    
-    >
-    discussion of the bias of Monte Carlo decision algorithms
-    
-</a>
-, a Bloom filter is a <code>false</code>-biased algorithm.</p>
-</div>
-</div>
-
-
-<p>Notice that the various hash functions \(h_j\) can be computed in parallel.</p>
-<h3 id="false-positive-rate">False-Positive Rate</h3>
-<p>For purpose of analysis, the hash functions are assumed to be mutually
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>maybe_in_X</span><span style=color:#111>(</span><span style=color:#111>B</span><span style=color:#111>,</span> <span style=color:#111>y</span><span style=color:#111>):</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>h_j</span> <span style=color:#f92672>in</span> <span style=color:#111>[</span><span style=color:#111>h_1</span><span style=color:#111>,</span> <span style=color:#f92672>...</span><span style=color:#111>,</span> <span style=color:#111>h_k</span><span style=color:#111>]:</span>
+    <span style=color:#00a8c8>if</span> <span style=color:#111>B</span><span style=color:#111>[</span><span style=color:#111>h_j</span><span style=color:#111>(</span><span style=color:#111>y</span><span style=color:#111>)]</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>:</span> <span style=color:#00a8c8>return</span> <span style=color:#111>False</span> <span style=color:#75715e># Guaranteed correct</span>
+  <span style=color:#00a8c8>return</span> <span style=color:#111>True</span> <span style=color:#75715e># Not necessarily correct</span>
+</code></pre></div><div class=comment-holder><div class=comment><p>Going by the
+<a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/randomized-algs-and-ds/monte-carlo-algs-and-ds/>discussion of the bias of Monte Carlo decision algorithms</a>
+, a Bloom filter is a <code>false</code>-biased algorithm.</p></div></div><p>Notice that the various hash functions \(h_j\) can be computed in parallel.</p><h3 id=false-positive-rate>False-Positive Rate</h3><p>For purpose of analysis, the hash functions are assumed to be mutually
 independent, ideal and random functions. Fortunately, real-world behavior of
-Bloom filters appears consistent with this unrealistic theoretical analysis.</p>
-<p>For all indices \(h, i\) and \(j\), \( \mathbb{P}\{h_j(x_i) = h\} = 1/m
-\) because \(h_j\) is assumed ideally random. Therefore:</p>
-<p>$$ p = \mathbb{P}\{B[h] = 0\} = \left(1 - \frac{1}{m}\right)^{kn} \approx e^{-kn/m} $$</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>\(\left(1 - \frac{1}{m}\right)\) is the probability that some \(h_j(x_i)\)
+Bloom filters appears consistent with this unrealistic theoretical analysis.</p><p>For all indices \(h, i\) and \(j\), \( \mathbb{P}\{h_j(x_i) = h\} = 1/m
+\) because \(h_j\) is assumed ideally random. Therefore:</p><p>$$ p = \mathbb{P}\{B[h] = 0\} = \left(1 - \frac{1}{m}\right)^{kn} \approx e^{-kn/m} $$</p><div class=comment-holder><div class=comment><p>\(\left(1 - \frac{1}{m}\right)\) is the probability that some \(h_j(x_i)\)
 does not land in a specific \(B[h]\). For \(B[h]\) to remain as zero, we
-must have \(kn\) &ldquo;misses&rdquo;, hence \( \left(1 - \frac{1}{m}\right)^{kn} \).</p>
-</div>
-</div>
-
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><span class="citation-ref"><a href="#SedgewickApproximations"></a></span> lists some approximations that tend to show
-up in the analysis of algorithms:</p>
-<ul>
-<li>Harmonic Sum: \(H_N = 1 + 1/2 + 1/3 + &hellip; + 1/N \approx ln(N) \)</li>
-<li>Triangular Sum: \(1 + 2 + 3 + &hellip; + N \approx N^2/2\)</li>
-<li>Geometric Sum when \(N = 2^n\): \(1 + 2 + 4 + &hellip; + N = 2N - 1 \)</li>
-<li>Stirling&rsquo;s Approximation: \(lg(N!) = lg(1) + lg(2) + lg(3) + &hellip; + lg(N)
-\approx N \cdot lg(N)\)</li>
-<li>Binomial Coefficients when \(k\) is a small constant: \( \binom{N}{k}
-\approx N^k/k! \)</li>
-<li>Exponential: \( (1 - 1/x)^x \approx 1/e \)</li>
-</ul>
-</div>
-</div>
-
-
-<p>The expected number of 0-bits in \(B\) is \(\approx mp\). Moreover, Chernoff
+must have \(kn\) &ldquo;misses&rdquo;, hence \( \left(1 - \frac{1}{m}\right)^{kn} \).</p></div></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#SedgewickApproximations></a></span>lists some approximations that tend to show
+up in the analysis of algorithms:</p><ul><li>Harmonic Sum: \(H_N = 1 + 1/2 + 1/3 + &mldr; + 1/N \approx ln(N) \)</li><li>Triangular Sum: \(1 + 2 + 3 + &mldr; + N \approx N^2/2\)</li><li>Geometric Sum when \(N = 2^n\): \(1 + 2 + 4 + &mldr; + N = 2N - 1 \)</li><li>Stirling&rsquo;s Approximation: \(lg(N!) = lg(1) + lg(2) + lg(3) + &mldr; + lg(N)
+\approx N \cdot lg(N)\)</li><li>Binomial Coefficients when \(k\) is a small constant: \( \binom{N}{k}
+\approx N^k/k! \)</li><li>Exponential: \( (1 - 1/x)^x \approx 1/e \)</li></ul></div></div><p>The expected number of 0-bits in \(B\) is \(\approx mp\). Moreover, Chernoff
 Bounds imply that the number of 0-bits is close to \(mp\) with high
-probability. Therefore, the probability of a false-positive is very close to:</p>
-<p>$$ \left(1 - p\right)^k = \left(1 - e^{-kn/m}\right)^k $$</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p>Why does <span class="citation-ref"><a href="#EricksonFilteringStreaming"></a></span> base the false-positive rate on
-the expected number of 0-bits and the Chernoff bounds?</p>
-</div>
-</div>
-
-
-<p>If all other parameters are held constant, the false-positive rate increases
+probability. Therefore, the probability of a false-positive is very close to:</p><p>$$ \left(1 - p\right)^k = \left(1 - e^{-kn/m}\right)^k $$</p><div class=comment-holder><div class="comment open-comment"><p>Why does <span class=citation-ref><a href=#EricksonFilteringStreaming></a></span>base the false-positive rate on
+the expected number of 0-bits and the Chernoff bounds?</p></div></div><p>If all other parameters are held constant, the false-positive rate increases
 with \(n\) (# items) and decreases with \(m\) (# bits). The optimal value of
-\(k\) (# hash functions) is \(k = ln(2) \cdot (m/n)\).</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p><span class="citation-ref"><a href="#EricksonFilteringStreaming"></a></span> considers the logarithm of the
-false-positive rate:</p>
-<p>$$ ln \left((1 - p)^k\right) = k \cdot ln(1 - p) = -\frac{m}{n} \cdot ln(p) \cdot ln(1-p)$$</p>
-<p>and argues that by symmetry, it is minimized at \(p = 1/2\).</p>
-<p>I don&rsquo;t follow the math that arrives at \(p = 1/2\). Given that \(m/n &gt; 0\),
+\(k\) (# hash functions) is \(k = ln(2) \cdot (m/n)\).</p><div class=comment-holder><div class="comment open-comment"><p><span class=citation-ref><a href=#EricksonFilteringStreaming></a></span>considers the logarithm of the
+false-positive rate:</p><p>$$ ln \left((1 - p)^k\right) = k \cdot ln(1 - p) = -\frac{m}{n} \cdot ln(p) \cdot ln(1-p)$$</p><p>and argues that by symmetry, it is minimized at \(p = 1/2\).</p><p>I don&rsquo;t follow the math that arrives at \(p = 1/2\). Given that \(m/n > 0\),
 and the two are held constant, minimizing \(-ln(p) \cdot ln(1-p)\) should give
 us the optimal \(p\). That said, the equation of the derivative equated to
 zero is an unwieldy \(\frac{ln(1-p)}{p} = \frac{ln(p)}{1-p}\), which can be
-eyeballed to \(p = 1/2\), and he neighborhood test performed. At least <span class="citation-ref"><a href="#WolframMinimum"></a></span> has a graphical visualization.</p>
-<p>When is taking the logarithm a good idea? Is it because the logarithm function
+eyeballed to \(p = 1/2\), and he neighborhood test performed. At least <span class=citation-ref><a href=#WolframMinimum></a></span>has a graphical visualization.</p><p>When is taking the logarithm a good idea? Is it because the logarithm function
 is monotonically increasing, and somehow simplifies in this case? Should have
-taken that optimization class in college!</p>
-</div>
-</div>
-
-
-<p>This gives the false-positive rate of \((1/2)^{ln(2)(m/n)} \approx
+taken that optimization class in college!</p></div></div><p>This gives the false-positive rate of \((1/2)^{ln(2)(m/n)} \approx
 (0.61850^{m/n}\). In practice, \(k\) must be an integer, but we can get
-pretty close to this rate if \(m &gt; &gt; n\).</p>
-<p>We can therefore achieve any desired false-positive rate \(\delta &gt; 0\) using
-a Bloom filter of size:</p>
-<p>$$ m = \Bigg \lceil \frac{lg(1/\delta)}{ln(2)}n \Bigg \rceil = \Theta\left(n log(1/\delta)\right) $$</p>
-<p>and \(k = \lceil lg(1/\delta) \rceil\) hash functions. For example, with a
+pretty close to this rate if \(m > > n\).</p><p>We can therefore achieve any desired false-positive rate \(\delta > 0\) using
+a Bloom filter of size:</p><p>$$ m = \Bigg \lceil \frac{lg(1/\delta)}{ln(2)}n \Bigg \rceil = \Theta\left(n log(1/\delta)\right) $$</p><p>and \(k = \lceil lg(1/\delta) \rceil\) hash functions. For example, with a
 32n-bit table (one integer per item) and 22 hash functions, we get \(\delta
-\approx 2 \cdot 10^{-7}\).</p>
-<h2 id="primary-references">Primary References</h2>
-<ol>
-<li>
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-university' cited-by-count=''>
-    <cite id='EricksonFilteringStreaming'>
-        
-        Algorithms &gt; Filtering and Streaming<i>.</i>
-        
-    </cite>
-    
-     Jeff Erickson.
-    
-    
-    
-    
-    <a href="http://jeffe.cs.illinois.edu/teaching/algorithms/notes/06-bloom.pdf" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=jeffe.cs.illinois.edu" loading="lazy" aria-hidden="true">
-        <i>jeffe.cs.illinois.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-university' aria-hidden="true"></i>
-    
-     Accessed Nov 7, 2021.
-    
-    
-</div>
-</li>
-</ol>
-<h2 id="references">References</h2>
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='WikiStiglersLaw'>
-        
-        Stigler&#39;s law of eponymy<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Stigler%27s_law_of_eponymy" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Nov 7, 2021.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='ChromiumBloomFilter'>
-        
-        Chromium Code Search: lang:cpp bloom -test -.cc<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://source.chromium.org/search?q=lang:cpp%20bloom%20-test%20-.cc&amp;sq=&amp;ss=chromium%2Fchromium%2Fsrc" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy" aria-hidden="true">
-        <i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://source.chromium.org/chromium/chromium/src/&#43;/main:third_party/blink/renderer/platform/wtf/bloom_filter.h" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy" aria-hidden="true">
-        <i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://source.chromium.org/chromium/chromium/src/&#43;/main:components/optimization_guide/core/bloom_filter.h" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy" aria-hidden="true">
-        <i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Nov 7, 2021.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
-    <cite id='SedgewickApproximations'>
-        
-        Algorithms &gt; Analysis of Algorithms<i>.</i>
-        
-    </cite>
-     Sedgewick, Robert; Kevin Wayne.
-    
-    
-    
-    
-    
-    
-    
-    
-     2011.
-    
-    
-    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='WolframMinimum'>
-        
-        minimize -ln(p)ln(1-p) - Wolfram|Alpha<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://www.wolframalpha.com/input/?i=minimize&#43;-ln%28p%29ln%281-p%29" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.wolframalpha.com" loading="lazy" aria-hidden="true">
-        <i>www.wolframalpha.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Nov 8, 2021.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/erickson-jeff'>Erickson, Jeff</a>
-    
-        <a href='/cited-authors/sedgewick-robert'>Sedgewick, Robert</a>
-    
-        <a href='/cited-authors/wayne-kevin'>Wayne, Kevin</a>
-    
-</aside>
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-            en.wikipedia.org
-        </a>
-    
-        <a href='/domains/jeffe.cs.illinois.edu' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=jeffe.cs.illinois.edu" loading="lazy" aria-hidden="true">
-            jeffe.cs.illinois.edu
-        </a>
-    
-        <a href='/domains/source.chromium.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy" aria-hidden="true">
-            source.chromium.org
-        </a>
-    
-        <a href='/domains/www.wolframalpha.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.wolframalpha.com" loading="lazy" aria-hidden="true">
-            www.wolframalpha.com
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+\approx 2 \cdot 10^{-7}\).</p><h2 id=primary-references>Primary References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-university" cited-by-count><cite id=EricksonFilteringStreaming>Algorithms > Filtering and Streaming<i>.</i></cite>
+Jeff Erickson.
+<a href=http://jeffe.cs.illinois.edu/teaching/algorithms/notes/06-bloom.pdf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=jeffe.cs.illinois.edu" loading=lazy aria-hidden=true>
+<i>jeffe.cs.illinois.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-university" aria-hidden=true></i>Accessed Nov 7, 2021.</div></li></ol><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=WikiStiglersLaw>Stigler's law of eponymy<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Stigler%27s_law_of_eponymy target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 7, 2021.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ChromiumBloomFilter>Chromium Code Search: lang:cpp bloom -test -.cc<i>.</i></cite>
+<a href="https://source.chromium.org/search?q=lang:cpp%20bloom%20-test%20-.cc&sq=&ss=chromium%2Fchromium%2Fsrc" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true>
+<i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/platform/wtf/bloom_filter.h target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true>
+<i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://source.chromium.org/chromium/chromium/src/+/main:components/optimization_guide/core/bloom_filter.h target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true>
+<i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 7, 2021.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count><cite id=SedgewickApproximations>Algorithms > Analysis of Algorithms<i>.</i></cite>
+Sedgewick, Robert; Kevin Wayne.
+2011.
+<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=WolframMinimum>minimize -ln(p)ln(1-p) - Wolfram|Alpha<i>.</i></cite>
+<a href="https://www.wolframalpha.com/input/?i=minimize+-ln%28p%29ln%281-p%29" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.wolframalpha.com" loading=lazy aria-hidden=true>
+<i>www.wolframalpha.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 8, 2021.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/erickson-jeff>Erickson, Jeff</a>
+<a href=/cited-authors/sedgewick-robert>Sedgewick, Robert</a>
+<a href=/cited-authors/wayne-kevin>Wayne, Kevin</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+en.wikipedia.org</a>
+<a href=/domains/jeffe.cs.illinois.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=jeffe.cs.illinois.edu" loading=lazy aria-hidden=true>
+jeffe.cs.illinois.edu</a>
+<a href=/domains/source.chromium.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true>
+source.chromium.org</a>
+<a href=/domains/www.wolframalpha.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.wolframalpha.com" loading=lazy aria-hidden=true>
+www.wolframalpha.com</a></aside></div></div><footer></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

@@ -1,186 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Linear Feedback Shift Register (Intermediate) | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/">Reddit Daily Programmer</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/intermediate-challenges/">Intermediate Challenges</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/intermediate-challenges/347_intermediate_linear_feedback_shift_register/347_intermediate_linear_feedback_shift_register/">Linear Feedback Shift Register (Intermediate)</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Linear Feedback Shift Register (Intermediate)</h1>
-    <p class="meta">
-        
-        Dated Jan 22, 2018;
-        
-        last modified on Mon, 22 Jan 2018
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#description">Description</a>
-          <ul>
-            <li><a href="#example-input">Example Input</a></li>
-            <li><a href="#example-output">Example Output</a></li>
-            <li><a href="#challenge-input">Challenge Input</a></li>
-            <li><a href="#challenge-output">Challenge Output</a></li>
-          </ul>
-        </li>
-        <li><a href="#my-solution">My Solution</a></li>
-        <li><a href="#further-reading">Further Reading</a></li>
-        <li><a href="#bonus">Bonus</a></li>
-        <li><a href="#post-mortem">Post-Mortem</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <h3 id="description">Description</h3>
-<p>
-<a href="https://www.reddit.com/r/dailyprogrammer/comments/7r17qr/20180117_challenge_347_intermediate_linear/"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    Link to original problem
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-</p>
-<p>In computing, a 
-<a href="https://en.wikipedia.org/wiki/Linear-feedback_shift_register"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    linear-feedback shift register (LFSR)
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
- is a shift register whose input bit is a linear function of its previous state. The most commonly used linear function of single bits is exclusive-or (XOR). Thus, an LFSR is most often a shift register whose input bit is driven by the XOR of some bits of the overall shift register value.</p>
-<p>The initial value of the LFSR is called the seed, and because the operation of the register is deterministic, the stream of values produced by the register is completely determined by its current (or previous) state. Likewise, because the register has a finite number of possible states, it must eventually enter a repeating cycle.</p>
-<p>Your challenge today is to implement an LFSR in software.</p>
-<h4 id="example-input">Example Input</h4>
-<p>You&rsquo;ll be given a LFSR input on one line specifying the tap positions (0-indexed), the feedback function (XOR or XNOR), the initial value with leading 0s as needed to show you the bit width, and the number of clock steps to output. Example:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">[0,2] XOR 001 7
-</code></pre></div><h4 id="example-output">Example Output</h4>
-<p>Your program should emit the clock step and the registers (with leading 0s) for the input LFSR. From our above example:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">0 001
+<!doctype html><html lang=en><head><title>Linear Feedback Shift Register (Intermediate) | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/>Reddit Daily Programmer</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/intermediate-challenges/>Intermediate Challenges</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/intermediate-challenges/347_intermediate_linear_feedback_shift_register/347_intermediate_linear_feedback_shift_register/>Linear Feedback Shift Register (Intermediate)</a></li></ul></nav><section><header><h1>Linear Feedback Shift Register (Intermediate)</h1><p class=meta>Dated Jan 22, 2018;
+last modified on Mon, 22 Jan 2018</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><ul><li><a href=#description>Description</a><ul><li><a href=#example-input>Example Input</a></li><li><a href=#example-output>Example Output</a></li><li><a href=#challenge-input>Challenge Input</a></li><li><a href=#challenge-output>Challenge Output</a></li></ul></li><li><a href=#my-solution>My Solution</a></li><li><a href=#further-reading>Further Reading</a></li><li><a href=#bonus>Bonus</a></li><li><a href=#post-mortem>Post-Mortem</a></li></ul></li></ul></nav></aside><article id=main-article><h3 id=description>Description</h3><p><a href=https://www.reddit.com/r/dailyprogrammer/comments/7r17qr/20180117_challenge_347_intermediate_linear/ target=_blank rel=noopener>Link to original problem
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></p><p>In computing, a
+<a href=https://en.wikipedia.org/wiki/Linear-feedback_shift_register target=_blank rel=noopener>linear-feedback shift register (LFSR)
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>is a shift register whose input bit is a linear function of its previous state. The most commonly used linear function of single bits is exclusive-or (XOR). Thus, an LFSR is most often a shift register whose input bit is driven by the XOR of some bits of the overall shift register value.</p><p>The initial value of the LFSR is called the seed, and because the operation of the register is deterministic, the stream of values produced by the register is completely determined by its current (or previous) state. Likewise, because the register has a finite number of possible states, it must eventually enter a repeating cycle.</p><p>Your challenge today is to implement an LFSR in software.</p><h4 id=example-input>Example Input</h4><p>You&rsquo;ll be given a LFSR input on one line specifying the tap positions (0-indexed), the feedback function (XOR or XNOR), the initial value with leading 0s as needed to show you the bit width, and the number of clock steps to output. Example:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-text data-lang=text>[0,2] XOR 001 7
+</code></pre></div><h4 id=example-output>Example Output</h4><p>Your program should emit the clock step and the registers (with leading 0s) for the input LFSR. From our above example:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-text data-lang=text>0 001
 1 100
 2 110
 3 111
@@ -188,14 +14,11 @@
 5 101
 6 010
 7 001
-</code></pre></div><h4 id="challenge-input">Challenge Input</h4>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">[1,2] XOR 001 7
+</code></pre></div><h4 id=challenge-input>Challenge Input</h4><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-text data-lang=text>[1,2] XOR 001 7
 [0,2] XNOR 001 7
 [1,2,3,7] XOR 00000001 16
 [1,5,6,31] XOR 00000000000000000000000000000001 16
-</code></pre></div><h4 id="challenge-output">Challenge Output</h4>
-<p>(Only showing the first two for brevity&rsquo;s sake.)</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">0 001
+</code></pre></div><h4 id=challenge-output>Challenge Output</h4><p>(Only showing the first two for brevity&rsquo;s sake.)</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-text data-lang=text>0 001
 1 100
 2 010
 3 101
@@ -203,7 +26,7 @@
 5 111
 6 011
 7 001
-</code></pre></div><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-text" data-lang="text">0 001
+</code></pre></div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-text data-lang=text>0 001
 1 000
 2 100
 3 010
@@ -211,155 +34,72 @@
 5 110
 6 011
 7 001
-</code></pre></div><h3 id="my-solution">My Solution</h3>
+</code></pre></div><h3 id=my-solution>My Solution</h3><div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-java data-lang=java><span style=color:#f92672>import</span> <span style=color:#111>java.util.LinkedList</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> <span style=color:#111>java.util.BitSet</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> <span style=color:#111>java.lang.StringBuilder</span><span style=color:#f92672>;</span>
 
-
-<div id=''><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> <span style="color:#111">java.util.LinkedList</span><span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> <span style="color:#111">java.util.BitSet</span><span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> <span style="color:#111">java.lang.StringBuilder</span><span style="color:#f92672">;</span>
-
-<span style="color:#00a8c8">public</span> <span style="color:#00a8c8">class</span> <span style="color:#75af00">LFSR347</span> <span style="color:#f92672">{</span>
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>LFSR347</span> <span style=color:#f92672>{</span>
     
-    <span style="color:#00a8c8">private</span> <span style="color:#111">LinkedList</span><span style="color:#f92672">&lt;</span><span style="color:#111">BitSet</span><span style="color:#f92672">&gt;</span> <span style="color:#111">lfsr</span><span style="color:#f92672">;</span>
-    <span style="color:#00a8c8">private</span> <span style="color:#00a8c8">int</span><span style="color:#f92672">[]</span> <span style="color:#111">tapPositions</span><span style="color:#f92672">;</span>
+    <span style=color:#00a8c8>private</span> <span style=color:#111>LinkedList</span><span style=color:#f92672>&lt;</span><span style=color:#111>BitSet</span><span style=color:#f92672>&gt;</span> <span style=color:#111>lfsr</span><span style=color:#f92672>;</span>
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>int</span><span style=color:#f92672>[]</span> <span style=color:#111>tapPositions</span><span style=color:#f92672>;</span>
     
-    <span style="color:#00a8c8">public</span> <span style="color:#75af00">LFSR347</span><span style="color:#f92672">(</span><span style="color:#00a8c8">int</span><span style="color:#f92672">[]</span> <span style="color:#111">initialValues</span><span style="color:#f92672">,</span> <span style="color:#00a8c8">int</span><span style="color:#f92672">[]</span> <span style="color:#111">tapPositions</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">LinkedList</span><span style="color:#f92672">&lt;</span><span style="color:#111">BitSet</span><span style="color:#f92672">&gt;();</span>
-        <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">tapPositions</span> <span style="color:#f92672">=</span> <span style="color:#111">tapPositions</span><span style="color:#f92672">;</span>
-        <span style="color:#00a8c8">for</span> <span style="color:#f92672">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">n</span><span style="color:#f92672">:</span> <span style="color:#111">initialValues</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span><span style="color:#f92672">.</span><span style="color:#75af00">add</span><span style="color:#f92672">(</span><span style="color:#111">getBit</span><span style="color:#f92672">(</span><span style="color:#111">n</span><span style="color:#f92672">));</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#75af00>LFSR347</span><span style=color:#f92672>(</span><span style=color:#00a8c8>int</span><span style=color:#f92672>[]</span> <span style=color:#111>initialValues</span><span style=color:#f92672>,</span> <span style=color:#00a8c8>int</span><span style=color:#f92672>[]</span> <span style=color:#111>tapPositions</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>LinkedList</span><span style=color:#f92672>&lt;</span><span style=color:#111>BitSet</span><span style=color:#f92672>&gt;();</span>
+        <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>tapPositions</span> <span style=color:#f92672>=</span> <span style=color:#111>tapPositions</span><span style=color:#f92672>;</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#f92672>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>n</span><span style=color:#f92672>:</span> <span style=color:#111>initialValues</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span><span style=color:#f92672>.</span><span style=color:#75af00>add</span><span style=color:#f92672>(</span><span style=color:#111>getBit</span><span style=color:#f92672>(</span><span style=color:#111>n</span><span style=color:#f92672>));</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
     
-    <span style="color:#00a8c8">public</span> <span style="color:#111">BitSet</span> <span style="color:#75af00">getBit</span><span style="color:#f92672">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">a</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#111">BitSet</span> <span style="color:#111">b</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">BitSet</span><span style="color:#f92672">(</span><span style="color:#111">1</span><span style="color:#f92672">);</span>
-        <span style="color:#00a8c8">if</span> <span style="color:#f92672">(</span><span style="color:#111">a</span> <span style="color:#f92672">==</span> <span style="color:#111">1</span><span style="color:#f92672">)</span> <span style="color:#111">b</span><span style="color:#f92672">.</span><span style="color:#75af00">set</span><span style="color:#f92672">(</span><span style="color:#111">1</span><span style="color:#f92672">);</span>
-        <span style="color:#00a8c8">else</span> <span style="color:#00a8c8">if</span> <span style="color:#f92672">(</span><span style="color:#111">a</span> <span style="color:#f92672">!=</span> <span style="color:#111">0</span><span style="color:#f92672">)</span> <span style="color:#00a8c8">throw</span> <span style="color:#00a8c8">new</span> <span style="color:#111">IllegalArgumentException</span><span style="color:#f92672">();</span>
-        <span style="color:#00a8c8">return</span> <span style="color:#111">b</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#111>BitSet</span> <span style=color:#75af00>getBit</span><span style=color:#f92672>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>a</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#111>BitSet</span> <span style=color:#111>b</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>BitSet</span><span style=color:#f92672>(</span><span style=color:#111>1</span><span style=color:#f92672>);</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#f92672>(</span><span style=color:#111>a</span> <span style=color:#f92672>==</span> <span style=color:#111>1</span><span style=color:#f92672>)</span> <span style=color:#111>b</span><span style=color:#f92672>.</span><span style=color:#75af00>set</span><span style=color:#f92672>(</span><span style=color:#111>1</span><span style=color:#f92672>);</span>
+        <span style=color:#00a8c8>else</span> <span style=color:#00a8c8>if</span> <span style=color:#f92672>(</span><span style=color:#111>a</span> <span style=color:#f92672>!=</span> <span style=color:#111>0</span><span style=color:#f92672>)</span> <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>IllegalArgumentException</span><span style=color:#f92672>();</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>b</span><span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
     
-    <span style="color:#00a8c8">public</span> <span style="color:#111">String</span> <span style="color:#75af00">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#111">Object</span><span style="color:#f92672">[]</span> <span style="color:#111">array</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span><span style="color:#f92672">.</span><span style="color:#75af00">toArray</span><span style="color:#f92672">();</span>
-        <span style="color:#111">StringBuilder</span> <span style="color:#111">sb</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">StringBuilder</span><span style="color:#f92672">();</span>
-        <span style="color:#00a8c8">for</span> <span style="color:#f92672">(</span><span style="color:#111">Object</span> <span style="color:#111">n</span><span style="color:#f92672">:</span> <span style="color:#111">array</span><span style="color:#f92672">)</span> <span style="color:#111">sb</span><span style="color:#f92672">.</span><span style="color:#75af00">append</span><span style="color:#f92672">(</span><span style="color:#111">n</span><span style="color:#f92672">);</span>
-        <span style="color:#00a8c8">return</span> <span style="color:#111">sb</span><span style="color:#f92672">.</span><span style="color:#75af00">toString</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#111>String</span> <span style=color:#75af00>toString</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#111>Object</span><span style=color:#f92672>[]</span> <span style=color:#111>array</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span><span style=color:#f92672>.</span><span style=color:#75af00>toArray</span><span style=color:#f92672>();</span>
+        <span style=color:#111>StringBuilder</span> <span style=color:#111>sb</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>StringBuilder</span><span style=color:#f92672>();</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#f92672>(</span><span style=color:#111>Object</span> <span style=color:#111>n</span><span style=color:#f92672>:</span> <span style=color:#111>array</span><span style=color:#f92672>)</span> <span style=color:#111>sb</span><span style=color:#f92672>.</span><span style=color:#75af00>append</span><span style=color:#f92672>(</span><span style=color:#111>n</span><span style=color:#f92672>);</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>sb</span><span style=color:#f92672>.</span><span style=color:#75af00>toString</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
     
-    <span style="color:#00a8c8">public</span> <span style="color:#111">String</span> <span style="color:#75af00">step</span><span style="color:#f92672">(</span><span style="color:#111">String</span> <span style="color:#111">operation</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#111>String</span> <span style=color:#75af00>step</span><span style=color:#f92672>(</span><span style=color:#111>String</span> <span style=color:#111>operation</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
         
-        <span style="color:#111">BitSet</span> <span style="color:#111">result</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span><span style="color:#f92672">.</span><span style="color:#75af00">get</span><span style="color:#f92672">(</span><span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">tapPositions</span><span style="color:#f92672">[</span><span style="color:#111">0</span><span style="color:#f92672">]);</span>
-        <span style="color:#00a8c8">for</span> <span style="color:#f92672">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#111">1</span><span style="color:#f92672">;</span> <span style="color:#111">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">tapPositions</span><span style="color:#f92672">.</span><span style="color:#75af00">length</span><span style="color:#f92672">;</span> <span style="color:#111">i</span><span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// System.out.print(&#34; &#34; + result);
-</span><span style="color:#75715e"></span>            <span style="color:#111">result</span><span style="color:#f92672">.</span><span style="color:#75af00">xor</span><span style="color:#f92672">(</span><span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span><span style="color:#f92672">.</span><span style="color:#75af00">get</span><span style="color:#f92672">(</span><span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">tapPositions</span><span style="color:#f92672">[</span><span style="color:#111">i</span><span style="color:#f92672">]));</span>
-            <span style="color:#00a8c8">if</span> <span style="color:#f92672">(</span><span style="color:#111">operation</span> <span style="color:#f92672">==</span> <span style="color:#d88200">&#34;XNOR&#34;</span><span style="color:#f92672">)</span> <span style="color:#111">result</span><span style="color:#f92672">.</span><span style="color:#75af00">flip</span><span style="color:#f92672">(</span><span style="color:#111">0</span><span style="color:#f92672">);</span>
-            <span style="color:#00a8c8">else</span> <span style="color:#00a8c8">if</span> <span style="color:#f92672">(</span><span style="color:#111">operation</span> <span style="color:#f92672">!=</span> <span style="color:#d88200">&#34;XOR&#34;</span><span style="color:#f92672">)</span> <span style="color:#00a8c8">throw</span> <span style="color:#00a8c8">new</span> <span style="color:#111">IllegalArgumentException</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
+        <span style=color:#111>BitSet</span> <span style=color:#111>result</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span><span style=color:#f92672>.</span><span style=color:#75af00>get</span><span style=color:#f92672>(</span><span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>tapPositions</span><span style=color:#f92672>[</span><span style=color:#111>0</span><span style=color:#f92672>]);</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#f92672>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#111>1</span><span style=color:#f92672>;</span> <span style=color:#111>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>tapPositions</span><span style=color:#f92672>.</span><span style=color:#75af00>length</span><span style=color:#f92672>;</span> <span style=color:#111>i</span><span style=color:#f92672>++)</span> <span style=color:#f92672>{</span>
+            <span style=color:#75715e>// System.out.print(&#34; &#34; + result);
+</span><span style=color:#75715e></span>            <span style=color:#111>result</span><span style=color:#f92672>.</span><span style=color:#75af00>xor</span><span style=color:#f92672>(</span><span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span><span style=color:#f92672>.</span><span style=color:#75af00>get</span><span style=color:#f92672>(</span><span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>tapPositions</span><span style=color:#f92672>[</span><span style=color:#111>i</span><span style=color:#f92672>]));</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#f92672>(</span><span style=color:#111>operation</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;XNOR&#34;</span><span style=color:#f92672>)</span> <span style=color:#111>result</span><span style=color:#f92672>.</span><span style=color:#75af00>flip</span><span style=color:#f92672>(</span><span style=color:#111>0</span><span style=color:#f92672>);</span>
+            <span style=color:#00a8c8>else</span> <span style=color:#00a8c8>if</span> <span style=color:#f92672>(</span><span style=color:#111>operation</span> <span style=color:#f92672>!=</span> <span style=color:#d88200>&#34;XOR&#34;</span><span style=color:#f92672>)</span> <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>IllegalArgumentException</span><span style=color:#f92672>();</span>
+        <span style=color:#f92672>}</span>
         
-        <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span><span style="color:#f92672">.</span><span style="color:#75af00">removeLast</span><span style="color:#f92672">();</span>
-        <span style="color:#00a8c8">this</span><span style="color:#f92672">.</span><span style="color:#75af00">lfsr</span><span style="color:#f92672">.</span><span style="color:#75af00">addFirst</span><span style="color:#f92672">(</span><span style="color:#111">result</span><span style="color:#f92672">);</span>
-        <span style="color:#00a8c8">return</span> <span style="color:#111">toString</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
+        <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span><span style=color:#f92672>.</span><span style=color:#75af00>removeLast</span><span style=color:#f92672>();</span>
+        <span style=color:#00a8c8>this</span><span style=color:#f92672>.</span><span style=color:#75af00>lfsr</span><span style=color:#f92672>.</span><span style=color:#75af00>addFirst</span><span style=color:#f92672>(</span><span style=color:#111>result</span><span style=color:#f92672>);</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>toString</span><span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
     
-    <span style="color:#00a8c8">public</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">xor</span><span style="color:#f92672">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">a</span><span style="color:#f92672">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">b</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">^</span> <span style="color:#111">b</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>int</span> <span style=color:#75af00>xor</span><span style=color:#f92672>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>a</span><span style=color:#f92672>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>b</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#f92672>^</span> <span style=color:#111>b</span><span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
     
-    <span style="color:#00a8c8">public</span> <span style="color:#00a8c8">static</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">main</span><span style="color:#f92672">(</span><span style="color:#111">String</span><span style="color:#f92672">[]</span> <span style="color:#111">args</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#00a8c8">int</span><span style="color:#f92672">[]</span> <span style="color:#111">initialValues</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#111">0</span><span style="color:#f92672">,</span> <span style="color:#111">0</span><span style="color:#f92672">,</span> <span style="color:#111">1</span><span style="color:#f92672">};</span>
-        <span style="color:#00a8c8">int</span><span style="color:#f92672">[]</span> <span style="color:#111">tapPositions</span> <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#111">0</span><span style="color:#f92672">,</span> <span style="color:#111">2</span><span style="color:#f92672">};</span>
-        <span style="color:#111">LFSR347</span> <span style="color:#111">testLFSR</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">LFSR347</span><span style="color:#f92672">(</span><span style="color:#111">initialValues</span><span style="color:#f92672">,</span> <span style="color:#111">tapPositions</span><span style="color:#f92672">);</span>
-        <span style="color:#111">System</span><span style="color:#f92672">.</span><span style="color:#75af00">out</span><span style="color:#f92672">.</span><span style="color:#75af00">println</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;0 &#34;</span> <span style="color:#f92672">+</span> <span style="color:#111">testLFSR</span><span style="color:#f92672">.</span><span style="color:#75af00">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#d88200">&#34;\n&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#00a8c8">for</span> <span style="color:#f92672">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#111">1</span><span style="color:#f92672">;</span> <span style="color:#111">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#111">8</span><span style="color:#f92672">;</span> <span style="color:#111">i</span><span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-            <span style="color:#111">System</span><span style="color:#f92672">.</span><span style="color:#75af00">out</span><span style="color:#f92672">.</span><span style="color:#75af00">println</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;\n&#34;</span> <span style="color:#f92672">+</span> <span style="color:#111">i</span> <span style="color:#f92672">+</span> <span style="color:#d88200">&#34; &#34;</span> <span style="color:#f92672">+</span> <span style="color:#111">testLFSR</span><span style="color:#f92672">.</span><span style="color:#75af00">step</span><span style="color:#f92672">(</span><span style="color:#d88200">&#34;XOR&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#d88200">&#34;\n&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-    
-    
-<span style="color:#f92672">}</span> 
-</code></pre></div></div>
-
-<h3 id="further-reading">Further Reading</h3>
-<ul>
-<li>
-<a href="https://www.eetimes.com/document.asp?doc_id=1274550"
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>main</span><span style=color:#f92672>(</span><span style=color:#111>String</span><span style=color:#f92672>[]</span> <span style=color:#111>args</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#00a8c8>int</span><span style=color:#f92672>[]</span> <span style=color:#111>initialValues</span> <span style=color:#f92672>=</span> <span style=color:#f92672>{</span><span style=color:#111>0</span><span style=color:#f92672>,</span> <span style=color:#111>0</span><span style=color:#f92672>,</span> <span style=color:#111>1</span><span style=color:#f92672>};</span>
+        <span style=color:#00a8c8>int</span><span style=color:#f92672>[]</span> <span style=color:#111>tapPositions</span> <span style=color:#f92672>=</span> <span style=color:#f92672>{</span><span style=color:#111>0</span><span style=color:#f92672>,</span> <span style=color:#111>2</span><span style=color:#f92672>};</span>
+        <span style=color:#111>LFSR347</span> <span style=color:#111>testLFSR</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>LFSR347</span><span style=color:#f92672>(</span><span style=color:#111>initialValues</span><span style=color:#f92672>,</span> <span style=color:#111>tapPositions</span><span style=color:#f92672>);</span>
+        <span style=color:#111>System</span><span style=color:#f92672>.</span><span style=color:#75af00>out</span><span style=color:#f92672>.</span><span style=color:#75af00>println</span><span style=color:#f92672>(</span><span style=color:#d88200>&#34;0 &#34;</span> <span style=color:#f92672>+</span> <span style=color:#111>testLFSR</span><span style=color:#f92672>.</span><span style=color:#75af00>toString</span><span style=color:#f92672>()</span> <span style=color:#f92672>+</span> <span style=color:#d88200>&#34;\n&#34;</span><span style=color:#f92672>);</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#f92672>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#111>1</span><span style=color:#f92672>;</span> <span style=color:#111>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#111>8</span><span style=color:#f92672>;</span> <span style=color:#111>i</span><span style=color:#f92672>++)</span> <span style=color:#f92672>{</span>
+            <span style=color:#111>System</span><span style=color:#f92672>.</span><span style=color:#75af00>out</span><span style=color:#f92672>.</span><span style=color:#75af00>println</span><span style=color:#f92672>(</span><span style=color:#d88200>&#34;\n&#34;</span> <span style=color:#f92672>+</span> <span style=color:#111>i</span> <span style=color:#f92672>+</span> <span style=color:#d88200>&#34; &#34;</span> <span style=color:#f92672>+</span> <span style=color:#111>testLFSR</span><span style=color:#f92672>.</span><span style=color:#75af00>step</span><span style=color:#f92672>(</span><span style=color:#d88200>&#34;XOR&#34;</span><span style=color:#f92672>)</span> <span style=color:#f92672>+</span> <span style=color:#d88200>&#34;\n&#34;</span><span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
     
     
-    
-        target="_blank" rel="noopener"
-    >
-    Implementing LFSR using Logic
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-</li>
-<li>
-<a href="http://homepages.cae.wisc.edu/%7Eece553/handouts/LFSR-notes.PDF"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    LFSR: Theory and Applications
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-</li>
-</ul>
-<h3 id="bonus">Bonus</h3>
-<p>Write a function that detects the periodicity of the LFSR configuration.</p>
-<h3 id="post-mortem">Post-Mortem</h3>
-<p>I wrote this solution 20 months ago; a post-mortem is in order:</p>
-<ul>
-<li>I left print statements inside functions.</li>
-<li>I didn&rsquo;t close my <code>java.io.BufferedReader</code></li>
-<li>I couldn&rsquo;t get 
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    java.util.BitSet
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
- working.</li>
-</ul>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/intermediate-challenges/346_intermediate_fermats_little_theorem/346_intermediate_fermats_little_theorem/">Fermat&#39;s Little Theorem (Intermediate) &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<span style=color:#f92672>}</span> 
+</code></pre></div></div><h3 id=further-reading>Further Reading</h3><ul><li><a href="https://www.eetimes.com/document.asp?doc_id=1274550" target=_blank rel=noopener>Implementing LFSR using Logic
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></li><li><a href=http://homepages.cae.wisc.edu/%7Eece553/handouts/LFSR-notes.PDF target=_blank rel=noopener>LFSR: Theory and Applications
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></li></ul><h3 id=bonus>Bonus</h3><p>Write a function that detects the periodicity of the LFSR configuration.</p><h3 id=post-mortem>Post-Mortem</h3><p>I wrote this solution 20 months ago; a post-mortem is in order:</p><ul><li>I left print statements inside functions.</li><li>I didn&rsquo;t close my <code>java.io.BufferedReader</code></li><li>I couldn&rsquo;t get
+<a href=https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html target=_blank rel=noopener>java.util.BitSet
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>working.</li></ul></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/intermediate-challenges/346_intermediate_fermats_little_theorem/346_intermediate_fermats_little_theorem/>Fermat's Little Theorem (Intermediate) &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

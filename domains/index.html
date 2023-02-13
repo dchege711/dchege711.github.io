@@ -1,2244 +1,827 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Cited Domains | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-        
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/domains/">Cited Domains</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<main>
-    <style>
-    div#tags-holder {
-        display: flex;
-        flex-flow: row wrap;
-    }
-
-    div#tags-holder > a {
-        margin: 1% 2%;
-    }    
-    </style>
-    <article>
-        <header>
-            <h1>Cited Domains</h1>
-        </header>
-        
-        
-    </article>
-
-    <div style="margin: 1%;" id="randomSelectorContainer">
-        <span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span>
-    </div>
-
-    <div id="tags-holder">
-    
-        <a href="https://www.curiosities.dev/domains/en.wikipedia.org/">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy">
-            en.wikipedia.org (71)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/news.ycombinator.com/">
-            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy">
-            news.ycombinator.com (29)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/doi.org/">
-            <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy">
-            doi.org (23)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/scholar.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading="lazy">
-            scholar.google.com (18)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.hoopladigital.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.hoopladigital.com" loading="lazy">
-            www.hoopladigital.com (15)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/github.com/">
-            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy">
-            github.com (14)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/adventofcode.com/">
-            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy">
-            adventofcode.com (10)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/jhidding.github.io/">
-            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy">
-            jhidding.github.io (8)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.bloomberg.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.bloomberg.com" loading="lazy">
-            www.bloomberg.com (8)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/dc.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=dc.fandom.com" loading="lazy">
-            dc.fandom.com (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/hackage.haskell.org/">
-            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy">
-            hackage.haskell.org (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/marvel.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=marvel.fandom.com" loading="lazy">
-            marvel.fandom.com (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/slatestarcodex.com/">
-            <img src="https://www.google.com/s2/favicons?domain=slatestarcodex.com" loading="lazy">
-            slatestarcodex.com (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/twitter.com/">
-            <img src="https://www.google.com/s2/favicons?domain=twitter.com" loading="lazy">
-            twitter.com (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/wiki.haskell.org/">
-            <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy">
-            wiki.haskell.org (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nytimes.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nytimes.com" loading="lazy">
-            www.nytimes.com (7)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/imagecomics.com/">
-            <img src="https://www.google.com/s2/favicons?domain=imagecomics.com" loading="lazy">
-            imagecomics.com (6)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.collaborativefund.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.collaborativefund.com" loading="lazy">
-            www.collaborativefund.com (6)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/bookofbadarguments.com/">
-            <img src="https://www.google.com/s2/favicons?domain=bookofbadarguments.com" loading="lazy">
-            bookofbadarguments.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/en.cppreference.com/">
-            <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy">
-            en.cppreference.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/stackoverflow.com/">
-            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy">
-            stackoverflow.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/techcrunch.com/">
-            <img src="https://www.google.com/s2/favicons?domain=techcrunch.com" loading="lazy">
-            techcrunch.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.dc.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.dc.com" loading="lazy">
-            www.dc.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.inf.fu-berlin.de/">
-            <img src="https://www.google.com/s2/favicons?domain=www.inf.fu-berlin.de" loading="lazy">
-            www.inf.fu-berlin.de (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.marvel.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.marvel.com" loading="lazy">
-            www.marvel.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.paulgraham.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.paulgraham.com" loading="lazy">
-            www.paulgraham.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.youtube.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.youtube.com" loading="lazy">
-            www.youtube.com (5)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/abseil.io/">
-            <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy">
-            abseil.io (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/astralcodexten.substack.com/">
-            <img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading="lazy">
-            astralcodexten.substack.com (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/chromium.googlesource.com/">
-            <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy">
-            chromium.googlesource.com (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/dx.doi.org/">
-            <img src="https://www.google.com/s2/favicons?domain=dx.doi.org" loading="lazy">
-            dx.doi.org (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/missing.csail.mit.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=missing.csail.mit.edu" loading="lazy">
-            missing.csail.mit.edu (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/projecteuler.net/">
-            <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy">
-            projecteuler.net (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/web.archive.org/">
-            <img src="https://www.google.com/s2/favicons?domain=web.archive.org" loading="lazy">
-            web.archive.org (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.chromium.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading="lazy">
-            www.chromium.org (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.forbes.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.forbes.com" loading="lazy">
-            www.forbes.com (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.sec.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.sec.gov" loading="lazy">
-            www.sec.gov (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.theatlantic.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.theatlantic.com" loading="lazy">
-            www.theatlantic.com (4)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/dawn.cs.stanford.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=dawn.cs.stanford.edu" loading="lazy">
-            dawn.cs.stanford.edu (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/fs.blog/">
-            <img src="https://www.google.com/s2/favicons?domain=fs.blog" loading="lazy">
-            fs.blog (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/source.chromium.org/">
-            <img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading="lazy">
-            source.chromium.org (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/support.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=support.google.com" loading="lazy">
-            support.google.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.apple.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.apple.com" loading="lazy">
-            www.apple.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.connectedpapers.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.connectedpapers.com" loading="lazy">
-            www.connectedpapers.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.goodreads.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.goodreads.com" loading="lazy">
-            www.goodreads.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.lesswrong.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.lesswrong.com" loading="lazy">
-            www.lesswrong.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.newyorker.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading="lazy">
-            www.newyorker.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.npr.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.npr.org" loading="lazy">
-            www.npr.org (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.reddit.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading="lazy">
-            www.reddit.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.schoolofhaskell.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading="lazy">
-            www.schoolofhaskell.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.theguardian.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.theguardian.com" loading="lazy">
-            www.theguardian.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.thehugoawards.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.thehugoawards.org" loading="lazy">
-            www.thehugoawards.org (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.theverge.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.theverge.com" loading="lazy">
-            www.theverge.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.vox.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.vox.com" loading="lazy">
-            www.vox.com (3)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/arstechnica.com/">
-            <img src="https://www.google.com/s2/favicons?domain=arstechnica.com" loading="lazy">
-            arstechnica.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blogs.windows.com/">
-            <img src="https://www.google.com/s2/favicons?domain=blogs.windows.com" loading="lazy">
-            blogs.windows.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/brilliant.org/">
-            <img src="https://www.google.com/s2/favicons?domain=brilliant.org" loading="lazy">
-            brilliant.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/developer.apple.com/">
-            <img src="https://www.google.com/s2/favicons?domain=developer.apple.com" loading="lazy">
-            developer.apple.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/developers.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=developers.google.com" loading="lazy">
-            developers.google.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/dl.acm.org/">
-            <img src="https://www.google.com/s2/favicons?domain=dl.acm.org" loading="lazy">
-            dl.acm.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/docs.microsoft.com/">
-            <img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading="lazy">
-            docs.microsoft.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/en.wikibooks.org/">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikibooks.org" loading="lazy">
-            en.wikibooks.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/genius.com/">
-            <img src="https://www.google.com/s2/favicons?domain=genius.com" loading="lazy">
-            genius.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/git-scm.com/">
-            <img src="https://www.google.com/s2/favicons?domain=git-scm.com" loading="lazy">
-            git-scm.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/hbr.org/">
-            <img src="https://www.google.com/s2/favicons?domain=hbr.org" loading="lazy">
-            hbr.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/imagecomics.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=imagecomics.fandom.com" loading="lazy">
-            imagecomics.fandom.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/intelligence.org/">
-            <img src="https://www.google.com/s2/favicons?domain=intelligence.org" loading="lazy">
-            intelligence.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/isocpp.github.io/">
-            <img src="https://www.google.com/s2/favicons?domain=isocpp.github.io" loading="lazy">
-            isocpp.github.io (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/it.slashdot.org/">
-            <img src="https://www.google.com/s2/favicons?domain=it.slashdot.org" loading="lazy">
-            it.slashdot.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/jeffe.cs.illinois.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=jeffe.cs.illinois.edu" loading="lazy">
-            jeffe.cs.illinois.edu (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/medium.com/">
-            <img src="https://www.google.com/s2/favicons?domain=medium.com" loading="lazy">
-            medium.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/monicalent.com/">
-            <img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading="lazy">
-            monicalent.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/nymag.com/">
-            <img src="https://www.google.com/s2/favicons?domain=nymag.com" loading="lazy">
-            nymag.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/sandman.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=sandman.fandom.com" loading="lazy">
-            sandman.fandom.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/spectrum.ieee.org/">
-            <img src="https://www.google.com/s2/favicons?domain=spectrum.ieee.org" loading="lazy">
-            spectrum.ieee.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/statmodeling.stat.columbia.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=statmodeling.stat.columbia.edu" loading="lazy">
-            statmodeling.stat.columbia.edu (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/stats.stackexchange.com/">
-            <img src="https://www.google.com/s2/favicons?domain=stats.stackexchange.com" loading="lazy">
-            stats.stackexchange.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/themargins.substack.com/">
-            <img src="https://www.google.com/s2/favicons?domain=themargins.substack.com" loading="lazy">
-            themargins.substack.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/tvtropes.org/">
-            <img src="https://www.google.com/s2/favicons?domain=tvtropes.org" loading="lazy">
-            tvtropes.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.amazon.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.amazon.com" loading="lazy">
-            www.amazon.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.bankrate.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.bankrate.com" loading="lazy">
-            www.bankrate.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.bbc.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.bbc.com" loading="lazy">
-            www.bbc.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.buzzfeednews.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.buzzfeednews.com" loading="lazy">
-            www.buzzfeednews.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cis.upenn.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading="lazy">
-            www.cis.upenn.edu (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.covingtoninnovations.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.covingtoninnovations.com" loading="lazy">
-            www.covingtoninnovations.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.darkhorse.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.darkhorse.com" loading="lazy">
-            www.darkhorse.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.federalreserve.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.federalreserve.gov" loading="lazy">
-            www.federalreserve.gov (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.fpcomplete.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading="lazy">
-            www.fpcomplete.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.google.com" loading="lazy">
-            www.google.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.improbable.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.improbable.com" loading="lazy">
-            www.improbable.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.investopedia.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.investopedia.com" loading="lazy">
-            www.investopedia.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.jstor.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.jstor.org" loading="lazy">
-            www.jstor.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.khanacademy.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading="lazy">
-            www.khanacademy.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.latimes.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.latimes.com" loading="lazy">
-            www.latimes.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.netflix.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.netflix.com" loading="lazy">
-            www.netflix.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.quantamagazine.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.quantamagazine.org" loading="lazy">
-            www.quantamagazine.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.researchgate.net/">
-            <img src="https://www.google.com/s2/favicons?domain=www.researchgate.net" loading="lazy">
-            www.researchgate.net (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.seas.upenn.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading="lazy">
-            www.seas.upenn.edu (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.w3.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.w3.org" loading="lazy">
-            www.w3.org (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.washingtonpost.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.washingtonpost.com" loading="lazy">
-            www.washingtonpost.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.wsj.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.wsj.com" loading="lazy">
-            www.wsj.com (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/xn-sant-epa.ti-pun.ch/">
-            <img src="https://www.google.com/s2/favicons?domain=xn-sant-epa.ti-pun.ch" loading="lazy">
-            xn-sant-epa.ti-pun.ch (2)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/125.22.40.1348080/">
-            <img src="https://www.google.com/s2/favicons?domain=125.22.40.1348080" loading="lazy">
-            125.22.40.1348080 (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/2kdb.net/">
-            <img src="https://www.google.com/s2/favicons?domain=2kdb.net" loading="lazy">
-            2kdb.net (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/about.fb.com/">
-            <img src="https://www.google.com/s2/favicons?domain=about.fb.com" loading="lazy">
-            about.fb.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/aboutmyinfo.org/">
-            <img src="https://www.google.com/s2/favicons?domain=aboutmyinfo.org" loading="lazy">
-            aboutmyinfo.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/abstractmath.org/">
-            <img src="https://www.google.com/s2/favicons?domain=abstractmath.org" loading="lazy">
-            abstractmath.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/academic.oup.com/">
-            <img src="https://www.google.com/s2/favicons?domain=academic.oup.com" loading="lazy">
-            academic.oup.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/alerts.davispolk.com/">
-            <img src="https://www.google.com/s2/favicons?domain=alerts.davispolk.com" loading="lazy">
-            alerts.davispolk.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/alloytools.org/">
-            <img src="https://www.google.com/s2/favicons?domain=alloytools.org" loading="lazy">
-            alloytools.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/apex-magazine.com/">
-            <img src="https://www.google.com/s2/favicons?domain=apex-magazine.com" loading="lazy">
-            apex-magazine.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/apps.bostonglobe.com/">
-            <img src="https://www.google.com/s2/favicons?domain=apps.bostonglobe.com" loading="lazy">
-            apps.bostonglobe.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/archive.org/">
-            <img src="https://www.google.com/s2/favicons?domain=archive.org" loading="lazy">
-            archive.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/archive.ph/">
-            <img src="https://www.google.com/s2/favicons?domain=archive.ph" loading="lazy">
-            archive.ph (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/awards.wga.org/">
-            <img src="https://www.google.com/s2/favicons?domain=awards.wga.org" loading="lazy">
-            awards.wga.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/bethanybrookshire.com/">
-            <img src="https://www.google.com/s2/favicons?domain=bethanybrookshire.com" loading="lazy">
-            bethanybrookshire.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/bitter-root.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=bitter-root.fandom.com" loading="lazy">
-            bitter-root.fandom.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blizzard.cs.uwaterloo.ca/">
-            <img src="https://www.google.com/s2/favicons?domain=blizzard.cs.uwaterloo.ca" loading="lazy">
-            blizzard.cs.uwaterloo.ca (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blog.cityflo.com/">
-            <img src="https://www.google.com/s2/favicons?domain=blog.cityflo.com" loading="lazy">
-            blog.cityflo.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blog.computationalcomplexity.org/">
-            <img src="https://www.google.com/s2/favicons?domain=blog.computationalcomplexity.org" loading="lazy">
-            blog.computationalcomplexity.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blog.google/">
-            <img src="https://www.google.com/s2/favicons?domain=blog.google" loading="lazy">
-            blog.google (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blog.hboeck.de/">
-            <img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading="lazy">
-            blog.hboeck.de (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/blog.interviewing.io/">
-            <img src="https://www.google.com/s2/favicons?domain=blog.interviewing.io" loading="lazy">
-            blog.interviewing.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/bura.brunel.ac.uk/">
-            <img src="https://www.google.com/s2/favicons?domain=bura.brunel.ac.uk" loading="lazy">
-            bura.brunel.ac.uk (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/candost.blog/">
-            <img src="https://www.google.com/s2/favicons?domain=candost.blog" loading="lazy">
-            candost.blog (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/cathyreisenwitz.substack.com/">
-            <img src="https://www.google.com/s2/favicons?domain=cathyreisenwitz.substack.com" loading="lazy">
-            cathyreisenwitz.substack.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/cedar.buffalo.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=cedar.buffalo.edu" loading="lazy">
-            cedar.buffalo.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/chem.tufts.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=chem.tufts.edu" loading="lazy">
-            chem.tufts.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/circleci.com/">
-            <img src="https://www.google.com/s2/favicons?domain=circleci.com" loading="lazy">
-            circleci.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/citeseerx.ist.psu.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=citeseerx.ist.psu.edu" loading="lazy">
-            citeseerx.ist.psu.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/clang-analyzer.llvm.org/">
-            <img src="https://www.google.com/s2/favicons?domain=clang-analyzer.llvm.org" loading="lazy">
-            clang-analyzer.llvm.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/clang.llvm.org/">
-            <img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading="lazy">
-            clang.llvm.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/cloud.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=cloud.google.com" loading="lazy">
-            cloud.google.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/codereview.stackexchange.com/">
-            <img src="https://www.google.com/s2/favicons?domain=codereview.stackexchange.com" loading="lazy">
-            codereview.stackexchange.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/college.uchicago.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=college.uchicago.edu" loading="lazy">
-            college.uchicago.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/commons.wikimedia.org/">
-            <img src="https://www.google.com/s2/favicons?domain=commons.wikimedia.org" loading="lazy">
-            commons.wikimedia.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/condellpark.com/">
-            <img src="https://www.google.com/s2/favicons?domain=condellpark.com" loading="lazy">
-            condellpark.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/covid19-static.cdn-apple.com/">
-            <img src="https://www.google.com/s2/favicons?domain=covid19-static.cdn-apple.com" loading="lazy">
-            covid19-static.cdn-apple.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/cryptopp.com/">
-            <img src="https://www.google.com/s2/favicons?domain=cryptopp.com" loading="lazy">
-            cryptopp.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/cyberlaw.stanford.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=cyberlaw.stanford.edu" loading="lazy">
-            cyberlaw.stanford.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/d1wqtxts1xzle7.cloudfront.net/">
-            <img src="https://www.google.com/s2/favicons?domain=d1wqtxts1xzle7.cloudfront.net" loading="lazy">
-            d1wqtxts1xzle7.cloudfront.net (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/danluu.com/">
-            <img src="https://www.google.com/s2/favicons?domain=danluu.com" loading="lazy">
-            danluu.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/devblogs.microsoft.com/">
-            <img src="https://www.google.com/s2/favicons?domain=devblogs.microsoft.com" loading="lazy">
-            devblogs.microsoft.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/dfrieds.com/">
-            <img src="https://www.google.com/s2/favicons?domain=dfrieds.com" loading="lazy">
-            dfrieds.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/diego.assencio.com/">
-            <img src="https://www.google.com/s2/favicons?domain=diego.assencio.com" loading="lazy">
-            diego.assencio.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/digiday.com/">
-            <img src="https://www.google.com/s2/favicons?domain=digiday.com" loading="lazy">
-            digiday.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/digitalcommons.brockport.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=digitalcommons.brockport.edu" loading="lazy">
-            digitalcommons.brockport.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/digitalsmiledesign.com/">
-            <img src="https://www.google.com/s2/favicons?domain=digitalsmiledesign.com" loading="lazy">
-            digitalsmiledesign.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/distill.pub/">
-            <img src="https://www.google.com/s2/favicons?domain=distill.pub" loading="lazy">
-            distill.pub (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/doc.rero.ch/">
-            <img src="https://www.google.com/s2/favicons?domain=doc.rero.ch" loading="lazy">
-            doc.rero.ch (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/docs.python.org/">
-            <img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading="lazy">
-            docs.python.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/docs.sonarqube.org/">
-            <img src="https://www.google.com/s2/favicons?domain=docs.sonarqube.org" loading="lazy">
-            docs.sonarqube.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/drewdevault.com/">
-            <img src="https://www.google.com/s2/favicons?domain=drewdevault.com" loading="lazy">
-            drewdevault.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ecommons.cornell.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=ecommons.cornell.edu" loading="lazy">
-            ecommons.cornell.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/educationdata.org/">
-            <img src="https://www.google.com/s2/favicons?domain=educationdata.org" loading="lazy">
-            educationdata.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/egtheory.wordpress.com/">
-            <img src="https://www.google.com/s2/favicons?domain=egtheory.wordpress.com" loading="lazy">
-            egtheory.wordpress.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/entangled.github.io/">
-            <img src="https://www.google.com/s2/favicons?domain=entangled.github.io" loading="lazy">
-            entangled.github.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/equity.ucla.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=equity.ucla.edu" loading="lazy">
-            equity.ucla.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ericlippert.com/">
-            <img src="https://www.google.com/s2/favicons?domain=ericlippert.com" loading="lazy">
-            ericlippert.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/etfdb.com/">
-            <img src="https://www.google.com/s2/favicons?domain=etfdb.com" loading="lazy">
-            etfdb.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/europepmc.org/">
-            <img src="https://www.google.com/s2/favicons?domain=europepmc.org" loading="lazy">
-            europepmc.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/fas.org/">
-            <img src="https://www.google.com/s2/favicons?domain=fas.org" loading="lazy">
-            fas.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/files.diario-de-bordo-redes-conecti.webnode.com/">
-            <img src="https://www.google.com/s2/favicons?domain=files.diario-de-bordo-redes-conecti.webnode.com" loading="lazy">
-            files.diario-de-bordo-redes-conecti.webnode.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/freakonomics.com/">
-            <img src="https://www.google.com/s2/favicons?domain=freakonomics.com" loading="lazy">
-            freakonomics.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/gcc.gnu.org/">
-            <img src="https://www.google.com/s2/favicons?domain=gcc.gnu.org" loading="lazy">
-            gcc.gnu.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/genderdysphoria.fyi/">
-            <img src="https://www.google.com/s2/favicons?domain=genderdysphoria.fyi" loading="lazy">
-            genderdysphoria.fyi (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/gitlab.haskell.org/">
-            <img src="https://www.google.com/s2/favicons?domain=gitlab.haskell.org" loading="lazy">
-            gitlab.haskell.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/givingusa.org/">
-            <img src="https://www.google.com/s2/favicons?domain=givingusa.org" loading="lazy">
-            givingusa.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/goodjudgment.com/">
-            <img src="https://www.google.com/s2/favicons?domain=goodjudgment.com" loading="lazy">
-            goodjudgment.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/groups.csail.mit.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=groups.csail.mit.edu" loading="lazy">
-            groups.csail.mit.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/groups.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=groups.google.com" loading="lazy">
-            groups.google.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/gs.statcounter.com/">
-            <img src="https://www.google.com/s2/favicons?domain=gs.statcounter.com" loading="lazy">
-            gs.statcounter.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/haskell-containers.readthedocs.io/">
-            <img src="https://www.google.com/s2/favicons?domain=haskell-containers.readthedocs.io" loading="lazy">
-            haskell-containers.readthedocs.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/haskell-haddock.readthedocs.io/">
-            <img src="https://www.google.com/s2/favicons?domain=haskell-haddock.readthedocs.io" loading="lazy">
-            haskell-haddock.readthedocs.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/hedgehogreview.com/">
-            <img src="https://www.google.com/s2/favicons?domain=hedgehogreview.com" loading="lazy">
-            hedgehogreview.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/help.medium.com/">
-            <img src="https://www.google.com/s2/favicons?domain=help.medium.com" loading="lazy">
-            help.medium.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/hindenburgresearch.com/">
-            <img src="https://www.google.com/s2/favicons?domain=hindenburgresearch.com" loading="lazy">
-            hindenburgresearch.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/homepages.se.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=homepages.se.edu" loading="lazy">
-            homepages.se.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/hoogle.haskell.org/">
-            <img src="https://www.google.com/s2/favicons?domain=hoogle.haskell.org" loading="lazy">
-            hoogle.haskell.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/hovav.net/">
-            <img src="https://www.google.com/s2/favicons?domain=hovav.net" loading="lazy">
-            hovav.net (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/httpd.apache.org/">
-            <img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading="lazy">
-            httpd.apache.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ilregno2s.blogspot.com/">
-            <img src="https://www.google.com/s2/favicons?domain=ilregno2s.blogspot.com" loading="lazy">
-            ilregno2s.blogspot.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/investors.nytco.com/">
-            <img src="https://www.google.com/s2/favicons?domain=investors.nytco.com" loading="lazy">
-            investors.nytco.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/iselemagazine.com/">
-            <img src="https://www.google.com/s2/favicons?domain=iselemagazine.com" loading="lazy">
-            iselemagazine.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/isocpp.org/">
-            <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy">
-            isocpp.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ittc.ku.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=ittc.ku.edu" loading="lazy">
-            ittc.ku.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/jdh.hamkins.org/">
-            <img src="https://www.google.com/s2/favicons?domain=jdh.hamkins.org" loading="lazy">
-            jdh.hamkins.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/jordan-wright.com/">
-            <img src="https://www.google.com/s2/favicons?domain=jordan-wright.com" loading="lazy">
-            jordan-wright.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/jpkoning.blogspot.com/">
-            <img src="https://www.google.com/s2/favicons?domain=jpkoning.blogspot.com" loading="lazy">
-            jpkoning.blogspot.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/kaig.org/">
-            <img src="https://www.google.com/s2/favicons?domain=kaig.org" loading="lazy">
-            kaig.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/kcsrk.info/">
-            <img src="https://www.google.com/s2/favicons?domain=kcsrk.info" loading="lazy">
-            kcsrk.info (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/kudsonline.com/">
-            <img src="https://www.google.com/s2/favicons?domain=kudsonline.com" loading="lazy">
-            kudsonline.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/kythe.io/">
-            <img src="https://www.google.com/s2/favicons?domain=kythe.io" loading="lazy">
-            kythe.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lairofreviews.com/">
-            <img src="https://www.google.com/s2/favicons?domain=lairofreviews.com" loading="lazy">
-            lairofreviews.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/larspsyll.wordpress.com/">
-            <img src="https://www.google.com/s2/favicons?domain=larspsyll.wordpress.com" loading="lazy">
-            larspsyll.wordpress.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/learn.microsoft.com/">
-            <img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading="lazy">
-            learn.microsoft.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lifespanbook.com/">
-            <img src="https://www.google.com/s2/favicons?domain=lifespanbook.com" loading="lazy">
-            lifespanbook.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lisp-lang.org/">
-            <img src="https://www.google.com/s2/favicons?domain=lisp-lang.org" loading="lazy">
-            lisp-lang.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/llvm.org/">
-            <img src="https://www.google.com/s2/favicons?domain=llvm.org" loading="lazy">
-            llvm.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lotnet.com/">
-            <img src="https://www.google.com/s2/favicons?domain=lotnet.com" loading="lazy">
-            lotnet.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lovedeathrobots.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=lovedeathrobots.fandom.com" loading="lazy">
-            lovedeathrobots.fandom.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lumapartners.com/">
-            <img src="https://www.google.com/s2/favicons?domain=lumapartners.com" loading="lazy">
-            lumapartners.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/lviattack.eu/">
-            <img src="https://www.google.com/s2/favicons?domain=lviattack.eu" loading="lazy">
-            lviattack.eu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/m.signalvnoise.com/">
-            <img src="https://www.google.com/s2/favicons?domain=m.signalvnoise.com" loading="lazy">
-            m.signalvnoise.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/mackenzie-scott.medium.com/">
-            <img src="https://www.google.com/s2/favicons?domain=mackenzie-scott.medium.com" loading="lazy">
-            mackenzie-scott.medium.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/markkarpov.com/">
-            <img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading="lazy">
-            markkarpov.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/mindingourway.com/">
-            <img src="https://www.google.com/s2/favicons?domain=mindingourway.com" loading="lazy">
-            mindingourway.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/moam.info/">
-            <img src="https://www.google.com/s2/favicons?domain=moam.info" loading="lazy">
-            moam.info (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/moneytransfers.com/">
-            <img src="https://www.google.com/s2/favicons?domain=moneytransfers.com" loading="lazy">
-            moneytransfers.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/monologues.co.uk/">
-            <img src="https://www.google.com/s2/favicons?domain=monologues.co.uk" loading="lazy">
-            monologues.co.uk (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/mozilla.github.io/">
-            <img src="https://www.google.com/s2/favicons?domain=mozilla.github.io" loading="lazy">
-            mozilla.github.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/mschf.xyz/">
-            <img src="https://www.google.com/s2/favicons?domain=mschf.xyz" loading="lazy">
-            mschf.xyz (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/muratbuffalo.blogspot.com/">
-            <img src="https://www.google.com/s2/favicons?domain=muratbuffalo.blogspot.com" loading="lazy">
-            muratbuffalo.blogspot.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/music.youtube.com/">
-            <img src="https://www.google.com/s2/favicons?domain=music.youtube.com" loading="lazy">
-            music.youtube.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/nautil.us/">
-            <img src="https://www.google.com/s2/favicons?domain=nautil.us" loading="lazy">
-            nautil.us (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/neverworkintheory.org/">
-            <img src="https://www.google.com/s2/favicons?domain=neverworkintheory.org" loading="lazy">
-            neverworkintheory.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/news.sina.com.cn/">
-            <img src="https://www.google.com/s2/favicons?domain=news.sina.com.cn" loading="lazy">
-            news.sina.com.cn (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/news.slashdot.org/">
-            <img src="https://www.google.com/s2/favicons?domain=news.slashdot.org" loading="lazy">
-            news.slashdot.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/nnedi.com/">
-            <img src="https://www.google.com/s2/favicons?domain=nnedi.com" loading="lazy">
-            nnedi.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/nope-its-lily.medium.com/">
-            <img src="https://www.google.com/s2/favicons?domain=nope-its-lily.medium.com" loading="lazy">
-            nope-its-lily.medium.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ocw.mit.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=ocw.mit.edu" loading="lazy">
-            ocw.mit.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/old.reddit.com/">
-            <img src="https://www.google.com/s2/favicons?domain=old.reddit.com" loading="lazy">
-            old.reddit.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/opportunities.invest.go.ke/">
-            <img src="https://www.google.com/s2/favicons?domain=opportunities.invest.go.ke" loading="lazy">
-            opportunities.invest.go.ke (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/oracleofbacon.org/">
-            <img src="https://www.google.com/s2/favicons?domain=oracleofbacon.org" loading="lazy">
-            oracleofbacon.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ordrespontane.blogspot.com/">
-            <img src="https://www.google.com/s2/favicons?domain=ordrespontane.blogspot.com" loading="lazy">
-            ordrespontane.blogspot.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/outcast.fandom.com/">
-            <img src="https://www.google.com/s2/favicons?domain=outcast.fandom.com" loading="lazy">
-            outcast.fandom.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/papers.ssrn.com/">
-            <img src="https://www.google.com/s2/favicons?domain=papers.ssrn.com" loading="lazy">
-            papers.ssrn.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/paulgraham.com/">
-            <img src="https://www.google.com/s2/favicons?domain=paulgraham.com" loading="lazy">
-            paulgraham.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/petsymposium.org/">
-            <img src="https://www.google.com/s2/favicons?domain=petsymposium.org" loading="lazy">
-            petsymposium.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/planetmath.org/">
-            <img src="https://www.google.com/s2/favicons?domain=planetmath.org" loading="lazy">
-            planetmath.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/plato.stanford.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=plato.stanford.edu" loading="lazy">
-            plato.stanford.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/priceonomics.com/">
-            <img src="https://www.google.com/s2/favicons?domain=priceonomics.com" loading="lazy">
-            priceonomics.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/primes.utm.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=primes.utm.edu" loading="lazy">
-            primes.utm.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/proceedings.mlr.press/">
-            <img src="https://www.google.com/s2/favicons?domain=proceedings.mlr.press" loading="lazy">
-            proceedings.mlr.press (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/publicsuffix.org/">
-            <img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading="lazy">
-            publicsuffix.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/pubmed.ncbi.nlm.nih.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=pubmed.ncbi.nlm.nih.gov" loading="lazy">
-            pubmed.ncbi.nlm.nih.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/pushparty.app/">
-            <img src="https://www.google.com/s2/favicons?domain=pushparty.app" loading="lazy">
-            pushparty.app (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/queue.acm.org/">
-            <img src="https://www.google.com/s2/favicons?domain=queue.acm.org" loading="lazy">
-            queue.acm.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/quibi-hq.medium.com/">
-            <img src="https://www.google.com/s2/favicons?domain=quibi-hq.medium.com" loading="lazy">
-            quibi-hq.medium.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/quoteinvestigator.com/">
-            <img src="https://www.google.com/s2/favicons?domain=quoteinvestigator.com" loading="lazy">
-            quoteinvestigator.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/radiolab.org/">
-            <img src="https://www.google.com/s2/favicons?domain=radiolab.org" loading="lazy">
-            radiolab.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/raju.varghese.org/">
-            <img src="https://www.google.com/s2/favicons?domain=raju.varghese.org" loading="lazy">
-            raju.varghese.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/reference.wolfram.com/">
-            <img src="https://www.google.com/s2/favicons?domain=reference.wolfram.com" loading="lazy">
-            reference.wolfram.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/registrar.princeton.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=registrar.princeton.edu" loading="lazy">
-            registrar.princeton.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/releases.llvm.org/">
-            <img src="https://www.google.com/s2/favicons?domain=releases.llvm.org" loading="lazy">
-            releases.llvm.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/research.google/">
-            <img src="https://www.google.com/s2/favicons?domain=research.google" loading="lazy">
-            research.google (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/rhodesmill.org/">
-            <img src="https://www.google.com/s2/favicons?domain=rhodesmill.org" loading="lazy">
-            rhodesmill.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/robertheaton.com/">
-            <img src="https://www.google.com/s2/favicons?domain=robertheaton.com" loading="lazy">
-            robertheaton.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/rssdss.design.blog/">
-            <img src="https://www.google.com/s2/favicons?domain=rssdss.design.blog" loading="lazy">
-            rssdss.design.blog (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/scholarship.claremont.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=scholarship.claremont.edu" loading="lazy">
-            scholarship.claremont.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/scottbarrykaufman.com/">
-            <img src="https://www.google.com/s2/favicons?domain=scottbarrykaufman.com" loading="lazy">
-            scottbarrykaufman.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/seattle.bibliocommons.com/">
-            <img src="https://www.google.com/s2/favicons?domain=seattle.bibliocommons.com" loading="lazy">
-            seattle.bibliocommons.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/shopify.engineering/">
-            <img src="https://www.google.com/s2/favicons?domain=shopify.engineering" loading="lazy">
-            shopify.engineering (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/sph.umich.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=sph.umich.edu" loading="lazy">
-            sph.umich.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/stackoverflow.blog/">
-            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.blog" loading="lazy">
-            stackoverflow.blog (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/stanford.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=stanford.edu" loading="lazy">
-            stanford.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/statistics.laerd.com/">
-            <img src="https://www.google.com/s2/favicons?domain=statistics.laerd.com" loading="lazy">
-            statistics.laerd.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/steveblank.com/">
-            <img src="https://www.google.com/s2/favicons?domain=steveblank.com" loading="lazy">
-            steveblank.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/stories.pinduoduo-global.com/">
-            <img src="https://www.google.com/s2/favicons?domain=stories.pinduoduo-global.com" loading="lazy">
-            stories.pinduoduo-global.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/tala.co.ke/">
-            <img src="https://www.google.com/s2/favicons?domain=tala.co.ke" loading="lazy">
-            tala.co.ke (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/technode.com/">
-            <img src="https://www.google.com/s2/favicons?domain=technode.com" loading="lazy">
-            technode.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/testing.googleblog.com/">
-            <img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading="lazy">
-            testing.googleblog.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/theamericanscholar.org/">
-            <img src="https://www.google.com/s2/favicons?domain=theamericanscholar.org" loading="lazy">
-            theamericanscholar.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/thecorrespondent.com/">
-            <img src="https://www.google.com/s2/favicons?domain=thecorrespondent.com" loading="lazy">
-            thecorrespondent.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/thedreaming.moteofdust.com/">
-            <img src="https://www.google.com/s2/favicons?domain=thedreaming.moteofdust.com" loading="lazy">
-            thedreaming.moteofdust.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/thehustle.co/">
-            <img src="https://www.google.com/s2/favicons?domain=thehustle.co" loading="lazy">
-            thehustle.co (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/theintercept.com/">
-            <img src="https://www.google.com/s2/favicons?domain=theintercept.com" loading="lazy">
-            theintercept.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/themarkup.org/">
-            <img src="https://www.google.com/s2/favicons?domain=themarkup.org" loading="lazy">
-            themarkup.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/thepointsguy.com/">
-            <img src="https://www.google.com/s2/favicons?domain=thepointsguy.com" loading="lazy">
-            thepointsguy.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/time.com/">
-            <img src="https://www.google.com/s2/favicons?domain=time.com" loading="lazy">
-            time.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/titan-comics.com/">
-            <img src="https://www.google.com/s2/favicons?domain=titan-comics.com" loading="lazy">
-            titan-comics.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/towardsdatascience.com/">
-            <img src="https://www.google.com/s2/favicons?domain=towardsdatascience.com" loading="lazy">
-            towardsdatascience.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/translate.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=translate.google.com" loading="lazy">
-            translate.google.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/trends.google.com/">
-            <img src="https://www.google.com/s2/favicons?domain=trends.google.com" loading="lazy">
-            trends.google.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/tvshowtranscripts.ourboard.org/">
-            <img src="https://www.google.com/s2/favicons?domain=tvshowtranscripts.ourboard.org" loading="lazy">
-            tvshowtranscripts.ourboard.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/typesense.org/">
-            <img src="https://www.google.com/s2/favicons?domain=typesense.org" loading="lazy">
-            typesense.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/uit.no/">
-            <img src="https://www.google.com/s2/favicons?domain=uit.no" loading="lazy">
-            uit.no (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/users.soe.ucsc.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=users.soe.ucsc.edu" loading="lazy">
-            users.soe.ucsc.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/venturebeat.com/">
-            <img src="https://www.google.com/s2/favicons?domain=venturebeat.com" loading="lazy">
-            venturebeat.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/view.officeapps.live.com/">
-            <img src="https://www.google.com/s2/favicons?domain=view.officeapps.live.com" loading="lazy">
-            view.officeapps.live.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/wabc.fiba.com/">
-            <img src="https://www.google.com/s2/favicons?domain=wabc.fiba.com" loading="lazy">
-            wabc.fiba.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/wicg.github.io/">
-            <img src="https://www.google.com/s2/favicons?domain=wicg.github.io" loading="lazy">
-            wicg.github.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/wiki.lesswrong.com/">
-            <img src="https://www.google.com/s2/favicons?domain=wiki.lesswrong.com" loading="lazy">
-            wiki.lesswrong.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/wiki.mozilla.org/">
-            <img src="https://www.google.com/s2/favicons?domain=wiki.mozilla.org" loading="lazy">
-            wiki.mozilla.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/writing2.richmond.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=writing2.richmond.edu" loading="lazy">
-            writing2.richmond.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www-koengeens-be.translate.goog/">
-            <img src="https://www.google.com/s2/favicons?domain=www-koengeens-be.translate.goog" loading="lazy">
-            www-koengeens-be.translate.goog (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.abramsbooks.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.abramsbooks.com" loading="lazy">
-            www.abramsbooks.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.academia.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.academia.edu" loading="lazy">
-            www.academia.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.adamtornhill.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.adamtornhill.com" loading="lazy">
-            www.adamtornhill.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.answers.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.answers.org" loading="lazy">
-            www.answers.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.atlasobscura.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.atlasobscura.com" loading="lazy">
-            www.atlasobscura.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.atrium.co/">
-            <img src="https://www.google.com/s2/favicons?domain=www.atrium.co" loading="lazy">
-            www.atrium.co (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.azquotes.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.azquotes.com" loading="lazy">
-            www.azquotes.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.baltimoresun.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.baltimoresun.com" loading="lazy">
-            www.baltimoresun.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.berfrois.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.berfrois.com" loading="lazy">
-            www.berfrois.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.bleepingcomputer.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.bleepingcomputer.com" loading="lazy">
-            www.bleepingcomputer.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.blog.google/">
-            <img src="https://www.google.com/s2/favicons?domain=www.blog.google" loading="lazy">
-            www.blog.google (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.businesswire.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.businesswire.com" loading="lazy">
-            www.businesswire.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.byanymeansbball.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.byanymeansbball.com" loading="lazy">
-            www.byanymeansbball.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.callingbullshit.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.callingbullshit.org" loading="lazy">
-            www.callingbullshit.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.caltech.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.caltech.edu" loading="lazy">
-            www.caltech.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cbc.ca/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cbc.ca" loading="lazy">
-            www.cbc.ca (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cdsckenya.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cdsckenya.com" loading="lazy">
-            www.cdsckenya.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cmu.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cmu.edu" loading="lazy">
-            www.cmu.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cnn.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cnn.com" loading="lazy">
-            www.cnn.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.comic-con.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.comic-con.org" loading="lazy">
-            www.comic-con.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.comicsbeat.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.comicsbeat.com" loading="lazy">
-            www.comicsbeat.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cs.cmu.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cs.cmu.edu" loading="lazy">
-            www.cs.cmu.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cs.umd.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cs.umd.edu" loading="lazy">
-            www.cs.umd.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.csc.kth.se/">
-            <img src="https://www.google.com/s2/favicons?domain=www.csc.kth.se" loading="lazy">
-            www.csc.kth.se (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.curiousjuice.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.curiousjuice.com" loading="lazy">
-            www.curiousjuice.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.cytonn.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.cytonn.com" loading="lazy">
-            www.cytonn.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.dallasnews.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.dallasnews.com" loading="lazy">
-            www.dallasnews.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.dcuniverseinfinite.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.dcuniverseinfinite.com" loading="lazy">
-            www.dcuniverseinfinite.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.disneyplus.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.disneyplus.com" loading="lazy">
-            www.disneyplus.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.ea.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.ea.com" loading="lazy">
-            www.ea.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.eastbaybiosecurity.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.eastbaybiosecurity.org" loading="lazy">
-            www.eastbaybiosecurity.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.econlib.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.econlib.org" loading="lazy">
-            www.econlib.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.eff.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.eff.org" loading="lazy">
-            www.eff.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.emilymandel.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.emilymandel.com" loading="lazy">
-            www.emilymandel.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.epsilontheory.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.epsilontheory.com" loading="lazy">
-            www.epsilontheory.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.equalityhumanrights.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.equalityhumanrights.com" loading="lazy">
-            www.equalityhumanrights.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.etymonline.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.etymonline.com" loading="lazy">
-            www.etymonline.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.fastcompany.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.fastcompany.com" loading="lazy">
-            www.fastcompany.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.fda.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.fda.gov" loading="lazy">
-            www.fda.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.fortune.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.fortune.com" loading="lazy">
-            www.fortune.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.ftc.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.ftc.gov" loading="lazy">
-            www.ftc.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.galactanet.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.galactanet.com" loading="lazy">
-            www.galactanet.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.gamblingsites.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.gamblingsites.org" loading="lazy">
-            www.gamblingsites.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.genome.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.genome.gov" loading="lazy">
-            www.genome.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.givewell.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.givewell.org" loading="lazy">
-            www.givewell.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.gjopen.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.gjopen.com" loading="lazy">
-            www.gjopen.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.glicko.net/">
-            <img src="https://www.google.com/s2/favicons?domain=www.glicko.net" loading="lazy">
-            www.glicko.net (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.gotw.ca/">
-            <img src="https://www.google.com/s2/favicons?domain=www.gotw.ca" loading="lazy">
-            www.gotw.ca (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.gse.harvard.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.gse.harvard.edu" loading="lazy">
-            www.gse.harvard.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.gutenberg.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.gutenberg.org" loading="lazy">
-            www.gutenberg.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.haskell.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.haskell.org" loading="lazy">
-            www.haskell.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.hbo.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.hbo.com" loading="lazy">
-            www.hbo.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.hhs.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.hhs.gov" loading="lazy">
-            www.hhs.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.huffpost.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.huffpost.com" loading="lazy">
-            www.huffpost.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.imdb.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.imdb.com" loading="lazy">
-            www.imdb.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.impactive.io/">
-            <img src="https://www.google.com/s2/favicons?domain=www.impactive.io" loading="lazy">
-            www.impactive.io (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.importantnotimportant.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.importantnotimportant.com" loading="lazy">
-            www.importantnotimportant.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.independent.co.uk/">
-            <img src="https://www.google.com/s2/favicons?domain=www.independent.co.uk" loading="lazy">
-            www.independent.co.uk (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.innoafrica.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.innoafrica.org" loading="lazy">
-            www.innoafrica.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.institutionalinvestor.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.institutionalinvestor.com" loading="lazy">
-            www.institutionalinvestor.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.invest.go.ke/">
-            <img src="https://www.google.com/s2/favicons?domain=www.invest.go.ke" loading="lazy">
-            www.invest.go.ke (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.investor.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.investor.gov" loading="lazy">
-            www.investor.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.ipcc.ch/">
-            <img src="https://www.google.com/s2/favicons?domain=www.ipcc.ch" loading="lazy">
-            www.ipcc.ch (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.johnmyleswhite.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.johnmyleswhite.com" loading="lazy">
-            www.johnmyleswhite.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.kiplingsociety.co.uk/">
-            <img src="https://www.google.com/s2/favicons?domain=www.kiplingsociety.co.uk" loading="lazy">
-            www.kiplingsociety.co.uk (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.lakenakurukenya.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.lakenakurukenya.com" loading="lazy">
-            www.lakenakurukenya.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.linkedin.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.linkedin.com" loading="lazy">
-            www.linkedin.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.lsec.dnd.ca/">
-            <img src="https://www.google.com/s2/favicons?domain=www.lsec.dnd.ca" loading="lazy">
-            www.lsec.dnd.ca (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.masterclass.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.masterclass.com" loading="lazy">
-            www.masterclass.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.math.columbia.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.math.columbia.edu" loading="lazy">
-            www.math.columbia.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.mathblog.dk/">
-            <img src="https://www.google.com/s2/favicons?domain=www.mathblog.dk" loading="lazy">
-            www.mathblog.dk (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.microsave.net/">
-            <img src="https://www.google.com/s2/favicons?domain=www.microsave.net" loading="lazy">
-            www.microsave.net (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.misappliedsciences.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.misappliedsciences.com" loading="lazy">
-            www.misappliedsciences.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.moef.go.kr/">
-            <img src="https://www.google.com/s2/favicons?domain=www.moef.go.kr" loading="lazy">
-            www.moef.go.kr (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.mozilla.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.mozilla.org" loading="lazy">
-            www.mozilla.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nature.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nature.com" loading="lazy">
-            www.nature.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nba.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nba.com" loading="lazy">
-            www.nba.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nba2klab.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nba2klab.com" loading="lazy">
-            www.nba2klab.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nber.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nber.org" loading="lazy">
-            www.nber.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.ndepend.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.ndepend.com" loading="lazy">
-            www.ndepend.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nps.org.au/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nps.org.au" loading="lazy">
-            www.nps.org.au (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.nse.co.ke/">
-            <img src="https://www.google.com/s2/favicons?domain=www.nse.co.ke" loading="lazy">
-            www.nse.co.ke (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.oracle.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.oracle.com" loading="lazy">
-            www.oracle.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.orwell.ru/">
-            <img src="https://www.google.com/s2/favicons?domain=www.orwell.ru" loading="lazy">
-            www.orwell.ru (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.osti.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.osti.gov" loading="lazy">
-            www.osti.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.overcomingbias.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.overcomingbias.com" loading="lazy">
-            www.overcomingbias.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.pnas.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.pnas.org" loading="lazy">
-            www.pnas.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.poynter.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.poynter.org" loading="lazy">
-            www.poynter.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.princeton.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.princeton.edu" loading="lazy">
-            www.princeton.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.profgalloway.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.profgalloway.com" loading="lazy">
-            www.profgalloway.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.projectcodemeter.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.projectcodemeter.com" loading="lazy">
-            www.projectcodemeter.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.propublica.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.propublica.org" loading="lazy">
-            www.propublica.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.protocol.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.protocol.com" loading="lazy">
-            www.protocol.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.residentcontrarian.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.residentcontrarian.com" loading="lazy">
-            www.residentcontrarian.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.reuters.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.reuters.com" loading="lazy">
-            www.reuters.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.sandimetz.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.sandimetz.com" loading="lazy">
-            www.sandimetz.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.sciencefocus.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.sciencefocus.com" loading="lazy">
-            www.sciencefocus.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.semanticscholar.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.semanticscholar.org" loading="lazy">
-            www.semanticscholar.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.sendwave.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.sendwave.com" loading="lazy">
-            www.sendwave.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.strike.coop/">
-            <img src="https://www.google.com/s2/favicons?domain=www.strike.coop" loading="lazy">
-            www.strike.coop (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.susanblackmore.uk/">
-            <img src="https://www.google.com/s2/favicons?domain=www.susanblackmore.uk" loading="lazy">
-            www.susanblackmore.uk (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.tandfonline.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.tandfonline.com" loading="lazy">
-            www.tandfonline.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.techdirt.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.techdirt.com" loading="lazy">
-            www.techdirt.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.theacsi.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.theacsi.org" loading="lazy">
-            www.theacsi.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.thecut.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.thecut.com" loading="lazy">
-            www.thecut.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.theregister.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.theregister.com" loading="lazy">
-            www.theregister.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.thinkwithgoogle.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.thinkwithgoogle.com" loading="lazy">
-            www.thinkwithgoogle.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.tor.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.tor.com" loading="lazy">
-            www.tor.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.uncannymagazine.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.uncannymagazine.com" loading="lazy">
-            www.uncannymagazine.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.usenix.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.usenix.org" loading="lazy">
-            www.usenix.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.uvm.edu/">
-            <img src="https://www.google.com/s2/favicons?domain=www.uvm.edu" loading="lazy">
-            www.uvm.edu (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.uzh.ch/">
-            <img src="https://www.google.com/s2/favicons?domain=www.uzh.ch" loading="lazy">
-            www.uzh.ch (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.warner.senate.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www.warner.senate.gov" loading="lazy">
-            www.warner.senate.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.washingtonexaminer.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.washingtonexaminer.com" loading="lazy">
-            www.washingtonexaminer.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.wired.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.wired.com" loading="lazy">
-            www.wired.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.wolframalpha.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.wolframalpha.com" loading="lazy">
-            www.wolframalpha.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.wsbtv.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.wsbtv.com" loading="lazy">
-            www.wsbtv.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.wusa9.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www.wusa9.com" loading="lazy">
-            www.wusa9.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.xarg.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.xarg.org" loading="lazy">
-            www.xarg.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www.zocalopublicsquare.org/">
-            <img src="https://www.google.com/s2/favicons?domain=www.zocalopublicsquare.org" loading="lazy">
-            www.zocalopublicsquare.org (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www2.census.gov/">
-            <img src="https://www.google.com/s2/favicons?domain=www2.census.gov" loading="lazy">
-            www2.census.gov (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/www2.deloitte.com/">
-            <img src="https://www.google.com/s2/favicons?domain=www2.deloitte.com" loading="lazy">
-            www2.deloitte.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/ylukem.com/">
-            <img src="https://www.google.com/s2/favicons?domain=ylukem.com" loading="lazy">
-            ylukem.com (1)
-        </a>
-    
-        <a href="https://www.curiosities.dev/domains/yro.slashdot.org/">
-            <img src="https://www.google.com/s2/favicons?domain=yro.slashdot.org" loading="lazy">
-            yro.slashdot.org (1)
-        </a>
-    
-    </div>
-
-    <script>
-    let pageURLs = [];
-    const alternateOrganizations = new Set([
-        "tags", "categories", "domains", "authors", "publications"]);
-    fetch("/json/site_tree.json")
-        .then(response => response.json())
-        .then(siteTree => {
-            const currentPath = document.location.pathname;
-            let node = siteTree;
-            currentPath.split("/").forEach((subpath) => {
-                if (!subpath) return;
-                node = node[subpath];
-            });
-            if (!node) return;
-
-            function populateRelevantURLs(partialURL, currentNode) {
-                const currentNodeKeys = Object.keys(currentNode);
-                currentNodeKeys.forEach((key) => {
-                    
-                    if (key === "_meta") return;
-
-                    
-                    
-                    
-                    
-                    
-                    if (currentPath === "/" && alternateOrganizations.has(key))
-                        return;
-
-                    
-                    
-                    let nextPartialURL = partialURL === ""
-                                            ? key
-                                            : `${partialURL}/${key}`;
-
-                    populateRelevantURLs(nextPartialURL, currentNode[key]);
-                });
-
-                // A node that has no children is a regular page, and therefore
-                
-                
-                if (currentNodeKeys.length === 0 && partialURL) {
-                    pageURLs.push(partialURL);
-                }
-            }
-            populateRelevantURLs("", node);
-        })
-        .then(() => {
-            
-            
-            
-            
-            if (pageURLs.length === 0) {
-                document.getElementById("randomSelectorContainer").style.display = "none";
-            }
-        });
-
-    function goToRandomPage() {
-        
-        
-        let idx = Math.floor(Math.random() * (pageURLs.length));
-        window.open(pageURLs[idx], "_self");
-    }
-</script>
-
-
-</main>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<!doctype html><html lang=en><head><title>Cited Domains | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li class=active><a href=https://www.curiosities.dev/domains/>Cited Domains</a></li></ul></nav><main><style>div#tags-holder{display:flex;flex-flow:row wrap}div#tags-holder>a{margin:1% 2%}</style><article><header><h1>Cited Domains</h1></header></article><div style=margin:1% id=randomSelectorContainer><span class=link-style onclick=goToRandomPage();>Random Link ¯\_(ツ)_/¯</span></div><div id=tags-holder><a href=https://www.curiosities.dev/domains/en.wikipedia.org/><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy>
+en.wikipedia.org (71)</a>
+<a href=https://www.curiosities.dev/domains/news.ycombinator.com/><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy>
+news.ycombinator.com (29)</a>
+<a href=https://www.curiosities.dev/domains/doi.org/><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy>
+doi.org (23)</a>
+<a href=https://www.curiosities.dev/domains/scholar.google.com/><img src="https://www.google.com/s2/favicons?domain=scholar.google.com" loading=lazy>
+scholar.google.com (18)</a>
+<a href=https://www.curiosities.dev/domains/www.hoopladigital.com/><img src="https://www.google.com/s2/favicons?domain=www.hoopladigital.com" loading=lazy>
+www.hoopladigital.com (15)</a>
+<a href=https://www.curiosities.dev/domains/github.com/><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy>
+github.com (14)</a>
+<a href=https://www.curiosities.dev/domains/adventofcode.com/><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy>
+adventofcode.com (10)</a>
+<a href=https://www.curiosities.dev/domains/jhidding.github.io/><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy>
+jhidding.github.io (8)</a>
+<a href=https://www.curiosities.dev/domains/www.bloomberg.com/><img src="https://www.google.com/s2/favicons?domain=www.bloomberg.com" loading=lazy>
+www.bloomberg.com (8)</a>
+<a href=https://www.curiosities.dev/domains/dc.fandom.com/><img src="https://www.google.com/s2/favicons?domain=dc.fandom.com" loading=lazy>
+dc.fandom.com (7)</a>
+<a href=https://www.curiosities.dev/domains/hackage.haskell.org/><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy>
+hackage.haskell.org (7)</a>
+<a href=https://www.curiosities.dev/domains/marvel.fandom.com/><img src="https://www.google.com/s2/favicons?domain=marvel.fandom.com" loading=lazy>
+marvel.fandom.com (7)</a>
+<a href=https://www.curiosities.dev/domains/slatestarcodex.com/><img src="https://www.google.com/s2/favicons?domain=slatestarcodex.com" loading=lazy>
+slatestarcodex.com (7)</a>
+<a href=https://www.curiosities.dev/domains/twitter.com/><img src="https://www.google.com/s2/favicons?domain=twitter.com" loading=lazy>
+twitter.com (7)</a>
+<a href=https://www.curiosities.dev/domains/wiki.haskell.org/><img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading=lazy>
+wiki.haskell.org (7)</a>
+<a href=https://www.curiosities.dev/domains/www.nytimes.com/><img src="https://www.google.com/s2/favicons?domain=www.nytimes.com" loading=lazy>
+www.nytimes.com (7)</a>
+<a href=https://www.curiosities.dev/domains/imagecomics.com/><img src="https://www.google.com/s2/favicons?domain=imagecomics.com" loading=lazy>
+imagecomics.com (6)</a>
+<a href=https://www.curiosities.dev/domains/www.collaborativefund.com/><img src="https://www.google.com/s2/favicons?domain=www.collaborativefund.com" loading=lazy>
+www.collaborativefund.com (6)</a>
+<a href=https://www.curiosities.dev/domains/bookofbadarguments.com/><img src="https://www.google.com/s2/favicons?domain=bookofbadarguments.com" loading=lazy>
+bookofbadarguments.com (5)</a>
+<a href=https://www.curiosities.dev/domains/en.cppreference.com/><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy>
+en.cppreference.com (5)</a>
+<a href=https://www.curiosities.dev/domains/stackoverflow.com/><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy>
+stackoverflow.com (5)</a>
+<a href=https://www.curiosities.dev/domains/techcrunch.com/><img src="https://www.google.com/s2/favicons?domain=techcrunch.com" loading=lazy>
+techcrunch.com (5)</a>
+<a href=https://www.curiosities.dev/domains/www.dc.com/><img src="https://www.google.com/s2/favicons?domain=www.dc.com" loading=lazy>
+www.dc.com (5)</a>
+<a href=https://www.curiosities.dev/domains/www.inf.fu-berlin.de/><img src="https://www.google.com/s2/favicons?domain=www.inf.fu-berlin.de" loading=lazy>
+www.inf.fu-berlin.de (5)</a>
+<a href=https://www.curiosities.dev/domains/www.marvel.com/><img src="https://www.google.com/s2/favicons?domain=www.marvel.com" loading=lazy>
+www.marvel.com (5)</a>
+<a href=https://www.curiosities.dev/domains/www.paulgraham.com/><img src="https://www.google.com/s2/favicons?domain=www.paulgraham.com" loading=lazy>
+www.paulgraham.com (5)</a>
+<a href=https://www.curiosities.dev/domains/www.youtube.com/><img src="https://www.google.com/s2/favicons?domain=www.youtube.com" loading=lazy>
+www.youtube.com (5)</a>
+<a href=https://www.curiosities.dev/domains/abseil.io/><img src="https://www.google.com/s2/favicons?domain=abseil.io" loading=lazy>
+abseil.io (4)</a>
+<a href=https://www.curiosities.dev/domains/astralcodexten.substack.com/><img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading=lazy>
+astralcodexten.substack.com (4)</a>
+<a href=https://www.curiosities.dev/domains/chromium.googlesource.com/><img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading=lazy>
+chromium.googlesource.com (4)</a>
+<a href=https://www.curiosities.dev/domains/dx.doi.org/><img src="https://www.google.com/s2/favicons?domain=dx.doi.org" loading=lazy>
+dx.doi.org (4)</a>
+<a href=https://www.curiosities.dev/domains/missing.csail.mit.edu/><img src="https://www.google.com/s2/favicons?domain=missing.csail.mit.edu" loading=lazy>
+missing.csail.mit.edu (4)</a>
+<a href=https://www.curiosities.dev/domains/projecteuler.net/><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy>
+projecteuler.net (4)</a>
+<a href=https://www.curiosities.dev/domains/web.archive.org/><img src="https://www.google.com/s2/favicons?domain=web.archive.org" loading=lazy>
+web.archive.org (4)</a>
+<a href=https://www.curiosities.dev/domains/www.chromium.org/><img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading=lazy>
+www.chromium.org (4)</a>
+<a href=https://www.curiosities.dev/domains/www.forbes.com/><img src="https://www.google.com/s2/favicons?domain=www.forbes.com" loading=lazy>
+www.forbes.com (4)</a>
+<a href=https://www.curiosities.dev/domains/www.sec.gov/><img src="https://www.google.com/s2/favicons?domain=www.sec.gov" loading=lazy>
+www.sec.gov (4)</a>
+<a href=https://www.curiosities.dev/domains/www.theatlantic.com/><img src="https://www.google.com/s2/favicons?domain=www.theatlantic.com" loading=lazy>
+www.theatlantic.com (4)</a>
+<a href=https://www.curiosities.dev/domains/dawn.cs.stanford.edu/><img src="https://www.google.com/s2/favicons?domain=dawn.cs.stanford.edu" loading=lazy>
+dawn.cs.stanford.edu (3)</a>
+<a href=https://www.curiosities.dev/domains/fs.blog/><img src="https://www.google.com/s2/favicons?domain=fs.blog" loading=lazy>
+fs.blog (3)</a>
+<a href=https://www.curiosities.dev/domains/source.chromium.org/><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy>
+source.chromium.org (3)</a>
+<a href=https://www.curiosities.dev/domains/support.google.com/><img src="https://www.google.com/s2/favicons?domain=support.google.com" loading=lazy>
+support.google.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.apple.com/><img src="https://www.google.com/s2/favicons?domain=www.apple.com" loading=lazy>
+www.apple.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.connectedpapers.com/><img src="https://www.google.com/s2/favicons?domain=www.connectedpapers.com" loading=lazy>
+www.connectedpapers.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.goodreads.com/><img src="https://www.google.com/s2/favicons?domain=www.goodreads.com" loading=lazy>
+www.goodreads.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.lesswrong.com/><img src="https://www.google.com/s2/favicons?domain=www.lesswrong.com" loading=lazy>
+www.lesswrong.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.newyorker.com/><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy>
+www.newyorker.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.npr.org/><img src="https://www.google.com/s2/favicons?domain=www.npr.org" loading=lazy>
+www.npr.org (3)</a>
+<a href=https://www.curiosities.dev/domains/www.reddit.com/><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy>
+www.reddit.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.schoolofhaskell.com/><img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading=lazy>
+www.schoolofhaskell.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.theguardian.com/><img src="https://www.google.com/s2/favicons?domain=www.theguardian.com" loading=lazy>
+www.theguardian.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.thehugoawards.org/><img src="https://www.google.com/s2/favicons?domain=www.thehugoawards.org" loading=lazy>
+www.thehugoawards.org (3)</a>
+<a href=https://www.curiosities.dev/domains/www.theverge.com/><img src="https://www.google.com/s2/favicons?domain=www.theverge.com" loading=lazy>
+www.theverge.com (3)</a>
+<a href=https://www.curiosities.dev/domains/www.vox.com/><img src="https://www.google.com/s2/favicons?domain=www.vox.com" loading=lazy>
+www.vox.com (3)</a>
+<a href=https://www.curiosities.dev/domains/arstechnica.com/><img src="https://www.google.com/s2/favicons?domain=arstechnica.com" loading=lazy>
+arstechnica.com (2)</a>
+<a href=https://www.curiosities.dev/domains/blogs.windows.com/><img src="https://www.google.com/s2/favicons?domain=blogs.windows.com" loading=lazy>
+blogs.windows.com (2)</a>
+<a href=https://www.curiosities.dev/domains/brilliant.org/><img src="https://www.google.com/s2/favicons?domain=brilliant.org" loading=lazy>
+brilliant.org (2)</a>
+<a href=https://www.curiosities.dev/domains/developer.apple.com/><img src="https://www.google.com/s2/favicons?domain=developer.apple.com" loading=lazy>
+developer.apple.com (2)</a>
+<a href=https://www.curiosities.dev/domains/developers.google.com/><img src="https://www.google.com/s2/favicons?domain=developers.google.com" loading=lazy>
+developers.google.com (2)</a>
+<a href=https://www.curiosities.dev/domains/dl.acm.org/><img src="https://www.google.com/s2/favicons?domain=dl.acm.org" loading=lazy>
+dl.acm.org (2)</a>
+<a href=https://www.curiosities.dev/domains/docs.microsoft.com/><img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading=lazy>
+docs.microsoft.com (2)</a>
+<a href=https://www.curiosities.dev/domains/en.wikibooks.org/><img src="https://www.google.com/s2/favicons?domain=en.wikibooks.org" loading=lazy>
+en.wikibooks.org (2)</a>
+<a href=https://www.curiosities.dev/domains/genius.com/><img src="https://www.google.com/s2/favicons?domain=genius.com" loading=lazy>
+genius.com (2)</a>
+<a href=https://www.curiosities.dev/domains/git-scm.com/><img src="https://www.google.com/s2/favicons?domain=git-scm.com" loading=lazy>
+git-scm.com (2)</a>
+<a href=https://www.curiosities.dev/domains/hbr.org/><img src="https://www.google.com/s2/favicons?domain=hbr.org" loading=lazy>
+hbr.org (2)</a>
+<a href=https://www.curiosities.dev/domains/imagecomics.fandom.com/><img src="https://www.google.com/s2/favicons?domain=imagecomics.fandom.com" loading=lazy>
+imagecomics.fandom.com (2)</a>
+<a href=https://www.curiosities.dev/domains/intelligence.org/><img src="https://www.google.com/s2/favicons?domain=intelligence.org" loading=lazy>
+intelligence.org (2)</a>
+<a href=https://www.curiosities.dev/domains/isocpp.github.io/><img src="https://www.google.com/s2/favicons?domain=isocpp.github.io" loading=lazy>
+isocpp.github.io (2)</a>
+<a href=https://www.curiosities.dev/domains/it.slashdot.org/><img src="https://www.google.com/s2/favicons?domain=it.slashdot.org" loading=lazy>
+it.slashdot.org (2)</a>
+<a href=https://www.curiosities.dev/domains/jeffe.cs.illinois.edu/><img src="https://www.google.com/s2/favicons?domain=jeffe.cs.illinois.edu" loading=lazy>
+jeffe.cs.illinois.edu (2)</a>
+<a href=https://www.curiosities.dev/domains/medium.com/><img src="https://www.google.com/s2/favicons?domain=medium.com" loading=lazy>
+medium.com (2)</a>
+<a href=https://www.curiosities.dev/domains/monicalent.com/><img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading=lazy>
+monicalent.com (2)</a>
+<a href=https://www.curiosities.dev/domains/nymag.com/><img src="https://www.google.com/s2/favicons?domain=nymag.com" loading=lazy>
+nymag.com (2)</a>
+<a href=https://www.curiosities.dev/domains/sandman.fandom.com/><img src="https://www.google.com/s2/favicons?domain=sandman.fandom.com" loading=lazy>
+sandman.fandom.com (2)</a>
+<a href=https://www.curiosities.dev/domains/spectrum.ieee.org/><img src="https://www.google.com/s2/favicons?domain=spectrum.ieee.org" loading=lazy>
+spectrum.ieee.org (2)</a>
+<a href=https://www.curiosities.dev/domains/statmodeling.stat.columbia.edu/><img src="https://www.google.com/s2/favicons?domain=statmodeling.stat.columbia.edu" loading=lazy>
+statmodeling.stat.columbia.edu (2)</a>
+<a href=https://www.curiosities.dev/domains/stats.stackexchange.com/><img src="https://www.google.com/s2/favicons?domain=stats.stackexchange.com" loading=lazy>
+stats.stackexchange.com (2)</a>
+<a href=https://www.curiosities.dev/domains/themargins.substack.com/><img src="https://www.google.com/s2/favicons?domain=themargins.substack.com" loading=lazy>
+themargins.substack.com (2)</a>
+<a href=https://www.curiosities.dev/domains/tvtropes.org/><img src="https://www.google.com/s2/favicons?domain=tvtropes.org" loading=lazy>
+tvtropes.org (2)</a>
+<a href=https://www.curiosities.dev/domains/www.amazon.com/><img src="https://www.google.com/s2/favicons?domain=www.amazon.com" loading=lazy>
+www.amazon.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.bankrate.com/><img src="https://www.google.com/s2/favicons?domain=www.bankrate.com" loading=lazy>
+www.bankrate.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.bbc.com/><img src="https://www.google.com/s2/favicons?domain=www.bbc.com" loading=lazy>
+www.bbc.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.buzzfeednews.com/><img src="https://www.google.com/s2/favicons?domain=www.buzzfeednews.com" loading=lazy>
+www.buzzfeednews.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.cis.upenn.edu/><img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading=lazy>
+www.cis.upenn.edu (2)</a>
+<a href=https://www.curiosities.dev/domains/www.covingtoninnovations.com/><img src="https://www.google.com/s2/favicons?domain=www.covingtoninnovations.com" loading=lazy>
+www.covingtoninnovations.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.darkhorse.com/><img src="https://www.google.com/s2/favicons?domain=www.darkhorse.com" loading=lazy>
+www.darkhorse.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.federalreserve.gov/><img src="https://www.google.com/s2/favicons?domain=www.federalreserve.gov" loading=lazy>
+www.federalreserve.gov (2)</a>
+<a href=https://www.curiosities.dev/domains/www.fpcomplete.com/><img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading=lazy>
+www.fpcomplete.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.google.com/><img src="https://www.google.com/s2/favicons?domain=www.google.com" loading=lazy>
+www.google.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.improbable.com/><img src="https://www.google.com/s2/favicons?domain=www.improbable.com" loading=lazy>
+www.improbable.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.investopedia.com/><img src="https://www.google.com/s2/favicons?domain=www.investopedia.com" loading=lazy>
+www.investopedia.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.jstor.org/><img src="https://www.google.com/s2/favicons?domain=www.jstor.org" loading=lazy>
+www.jstor.org (2)</a>
+<a href=https://www.curiosities.dev/domains/www.khanacademy.org/><img src="https://www.google.com/s2/favicons?domain=www.khanacademy.org" loading=lazy>
+www.khanacademy.org (2)</a>
+<a href=https://www.curiosities.dev/domains/www.latimes.com/><img src="https://www.google.com/s2/favicons?domain=www.latimes.com" loading=lazy>
+www.latimes.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.netflix.com/><img src="https://www.google.com/s2/favicons?domain=www.netflix.com" loading=lazy>
+www.netflix.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.quantamagazine.org/><img src="https://www.google.com/s2/favicons?domain=www.quantamagazine.org" loading=lazy>
+www.quantamagazine.org (2)</a>
+<a href=https://www.curiosities.dev/domains/www.researchgate.net/><img src="https://www.google.com/s2/favicons?domain=www.researchgate.net" loading=lazy>
+www.researchgate.net (2)</a>
+<a href=https://www.curiosities.dev/domains/www.seas.upenn.edu/><img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading=lazy>
+www.seas.upenn.edu (2)</a>
+<a href=https://www.curiosities.dev/domains/www.w3.org/><img src="https://www.google.com/s2/favicons?domain=www.w3.org" loading=lazy>
+www.w3.org (2)</a>
+<a href=https://www.curiosities.dev/domains/www.washingtonpost.com/><img src="https://www.google.com/s2/favicons?domain=www.washingtonpost.com" loading=lazy>
+www.washingtonpost.com (2)</a>
+<a href=https://www.curiosities.dev/domains/www.wsj.com/><img src="https://www.google.com/s2/favicons?domain=www.wsj.com" loading=lazy>
+www.wsj.com (2)</a>
+<a href=https://www.curiosities.dev/domains/xn-sant-epa.ti-pun.ch/><img src="https://www.google.com/s2/favicons?domain=xn-sant-epa.ti-pun.ch" loading=lazy>
+xn-sant-epa.ti-pun.ch (2)</a>
+<a href=https://www.curiosities.dev/domains/125.22.40.1348080/><img src="https://www.google.com/s2/favicons?domain=125.22.40.1348080" loading=lazy>
+125.22.40.1348080 (1)</a>
+<a href=https://www.curiosities.dev/domains/2kdb.net/><img src="https://www.google.com/s2/favicons?domain=2kdb.net" loading=lazy>
+2kdb.net (1)</a>
+<a href=https://www.curiosities.dev/domains/about.fb.com/><img src="https://www.google.com/s2/favicons?domain=about.fb.com" loading=lazy>
+about.fb.com (1)</a>
+<a href=https://www.curiosities.dev/domains/aboutmyinfo.org/><img src="https://www.google.com/s2/favicons?domain=aboutmyinfo.org" loading=lazy>
+aboutmyinfo.org (1)</a>
+<a href=https://www.curiosities.dev/domains/abstractmath.org/><img src="https://www.google.com/s2/favicons?domain=abstractmath.org" loading=lazy>
+abstractmath.org (1)</a>
+<a href=https://www.curiosities.dev/domains/academic.oup.com/><img src="https://www.google.com/s2/favicons?domain=academic.oup.com" loading=lazy>
+academic.oup.com (1)</a>
+<a href=https://www.curiosities.dev/domains/alerts.davispolk.com/><img src="https://www.google.com/s2/favicons?domain=alerts.davispolk.com" loading=lazy>
+alerts.davispolk.com (1)</a>
+<a href=https://www.curiosities.dev/domains/alloytools.org/><img src="https://www.google.com/s2/favicons?domain=alloytools.org" loading=lazy>
+alloytools.org (1)</a>
+<a href=https://www.curiosities.dev/domains/apex-magazine.com/><img src="https://www.google.com/s2/favicons?domain=apex-magazine.com" loading=lazy>
+apex-magazine.com (1)</a>
+<a href=https://www.curiosities.dev/domains/apps.bostonglobe.com/><img src="https://www.google.com/s2/favicons?domain=apps.bostonglobe.com" loading=lazy>
+apps.bostonglobe.com (1)</a>
+<a href=https://www.curiosities.dev/domains/archive.org/><img src="https://www.google.com/s2/favicons?domain=archive.org" loading=lazy>
+archive.org (1)</a>
+<a href=https://www.curiosities.dev/domains/archive.ph/><img src="https://www.google.com/s2/favicons?domain=archive.ph" loading=lazy>
+archive.ph (1)</a>
+<a href=https://www.curiosities.dev/domains/awards.wga.org/><img src="https://www.google.com/s2/favicons?domain=awards.wga.org" loading=lazy>
+awards.wga.org (1)</a>
+<a href=https://www.curiosities.dev/domains/bethanybrookshire.com/><img src="https://www.google.com/s2/favicons?domain=bethanybrookshire.com" loading=lazy>
+bethanybrookshire.com (1)</a>
+<a href=https://www.curiosities.dev/domains/bitter-root.fandom.com/><img src="https://www.google.com/s2/favicons?domain=bitter-root.fandom.com" loading=lazy>
+bitter-root.fandom.com (1)</a>
+<a href=https://www.curiosities.dev/domains/blizzard.cs.uwaterloo.ca/><img src="https://www.google.com/s2/favicons?domain=blizzard.cs.uwaterloo.ca" loading=lazy>
+blizzard.cs.uwaterloo.ca (1)</a>
+<a href=https://www.curiosities.dev/domains/blog.cityflo.com/><img src="https://www.google.com/s2/favicons?domain=blog.cityflo.com" loading=lazy>
+blog.cityflo.com (1)</a>
+<a href=https://www.curiosities.dev/domains/blog.computationalcomplexity.org/><img src="https://www.google.com/s2/favicons?domain=blog.computationalcomplexity.org" loading=lazy>
+blog.computationalcomplexity.org (1)</a>
+<a href=https://www.curiosities.dev/domains/blog.google/><img src="https://www.google.com/s2/favicons?domain=blog.google" loading=lazy>
+blog.google (1)</a>
+<a href=https://www.curiosities.dev/domains/blog.hboeck.de/><img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading=lazy>
+blog.hboeck.de (1)</a>
+<a href=https://www.curiosities.dev/domains/blog.interviewing.io/><img src="https://www.google.com/s2/favicons?domain=blog.interviewing.io" loading=lazy>
+blog.interviewing.io (1)</a>
+<a href=https://www.curiosities.dev/domains/bura.brunel.ac.uk/><img src="https://www.google.com/s2/favicons?domain=bura.brunel.ac.uk" loading=lazy>
+bura.brunel.ac.uk (1)</a>
+<a href=https://www.curiosities.dev/domains/candost.blog/><img src="https://www.google.com/s2/favicons?domain=candost.blog" loading=lazy>
+candost.blog (1)</a>
+<a href=https://www.curiosities.dev/domains/cathyreisenwitz.substack.com/><img src="https://www.google.com/s2/favicons?domain=cathyreisenwitz.substack.com" loading=lazy>
+cathyreisenwitz.substack.com (1)</a>
+<a href=https://www.curiosities.dev/domains/cedar.buffalo.edu/><img src="https://www.google.com/s2/favicons?domain=cedar.buffalo.edu" loading=lazy>
+cedar.buffalo.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/chem.tufts.edu/><img src="https://www.google.com/s2/favicons?domain=chem.tufts.edu" loading=lazy>
+chem.tufts.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/circleci.com/><img src="https://www.google.com/s2/favicons?domain=circleci.com" loading=lazy>
+circleci.com (1)</a>
+<a href=https://www.curiosities.dev/domains/citeseerx.ist.psu.edu/><img src="https://www.google.com/s2/favicons?domain=citeseerx.ist.psu.edu" loading=lazy>
+citeseerx.ist.psu.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/clang-analyzer.llvm.org/><img src="https://www.google.com/s2/favicons?domain=clang-analyzer.llvm.org" loading=lazy>
+clang-analyzer.llvm.org (1)</a>
+<a href=https://www.curiosities.dev/domains/clang.llvm.org/><img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading=lazy>
+clang.llvm.org (1)</a>
+<a href=https://www.curiosities.dev/domains/cloud.google.com/><img src="https://www.google.com/s2/favicons?domain=cloud.google.com" loading=lazy>
+cloud.google.com (1)</a>
+<a href=https://www.curiosities.dev/domains/codereview.stackexchange.com/><img src="https://www.google.com/s2/favicons?domain=codereview.stackexchange.com" loading=lazy>
+codereview.stackexchange.com (1)</a>
+<a href=https://www.curiosities.dev/domains/college.uchicago.edu/><img src="https://www.google.com/s2/favicons?domain=college.uchicago.edu" loading=lazy>
+college.uchicago.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/commons.wikimedia.org/><img src="https://www.google.com/s2/favicons?domain=commons.wikimedia.org" loading=lazy>
+commons.wikimedia.org (1)</a>
+<a href=https://www.curiosities.dev/domains/condellpark.com/><img src="https://www.google.com/s2/favicons?domain=condellpark.com" loading=lazy>
+condellpark.com (1)</a>
+<a href=https://www.curiosities.dev/domains/covid19-static.cdn-apple.com/><img src="https://www.google.com/s2/favicons?domain=covid19-static.cdn-apple.com" loading=lazy>
+covid19-static.cdn-apple.com (1)</a>
+<a href=https://www.curiosities.dev/domains/cryptopp.com/><img src="https://www.google.com/s2/favicons?domain=cryptopp.com" loading=lazy>
+cryptopp.com (1)</a>
+<a href=https://www.curiosities.dev/domains/cyberlaw.stanford.edu/><img src="https://www.google.com/s2/favicons?domain=cyberlaw.stanford.edu" loading=lazy>
+cyberlaw.stanford.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/d1wqtxts1xzle7.cloudfront.net/><img src="https://www.google.com/s2/favicons?domain=d1wqtxts1xzle7.cloudfront.net" loading=lazy>
+d1wqtxts1xzle7.cloudfront.net (1)</a>
+<a href=https://www.curiosities.dev/domains/danluu.com/><img src="https://www.google.com/s2/favicons?domain=danluu.com" loading=lazy>
+danluu.com (1)</a>
+<a href=https://www.curiosities.dev/domains/devblogs.microsoft.com/><img src="https://www.google.com/s2/favicons?domain=devblogs.microsoft.com" loading=lazy>
+devblogs.microsoft.com (1)</a>
+<a href=https://www.curiosities.dev/domains/dfrieds.com/><img src="https://www.google.com/s2/favicons?domain=dfrieds.com" loading=lazy>
+dfrieds.com (1)</a>
+<a href=https://www.curiosities.dev/domains/diego.assencio.com/><img src="https://www.google.com/s2/favicons?domain=diego.assencio.com" loading=lazy>
+diego.assencio.com (1)</a>
+<a href=https://www.curiosities.dev/domains/digiday.com/><img src="https://www.google.com/s2/favicons?domain=digiday.com" loading=lazy>
+digiday.com (1)</a>
+<a href=https://www.curiosities.dev/domains/digitalcommons.brockport.edu/><img src="https://www.google.com/s2/favicons?domain=digitalcommons.brockport.edu" loading=lazy>
+digitalcommons.brockport.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/digitalsmiledesign.com/><img src="https://www.google.com/s2/favicons?domain=digitalsmiledesign.com" loading=lazy>
+digitalsmiledesign.com (1)</a>
+<a href=https://www.curiosities.dev/domains/distill.pub/><img src="https://www.google.com/s2/favicons?domain=distill.pub" loading=lazy>
+distill.pub (1)</a>
+<a href=https://www.curiosities.dev/domains/doc.rero.ch/><img src="https://www.google.com/s2/favicons?domain=doc.rero.ch" loading=lazy>
+doc.rero.ch (1)</a>
+<a href=https://www.curiosities.dev/domains/docs.python.org/><img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading=lazy>
+docs.python.org (1)</a>
+<a href=https://www.curiosities.dev/domains/docs.sonarqube.org/><img src="https://www.google.com/s2/favicons?domain=docs.sonarqube.org" loading=lazy>
+docs.sonarqube.org (1)</a>
+<a href=https://www.curiosities.dev/domains/drewdevault.com/><img src="https://www.google.com/s2/favicons?domain=drewdevault.com" loading=lazy>
+drewdevault.com (1)</a>
+<a href=https://www.curiosities.dev/domains/ecommons.cornell.edu/><img src="https://www.google.com/s2/favicons?domain=ecommons.cornell.edu" loading=lazy>
+ecommons.cornell.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/educationdata.org/><img src="https://www.google.com/s2/favicons?domain=educationdata.org" loading=lazy>
+educationdata.org (1)</a>
+<a href=https://www.curiosities.dev/domains/egtheory.wordpress.com/><img src="https://www.google.com/s2/favicons?domain=egtheory.wordpress.com" loading=lazy>
+egtheory.wordpress.com (1)</a>
+<a href=https://www.curiosities.dev/domains/entangled.github.io/><img src="https://www.google.com/s2/favicons?domain=entangled.github.io" loading=lazy>
+entangled.github.io (1)</a>
+<a href=https://www.curiosities.dev/domains/equity.ucla.edu/><img src="https://www.google.com/s2/favicons?domain=equity.ucla.edu" loading=lazy>
+equity.ucla.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/ericlippert.com/><img src="https://www.google.com/s2/favicons?domain=ericlippert.com" loading=lazy>
+ericlippert.com (1)</a>
+<a href=https://www.curiosities.dev/domains/etfdb.com/><img src="https://www.google.com/s2/favicons?domain=etfdb.com" loading=lazy>
+etfdb.com (1)</a>
+<a href=https://www.curiosities.dev/domains/europepmc.org/><img src="https://www.google.com/s2/favicons?domain=europepmc.org" loading=lazy>
+europepmc.org (1)</a>
+<a href=https://www.curiosities.dev/domains/fas.org/><img src="https://www.google.com/s2/favicons?domain=fas.org" loading=lazy>
+fas.org (1)</a>
+<a href=https://www.curiosities.dev/domains/files.diario-de-bordo-redes-conecti.webnode.com/><img src="https://www.google.com/s2/favicons?domain=files.diario-de-bordo-redes-conecti.webnode.com" loading=lazy>
+files.diario-de-bordo-redes-conecti.webnode.com (1)</a>
+<a href=https://www.curiosities.dev/domains/freakonomics.com/><img src="https://www.google.com/s2/favicons?domain=freakonomics.com" loading=lazy>
+freakonomics.com (1)</a>
+<a href=https://www.curiosities.dev/domains/gcc.gnu.org/><img src="https://www.google.com/s2/favicons?domain=gcc.gnu.org" loading=lazy>
+gcc.gnu.org (1)</a>
+<a href=https://www.curiosities.dev/domains/genderdysphoria.fyi/><img src="https://www.google.com/s2/favicons?domain=genderdysphoria.fyi" loading=lazy>
+genderdysphoria.fyi (1)</a>
+<a href=https://www.curiosities.dev/domains/gitlab.haskell.org/><img src="https://www.google.com/s2/favicons?domain=gitlab.haskell.org" loading=lazy>
+gitlab.haskell.org (1)</a>
+<a href=https://www.curiosities.dev/domains/givingusa.org/><img src="https://www.google.com/s2/favicons?domain=givingusa.org" loading=lazy>
+givingusa.org (1)</a>
+<a href=https://www.curiosities.dev/domains/goodjudgment.com/><img src="https://www.google.com/s2/favicons?domain=goodjudgment.com" loading=lazy>
+goodjudgment.com (1)</a>
+<a href=https://www.curiosities.dev/domains/groups.csail.mit.edu/><img src="https://www.google.com/s2/favicons?domain=groups.csail.mit.edu" loading=lazy>
+groups.csail.mit.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/groups.google.com/><img src="https://www.google.com/s2/favicons?domain=groups.google.com" loading=lazy>
+groups.google.com (1)</a>
+<a href=https://www.curiosities.dev/domains/gs.statcounter.com/><img src="https://www.google.com/s2/favicons?domain=gs.statcounter.com" loading=lazy>
+gs.statcounter.com (1)</a>
+<a href=https://www.curiosities.dev/domains/haskell-containers.readthedocs.io/><img src="https://www.google.com/s2/favicons?domain=haskell-containers.readthedocs.io" loading=lazy>
+haskell-containers.readthedocs.io (1)</a>
+<a href=https://www.curiosities.dev/domains/haskell-haddock.readthedocs.io/><img src="https://www.google.com/s2/favicons?domain=haskell-haddock.readthedocs.io" loading=lazy>
+haskell-haddock.readthedocs.io (1)</a>
+<a href=https://www.curiosities.dev/domains/hedgehogreview.com/><img src="https://www.google.com/s2/favicons?domain=hedgehogreview.com" loading=lazy>
+hedgehogreview.com (1)</a>
+<a href=https://www.curiosities.dev/domains/help.medium.com/><img src="https://www.google.com/s2/favicons?domain=help.medium.com" loading=lazy>
+help.medium.com (1)</a>
+<a href=https://www.curiosities.dev/domains/hindenburgresearch.com/><img src="https://www.google.com/s2/favicons?domain=hindenburgresearch.com" loading=lazy>
+hindenburgresearch.com (1)</a>
+<a href=https://www.curiosities.dev/domains/homepages.se.edu/><img src="https://www.google.com/s2/favicons?domain=homepages.se.edu" loading=lazy>
+homepages.se.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/hoogle.haskell.org/><img src="https://www.google.com/s2/favicons?domain=hoogle.haskell.org" loading=lazy>
+hoogle.haskell.org (1)</a>
+<a href=https://www.curiosities.dev/domains/hovav.net/><img src="https://www.google.com/s2/favicons?domain=hovav.net" loading=lazy>
+hovav.net (1)</a>
+<a href=https://www.curiosities.dev/domains/httpd.apache.org/><img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading=lazy>
+httpd.apache.org (1)</a>
+<a href=https://www.curiosities.dev/domains/ilregno2s.blogspot.com/><img src="https://www.google.com/s2/favicons?domain=ilregno2s.blogspot.com" loading=lazy>
+ilregno2s.blogspot.com (1)</a>
+<a href=https://www.curiosities.dev/domains/investors.nytco.com/><img src="https://www.google.com/s2/favicons?domain=investors.nytco.com" loading=lazy>
+investors.nytco.com (1)</a>
+<a href=https://www.curiosities.dev/domains/iselemagazine.com/><img src="https://www.google.com/s2/favicons?domain=iselemagazine.com" loading=lazy>
+iselemagazine.com (1)</a>
+<a href=https://www.curiosities.dev/domains/isocpp.org/><img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading=lazy>
+isocpp.org (1)</a>
+<a href=https://www.curiosities.dev/domains/ittc.ku.edu/><img src="https://www.google.com/s2/favicons?domain=ittc.ku.edu" loading=lazy>
+ittc.ku.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/jdh.hamkins.org/><img src="https://www.google.com/s2/favicons?domain=jdh.hamkins.org" loading=lazy>
+jdh.hamkins.org (1)</a>
+<a href=https://www.curiosities.dev/domains/jordan-wright.com/><img src="https://www.google.com/s2/favicons?domain=jordan-wright.com" loading=lazy>
+jordan-wright.com (1)</a>
+<a href=https://www.curiosities.dev/domains/jpkoning.blogspot.com/><img src="https://www.google.com/s2/favicons?domain=jpkoning.blogspot.com" loading=lazy>
+jpkoning.blogspot.com (1)</a>
+<a href=https://www.curiosities.dev/domains/kaig.org/><img src="https://www.google.com/s2/favicons?domain=kaig.org" loading=lazy>
+kaig.org (1)</a>
+<a href=https://www.curiosities.dev/domains/kcsrk.info/><img src="https://www.google.com/s2/favicons?domain=kcsrk.info" loading=lazy>
+kcsrk.info (1)</a>
+<a href=https://www.curiosities.dev/domains/kudsonline.com/><img src="https://www.google.com/s2/favicons?domain=kudsonline.com" loading=lazy>
+kudsonline.com (1)</a>
+<a href=https://www.curiosities.dev/domains/kythe.io/><img src="https://www.google.com/s2/favicons?domain=kythe.io" loading=lazy>
+kythe.io (1)</a>
+<a href=https://www.curiosities.dev/domains/lairofreviews.com/><img src="https://www.google.com/s2/favicons?domain=lairofreviews.com" loading=lazy>
+lairofreviews.com (1)</a>
+<a href=https://www.curiosities.dev/domains/larspsyll.wordpress.com/><img src="https://www.google.com/s2/favicons?domain=larspsyll.wordpress.com" loading=lazy>
+larspsyll.wordpress.com (1)</a>
+<a href=https://www.curiosities.dev/domains/learn.microsoft.com/><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy>
+learn.microsoft.com (1)</a>
+<a href=https://www.curiosities.dev/domains/lifespanbook.com/><img src="https://www.google.com/s2/favicons?domain=lifespanbook.com" loading=lazy>
+lifespanbook.com (1)</a>
+<a href=https://www.curiosities.dev/domains/lisp-lang.org/><img src="https://www.google.com/s2/favicons?domain=lisp-lang.org" loading=lazy>
+lisp-lang.org (1)</a>
+<a href=https://www.curiosities.dev/domains/llvm.org/><img src="https://www.google.com/s2/favicons?domain=llvm.org" loading=lazy>
+llvm.org (1)</a>
+<a href=https://www.curiosities.dev/domains/lotnet.com/><img src="https://www.google.com/s2/favicons?domain=lotnet.com" loading=lazy>
+lotnet.com (1)</a>
+<a href=https://www.curiosities.dev/domains/lovedeathrobots.fandom.com/><img src="https://www.google.com/s2/favicons?domain=lovedeathrobots.fandom.com" loading=lazy>
+lovedeathrobots.fandom.com (1)</a>
+<a href=https://www.curiosities.dev/domains/lumapartners.com/><img src="https://www.google.com/s2/favicons?domain=lumapartners.com" loading=lazy>
+lumapartners.com (1)</a>
+<a href=https://www.curiosities.dev/domains/lviattack.eu/><img src="https://www.google.com/s2/favicons?domain=lviattack.eu" loading=lazy>
+lviattack.eu (1)</a>
+<a href=https://www.curiosities.dev/domains/m.signalvnoise.com/><img src="https://www.google.com/s2/favicons?domain=m.signalvnoise.com" loading=lazy>
+m.signalvnoise.com (1)</a>
+<a href=https://www.curiosities.dev/domains/mackenzie-scott.medium.com/><img src="https://www.google.com/s2/favicons?domain=mackenzie-scott.medium.com" loading=lazy>
+mackenzie-scott.medium.com (1)</a>
+<a href=https://www.curiosities.dev/domains/markkarpov.com/><img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading=lazy>
+markkarpov.com (1)</a>
+<a href=https://www.curiosities.dev/domains/mindingourway.com/><img src="https://www.google.com/s2/favicons?domain=mindingourway.com" loading=lazy>
+mindingourway.com (1)</a>
+<a href=https://www.curiosities.dev/domains/moam.info/><img src="https://www.google.com/s2/favicons?domain=moam.info" loading=lazy>
+moam.info (1)</a>
+<a href=https://www.curiosities.dev/domains/moneytransfers.com/><img src="https://www.google.com/s2/favicons?domain=moneytransfers.com" loading=lazy>
+moneytransfers.com (1)</a>
+<a href=https://www.curiosities.dev/domains/monologues.co.uk/><img src="https://www.google.com/s2/favicons?domain=monologues.co.uk" loading=lazy>
+monologues.co.uk (1)</a>
+<a href=https://www.curiosities.dev/domains/mozilla.github.io/><img src="https://www.google.com/s2/favicons?domain=mozilla.github.io" loading=lazy>
+mozilla.github.io (1)</a>
+<a href=https://www.curiosities.dev/domains/mschf.xyz/><img src="https://www.google.com/s2/favicons?domain=mschf.xyz" loading=lazy>
+mschf.xyz (1)</a>
+<a href=https://www.curiosities.dev/domains/muratbuffalo.blogspot.com/><img src="https://www.google.com/s2/favicons?domain=muratbuffalo.blogspot.com" loading=lazy>
+muratbuffalo.blogspot.com (1)</a>
+<a href=https://www.curiosities.dev/domains/music.youtube.com/><img src="https://www.google.com/s2/favicons?domain=music.youtube.com" loading=lazy>
+music.youtube.com (1)</a>
+<a href=https://www.curiosities.dev/domains/nautil.us/><img src="https://www.google.com/s2/favicons?domain=nautil.us" loading=lazy>
+nautil.us (1)</a>
+<a href=https://www.curiosities.dev/domains/neverworkintheory.org/><img src="https://www.google.com/s2/favicons?domain=neverworkintheory.org" loading=lazy>
+neverworkintheory.org (1)</a>
+<a href=https://www.curiosities.dev/domains/news.sina.com.cn/><img src="https://www.google.com/s2/favicons?domain=news.sina.com.cn" loading=lazy>
+news.sina.com.cn (1)</a>
+<a href=https://www.curiosities.dev/domains/news.slashdot.org/><img src="https://www.google.com/s2/favicons?domain=news.slashdot.org" loading=lazy>
+news.slashdot.org (1)</a>
+<a href=https://www.curiosities.dev/domains/nnedi.com/><img src="https://www.google.com/s2/favicons?domain=nnedi.com" loading=lazy>
+nnedi.com (1)</a>
+<a href=https://www.curiosities.dev/domains/nope-its-lily.medium.com/><img src="https://www.google.com/s2/favicons?domain=nope-its-lily.medium.com" loading=lazy>
+nope-its-lily.medium.com (1)</a>
+<a href=https://www.curiosities.dev/domains/ocw.mit.edu/><img src="https://www.google.com/s2/favicons?domain=ocw.mit.edu" loading=lazy>
+ocw.mit.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/old.reddit.com/><img src="https://www.google.com/s2/favicons?domain=old.reddit.com" loading=lazy>
+old.reddit.com (1)</a>
+<a href=https://www.curiosities.dev/domains/opportunities.invest.go.ke/><img src="https://www.google.com/s2/favicons?domain=opportunities.invest.go.ke" loading=lazy>
+opportunities.invest.go.ke (1)</a>
+<a href=https://www.curiosities.dev/domains/oracleofbacon.org/><img src="https://www.google.com/s2/favicons?domain=oracleofbacon.org" loading=lazy>
+oracleofbacon.org (1)</a>
+<a href=https://www.curiosities.dev/domains/ordrespontane.blogspot.com/><img src="https://www.google.com/s2/favicons?domain=ordrespontane.blogspot.com" loading=lazy>
+ordrespontane.blogspot.com (1)</a>
+<a href=https://www.curiosities.dev/domains/outcast.fandom.com/><img src="https://www.google.com/s2/favicons?domain=outcast.fandom.com" loading=lazy>
+outcast.fandom.com (1)</a>
+<a href=https://www.curiosities.dev/domains/papers.ssrn.com/><img src="https://www.google.com/s2/favicons?domain=papers.ssrn.com" loading=lazy>
+papers.ssrn.com (1)</a>
+<a href=https://www.curiosities.dev/domains/paulgraham.com/><img src="https://www.google.com/s2/favicons?domain=paulgraham.com" loading=lazy>
+paulgraham.com (1)</a>
+<a href=https://www.curiosities.dev/domains/petsymposium.org/><img src="https://www.google.com/s2/favicons?domain=petsymposium.org" loading=lazy>
+petsymposium.org (1)</a>
+<a href=https://www.curiosities.dev/domains/planetmath.org/><img src="https://www.google.com/s2/favicons?domain=planetmath.org" loading=lazy>
+planetmath.org (1)</a>
+<a href=https://www.curiosities.dev/domains/plato.stanford.edu/><img src="https://www.google.com/s2/favicons?domain=plato.stanford.edu" loading=lazy>
+plato.stanford.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/priceonomics.com/><img src="https://www.google.com/s2/favicons?domain=priceonomics.com" loading=lazy>
+priceonomics.com (1)</a>
+<a href=https://www.curiosities.dev/domains/primes.utm.edu/><img src="https://www.google.com/s2/favicons?domain=primes.utm.edu" loading=lazy>
+primes.utm.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/proceedings.mlr.press/><img src="https://www.google.com/s2/favicons?domain=proceedings.mlr.press" loading=lazy>
+proceedings.mlr.press (1)</a>
+<a href=https://www.curiosities.dev/domains/publicsuffix.org/><img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading=lazy>
+publicsuffix.org (1)</a>
+<a href=https://www.curiosities.dev/domains/pubmed.ncbi.nlm.nih.gov/><img src="https://www.google.com/s2/favicons?domain=pubmed.ncbi.nlm.nih.gov" loading=lazy>
+pubmed.ncbi.nlm.nih.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/pushparty.app/><img src="https://www.google.com/s2/favicons?domain=pushparty.app" loading=lazy>
+pushparty.app (1)</a>
+<a href=https://www.curiosities.dev/domains/queue.acm.org/><img src="https://www.google.com/s2/favicons?domain=queue.acm.org" loading=lazy>
+queue.acm.org (1)</a>
+<a href=https://www.curiosities.dev/domains/quibi-hq.medium.com/><img src="https://www.google.com/s2/favicons?domain=quibi-hq.medium.com" loading=lazy>
+quibi-hq.medium.com (1)</a>
+<a href=https://www.curiosities.dev/domains/quoteinvestigator.com/><img src="https://www.google.com/s2/favicons?domain=quoteinvestigator.com" loading=lazy>
+quoteinvestigator.com (1)</a>
+<a href=https://www.curiosities.dev/domains/radiolab.org/><img src="https://www.google.com/s2/favicons?domain=radiolab.org" loading=lazy>
+radiolab.org (1)</a>
+<a href=https://www.curiosities.dev/domains/raju.varghese.org/><img src="https://www.google.com/s2/favicons?domain=raju.varghese.org" loading=lazy>
+raju.varghese.org (1)</a>
+<a href=https://www.curiosities.dev/domains/reference.wolfram.com/><img src="https://www.google.com/s2/favicons?domain=reference.wolfram.com" loading=lazy>
+reference.wolfram.com (1)</a>
+<a href=https://www.curiosities.dev/domains/registrar.princeton.edu/><img src="https://www.google.com/s2/favicons?domain=registrar.princeton.edu" loading=lazy>
+registrar.princeton.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/releases.llvm.org/><img src="https://www.google.com/s2/favicons?domain=releases.llvm.org" loading=lazy>
+releases.llvm.org (1)</a>
+<a href=https://www.curiosities.dev/domains/research.google/><img src="https://www.google.com/s2/favicons?domain=research.google" loading=lazy>
+research.google (1)</a>
+<a href=https://www.curiosities.dev/domains/rhodesmill.org/><img src="https://www.google.com/s2/favicons?domain=rhodesmill.org" loading=lazy>
+rhodesmill.org (1)</a>
+<a href=https://www.curiosities.dev/domains/robertheaton.com/><img src="https://www.google.com/s2/favicons?domain=robertheaton.com" loading=lazy>
+robertheaton.com (1)</a>
+<a href=https://www.curiosities.dev/domains/rssdss.design.blog/><img src="https://www.google.com/s2/favicons?domain=rssdss.design.blog" loading=lazy>
+rssdss.design.blog (1)</a>
+<a href=https://www.curiosities.dev/domains/scholarship.claremont.edu/><img src="https://www.google.com/s2/favicons?domain=scholarship.claremont.edu" loading=lazy>
+scholarship.claremont.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/scottbarrykaufman.com/><img src="https://www.google.com/s2/favicons?domain=scottbarrykaufman.com" loading=lazy>
+scottbarrykaufman.com (1)</a>
+<a href=https://www.curiosities.dev/domains/seattle.bibliocommons.com/><img src="https://www.google.com/s2/favicons?domain=seattle.bibliocommons.com" loading=lazy>
+seattle.bibliocommons.com (1)</a>
+<a href=https://www.curiosities.dev/domains/shopify.engineering/><img src="https://www.google.com/s2/favicons?domain=shopify.engineering" loading=lazy>
+shopify.engineering (1)</a>
+<a href=https://www.curiosities.dev/domains/sph.umich.edu/><img src="https://www.google.com/s2/favicons?domain=sph.umich.edu" loading=lazy>
+sph.umich.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/stackoverflow.blog/><img src="https://www.google.com/s2/favicons?domain=stackoverflow.blog" loading=lazy>
+stackoverflow.blog (1)</a>
+<a href=https://www.curiosities.dev/domains/stanford.edu/><img src="https://www.google.com/s2/favicons?domain=stanford.edu" loading=lazy>
+stanford.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/statistics.laerd.com/><img src="https://www.google.com/s2/favicons?domain=statistics.laerd.com" loading=lazy>
+statistics.laerd.com (1)</a>
+<a href=https://www.curiosities.dev/domains/steveblank.com/><img src="https://www.google.com/s2/favicons?domain=steveblank.com" loading=lazy>
+steveblank.com (1)</a>
+<a href=https://www.curiosities.dev/domains/stories.pinduoduo-global.com/><img src="https://www.google.com/s2/favicons?domain=stories.pinduoduo-global.com" loading=lazy>
+stories.pinduoduo-global.com (1)</a>
+<a href=https://www.curiosities.dev/domains/tala.co.ke/><img src="https://www.google.com/s2/favicons?domain=tala.co.ke" loading=lazy>
+tala.co.ke (1)</a>
+<a href=https://www.curiosities.dev/domains/technode.com/><img src="https://www.google.com/s2/favicons?domain=technode.com" loading=lazy>
+technode.com (1)</a>
+<a href=https://www.curiosities.dev/domains/testing.googleblog.com/><img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading=lazy>
+testing.googleblog.com (1)</a>
+<a href=https://www.curiosities.dev/domains/theamericanscholar.org/><img src="https://www.google.com/s2/favicons?domain=theamericanscholar.org" loading=lazy>
+theamericanscholar.org (1)</a>
+<a href=https://www.curiosities.dev/domains/thecorrespondent.com/><img src="https://www.google.com/s2/favicons?domain=thecorrespondent.com" loading=lazy>
+thecorrespondent.com (1)</a>
+<a href=https://www.curiosities.dev/domains/thedreaming.moteofdust.com/><img src="https://www.google.com/s2/favicons?domain=thedreaming.moteofdust.com" loading=lazy>
+thedreaming.moteofdust.com (1)</a>
+<a href=https://www.curiosities.dev/domains/thehustle.co/><img src="https://www.google.com/s2/favicons?domain=thehustle.co" loading=lazy>
+thehustle.co (1)</a>
+<a href=https://www.curiosities.dev/domains/theintercept.com/><img src="https://www.google.com/s2/favicons?domain=theintercept.com" loading=lazy>
+theintercept.com (1)</a>
+<a href=https://www.curiosities.dev/domains/themarkup.org/><img src="https://www.google.com/s2/favicons?domain=themarkup.org" loading=lazy>
+themarkup.org (1)</a>
+<a href=https://www.curiosities.dev/domains/thepointsguy.com/><img src="https://www.google.com/s2/favicons?domain=thepointsguy.com" loading=lazy>
+thepointsguy.com (1)</a>
+<a href=https://www.curiosities.dev/domains/time.com/><img src="https://www.google.com/s2/favicons?domain=time.com" loading=lazy>
+time.com (1)</a>
+<a href=https://www.curiosities.dev/domains/titan-comics.com/><img src="https://www.google.com/s2/favicons?domain=titan-comics.com" loading=lazy>
+titan-comics.com (1)</a>
+<a href=https://www.curiosities.dev/domains/towardsdatascience.com/><img src="https://www.google.com/s2/favicons?domain=towardsdatascience.com" loading=lazy>
+towardsdatascience.com (1)</a>
+<a href=https://www.curiosities.dev/domains/translate.google.com/><img src="https://www.google.com/s2/favicons?domain=translate.google.com" loading=lazy>
+translate.google.com (1)</a>
+<a href=https://www.curiosities.dev/domains/trends.google.com/><img src="https://www.google.com/s2/favicons?domain=trends.google.com" loading=lazy>
+trends.google.com (1)</a>
+<a href=https://www.curiosities.dev/domains/tvshowtranscripts.ourboard.org/><img src="https://www.google.com/s2/favicons?domain=tvshowtranscripts.ourboard.org" loading=lazy>
+tvshowtranscripts.ourboard.org (1)</a>
+<a href=https://www.curiosities.dev/domains/typesense.org/><img src="https://www.google.com/s2/favicons?domain=typesense.org" loading=lazy>
+typesense.org (1)</a>
+<a href=https://www.curiosities.dev/domains/uit.no/><img src="https://www.google.com/s2/favicons?domain=uit.no" loading=lazy>
+uit.no (1)</a>
+<a href=https://www.curiosities.dev/domains/users.soe.ucsc.edu/><img src="https://www.google.com/s2/favicons?domain=users.soe.ucsc.edu" loading=lazy>
+users.soe.ucsc.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/venturebeat.com/><img src="https://www.google.com/s2/favicons?domain=venturebeat.com" loading=lazy>
+venturebeat.com (1)</a>
+<a href=https://www.curiosities.dev/domains/view.officeapps.live.com/><img src="https://www.google.com/s2/favicons?domain=view.officeapps.live.com" loading=lazy>
+view.officeapps.live.com (1)</a>
+<a href=https://www.curiosities.dev/domains/wabc.fiba.com/><img src="https://www.google.com/s2/favicons?domain=wabc.fiba.com" loading=lazy>
+wabc.fiba.com (1)</a>
+<a href=https://www.curiosities.dev/domains/wicg.github.io/><img src="https://www.google.com/s2/favicons?domain=wicg.github.io" loading=lazy>
+wicg.github.io (1)</a>
+<a href=https://www.curiosities.dev/domains/wiki.lesswrong.com/><img src="https://www.google.com/s2/favicons?domain=wiki.lesswrong.com" loading=lazy>
+wiki.lesswrong.com (1)</a>
+<a href=https://www.curiosities.dev/domains/wiki.mozilla.org/><img src="https://www.google.com/s2/favicons?domain=wiki.mozilla.org" loading=lazy>
+wiki.mozilla.org (1)</a>
+<a href=https://www.curiosities.dev/domains/writing2.richmond.edu/><img src="https://www.google.com/s2/favicons?domain=writing2.richmond.edu" loading=lazy>
+writing2.richmond.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www-koengeens-be.translate.goog/><img src="https://www.google.com/s2/favicons?domain=www-koengeens-be.translate.goog" loading=lazy>
+www-koengeens-be.translate.goog (1)</a>
+<a href=https://www.curiosities.dev/domains/www.abramsbooks.com/><img src="https://www.google.com/s2/favicons?domain=www.abramsbooks.com" loading=lazy>
+www.abramsbooks.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.academia.edu/><img src="https://www.google.com/s2/favicons?domain=www.academia.edu" loading=lazy>
+www.academia.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.adamtornhill.com/><img src="https://www.google.com/s2/favicons?domain=www.adamtornhill.com" loading=lazy>
+www.adamtornhill.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.answers.org/><img src="https://www.google.com/s2/favicons?domain=www.answers.org" loading=lazy>
+www.answers.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.atlasobscura.com/><img src="https://www.google.com/s2/favicons?domain=www.atlasobscura.com" loading=lazy>
+www.atlasobscura.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.atrium.co/><img src="https://www.google.com/s2/favicons?domain=www.atrium.co" loading=lazy>
+www.atrium.co (1)</a>
+<a href=https://www.curiosities.dev/domains/www.azquotes.com/><img src="https://www.google.com/s2/favicons?domain=www.azquotes.com" loading=lazy>
+www.azquotes.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.baltimoresun.com/><img src="https://www.google.com/s2/favicons?domain=www.baltimoresun.com" loading=lazy>
+www.baltimoresun.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.berfrois.com/><img src="https://www.google.com/s2/favicons?domain=www.berfrois.com" loading=lazy>
+www.berfrois.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.bleepingcomputer.com/><img src="https://www.google.com/s2/favicons?domain=www.bleepingcomputer.com" loading=lazy>
+www.bleepingcomputer.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.blog.google/><img src="https://www.google.com/s2/favicons?domain=www.blog.google" loading=lazy>
+www.blog.google (1)</a>
+<a href=https://www.curiosities.dev/domains/www.businesswire.com/><img src="https://www.google.com/s2/favicons?domain=www.businesswire.com" loading=lazy>
+www.businesswire.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.byanymeansbball.com/><img src="https://www.google.com/s2/favicons?domain=www.byanymeansbball.com" loading=lazy>
+www.byanymeansbball.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.callingbullshit.org/><img src="https://www.google.com/s2/favicons?domain=www.callingbullshit.org" loading=lazy>
+www.callingbullshit.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.caltech.edu/><img src="https://www.google.com/s2/favicons?domain=www.caltech.edu" loading=lazy>
+www.caltech.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cbc.ca/><img src="https://www.google.com/s2/favicons?domain=www.cbc.ca" loading=lazy>
+www.cbc.ca (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cdsckenya.com/><img src="https://www.google.com/s2/favicons?domain=www.cdsckenya.com" loading=lazy>
+www.cdsckenya.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cmu.edu/><img src="https://www.google.com/s2/favicons?domain=www.cmu.edu" loading=lazy>
+www.cmu.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cnn.com/><img src="https://www.google.com/s2/favicons?domain=www.cnn.com" loading=lazy>
+www.cnn.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.comic-con.org/><img src="https://www.google.com/s2/favicons?domain=www.comic-con.org" loading=lazy>
+www.comic-con.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.comicsbeat.com/><img src="https://www.google.com/s2/favicons?domain=www.comicsbeat.com" loading=lazy>
+www.comicsbeat.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cs.cmu.edu/><img src="https://www.google.com/s2/favicons?domain=www.cs.cmu.edu" loading=lazy>
+www.cs.cmu.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cs.umd.edu/><img src="https://www.google.com/s2/favicons?domain=www.cs.umd.edu" loading=lazy>
+www.cs.umd.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.csc.kth.se/><img src="https://www.google.com/s2/favicons?domain=www.csc.kth.se" loading=lazy>
+www.csc.kth.se (1)</a>
+<a href=https://www.curiosities.dev/domains/www.curiousjuice.com/><img src="https://www.google.com/s2/favicons?domain=www.curiousjuice.com" loading=lazy>
+www.curiousjuice.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.cytonn.com/><img src="https://www.google.com/s2/favicons?domain=www.cytonn.com" loading=lazy>
+www.cytonn.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.dallasnews.com/><img src="https://www.google.com/s2/favicons?domain=www.dallasnews.com" loading=lazy>
+www.dallasnews.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.dcuniverseinfinite.com/><img src="https://www.google.com/s2/favicons?domain=www.dcuniverseinfinite.com" loading=lazy>
+www.dcuniverseinfinite.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.disneyplus.com/><img src="https://www.google.com/s2/favicons?domain=www.disneyplus.com" loading=lazy>
+www.disneyplus.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.ea.com/><img src="https://www.google.com/s2/favicons?domain=www.ea.com" loading=lazy>
+www.ea.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.eastbaybiosecurity.org/><img src="https://www.google.com/s2/favicons?domain=www.eastbaybiosecurity.org" loading=lazy>
+www.eastbaybiosecurity.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.econlib.org/><img src="https://www.google.com/s2/favicons?domain=www.econlib.org" loading=lazy>
+www.econlib.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.eff.org/><img src="https://www.google.com/s2/favicons?domain=www.eff.org" loading=lazy>
+www.eff.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.emilymandel.com/><img src="https://www.google.com/s2/favicons?domain=www.emilymandel.com" loading=lazy>
+www.emilymandel.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.epsilontheory.com/><img src="https://www.google.com/s2/favicons?domain=www.epsilontheory.com" loading=lazy>
+www.epsilontheory.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.equalityhumanrights.com/><img src="https://www.google.com/s2/favicons?domain=www.equalityhumanrights.com" loading=lazy>
+www.equalityhumanrights.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.etymonline.com/><img src="https://www.google.com/s2/favicons?domain=www.etymonline.com" loading=lazy>
+www.etymonline.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.fastcompany.com/><img src="https://www.google.com/s2/favicons?domain=www.fastcompany.com" loading=lazy>
+www.fastcompany.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.fda.gov/><img src="https://www.google.com/s2/favicons?domain=www.fda.gov" loading=lazy>
+www.fda.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.fortune.com/><img src="https://www.google.com/s2/favicons?domain=www.fortune.com" loading=lazy>
+www.fortune.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.ftc.gov/><img src="https://www.google.com/s2/favicons?domain=www.ftc.gov" loading=lazy>
+www.ftc.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.galactanet.com/><img src="https://www.google.com/s2/favicons?domain=www.galactanet.com" loading=lazy>
+www.galactanet.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.gamblingsites.org/><img src="https://www.google.com/s2/favicons?domain=www.gamblingsites.org" loading=lazy>
+www.gamblingsites.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.genome.gov/><img src="https://www.google.com/s2/favicons?domain=www.genome.gov" loading=lazy>
+www.genome.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.givewell.org/><img src="https://www.google.com/s2/favicons?domain=www.givewell.org" loading=lazy>
+www.givewell.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.gjopen.com/><img src="https://www.google.com/s2/favicons?domain=www.gjopen.com" loading=lazy>
+www.gjopen.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.glicko.net/><img src="https://www.google.com/s2/favicons?domain=www.glicko.net" loading=lazy>
+www.glicko.net (1)</a>
+<a href=https://www.curiosities.dev/domains/www.gotw.ca/><img src="https://www.google.com/s2/favicons?domain=www.gotw.ca" loading=lazy>
+www.gotw.ca (1)</a>
+<a href=https://www.curiosities.dev/domains/www.gse.harvard.edu/><img src="https://www.google.com/s2/favicons?domain=www.gse.harvard.edu" loading=lazy>
+www.gse.harvard.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.gutenberg.org/><img src="https://www.google.com/s2/favicons?domain=www.gutenberg.org" loading=lazy>
+www.gutenberg.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.haskell.org/><img src="https://www.google.com/s2/favicons?domain=www.haskell.org" loading=lazy>
+www.haskell.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.hbo.com/><img src="https://www.google.com/s2/favicons?domain=www.hbo.com" loading=lazy>
+www.hbo.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.hhs.gov/><img src="https://www.google.com/s2/favicons?domain=www.hhs.gov" loading=lazy>
+www.hhs.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.huffpost.com/><img src="https://www.google.com/s2/favicons?domain=www.huffpost.com" loading=lazy>
+www.huffpost.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.imdb.com/><img src="https://www.google.com/s2/favicons?domain=www.imdb.com" loading=lazy>
+www.imdb.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.impactive.io/><img src="https://www.google.com/s2/favicons?domain=www.impactive.io" loading=lazy>
+www.impactive.io (1)</a>
+<a href=https://www.curiosities.dev/domains/www.importantnotimportant.com/><img src="https://www.google.com/s2/favicons?domain=www.importantnotimportant.com" loading=lazy>
+www.importantnotimportant.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.independent.co.uk/><img src="https://www.google.com/s2/favicons?domain=www.independent.co.uk" loading=lazy>
+www.independent.co.uk (1)</a>
+<a href=https://www.curiosities.dev/domains/www.innoafrica.org/><img src="https://www.google.com/s2/favicons?domain=www.innoafrica.org" loading=lazy>
+www.innoafrica.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.institutionalinvestor.com/><img src="https://www.google.com/s2/favicons?domain=www.institutionalinvestor.com" loading=lazy>
+www.institutionalinvestor.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.invest.go.ke/><img src="https://www.google.com/s2/favicons?domain=www.invest.go.ke" loading=lazy>
+www.invest.go.ke (1)</a>
+<a href=https://www.curiosities.dev/domains/www.investor.gov/><img src="https://www.google.com/s2/favicons?domain=www.investor.gov" loading=lazy>
+www.investor.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.ipcc.ch/><img src="https://www.google.com/s2/favicons?domain=www.ipcc.ch" loading=lazy>
+www.ipcc.ch (1)</a>
+<a href=https://www.curiosities.dev/domains/www.johnmyleswhite.com/><img src="https://www.google.com/s2/favicons?domain=www.johnmyleswhite.com" loading=lazy>
+www.johnmyleswhite.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.kiplingsociety.co.uk/><img src="https://www.google.com/s2/favicons?domain=www.kiplingsociety.co.uk" loading=lazy>
+www.kiplingsociety.co.uk (1)</a>
+<a href=https://www.curiosities.dev/domains/www.lakenakurukenya.com/><img src="https://www.google.com/s2/favicons?domain=www.lakenakurukenya.com" loading=lazy>
+www.lakenakurukenya.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.linkedin.com/><img src="https://www.google.com/s2/favicons?domain=www.linkedin.com" loading=lazy>
+www.linkedin.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.lsec.dnd.ca/><img src="https://www.google.com/s2/favicons?domain=www.lsec.dnd.ca" loading=lazy>
+www.lsec.dnd.ca (1)</a>
+<a href=https://www.curiosities.dev/domains/www.masterclass.com/><img src="https://www.google.com/s2/favicons?domain=www.masterclass.com" loading=lazy>
+www.masterclass.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.math.columbia.edu/><img src="https://www.google.com/s2/favicons?domain=www.math.columbia.edu" loading=lazy>
+www.math.columbia.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.mathblog.dk/><img src="https://www.google.com/s2/favicons?domain=www.mathblog.dk" loading=lazy>
+www.mathblog.dk (1)</a>
+<a href=https://www.curiosities.dev/domains/www.microsave.net/><img src="https://www.google.com/s2/favicons?domain=www.microsave.net" loading=lazy>
+www.microsave.net (1)</a>
+<a href=https://www.curiosities.dev/domains/www.misappliedsciences.com/><img src="https://www.google.com/s2/favicons?domain=www.misappliedsciences.com" loading=lazy>
+www.misappliedsciences.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.moef.go.kr/><img src="https://www.google.com/s2/favicons?domain=www.moef.go.kr" loading=lazy>
+www.moef.go.kr (1)</a>
+<a href=https://www.curiosities.dev/domains/www.mozilla.org/><img src="https://www.google.com/s2/favicons?domain=www.mozilla.org" loading=lazy>
+www.mozilla.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.nature.com/><img src="https://www.google.com/s2/favicons?domain=www.nature.com" loading=lazy>
+www.nature.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.nba.com/><img src="https://www.google.com/s2/favicons?domain=www.nba.com" loading=lazy>
+www.nba.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.nba2klab.com/><img src="https://www.google.com/s2/favicons?domain=www.nba2klab.com" loading=lazy>
+www.nba2klab.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.nber.org/><img src="https://www.google.com/s2/favicons?domain=www.nber.org" loading=lazy>
+www.nber.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.ndepend.com/><img src="https://www.google.com/s2/favicons?domain=www.ndepend.com" loading=lazy>
+www.ndepend.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.nps.org.au/><img src="https://www.google.com/s2/favicons?domain=www.nps.org.au" loading=lazy>
+www.nps.org.au (1)</a>
+<a href=https://www.curiosities.dev/domains/www.nse.co.ke/><img src="https://www.google.com/s2/favicons?domain=www.nse.co.ke" loading=lazy>
+www.nse.co.ke (1)</a>
+<a href=https://www.curiosities.dev/domains/www.oracle.com/><img src="https://www.google.com/s2/favicons?domain=www.oracle.com" loading=lazy>
+www.oracle.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.orwell.ru/><img src="https://www.google.com/s2/favicons?domain=www.orwell.ru" loading=lazy>
+www.orwell.ru (1)</a>
+<a href=https://www.curiosities.dev/domains/www.osti.gov/><img src="https://www.google.com/s2/favicons?domain=www.osti.gov" loading=lazy>
+www.osti.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.overcomingbias.com/><img src="https://www.google.com/s2/favicons?domain=www.overcomingbias.com" loading=lazy>
+www.overcomingbias.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.pnas.org/><img src="https://www.google.com/s2/favicons?domain=www.pnas.org" loading=lazy>
+www.pnas.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.poynter.org/><img src="https://www.google.com/s2/favicons?domain=www.poynter.org" loading=lazy>
+www.poynter.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.princeton.edu/><img src="https://www.google.com/s2/favicons?domain=www.princeton.edu" loading=lazy>
+www.princeton.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.profgalloway.com/><img src="https://www.google.com/s2/favicons?domain=www.profgalloway.com" loading=lazy>
+www.profgalloway.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.projectcodemeter.com/><img src="https://www.google.com/s2/favicons?domain=www.projectcodemeter.com" loading=lazy>
+www.projectcodemeter.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.propublica.org/><img src="https://www.google.com/s2/favicons?domain=www.propublica.org" loading=lazy>
+www.propublica.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.protocol.com/><img src="https://www.google.com/s2/favicons?domain=www.protocol.com" loading=lazy>
+www.protocol.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.residentcontrarian.com/><img src="https://www.google.com/s2/favicons?domain=www.residentcontrarian.com" loading=lazy>
+www.residentcontrarian.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.reuters.com/><img src="https://www.google.com/s2/favicons?domain=www.reuters.com" loading=lazy>
+www.reuters.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.sandimetz.com/><img src="https://www.google.com/s2/favicons?domain=www.sandimetz.com" loading=lazy>
+www.sandimetz.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.sciencefocus.com/><img src="https://www.google.com/s2/favicons?domain=www.sciencefocus.com" loading=lazy>
+www.sciencefocus.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.semanticscholar.org/><img src="https://www.google.com/s2/favicons?domain=www.semanticscholar.org" loading=lazy>
+www.semanticscholar.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.sendwave.com/><img src="https://www.google.com/s2/favicons?domain=www.sendwave.com" loading=lazy>
+www.sendwave.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.strike.coop/><img src="https://www.google.com/s2/favicons?domain=www.strike.coop" loading=lazy>
+www.strike.coop (1)</a>
+<a href=https://www.curiosities.dev/domains/www.susanblackmore.uk/><img src="https://www.google.com/s2/favicons?domain=www.susanblackmore.uk" loading=lazy>
+www.susanblackmore.uk (1)</a>
+<a href=https://www.curiosities.dev/domains/www.tandfonline.com/><img src="https://www.google.com/s2/favicons?domain=www.tandfonline.com" loading=lazy>
+www.tandfonline.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.techdirt.com/><img src="https://www.google.com/s2/favicons?domain=www.techdirt.com" loading=lazy>
+www.techdirt.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.theacsi.org/><img src="https://www.google.com/s2/favicons?domain=www.theacsi.org" loading=lazy>
+www.theacsi.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.thecut.com/><img src="https://www.google.com/s2/favicons?domain=www.thecut.com" loading=lazy>
+www.thecut.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.theregister.com/><img src="https://www.google.com/s2/favicons?domain=www.theregister.com" loading=lazy>
+www.theregister.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.thinkwithgoogle.com/><img src="https://www.google.com/s2/favicons?domain=www.thinkwithgoogle.com" loading=lazy>
+www.thinkwithgoogle.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.tor.com/><img src="https://www.google.com/s2/favicons?domain=www.tor.com" loading=lazy>
+www.tor.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.uncannymagazine.com/><img src="https://www.google.com/s2/favicons?domain=www.uncannymagazine.com" loading=lazy>
+www.uncannymagazine.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.usenix.org/><img src="https://www.google.com/s2/favicons?domain=www.usenix.org" loading=lazy>
+www.usenix.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.uvm.edu/><img src="https://www.google.com/s2/favicons?domain=www.uvm.edu" loading=lazy>
+www.uvm.edu (1)</a>
+<a href=https://www.curiosities.dev/domains/www.uzh.ch/><img src="https://www.google.com/s2/favicons?domain=www.uzh.ch" loading=lazy>
+www.uzh.ch (1)</a>
+<a href=https://www.curiosities.dev/domains/www.warner.senate.gov/><img src="https://www.google.com/s2/favicons?domain=www.warner.senate.gov" loading=lazy>
+www.warner.senate.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www.washingtonexaminer.com/><img src="https://www.google.com/s2/favicons?domain=www.washingtonexaminer.com" loading=lazy>
+www.washingtonexaminer.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.wired.com/><img src="https://www.google.com/s2/favicons?domain=www.wired.com" loading=lazy>
+www.wired.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.wolframalpha.com/><img src="https://www.google.com/s2/favicons?domain=www.wolframalpha.com" loading=lazy>
+www.wolframalpha.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.wsbtv.com/><img src="https://www.google.com/s2/favicons?domain=www.wsbtv.com" loading=lazy>
+www.wsbtv.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.wusa9.com/><img src="https://www.google.com/s2/favicons?domain=www.wusa9.com" loading=lazy>
+www.wusa9.com (1)</a>
+<a href=https://www.curiosities.dev/domains/www.xarg.org/><img src="https://www.google.com/s2/favicons?domain=www.xarg.org" loading=lazy>
+www.xarg.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www.zocalopublicsquare.org/><img src="https://www.google.com/s2/favicons?domain=www.zocalopublicsquare.org" loading=lazy>
+www.zocalopublicsquare.org (1)</a>
+<a href=https://www.curiosities.dev/domains/www2.census.gov/><img src="https://www.google.com/s2/favicons?domain=www2.census.gov" loading=lazy>
+www2.census.gov (1)</a>
+<a href=https://www.curiosities.dev/domains/www2.deloitte.com/><img src="https://www.google.com/s2/favicons?domain=www2.deloitte.com" loading=lazy>
+www2.deloitte.com (1)</a>
+<a href=https://www.curiosities.dev/domains/ylukem.com/><img src="https://www.google.com/s2/favicons?domain=ylukem.com" loading=lazy>
+ylukem.com (1)</a>
+<a href=https://www.curiosities.dev/domains/yro.slashdot.org/><img src="https://www.google.com/s2/favicons?domain=yro.slashdot.org" loading=lazy>
+yro.slashdot.org (1)</a></div><script>let pageURLs=[];const alternateOrganizations=new Set(["tags","categories","domains","authors","publications"]);fetch("/json/site_tree.json").then(response=>response.json()).then(siteTree=>{const currentPath=document.location.pathname;let node=siteTree;currentPath.split("/").forEach((subpath)=>{if(!subpath)return;node=node[subpath];});if(!node)return;function populateRelevantURLs(partialURL,currentNode){const currentNodeKeys=Object.keys(currentNode);currentNodeKeys.forEach((key)=>{if(key==="_meta")return;if(currentPath==="/"&&alternateOrganizations.has(key))
+return;let nextPartialURL=partialURL===""?key:`${partialURL}/${key}`;populateRelevantURLs(nextPartialURL,currentNode[key]);});if(currentNodeKeys.length===0&&partialURL){pageURLs.push(partialURL);}}
+populateRelevantURLs("",node);}).then(()=>{if(pageURLs.length===0){document.getElementById("randomSelectorContainer").style.display="none";}});function goToRandomPage(){let idx=Math.floor(Math.random()*(pageURLs.length));window.open(pageURLs[idx],"_self");}</script></main></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

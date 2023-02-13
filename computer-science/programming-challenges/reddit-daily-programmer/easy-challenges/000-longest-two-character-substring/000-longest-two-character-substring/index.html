@@ -1,323 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                000. Longest Two-Character Substring | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/">Reddit Daily Programmer</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/">Easy Challenges</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/000-longest-two-character-substring/000-longest-two-character-substring/">000. Longest Two-Character Substring</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> 000. Longest Two-Character Substring</h1>
-    <p class="meta">
-        
-        Dated Sep 2, 2017;
-        
-        last modified on Sat, 02 Sep 2017
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#description">Description</a></li>
-    <li><a href="#solution">Solution</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <h2 id="description">Description</h2>
-<p>Given a string, find the longest sub-string that contains, at most, two characters. 
-<a href="https://www.reddit.com/r/dailyprogrammer/comments/1g0tw1/easy_longest_twocharacter_substring/"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    /r/dailyprogrammer post
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-</p>
-<h2 id="solution">Solution</h2>
-
-
-<div id=''><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-python" data-lang="python"><span style="color:#d88200">&#34;&#34;&#34;
-</span><span style="color:#d88200">Finds the longest sub-string that contains, at most, two characters.
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">Input:
-</span><span style="color:#d88200">An all lower-case string, e.g.
-</span><span style="color:#d88200">    abbccc
-</span><span style="color:#d88200">    abcabcabcabccc
-</span><span style="color:#d88200">    qwertyytrewq
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">Output:
-</span><span style="color:#d88200">Print the longest sub-string of the given string that contains, at most, two
-</span><span style="color:#d88200">unique characters.
-</span><span style="color:#d88200">If you find multiple sub-strings that match the description, print the last
-</span><span style="color:#d88200">sub-string (furthest to the right).
-</span><span style="color:#d88200">    bbccc
-</span><span style="color:#d88200">    bccc
-</span><span style="color:#d88200">    tyyt
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">&#34;&#34;&#34;</span>
-
-<span style="color:#f92672">import</span> <span style="color:#111">sys</span>
-
-<span style="color:#00a8c8">def</span> <span style="color:#75af00">getLongestSubstring</span><span style="color:#111">(</span><span style="color:#111">longString</span><span style="color:#111">,</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#111">):</span>
-    <span style="color:#d88200">&#34;&#34;&#34;
-</span><span style="color:#d88200">    Find the longest substring containing at most n unique characters.
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">    Param(s):
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">    longString (str)
-</span><span style="color:#d88200">        The string for which we&#39;re looking for a substring.
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">    n (int)
-</span><span style="color:#d88200">        The maximum number of unique characters allowed in the substring.
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">    &#34;&#34;&#34;</span>
-    <span style="color:#111">charIndexes</span> <span style="color:#f92672">=</span> <span style="color:#111">{}</span>
-    <span style="color:#111">currentStart</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#111">bestStart</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#111">length</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#111">bestLength</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#111">currentStart</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#111">index</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-
-    <span style="color:#00a8c8">for</span> <span style="color:#111">currentChar</span> <span style="color:#f92672">in</span> <span style="color:#111">longString</span><span style="color:#111">:</span>
-        <span style="color:#00a8c8">print</span><span style="color:#111">(</span><span style="color:#111">currentChar</span><span style="color:#111">,</span> <span style="color:#111">end</span> <span style="color:#f92672">=</span> <span style="color:#d88200">&#34; ...</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">)</span>
-
-        <span style="color:#75715e"># Case 1: The character is already in the set.</span>
-        <span style="color:#00a8c8">if</span> <span style="color:#111">currentChar</span> <span style="color:#f92672">in</span> <span style="color:#111">charIndexes</span><span style="color:#f92672">.</span><span style="color:#111">keys</span><span style="color:#111">():</span>
-            <span style="color:#75715e"># Note the most recent position in which the char occurs</span>
-            <span style="color:#111">charIndexes</span><span style="color:#111">[</span><span style="color:#111">currentChar</span><span style="color:#111">][</span><span style="color:#ae81ff">1</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">index</span>
-            <span style="color:#111">length</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-            <span style="color:#75715e"># print(&#34;Incremented: &#34;, charIndexes[currentChar])</span>
-
-        <span style="color:#75715e"># Case 2: The character is not in the set</span>
-        <span style="color:#00a8c8">else</span><span style="color:#111">:</span>
-            <span style="color:#111">numChars</span> <span style="color:#f92672">=</span> <span style="color:#111">len</span><span style="color:#111">(</span><span style="color:#111">charIndexes</span><span style="color:#111">)</span>
-
-            <span style="color:#75715e"># If necessary, make room for the new char</span>
-            <span style="color:#00a8c8">if</span> <span style="color:#111">numChars</span> <span style="color:#f92672">==</span> <span style="color:#111">n</span><span style="color:#111">:</span>
-                <span style="color:#111">charToRemove</span> <span style="color:#f92672">=</span> <span style="color:#111">longString</span><span style="color:#111">[</span><span style="color:#111">currentStart</span><span style="color:#111">]</span>
-                <span style="color:#111">length</span> <span style="color:#f92672">=</span> <span style="color:#111">index</span> <span style="color:#f92672">-</span> <span style="color:#111">charIndexes</span><span style="color:#111">[</span><span style="color:#111">charToRemove</span><span style="color:#111">][</span><span style="color:#ae81ff">0</span><span style="color:#111">]</span>
-
-                <span style="color:#75715e"># Store the best result that we&#39;ve encountered.</span>
-                <span style="color:#00a8c8">if</span> <span style="color:#111">length</span> <span style="color:#f92672">&gt;=</span> <span style="color:#111">bestLength</span><span style="color:#111">:</span>
-                    <span style="color:#111">bestLength</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span>
-                    <span style="color:#111">bestStart</span> <span style="color:#f92672">=</span> <span style="color:#111">currentStart</span>
-
-                <span style="color:#75715e"># Start the new substring after the last occurence of the char</span>
-                <span style="color:#75715e"># being removed.</span>
-                <span style="color:#111">currentStart</span> <span style="color:#f92672">=</span> <span style="color:#111">charIndexes</span><span style="color:#111">[</span><span style="color:#111">charToRemove</span><span style="color:#111">][</span><span style="color:#ae81ff">1</span><span style="color:#111">]</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
-
-                <span style="color:#75715e"># Remove the old char</span>
-                <span style="color:#111">charIndexes</span><span style="color:#f92672">.</span><span style="color:#111">pop</span><span style="color:#111">(</span><span style="color:#111">charToRemove</span><span style="color:#111">,</span> <span style="color:#111">None</span><span style="color:#111">)</span>
-
-            <span style="color:#75715e"># Add the new character</span>
-            <span style="color:#111">charIndexes</span><span style="color:#111">[</span><span style="color:#111">currentChar</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">index</span><span style="color:#111">,</span> <span style="color:#111">index</span><span style="color:#111">]</span>
-
-        <span style="color:#75715e"># Store the best result that we&#39;ve encountered.</span>
-        <span style="color:#00a8c8">if</span> <span style="color:#111">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#111">bestLength</span><span style="color:#111">:</span>
-            <span style="color:#111">bestLength</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span>
-            <span style="color:#111">bestStart</span> <span style="color:#f92672">=</span> <span style="color:#111">currentStart</span>
-
-        <span style="color:#00a8c8">print</span><span style="color:#111">(</span><span style="color:#111">charIndexes</span><span style="color:#111">)</span>
-        <span style="color:#111">index</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-
-    <span style="color:#00a8c8">return</span> <span style="color:#111">longString</span><span style="color:#111">[</span><span style="color:#111">bestStart</span><span style="color:#111">:</span> <span style="color:#111">bestStart</span><span style="color:#f92672">+</span><span style="color:#111">bestLength</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#111">]</span>
-
-<span style="color:#00a8c8">def</span> <span style="color:#75af00">main</span><span style="color:#111">():</span>
-    <span style="color:#d88200">&#34;&#34;&#34;
-</span><span style="color:#d88200">    Run the longest substring algorithm. Print the results to standard output.
-</span><span style="color:#d88200">
-</span><span style="color:#d88200">    &#34;&#34;&#34;</span>
-    <span style="color:#111">count</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#111">successful</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-
-    <span style="color:#00a8c8">with</span> <span style="color:#111">open</span><span style="color:#111">(</span><span style="color:#111">sys</span><span style="color:#f92672">.</span><span style="color:#111">argv</span><span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">],</span> <span style="color:#d88200">&#39;r&#39;</span><span style="color:#111">)</span> <span style="color:#00a8c8">as</span> <span style="color:#111">fileToRead</span><span style="color:#111">:</span>
-        <span style="color:#00a8c8">for</span> <span style="color:#111">line</span> <span style="color:#f92672">in</span> <span style="color:#111">fileToRead</span><span style="color:#111">:</span>
-            <span style="color:#111">items</span> <span style="color:#f92672">=</span> <span style="color:#111">line</span><span style="color:#f92672">.</span><span style="color:#111">split</span><span style="color:#111">()</span>
-            <span style="color:#111">substring</span> <span style="color:#f92672">=</span> <span style="color:#111">getLongestSubstring</span><span style="color:#111">(</span><span style="color:#111">items</span><span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#111">],</span> <span style="color:#111">n</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#111">)</span>
-            <span style="color:#00a8c8">if</span> <span style="color:#111">substring</span> <span style="color:#f92672">==</span> <span style="color:#111">items</span><span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">]:</span>
-                <span style="color:#111">successful</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-            <span style="color:#00a8c8">else</span><span style="color:#111">:</span>
-                <span style="color:#00a8c8">pass</span>
-                <span style="color:#75715e">#print(&#39;{:20}&#39;.format(items[0]), &#34;Got:&#34;, &#39;{:15}&#39;.format(substring), &#34;\tExpected:&#34;, items[1])</span>
-            <span style="color:#111">count</span> <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-            <span style="color:#00a8c8">break</span>
-
-    <span style="color:#00a8c8">print</span><span style="color:#111">(</span><span style="color:#d88200">&#34;</span><span style="color:#8045ff">\n</span><span style="color:#d88200">_________________________</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">)</span>
-    <span style="color:#00a8c8">print</span><span style="color:#111">(</span><span style="color:#111">successful</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;/&#34;</span><span style="color:#111">,</span> <span style="color:#111">count</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;tests passed!&#34;</span><span style="color:#111">)</span>
-    <span style="color:#00a8c8">print</span><span style="color:#111">(</span><span style="color:#d88200">&#34;</span><span style="color:#8045ff">\n</span><span style="color:#d88200">_________________________</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">)</span>
-
-<span style="color:#00a8c8">if</span> <span style="color:#111">__name__</span> <span style="color:#f92672">==</span> <span style="color:#d88200">&#34;__main__&#34;</span><span style="color:#111">:</span>
-    <span style="color:#111">main</span><span style="color:#111">()</span>
-</code></pre></div></div>
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>I wrote this solution 2 years ago. What&rsquo;s changed since then?</p>
-<ul>
-<li>I no longer use camel case in Python</li>
-<li>I don&rsquo;t leave print statements inside functions</li>
-</ul>
-<p>I think I wasn&rsquo;t too bad a programmer :-)</p>
-</div>
-</div>
-
-
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/218-to-do-list-part-i/218-to-do-list-part-i/">218. To-Do List Pt. I &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<!doctype html><html lang=en><head><title>000. Longest Two-Character Substring | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/>Reddit Daily Programmer</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/>Easy Challenges</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/000-longest-two-character-substring/000-longest-two-character-substring/>000. Longest Two-Character Substring</a></li></ul></nav><section><header><h1>000. Longest Two-Character Substring</h1><p class=meta>Dated Sep 2, 2017;
+last modified on Sat, 02 Sep 2017</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#description>Description</a></li><li><a href=#solution>Solution</a></li></ul></nav></aside><article id=main-article><h2 id=description>Description</h2><p>Given a string, find the longest sub-string that contains, at most, two characters.
+<a href=https://www.reddit.com/r/dailyprogrammer/comments/1g0tw1/easy_longest_twocharacter_substring/ target=_blank rel=noopener>/r/dailyprogrammer post
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></p><h2 id=solution>Solution</h2><div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-python data-lang=python><span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>Finds the longest sub-string that contains, at most, two characters.
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>Input:
+</span><span style=color:#d88200>An all lower-case string, e.g.
+</span><span style=color:#d88200>    abbccc
+</span><span style=color:#d88200>    abcabcabcabccc
+</span><span style=color:#d88200>    qwertyytrewq
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>Output:
+</span><span style=color:#d88200>Print the longest sub-string of the given string that contains, at most, two
+</span><span style=color:#d88200>unique characters.
+</span><span style=color:#d88200>If you find multiple sub-strings that match the description, print the last
+</span><span style=color:#d88200>sub-string (furthest to the right).
+</span><span style=color:#d88200>    bbccc
+</span><span style=color:#d88200>    bccc
+</span><span style=color:#d88200>    tyyt
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>&#34;&#34;&#34;</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>sys</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>getLongestSubstring</span><span style=color:#111>(</span><span style=color:#111>longString</span><span style=color:#111>,</span> <span style=color:#111>n</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span><span style=color:#111>):</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Find the longest substring containing at most n unique characters.
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>    Param(s):
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>    longString (str)
+</span><span style=color:#d88200>        The string for which we&#39;re looking for a substring.
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>    n (int)
+</span><span style=color:#d88200>        The maximum number of unique characters allowed in the substring.
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#111>charIndexes</span> <span style=color:#f92672>=</span> <span style=color:#111>{}</span>
+    <span style=color:#111>currentStart</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#111>bestStart</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#111>length</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#111>bestLength</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#111>currentStart</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#111>index</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+
+    <span style=color:#00a8c8>for</span> <span style=color:#111>currentChar</span> <span style=color:#f92672>in</span> <span style=color:#111>longString</span><span style=color:#111>:</span>
+        <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#111>currentChar</span><span style=color:#111>,</span> <span style=color:#111>end</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34; ...</span><span style=color:#8045ff>\n</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
+
+        <span style=color:#75715e># Case 1: The character is already in the set.</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>currentChar</span> <span style=color:#f92672>in</span> <span style=color:#111>charIndexes</span><span style=color:#f92672>.</span><span style=color:#111>keys</span><span style=color:#111>():</span>
+            <span style=color:#75715e># Note the most recent position in which the char occurs</span>
+            <span style=color:#111>charIndexes</span><span style=color:#111>[</span><span style=color:#111>currentChar</span><span style=color:#111>][</span><span style=color:#ae81ff>1</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>index</span>
+            <span style=color:#111>length</span> <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+            <span style=color:#75715e># print(&#34;Incremented: &#34;, charIndexes[currentChar])</span>
+
+        <span style=color:#75715e># Case 2: The character is not in the set</span>
+        <span style=color:#00a8c8>else</span><span style=color:#111>:</span>
+            <span style=color:#111>numChars</span> <span style=color:#f92672>=</span> <span style=color:#111>len</span><span style=color:#111>(</span><span style=color:#111>charIndexes</span><span style=color:#111>)</span>
+
+            <span style=color:#75715e># If necessary, make room for the new char</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>numChars</span> <span style=color:#f92672>==</span> <span style=color:#111>n</span><span style=color:#111>:</span>
+                <span style=color:#111>charToRemove</span> <span style=color:#f92672>=</span> <span style=color:#111>longString</span><span style=color:#111>[</span><span style=color:#111>currentStart</span><span style=color:#111>]</span>
+                <span style=color:#111>length</span> <span style=color:#f92672>=</span> <span style=color:#111>index</span> <span style=color:#f92672>-</span> <span style=color:#111>charIndexes</span><span style=color:#111>[</span><span style=color:#111>charToRemove</span><span style=color:#111>][</span><span style=color:#ae81ff>0</span><span style=color:#111>]</span>
+
+                <span style=color:#75715e># Store the best result that we&#39;ve encountered.</span>
+                <span style=color:#00a8c8>if</span> <span style=color:#111>length</span> <span style=color:#f92672>&gt;=</span> <span style=color:#111>bestLength</span><span style=color:#111>:</span>
+                    <span style=color:#111>bestLength</span> <span style=color:#f92672>=</span> <span style=color:#111>length</span>
+                    <span style=color:#111>bestStart</span> <span style=color:#f92672>=</span> <span style=color:#111>currentStart</span>
+
+                <span style=color:#75715e># Start the new substring after the last occurence of the char</span>
+                <span style=color:#75715e># being removed.</span>
+                <span style=color:#111>currentStart</span> <span style=color:#f92672>=</span> <span style=color:#111>charIndexes</span><span style=color:#111>[</span><span style=color:#111>charToRemove</span><span style=color:#111>][</span><span style=color:#ae81ff>1</span><span style=color:#111>]</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
+
+                <span style=color:#75715e># Remove the old char</span>
+                <span style=color:#111>charIndexes</span><span style=color:#f92672>.</span><span style=color:#111>pop</span><span style=color:#111>(</span><span style=color:#111>charToRemove</span><span style=color:#111>,</span> <span style=color:#111>None</span><span style=color:#111>)</span>
+
+            <span style=color:#75715e># Add the new character</span>
+            <span style=color:#111>charIndexes</span><span style=color:#111>[</span><span style=color:#111>currentChar</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>[</span><span style=color:#111>index</span><span style=color:#111>,</span> <span style=color:#111>index</span><span style=color:#111>]</span>
+
+        <span style=color:#75715e># Store the best result that we&#39;ve encountered.</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>length</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>bestLength</span><span style=color:#111>:</span>
+            <span style=color:#111>bestLength</span> <span style=color:#f92672>=</span> <span style=color:#111>length</span>
+            <span style=color:#111>bestStart</span> <span style=color:#f92672>=</span> <span style=color:#111>currentStart</span>
+
+        <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#111>charIndexes</span><span style=color:#111>)</span>
+        <span style=color:#111>index</span> <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+
+    <span style=color:#00a8c8>return</span> <span style=color:#111>longString</span><span style=color:#111>[</span><span style=color:#111>bestStart</span><span style=color:#111>:</span> <span style=color:#111>bestStart</span><span style=color:#f92672>+</span><span style=color:#111>bestLength</span><span style=color:#f92672>+</span><span style=color:#ae81ff>1</span><span style=color:#111>]</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>main</span><span style=color:#111>():</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Run the longest substring algorithm. Print the results to standard output.
+</span><span style=color:#d88200>
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#111>count</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#111>successful</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+
+    <span style=color:#00a8c8>with</span> <span style=color:#111>open</span><span style=color:#111>(</span><span style=color:#111>sys</span><span style=color:#f92672>.</span><span style=color:#111>argv</span><span style=color:#111>[</span><span style=color:#ae81ff>1</span><span style=color:#111>],</span> <span style=color:#d88200>&#39;r&#39;</span><span style=color:#111>)</span> <span style=color:#00a8c8>as</span> <span style=color:#111>fileToRead</span><span style=color:#111>:</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#111>line</span> <span style=color:#f92672>in</span> <span style=color:#111>fileToRead</span><span style=color:#111>:</span>
+            <span style=color:#111>items</span> <span style=color:#f92672>=</span> <span style=color:#111>line</span><span style=color:#f92672>.</span><span style=color:#111>split</span><span style=color:#111>()</span>
+            <span style=color:#111>substring</span> <span style=color:#f92672>=</span> <span style=color:#111>getLongestSubstring</span><span style=color:#111>(</span><span style=color:#111>items</span><span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#111>],</span> <span style=color:#111>n</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>substring</span> <span style=color:#f92672>==</span> <span style=color:#111>items</span><span style=color:#111>[</span><span style=color:#ae81ff>1</span><span style=color:#111>]:</span>
+                <span style=color:#111>successful</span> <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+            <span style=color:#00a8c8>else</span><span style=color:#111>:</span>
+                <span style=color:#00a8c8>pass</span>
+                <span style=color:#75715e>#print(&#39;{:20}&#39;.format(items[0]), &#34;Got:&#34;, &#39;{:15}&#39;.format(substring), &#34;\tExpected:&#34;, items[1])</span>
+            <span style=color:#111>count</span> <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+            <span style=color:#00a8c8>break</span>
+
+    <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;</span><span style=color:#8045ff>\n</span><span style=color:#d88200>_________________________</span><span style=color:#8045ff>\n</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
+    <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#111>successful</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;/&#34;</span><span style=color:#111>,</span> <span style=color:#111>count</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;tests passed!&#34;</span><span style=color:#111>)</span>
+    <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;</span><span style=color:#8045ff>\n</span><span style=color:#d88200>_________________________</span><span style=color:#8045ff>\n</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
+
+<span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
+    <span style=color:#111>main</span><span style=color:#111>()</span>
+</code></pre></div></div><div class=comment-holder><div class=comment><p>I wrote this solution 2 years ago. What&rsquo;s changed since then?</p><ul><li>I no longer use camel case in Python</li><li>I don&rsquo;t leave print statements inside functions</li></ul><p>I think I wasn&rsquo;t too bad a programmer :-)</p></div></div></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/reddit-daily-programmer/easy-challenges/218-to-do-list-part-i/218-to-do-list-part-i/>218. To-Do List Pt. I &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

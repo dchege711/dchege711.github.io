@@ -1,259 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                AoC 2021 Day 10: Syntax Scoring | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/">AoC 2021 Day 10: Syntax Scoring</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> AoC 2021 Day 10: Syntax Scoring</h1>
-    <p class="meta">
-        
-        Dated Apr 12, 2022;
-        
-        last modified on Tue, 12 Apr 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#part-i">Part I</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='AoC2021-10'>
-        
-        Day 10 - Advent of Code 2021<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://adventofcode.com/2021/day/10" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
-        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Apr 12, 2022.
-    
-    
-</div>
-
-<h2 id="part-i">Part I</h2>
-<p>You ask the submarine to determine the best route out of the deep-sea cave, but
-it only replies:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-shell" data-lang="shell">Syntax error in navigation subsystem on line: all of them
+<!doctype html><html lang=en><head><title>AoC 2021 Day 10: Syntax Scoring | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/>Advent of Code 2021</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/>AoC 2021 Day 10: Syntax Scoring</a></li></ul></nav><section><header><h1>AoC 2021 Day 10: Syntax Scoring</h1><p class=meta>Dated Apr 12, 2022;
+last modified on Tue, 12 Apr 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#part-i>Part I</a></li></ul></nav></aside><article id=main-article><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=AoC2021-10>Day 10 - Advent of Code 2021<i>.</i></cite>
+<a href=https://adventofcode.com/2021/day/10 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true>
+<i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 12, 2022.</div><h2 id=part-i>Part I</h2><p>You ask the submarine to determine the best route out of the deep-sea cave, but
+it only replies:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-shell data-lang=shell>Syntax error in navigation subsystem on line: all of them
 </code></pre></div><p>The navigation subsystem is made of several lines containing chunks. There are
 one or more chunks on each line, and chunks contain zero or more other chunks.
 Adjacent chunks are not separated by any delimiter; if one chunk stops, the next
 chunk (if any) can immediately start. Every chunk must open and close with one
-of four legal pairs of matching characters:</p>
-<ul>
-<li>If a chunk opens with <code>(</code>, it must close with <code>)</code>.</li>
-<li>If a chunk opens with <code>[</code>, it must close with <code>]</code>.</li>
-<li>If a chunk opens with <code>{</code>, it must close with <code>}</code>.</li>
-<li>If a chunk opens with <code>&lt;</code>, it must close with <code>&gt;</code>.</li>
-</ul>
-<p>So, <code>()</code> is a legal chunk that contains no other chunks, as is <code>[]</code>. More
-complex but valid chunks include <code>([])</code>, <code>{()()()}</code>, <code>&lt;([{}])&gt;</code>,
-<code>[&lt;&gt;({}){}[([])&lt;&gt;]]</code>, and even <code>(((((((((())))))))))</code>.</p>
-<p>Some lines are incomplete, but others are corrupted. Find and discard the
-corrupted lines first.</p>
-<p>A corrupted line is one where a chunk closes with the wrong character - that is,
+of four legal pairs of matching characters:</p><ul><li>If a chunk opens with <code>(</code>, it must close with <code>)</code>.</li><li>If a chunk opens with <code>[</code>, it must close with <code>]</code>.</li><li>If a chunk opens with <code>{</code>, it must close with <code>}</code>.</li><li>If a chunk opens with <code>&lt;</code>, it must close with <code>></code>.</li></ul><p>So, <code>()</code> is a legal chunk that contains no other chunks, as is <code>[]</code>. More
+complex but valid chunks include <code>([])</code>, <code>{()()()}</code>, <code>&lt;([{}])></code>,
+<code>[&lt;>({}){}[([])&lt;>]]</code>, and even <code>(((((((((())))))))))</code>.</p><p>Some lines are incomplete, but others are corrupted. Find and discard the
+corrupted lines first.</p><p>A corrupted line is one where a chunk closes with the wrong character - that is,
 where the characters it opens and closes with do not form one of the four legal
-pairs listed above.</p>
-<p>Examples of corrupted chunks include <code>(]</code>, <code>{()()()&gt;</code>, <code>(((()))}</code>, and
+pairs listed above.</p><p>Examples of corrupted chunks include <code>(]</code>, <code>{()()()></code>, <code>(((()))}</code>, and
 <code>&lt;([]){()}[{}])</code>. Such a chunk can appear anywhere within a line, and its
-presence causes the whole line to be considered corrupted.</p>
-<p>To calculate the syntax error score for a line, take the first illegal character
-on the line and look it up in the following table:</p>
-<ul>
-<li><code>)</code>: 3 points.</li>
-<li><code>]</code>: 57 points.</li>
-<li><code>}</code>: 1197 points.</li>
-<li><code>&gt;</code>: 25137 points.</li>
-</ul>
-<p>Find the first illegal character in each corrupted line of the navigation
-subsystem. What is the total syntax error score for those errors?</p>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
-            adventofcode.com
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SmokeBasin/">&laquo; AoC 2021 Day 09: Smoke Basin</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/">AoC 2021 Input Parser &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+presence causes the whole line to be considered corrupted.</p><p>To calculate the syntax error score for a line, take the first illegal character
+on the line and look it up in the following table:</p><ul><li><code>)</code>: 3 points.</li><li><code>]</code>: 57 points.</li><li><code>}</code>: 1197 points.</li><li><code>></code>: 25137 points.</li></ul><p>Find the first illegal character in each corrupted line of the navigation
+subsystem. What is the total syntax error score for those errors?</p></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/adventofcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true>
+adventofcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SmokeBasin/>&#171; AoC 2021 Day 09: Smoke Basin</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/>AoC 2021 Input Parser &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

@@ -1,459 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                User-Defined Types | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-        
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/">Type Systems</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/">User-Defined Types</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<main>
-    <article>
-        <header>
-            <h1>User-Defined Types</h1>
-            <p class="meta">
-                
-                Dated Jun 4, 2022;
-                
-                last modified on Sat, 04 Jun 2022
-                
-            </p>
-        </header>
-        
-        <h2 id="definition-from-c">Definition from C++</h2>
-<p><strong>Built-in types</strong> are ones that can be built from the fundamental types
+<!doctype html><html lang=en><head><title>User-Defined Types | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li></ul></nav><main><article><header><h1>User-Defined Types</h1><p class=meta>Dated Jun 4, 2022;
+last modified on Sat, 04 Jun 2022</p></header><h2 id=definition-from-c>Definition from C++</h2><p><strong>Built-in types</strong> are ones that can be built from the fundamental types
 (e.g. <code>void</code>, <code>std::nullptr_t</code>, <code>int</code>, <code>bool</code>, <code>char</code>, <code>float</code>, <code>double</code>
-<span class="citation-ref"><a href="#cppReferenceFundamentalTypes"></a></span>), the <code>const</code> modifier, and
-the declarator operators (e.g. <code>int[3]</code>, <code>int*</code>, <code>int&amp;</code>). <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
-<p>While the built-in types directly and efficiently represent the
+<span class=citation-ref><a href=#cppReferenceFundamentalTypes></a></span>), the <code>const</code> modifier, and
+the declarator operators (e.g. <code>int[3]</code>, <code>int*</code>, <code>int&</code>). <span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><p>While the built-in types directly and efficiently represent the
 capabilities of conventional computer hardware, they&rsquo;re too low-level to
 conveniently write advanced applications in. C++ abstraction mechanisms
 let programmers design and implement <strong>user-defined types</strong> using both
-built-in types and other user-defined types. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Before this, I thought user-defined types did <em>not</em> include STL types. I
+built-in types and other user-defined types. <span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><div class=comment-holder><div class=comment><p>Before this, I thought user-defined types did <em>not</em> include STL types. I
 thought that user meant me, or library authors, but not the C++ language
-devs, who, I assume, write the STL.</p>
-</div>
-</div>
-
-
-<p>User-defined types are often easier to use, less error prone, and
-typically as efficient as direct use of built-in types. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span> says that sometimes user-defined types
+devs, who, I assume, write the STL.</p></div></div><p>User-defined types are often easier to use, less error prone, and
+typically as efficient as direct use of built-in types. <span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><div class=comment-holder><div class="comment open-comment"><p><span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span>says that sometimes user-defined types
 can be more efficient than built-in types. When would this be? Maybe
 something like
-
-<a href="https://en.cppreference.com/w/cpp/container/vector_bool"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    <code>std::vector&lt;bool&gt;</code>
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-,
+<a href=https://en.cppreference.com/w/cpp/container/vector_bool target=_blank rel=noopener><code>std::vector&lt;bool></code>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
 which is possibly (implementation-defined) more space-efficient than a
-<code>std::vector</code> (and thus an array) of <code>bool</code>?</p>
-</div>
-</div>
-
-
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
-    <cite id='Stroustrup2018-Ch2'>
-        
-        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
-        Chapter 2. User-Defined Types<i>.</i>
-    </cite>
-    
-     Bjarne Stroustrup.
-    
-    
-    
-    
-    
-    
-    
-     2018.
-     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
-        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
-    
-    
-    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='cppReferenceFundamentalTypes'>
-        
-        Fundamental types - cppreference.com<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.cppreference.com/w/cpp/language/types" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
-        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jun 4, 2022.
-    
-    
-</div>
-
-</li>
-</ol>
-
-    </article>
-
-    
-    <table border="0">
-        <tr class="no-decoration" id="randomSelectorContainer">
-            <td class="no-decoration"></td>
-            <td class="no-decoration"></td>
-            <td class="no-decoration"><span class="link-style" onclick="goToRandomPage();">Random Link ¯\_(ツ)_/¯</span></td>
-        </tr>
-        
-        
-            
-                
-                    
-    <tr class="no-decoration">
-        <td class="no-decoration">May 12, 2022</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/">Classes in C&#43;&#43;</a>
-            
-                
-                    <span class="meta">
-                    15 min; updated May 12, 2022 
-                    <button 
-                        id="ef30d3523cceb995b38e27f45f166cad-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="ef30d3523cceb995b38e27f45f166cad-summary" style="display: none;">
-                        quotes Doug McIlroy:
- Those types are not &ldquo;abstract&rdquo;; they are as real as int and float.
- What is the context of this quote?
-  A class is a user-defined type provided to represent a concept in the code of a program. Essentially, all language facilities beyond the fundamental types, operators, and statements exist to help define better class or to use them more conveniently....
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-                
-            
-                
-                    
-    <tr class="no-decoration">
-        <td class="no-decoration">Jun 4, 2022</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/">Structures in C&#43;&#43;</a>
-            
-                
-                    <span class="meta">
-                    1 min; updated Jun 4, 2022 
-                    <button 
-                        id="123e9bb4c586fd238c54e33f6ff7de4a-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="123e9bb4c586fd238c54e33f6ff7de4a-summary" style="display: none;">
-                        A struct helps us organize the elements that a type needs into a data structure, e.g.
-struct Vector { int sz; // number of elements  double* elem; // pointer to elements on the free store }; void vector_init(Vector&amp; v, int s) { v.elem = new double[s]; v.sz = s; } 
-However, notice that a user of Vector has to know every detail of a Vector&rsquo;s representation. We can improve on this....
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-                
-            
-                
-                    
-    <tr class="no-decoration">
-        <td class="no-decoration">Jun 4, 2022</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/enumerations-in-cpp/">Enumerations in C&#43;&#43;</a>
-            
-                
-                    <span class="meta">
-                    7 min; updated Jun 4, 2022 
-                    <button 
-                        id="468fe6ee2a3ffea5c45f8966906b544a-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="468fe6ee2a3ffea5c45f8966906b544a-summary" style="display: none;">
-                        Unscoped (or Plain or C-Style) Enumerations Plain (or C-style) enums are entered in the same scope as the name of their enum, and implicitly convert to their integer value, e.g.
-enum Color { red, green, blue }; int col = green; Color c2 = 1; // error: invalid conversion from &#39;int&#39; to &#39;Color&#39; [-fpermissive]  enum CardColor { red, black }; // Error: &#34;red&#34; conflicts with a previous declaration...
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-                
-            
-                
-                    
-    <tr class="no-decoration">
-        <td class="no-decoration">Jun 4, 2022</td>
-        <td class="no-decoration">&raquo; </td>
-        <td class="no-decoration">
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/">Unions in C&#43;&#43;</a>
-            
-                
-                    <span class="meta">
-                    2 min; updated Jun 4, 2022 
-                    <button 
-                        id="1498f44e7003341e0414e42f76728cd4-summary-controller"
-                        onclick="toggleSummaryDisplay(this);">
-                            <i class="fas fa-chevron-down"></i>
-                    </button>
-                    </span>
-                    <p class="meta" id="1498f44e7003341e0414e42f76728cd4-summary" style="display: none;">
-                        A union is a struct in which all members are allocated at the same address so that the union occupies as much space as its largest member, e.g.
-// This is a naked union because it doesn&#39;t have an associated indicator // for which member it holds. union Value { Node* p; int i; } // The language doesn&#39;t keep track of which kind of value is held by a // union, so the programmer must do that themselves, e....
-                    </p>
-                
-            
-        </td>
-    </tr>
-
-
-                
-            
-        
-    </table>
-
-    <script>
-    let pageURLs = [];
-    const alternateOrganizations = new Set([
-        "tags", "categories", "domains", "authors", "publications"]);
-    fetch("/json/site_tree.json")
-        .then(response => response.json())
-        .then(siteTree => {
-            const currentPath = document.location.pathname;
-            let node = siteTree;
-            currentPath.split("/").forEach((subpath) => {
-                if (!subpath) return;
-                node = node[subpath];
-            });
-            if (!node) return;
-
-            function populateRelevantURLs(partialURL, currentNode) {
-                const currentNodeKeys = Object.keys(currentNode);
-                currentNodeKeys.forEach((key) => {
-                    
-                    if (key === "_meta") return;
-
-                    
-                    
-                    
-                    
-                    
-                    if (currentPath === "/" && alternateOrganizations.has(key))
-                        return;
-
-                    
-                    
-                    let nextPartialURL = partialURL === ""
-                                            ? key
-                                            : `${partialURL}/${key}`;
-
-                    populateRelevantURLs(nextPartialURL, currentNode[key]);
-                });
-
-                // A node that has no children is a regular page, and therefore
-                
-                
-                if (currentNodeKeys.length === 0 && partialURL) {
-                    pageURLs.push(partialURL);
-                }
-            }
-            populateRelevantURLs("", node);
-        })
-        .then(() => {
-            
-            
-            
-            
-            if (pageURLs.length === 0) {
-                document.getElementById("randomSelectorContainer").style.display = "none";
-            }
-        });
-
-    function goToRandomPage() {
-        
-        
-        let idx = Math.floor(Math.random() * (pageURLs.length));
-        window.open(pageURLs[idx], "_self");
-    }
-</script>
-
-
-</main>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<code>std::vector</code> (and thus an array) of <code>bool</code>?</p></div></div><ol><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count><cite id=Stroustrup2018-Ch2>A Tour of C++ (Second Edition)<i>.</i>
+Chapter 2. User-Defined Types<i>.</i></cite>
+Bjarne Stroustrup.
+2018.
+<a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target=_blank rel=noopener>ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=cppReferenceFundamentalTypes>Fundamental types - cppreference.com<i>.</i></cite>
+<a href=https://en.cppreference.com/w/cpp/language/types target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true>
+<i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2022.</div></li></ol></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage();>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>May 12, 2022</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/>Classes in C++</a>
+<span class=meta>15 min; updated May 12, 2022
+<button id=ef30d3523cceb995b38e27f45f166cad-summary-controller onclick=toggleSummaryDisplay(this);>
+<i class="fas fa-chevron-down"></i></button></span><p class=meta id=ef30d3523cceb995b38e27f45f166cad-summary style=display:none>quotes Doug McIlroy:
+Those types are not &ldquo;abstract&rdquo;; they are as real as int and float.
+What is the context of this quote?
+A class is a user-defined type provided to represent a concept in the code of a program. Essentially, all language facilities beyond the fundamental types, operators, and statements exist to help define better class or to use them more conveniently....</p></td></tr><tr class=no-decoration><td class=no-decoration>Jun 4, 2022</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/>Structures in C++</a>
+<span class=meta>1 min; updated Jun 4, 2022
+<button id=123e9bb4c586fd238c54e33f6ff7de4a-summary-controller onclick=toggleSummaryDisplay(this);>
+<i class="fas fa-chevron-down"></i></button></span><p class=meta id=123e9bb4c586fd238c54e33f6ff7de4a-summary style=display:none>A struct helps us organize the elements that a type needs into a data structure, e.g.
+struct Vector { int sz; // number of elements double* elem; // pointer to elements on the free store }; void vector_init(Vector& v, int s) { v.elem = new double[s]; v.sz = s; }
+However, notice that a user of Vector has to know every detail of a Vector&rsquo;s representation. We can improve on this....</p></td></tr><tr class=no-decoration><td class=no-decoration>Jun 4, 2022</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/enumerations-in-cpp/>Enumerations in C++</a>
+<span class=meta>7 min; updated Jun 4, 2022
+<button id=468fe6ee2a3ffea5c45f8966906b544a-summary-controller onclick=toggleSummaryDisplay(this);>
+<i class="fas fa-chevron-down"></i></button></span><p class=meta id=468fe6ee2a3ffea5c45f8966906b544a-summary style=display:none>Unscoped (or Plain or C-Style) Enumerations Plain (or C-style) enums are entered in the same scope as the name of their enum, and implicitly convert to their integer value, e.g.
+enum Color { red, green, blue }; int col = green; Color c2 = 1; // error: invalid conversion from 'int' to 'Color' [-fpermissive] enum CardColor { red, black }; // Error: "red" conflicts with a previous declaration...</p></td></tr><tr class=no-decoration><td class=no-decoration>Jun 4, 2022</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/>Unions in C++</a>
+<span class=meta>2 min; updated Jun 4, 2022
+<button id=1498f44e7003341e0414e42f76728cd4-summary-controller onclick=toggleSummaryDisplay(this);>
+<i class="fas fa-chevron-down"></i></button></span><p class=meta id=1498f44e7003341e0414e42f76728cd4-summary style=display:none>A union is a struct in which all members are allocated at the same address so that the union occupies as much space as its largest member, e.g.
+// This is a naked union because it doesn't have an associated indicator // for which member it holds. union Value { Node* p; int i; } // The language doesn't keep track of which kind of value is held by a // union, so the programmer must do that themselves, e....</p></td></tr></table><script>let pageURLs=[];const alternateOrganizations=new Set(["tags","categories","domains","authors","publications"]);fetch("/json/site_tree.json").then(response=>response.json()).then(siteTree=>{const currentPath=document.location.pathname;let node=siteTree;currentPath.split("/").forEach((subpath)=>{if(!subpath)return;node=node[subpath];});if(!node)return;function populateRelevantURLs(partialURL,currentNode){const currentNodeKeys=Object.keys(currentNode);currentNodeKeys.forEach((key)=>{if(key==="_meta")return;if(currentPath==="/"&&alternateOrganizations.has(key))
+return;let nextPartialURL=partialURL===""?key:`${partialURL}/${key}`;populateRelevantURLs(nextPartialURL,currentNode[key]);});if(currentNodeKeys.length===0&&partialURL){pageURLs.push(partialURL);}}
+populateRelevantURLs("",node);}).then(()=>{if(pageURLs.length===0){document.getElementById("randomSelectorContainer").style.display="none";}});function goToRandomPage(){let idx=Math.floor(Math.random()*(pageURLs.length));window.open(pageURLs[idx],"_self");}</script></main></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

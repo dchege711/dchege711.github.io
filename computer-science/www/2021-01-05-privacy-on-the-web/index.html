@@ -1,426 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Privacy on the Web | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/www/">The World Wide Web</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/www/2021-01-05-privacy-on-the-web/">Privacy on the Web</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Privacy on the Web</h1>
-    <p class="meta">
-        
-        Dated Jan 4, 2021;
-        
-        last modified on Mon, 05 Sep 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents"></nav>
-        </aside>
-
-        <article id="main-article">
-            <p>One can use <code>curl -v &lt;url&gt;</code> to see all of the redirections and cookies set.
-<span class="citation-ref"><a href="#milesURLShortenersSetAdTrackingCookies"></a></span> found that generating a tiny
-URL for Zoom links gives a URL that first goes to redirect.viglink.com.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>I tried this on <a href="https://tinyurl.com/yyte6pqv,">https://tinyurl.com/yyte6pqv,</a> which points to
-<a href="https://www.c13u.com/socioeconomics/2020-11-21-experiments-in-social-economics/,">https://www.c13u.com/socioeconomics/2020-11-21-experiments-in-social-economics/,</a>
+<!doctype html><html lang=en><head><title>Privacy on the Web | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/www/>The World Wide Web</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/www/2021-01-05-privacy-on-the-web/>Privacy on the Web</a></li></ul></nav><section><header><h1>Privacy on the Web</h1><p class=meta>Dated Jan 4, 2021;
+last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>One can use <code>curl -v &lt;url></code> to see all of the redirections and cookies set.
+<span class=citation-ref><a href=#milesURLShortenersSetAdTrackingCookies></a></span>found that generating a tiny
+URL for Zoom links gives a URL that first goes to redirect.viglink.com.</p><div class=comment-holder><div class=comment><p>I tried this on <a href=https://tinyurl.com/yyte6pqv,>https://tinyurl.com/yyte6pqv,</a> which points to
+<a href=https://www.c13u.com/socioeconomics/2020-11-21-experiments-in-social-economics/,>https://www.c13u.com/socioeconomics/2020-11-21-experiments-in-social-economics/,</a>
 but didn&rsquo;t observe any 3rd party cookies. <code>tinyurl.com</code> did set a cookie, but
-that&rsquo;s probably expected.</p>
-</div>
-</div>
-
-
-<p><span class="citation-ref"><a href="#yaoFLOC"></a></span> proposes Federated Learning of Cohorts, which aims to
+that&rsquo;s probably expected.</p></div></div><p><span class=citation-ref><a href=#yaoFLOC></a></span>proposes Federated Learning of Cohorts, which aims to
 enable ad-targeting based on people&rsquo;s general browsing interest without exposing
-the exact browsing history.</p>
-<p>Stripping tracking parameters in URLs, e.g. Facebook&rsquo;s <code>fbclid=</code>, has
-been implemented in Firefox 102 <span class="citation-ref"><a href="#Abrams2022"></a></span>.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>A top comment in <span class="citation-ref"><a href="#HNNewFacebookURLs"></a></span>, where FB changed URLs
+the exact browsing history.</p><p>Stripping tracking parameters in URLs, e.g. Facebook&rsquo;s <code>fbclid=</code>, has
+been implemented in Firefox 102 <span class=citation-ref><a href=#Abrams2022></a></span>.</p><div class=comment-holder><div class=comment><p>A top comment in <span class=citation-ref><a href=#HNNewFacebookURLs></a></span>, where FB changed URLs
 from <code>https://www.facebook.com/random.username/posts/10208327509806082</code>
 to
 <code>https://www.facebook.com/VICE/posts/pfbid02XdVziPTwhmPU9XzBqkRvU5o7NPXUicAJgVy8kf1a1W51hU7EmgMmCigo9rZWxCjDl</code>
 claims that the new FB URLs circumvent features like Firefox&rsquo;s stripping
 of tracking URLs. I don&rsquo;t follow; the URL is served by
-<code>www.facebook.com</code>, and thus no need for 3P tracking parameters.</p>
-<p>I usually &ldquo;trust&rdquo; HN&rsquo;s top comments, but in this instance, the top
-comment seems unfounded. Cue in 
-<a href="https://en.wikiquote.org/wiki/Murray_Gell-Mann#Quotes_about_Gell-Mann"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    Gell-Mann&rsquo;s
+<code>www.facebook.com</code>, and thus no need for 3P tracking parameters.</p><p>I usually &ldquo;trust&rdquo; HN&rsquo;s top comments, but in this instance, the top
+comment seems unfounded. Cue in
+<a href=https://en.wikiquote.org/wiki/Murray_Gell-Mann#Quotes_about_Gell-Mann target=_blank rel=noopener>Gell-Mann&rsquo;s
 amnesia
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-.</p>
-</div>
-</div>
-
-
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='far fa-fw fa-newspaper' cited-by-count=''>
-    <cite id='milesURLShortenersSetAdTrackingCookies'>
-        
-        URL shorteners set ad tracking cookies<i>.</i>
-        
-    </cite>
-    
-     Luke Miles.
-    
-    
-    
-    
-    <a href="https://ylukem.com/blog/url-shorteners-set-ad-tracking-cookies" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=ylukem.com" loading="lazy" aria-hidden="true">
-        <i>ylukem.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://news.ycombinator.com/item?id=25624112" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
-        <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-     Jan 2, 2021.
-    
-    
-    
-    <i class='far fa-fw fa-newspaper' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='yaoFLOC'>
-        
-        Federated Learning of Cohorts<i>.</i>
-        
-    </cite>
-     Xiao, Yao; Karlin, Josh.
-    
-    
-    
-    
-    
-    <a href="https://wicg.github.io/floc/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=wicg.github.io" loading="lazy" aria-hidden="true">
-        <i>wicg.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://chromium.googlesource.com/chromium/src.git/&#43;/refs/heads/master/components/federated_learning" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy" aria-hidden="true">
-        <i>chromium.googlesource.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-     Mar 3, 2021.
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Mar 14, 2021.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='HNNewFacebookURLs'>
-        
-        Ask HN: What is with the new URLs on facebook.com? | Hacker News<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://news.ycombinator.com/item?id=32117489" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
-        <i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-     Jul 16, 2022.
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jul 16, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Abrams2022'>
-        
-        New Firefox privacy feature strips URLs of tracking parameters<i>.</i>
-        
-    </cite>
-    
-     Lawrence Abrams.
-    
-    
-    
-    
-    <a href="https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.bleepingcomputer.com" loading="lazy" aria-hidden="true">
-        <i>www.bleepingcomputer.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://www.mozilla.org/en-US/firefox/102.0/releasenotes/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.mozilla.org" loading="lazy" aria-hidden="true">
-        <i>www.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-     Jun 28, 2022.
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jul 16, 2022.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-<aside id="tags-holder" style="margin: 0 0 2% 0;">
-    Tags:
-    
-        <a href="/tags/computer-science">#computer-science</a>
-    
-        <a href="/tags/privacy">#privacy</a>
-    
-        <a href="/tags/www">#www</a>
-    
-</aside>
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/abrams-lawrence'>Abrams, Lawrence</a>
-    
-        <a href='/cited-authors/karlin-josh'>Karlin, Josh</a>
-    
-        <a href='/cited-authors/miles-luke'>Miles, Luke</a>
-    
-        <a href='/cited-authors/xiao-yao'>Xiao, Yao</a>
-    
-</aside>
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/chromium.googlesource.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading="lazy" aria-hidden="true">
-            chromium.googlesource.com
-        </a>
-    
-        <a href='/domains/news.ycombinator.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading="lazy" aria-hidden="true">
-            news.ycombinator.com
-        </a>
-    
-        <a href='/domains/wicg.github.io' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=wicg.github.io" loading="lazy" aria-hidden="true">
-            wicg.github.io
-        </a>
-    
-        <a href='/domains/www.bleepingcomputer.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.bleepingcomputer.com" loading="lazy" aria-hidden="true">
-            www.bleepingcomputer.com
-        </a>
-    
-        <a href='/domains/www.mozilla.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.mozilla.org" loading="lazy" aria-hidden="true">
-            www.mozilla.org
-        </a>
-    
-        <a href='/domains/ylukem.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=ylukem.com" loading="lazy" aria-hidden="true">
-            ylukem.com
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/www/2021-10-13-a-collaborative-web-browser/">&laquo; Towards a Collaborative Web Browser</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/www/2020-05-19-chrome-vs-everybody/">Chrome vs. Everybody &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p></div></div><ol><li><div class=citation citation-icon-class="far fa-fw fa-newspaper" cited-by-count><cite id=milesURLShortenersSetAdTrackingCookies>URL shorteners set ad tracking cookies<i>.</i></cite>
+Luke Miles.
+<a href=https://ylukem.com/blog/url-shorteners-set-ad-tracking-cookies target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=ylukem.com" loading=lazy aria-hidden=true>
+<i>ylukem.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href="https://news.ycombinator.com/item?id=25624112" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true>
+<i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jan 2, 2021.
+<i class="far fa-fw fa-newspaper" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=yaoFLOC>Federated Learning of Cohorts<i>.</i></cite>
+Xiao, Yao; Karlin, Josh.
+<a href=https://wicg.github.io/floc/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=wicg.github.io" loading=lazy aria-hidden=true>
+<i>wicg.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://chromium.googlesource.com/chromium/src.git/+/refs/heads/master/components/federated_learning target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading=lazy aria-hidden=true>
+<i>chromium.googlesource.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Mar 3, 2021.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Mar 14, 2021.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=HNNewFacebookURLs>Ask HN: What is with the new URLs on facebook.com? | Hacker News<i>.</i></cite>
+<a href="https://news.ycombinator.com/item?id=32117489" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true>
+<i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jul 16, 2022.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jul 16, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Abrams2022>New Firefox privacy feature strips URLs of tracking parameters<i>.</i></cite>
+Lawrence Abrams.
+<a href=https://www.bleepingcomputer.com/news/security/new-firefox-privacy-feature-strips-urls-of-tracking-parameters/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.bleepingcomputer.com" loading=lazy aria-hidden=true>
+<i>www.bleepingcomputer.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://www.mozilla.org/en-US/firefox/102.0/releasenotes/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.mozilla.org" loading=lazy aria-hidden=true>
+<i>www.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jun 28, 2022.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jul 16, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/computer-science>#computer-science</a>
+<a href=/tags/privacy>#privacy</a>
+<a href=/tags/www>#www</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/abrams-lawrence>Abrams, Lawrence</a>
+<a href=/cited-authors/karlin-josh>Karlin, Josh</a>
+<a href=/cited-authors/miles-luke>Miles, Luke</a>
+<a href=/cited-authors/xiao-yao>Xiao, Yao</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/chromium.googlesource.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading=lazy aria-hidden=true>
+chromium.googlesource.com</a>
+<a href=/domains/news.ycombinator.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true>
+news.ycombinator.com</a>
+<a href=/domains/wicg.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=wicg.github.io" loading=lazy aria-hidden=true>
+wicg.github.io</a>
+<a href=/domains/www.bleepingcomputer.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.bleepingcomputer.com" loading=lazy aria-hidden=true>
+www.bleepingcomputer.com</a>
+<a href=/domains/www.mozilla.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.mozilla.org" loading=lazy aria-hidden=true>
+www.mozilla.org</a>
+<a href=/domains/ylukem.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=ylukem.com" loading=lazy aria-hidden=true>
+ylukem.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/www/2021-10-13-a-collaborative-web-browser/>&#171; Towards a Collaborative Web Browser</a>
+<a href=https://www.curiosities.dev/computer-science/www/2020-05-19-chrome-vs-everybody/>Chrome vs. Everybody &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

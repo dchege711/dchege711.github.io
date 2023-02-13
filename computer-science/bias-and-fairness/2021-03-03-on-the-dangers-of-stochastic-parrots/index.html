@@ -1,358 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜 | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/bias-and-fairness/">Computational Bias and Fairness</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/bias-and-fairness/2021-03-03-on-the-dangers-of-stochastic-parrots/">On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜</h1>
-    <p class="meta">
-        
-        Dated Mar 3, 2021;
-        
-        last modified on Mon, 05 Sep 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#environmental-risks">Environmental Risks</a></li>
-    <li><a href="#non-inclusive-lms">Non-Inclusive LMs</a></li>
-    <li><a href="#lms-misbehaving-in-the-town-square">LMs Misbehaving in the Town Square</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>The paper is written in a period when NLP practitioners are producing bigger
+<!doctype html><html lang=en><head><title>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜 | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/bias-and-fairness/>Computational Bias and Fairness</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/bias-and-fairness/2021-03-03-on-the-dangers-of-stochastic-parrots/>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜</a></li></ul></nav><section><header><h1>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜</h1><p class=meta>Dated Mar 3, 2021;
+last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p>The paper is written in a period when NLP practitioners are producing bigger
 (# of parameters; size of training data) language models (LMs), and pushing the
-top scores on benchmarks.</p>
-</div>
-</div>
-
-
-<h2 id="environmental-risks">Environmental Risks</h2>
-<p>Large LMs consume a lot of resources, e.g. training a single BERT base model on
-GPUs was estimated to use as much energy as a trans-American flight.</p>
-<p>Marginalized communities are doubly punished. They are least likely to benefit
+top scores on benchmarks.</p></div></div><h2 id=environmental-risks>Environmental Risks</h2><p>Large LMs consume a lot of resources, e.g. training a single BERT base model on
+GPUs was estimated to use as much energy as a trans-American flight.</p><p>Marginalized communities are doubly punished. They are least likely to benefit
 from LMs, e.g. 90% of the world&rsquo;s languages have little LM-support; most LM
-applications serve needs of the privileged, e.g. Google Home, Alexa &amp; Siri. They
-are also more likely to be harmed by negative effects of climate change.</p>
-<p>Practitioners should report the resources (e.g. time and compute) consumed used.
+applications serve needs of the privileged, e.g. Google Home, Alexa & Siri. They
+are also more likely to be harmed by negative effects of climate change.</p><p>Practitioners should report the resources (e.g. time and compute) consumed used.
 Governments should invest in compute clouds to provide equitable access to
-researchers.</p>
-<h2 id="non-inclusive-lms">Non-Inclusive LMs</h2>
-<p>Large datasets from the internet overrepresent hegemonic viewpoints and encode
-biases that can damage marginalized populations.</p>
-<p>User-generated content sites have skewed demographics, e.g. in 2016, 67% of
+researchers.</p><h2 id=non-inclusive-lms>Non-Inclusive LMs</h2><p>Large datasets from the internet overrepresent hegemonic viewpoints and encode
+biases that can damage marginalized populations.</p><p>User-generated content sites have skewed demographics, e.g. in 2016, 67% of
 Redditors in the US were men, and 64% between ages 18 and 29; between 8.8 - 15%
 of Wikipedians are female. Furthermore, these sites have structural factors that
-make them less welcoming to marginalized groups, e.g. harassment on Twitter.</p>
-<p>Sometimes excluded populations assume different fora, e.g. older adults with
+make them less welcoming to marginalized groups, e.g. harassment on Twitter.</p><p>Sometimes excluded populations assume different fora, e.g. older adults with
 blogging, but the LMs are less likely to source from these non-mainstream
-alternatives.</p>
-<p>Filtering (&ldquo;Cleaning&rdquo;) of training data may suppress the voice of marginalized
+alternatives.</p><p>Filtering (&ldquo;Cleaning&rdquo;) of training data may suppress the voice of marginalized
 groups, e.g. suppressing LGBTQ spaces in the name of purging pornographic
-content.</p>
-<p>While social movements produce new norms, LMs might be stuck on older,
+content.</p><p>While social movements produce new norms, LMs might be stuck on older,
 less-inclusive understandings, e.g. social movements that do not receive
-significant media attention; LM retraining being expensive, etc.</p>
-<p>LMs may encode biases, e.g. gun violence, homelessness and drug addiction are
+significant media attention; LM retraining being expensive, etc.</p><p>LMs may encode biases, e.g. gun violence, homelessness and drug addiction are
 overrepresented in texts discussing mental illness; women doctors; both genders;
-illegal immigrants.</p>
-<p>Even auditing LMs for biases requires an <em>a priori</em> understanding of the
+illegal immigrants.</p><p>Even auditing LMs for biases requires an <em>a priori</em> understanding of the
 society, which tends to fall back to US protected attributes like race and
-gender.</p>
-<p>Researchers should budget for documentation as part of the cost of dataset
+gender.</p><p>Researchers should budget for documentation as part of the cost of dataset
 creation. Without documentation, it&rsquo;s hard to investigate and mitigate such
-non-inclusivity.</p>
-<h2 id="lms-misbehaving-in-the-town-square">LMs Misbehaving in the Town Square</h2>
-<p>Some people mistakenly impute meaning to the LM-generated texts. LMs are not
+non-inclusivity.</p><h2 id=lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</h2><p>Some people mistakenly impute meaning to the LM-generated texts. LMs are not
 performing natural language understanding (NLU). Misplaced hype can mislead the
 public and dissuade research directions that don&rsquo;t depend on the ever-larger-LM
-train.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>
-<a href="https://www.reddit.com/r/SubSimulatorGPT2/"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    /r/SubSimulatorGPT2/
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
- is an
+train.</p><div class=comment-holder><div class=comment><p><a href=https://www.reddit.com/r/SubSimulatorGPT2/ target=_blank rel=noopener>/r/SubSimulatorGPT2/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>is an
 entertaining sub full of GPT-2 bots.
-
-<a href="https://www.reddit.com/r/SubSimulatorGPT2Meta/"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    /r/SubSimulatorGPT2Meta/
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
- has
-the human commentary.</p>
-</div>
-</div>
-
-
-<p>The texts are not grounded in communicative intent, or any model of the world,
+<a href=https://www.reddit.com/r/SubSimulatorGPT2Meta/ target=_blank rel=noopener>/r/SubSimulatorGPT2Meta/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has
+the human commentary.</p></div></div><p>The texts are not grounded in communicative intent, or any model of the world,
 or any model of the reader&rsquo;s state of mind. An LM is a system for haphazardly
 stitching together sequences of linguistic forms it has observed in its vast
 training data, according to probabilistic information about how they combine,
-but without reference to meaning: a stochastic parrot.</p>
-<p>Bad actors can take advantage of LMs to produce large quantities of seemingly
-coherent propaganda.</p>
-<p>Biases in LMs can manifest as reputational harms that are invisible to users.
-Biases in LMs used for query expansion could influence search results.</p>
-<h2 id="references">References</h2>
-<ol>
-<li>
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=''>
-    <cite id='benderStochasticParrots'>
-        
-        On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜<i>.</i>
-        
-    </cite>
-     Emily M. Bender; Timnit Gebru; Angelina McMillan-Major; Shmargaret Shmitchell.
-    
-     Proceedings of the 2021 ACM Conference on Fairness, Accountability, and Transparency.
-    
-     University of Washington; Black in AI; The Aether.
-    
-    <a href="https://doi.org/10.1145/3442188.3445922" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
-        <i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-     Mar 3, 2021.
-    
-    
-    
-    <i class='fas fa-fw fa-graduation-cap' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-<aside id="tags-holder" style="margin: 0 0 2% 0;">
-    Tags:
-    
-        <a href="/tags/inequality">#inequality</a>
-    
-        <a href="/tags/natural-language-processing">#natural-language-processing</a>
-    
-        <a href="/tags/technology">#technology</a>
-    
-</aside>
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/bender-emily-m.'>Bender, Emily M.</a>
-    
-        <a href='/cited-authors/gebru-timnit'>Gebru, Timnit</a>
-    
-        <a href='/cited-authors/mcmillan-major-angelina'>McMillan-Major, Angelina</a>
-    
-        <a href='/cited-authors/shmitchell-shmargaret'>Shmitchell, Shmargaret</a>
-    
-</aside>
-
-
-
-<aside id="publications-holder" style="margin: 0 0 2% 0;">
-    Cited Publications:
-    
-        <a href='/publications/proceedings-of-the-2021-acm-conference-on-fairness'>Proceedings of the 2021 ACM Conference on Fairness</a>
-    
-</aside>
-
-
-<aside id="affiliations-holder" style="margin: 0 0 2% 0;">
-    Cited Authors' Affiliations:
-    
-        <a href='/affiliations/black-in-ai'>Black in AI</a>
-    
-        <a href='/affiliations/the-aether'>The Aether</a>
-    
-        <a href='/affiliations/university-of-washington'>University of Washington</a>
-    
-</aside>
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/doi.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=doi.org" loading="lazy" aria-hidden="true">
-            doi.org
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/bias-and-fairness/2021-07-04-rage-against-the-algo/">&laquo; Rage Against the Algorithm</a>
-        
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+but without reference to meaning: a stochastic parrot.</p><p>Bad actors can take advantage of LMs to produce large quantities of seemingly
+coherent propaganda.</p><p>Biases in LMs can manifest as reputational harms that are invisible to users.
+Biases in LMs used for query expansion could influence search results.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-graduation-cap" cited-by-count><cite id=benderStochasticParrots>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜<i>.</i></cite>
+Emily M. Bender; Timnit Gebru; Angelina McMillan-Major; Shmargaret Shmitchell.
+Proceedings of the 2021 ACM Conference on Fairness, Accountability, and Transparency.
+University of Washington; Black in AI; The Aether.
+<a href=https://doi.org/10.1145/3442188.3445922 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true>
+<i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Mar 3, 2021.
+<i class="fas fa-fw fa-graduation-cap" aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/inequality>#inequality</a>
+<a href=/tags/natural-language-processing>#natural-language-processing</a>
+<a href=/tags/technology>#technology</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/bender-emily-m.>Bender, Emily M.</a>
+<a href=/cited-authors/gebru-timnit>Gebru, Timnit</a>
+<a href=/cited-authors/mcmillan-major-angelina>McMillan-Major, Angelina</a>
+<a href=/cited-authors/shmitchell-shmargaret>Shmitchell, Shmargaret</a></aside><aside id=publications-holder style="margin:0 0 2%">Cited Publications:
+<a href=/publications/proceedings-of-the-2021-acm-conference-on-fairness>Proceedings of the 2021 ACM Conference on Fairness</a></aside><aside id=affiliations-holder style="margin:0 0 2%">Cited Authors' Affiliations:
+<a href=/affiliations/black-in-ai>Black in AI</a>
+<a href=/affiliations/the-aether>The Aether</a>
+<a href=/affiliations/university-of-washington>University of Washington</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/doi.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true>
+doi.org</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/bias-and-fairness/2021-07-04-rage-against-the-algo/>&#171; Rage Against the Algorithm</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

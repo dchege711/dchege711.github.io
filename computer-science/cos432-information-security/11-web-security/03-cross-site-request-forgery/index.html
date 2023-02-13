@@ -1,412 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                03. Cross-Site Request Forgery (XSRF) | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/cos432-information-security/">Information Security [COS 432]</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/">11. Web Security</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/03-cross-site-request-forgery/">03. Cross-Site Request Forgery (XSRF)</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> 03. Cross-Site Request Forgery (XSRF)</h1>
-    <p class="meta">
-        
-        Dated Nov 21, 2018;
-        
-        last modified on Mon, 05 Sep 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#cross-site-request-forgery-xsrf">Cross-site Request Forgery (XSRF)</a></li>
-    <li><a href="#xsrf-defense">XSRF Defense</a></li>
-    <li><a href="#same-origin-policy-sop">Same-Origin Policy (SOP)</a>
-      <ul>
-        <li><a href="#problems-with-sop">Problems with SOP</a></li>
-        <li><a href="#solution-html5-postmessage">Solution: HTML5 postMessage</a></li>
-      </ul>
-    </li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <h2 id="cross-site-request-forgery-xsrf">Cross-site Request Forgery (XSRF)</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">img</span> <span style="color:#75af00">src</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;http://bank.com/transfer?from=from_ID&amp;to=to_ID&amp;value=1000&#34;</span><span style="color:#111">&gt;</span>
+<!doctype html><html lang=en><head><title>03. Cross-Site Request Forgery (XSRF) | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/cos432-information-security/>Information Security [COS 432]</a></li><li><a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/>11. Web Security</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/03-cross-site-request-forgery/>03. Cross-Site Request Forgery (XSRF)</a></li></ul></nav><section><header><h1>03. Cross-Site Request Forgery (XSRF)</h1><p class=meta>Dated Nov 21, 2018;
+last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#cross-site-request-forgery-xsrf>Cross-site Request Forgery (XSRF)</a></li><li><a href=#xsrf-defense>XSRF Defense</a></li><li><a href=#same-origin-policy-sop>Same-Origin Policy (SOP)</a><ul><li><a href=#problems-with-sop>Problems with SOP</a></li><li><a href=#solution-html5-postmessage>Solution: HTML5 postMessage</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=cross-site-request-forgery-xsrf>Cross-site Request Forgery (XSRF)</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;http://bank.com/transfer?from=from_ID&amp;to=to_ID&amp;value=1000&#34;</span><span style=color:#111>&gt;</span>
 </code></pre></div><p>Because the user is logged in and has a cookie, the victim site trusts the
-user&rsquo;s browser.</p>
-<p>The attacker gets user/browser to execute command on victim site, e.g. request a
-link, post a form. The command has permanent effects.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>A frame can navigate its immediate children. Why is it designed such that it
-can&rsquo;t navigate its children too?</p>
-<p><em>Consider a website with a login frame, where the user inputs passwords. The
+user&rsquo;s browser.</p><p>The attacker gets user/browser to execute command on victim site, e.g. request a
+link, post a form. The command has permanent effects.</p><div class=comment-holder><div class=comment><p>A frame can navigate its immediate children. Why is it designed such that it
+can&rsquo;t navigate its children too?</p><p><em>Consider a website with a login frame, where the user inputs passwords. The
 attacker can put this website inside a frame and navigate to the login frame and
-steal passwords.</em></p>
-</div>
-</div>
-
-
-<h2 id="xsrf-defense">XSRF Defense</h2>
-<p>Classify URLs as public and non-public. Non-public URLs should contain an
-unpredictable user-specific secret. Even better, scope the secret to a session.</p>
-<h2 id="same-origin-policy-sop">Same-Origin Policy (SOP)</h2>
-<p>Here&rsquo;s a potential attack: <code>https://attacker.com</code> loads
+steal passwords.</em></p></div></div><h2 id=xsrf-defense>XSRF Defense</h2><p>Classify URLs as public and non-public. Non-public URLs should contain an
+unpredictable user-specific secret. Even better, scope the secret to a session.</p><h2 id=same-origin-policy-sop>Same-Origin Policy (SOP)</h2><p>Here&rsquo;s a potential attack: <code>https://attacker.com</code> loads
 <code>https://mail.google.com</code> in an invisible page element and reads the user&rsquo;s
-email.</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">//  Script on https://attacker.com....
-</span><span style="color:#75715e"></span>
-<span style="color:#00a8c8">var</span> <span style="color:#75af00">xhttp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#75af00">XMLHttpRequest</span><span style="color:#111">();</span>
-<span style="color:#75af00">xhttp</span><span style="color:#111">.</span><span style="color:#75af00">open</span><span style="color:#111">(</span><span style="color:#d88200">&#34;GET&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;https://mail.google.com/...&#34;</span><span style="color:#111">);</span>
-<span style="color:#75af00">xhttp</span><span style="color:#111">.</span><span style="color:#75af00">send</span><span style="color:#111">();</span>
+email.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-javascript data-lang=javascript><span style=color:#75715e>//  Script on https://attacker.com....
+</span><span style=color:#75715e></span>
+<span style=color:#00a8c8>var</span> <span style=color:#75af00>xhttp</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#75af00>XMLHttpRequest</span><span style=color:#111>();</span>
+<span style=color:#75af00>xhttp</span><span style=color:#111>.</span><span style=color:#75af00>open</span><span style=color:#111>(</span><span style=color:#d88200>&#34;GET&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;https://mail.google.com/...&#34;</span><span style=color:#111>);</span>
+<span style=color:#75af00>xhttp</span><span style=color:#111>.</span><span style=color:#75af00>send</span><span style=color:#111>();</span>
 
-<span style="color:#75af00">xhttp</span><span style="color:#111">.</span><span style="color:#75af00">onreadystatechange</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">function</span><span style="color:#111">()</span> <span style="color:#111">{</span>
-    <span style="color:#75715e">// Send response back to attacker.com
-</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+<span style=color:#75af00>xhttp</span><span style=color:#111>.</span><span style=color:#75af00>onreadystatechange</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>function</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+    <span style=color:#75715e>// Send response back to attacker.com
+</span><span style=color:#75715e></span><span style=color:#111>};</span>
 </code></pre></div><p>Scripts on different pages are allowed to access each other if and only if the
-pages they originate from share the same protocol, port and origin.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><a href="https://example.com/">https://example.com/</a> has a different origin from <a href="https://www.example.com/">https://www.example.com/</a>. That
+pages they originate from share the same protocol, port and origin.</p><div class=comment-holder><div class=comment><p><a href=https://example.com/>https://example.com/</a> has a different origin from <a href=https://www.example.com/>https://www.example.com/</a>. That
 said, websites tend to redirect the naked domain to the www domain for user
-convenience.</p>
-</div>
-</div>
-
-
-<p>Note that SOP doesn&rsquo;t prevent example.com loads an externally hosted script,
-e.g. <code>&lt;script src=&quot;https://third-party.com/lib/d3.js&gt;&lt;/script&gt;</code>. In this case,
+convenience.</p></div></div><p>Note that SOP doesn&rsquo;t prevent example.com loads an externally hosted script,
+e.g. <code>&lt;script src="https://third-party.com/lib/d3.js>&lt;/script></code>. In this case,
 the origin of this script is still example.com because it was loaded on
-example.com</p>
-<h3 id="problems-with-sop">Problems with SOP</h3>
-<ul>
-<li>Subtly different policies for cookies, HTML5 storage, plugins</li>
-<li>Ambiguities: different browsers, extensions, IP addresses&hellip;</li>
-<li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> &amp; <code>login.example.com</code> vs <code>payments.example.com</code></li>
-</ul>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>I&rsquo;ve mostly seen the <code>example.com/~username</code> pattern in universities, but that
+example.com</p><h3 id=problems-with-sop>Problems with SOP</h3><ul><li>Subtly different policies for cookies, HTML5 storage, plugins</li><li>Ambiguities: different browsers, extensions, IP addresses&mldr;</li><li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> & <code>login.example.com</code> vs <code>payments.example.com</code></li></ul><div class=comment-holder><div class=comment><p>I&rsquo;ve mostly seen the <code>example.com/~username</code> pattern in universities, but that
 technique comes with security disclaimers. Web hosters that still intend to use
-the technique are advised to allow only static content. <span class="citation-ref"><a href="#ApacheDocs"></a></span></p>
-<p>Modern web hosters go the subdomain route, e.g. <code>username.github.io</code>, which
+the technique are advised to allow only static content. <span class=citation-ref><a href=#ApacheDocs></a></span></p><p>Modern web hosters go the subdomain route, e.g. <code>username.github.io</code>, which
 complicates the <code>login.example.com</code> vs. <code>payments.example.com</code>. One mitigation
-is Mozilla&rsquo;s Public Suffix List (PSL) <span class="citation-ref"><a href="#MozillaPSL"></a></span>.</p>
-<p>The PSL has shortcomings, e.g. its opt-in model is default insecure; some
+is Mozilla&rsquo;s Public Suffix List (PSL) <span class=citation-ref><a href=#MozillaPSL></a></span>.</p><p>The PSL has shortcomings, e.g. its opt-in model is default insecure; some
 providers don&rsquo;t know about it; delays in reviewing PRs to the list and
-propagating the changes; entries growing stale and proving tricky to delete. <span class="citation-ref"><a href="#shortcomingsPSL"></a></span></p>
-</div>
-</div>
-
-
-<h3 id="solution-html5-postmessage">Solution: HTML5 postMessage</h3>
-<ul>
-<li>Message-passing API that allows security checks</li>
-<li>Browser reports origin of message</li>
-<li>JS code must enforce access control</li>
-</ul>
-<h2 id="references">References</h2>
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='ApacheDocs'>
-        
-        mod_userdir - Apache HTTP Server Version 2.4<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://httpd.apache.org/docs/2.4/mod/mod_userdir.html" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading="lazy" aria-hidden="true">
-        <i>httpd.apache.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://blog.hboeck.de/archives/899-Userdir-URLs-like-httpsexample.orgusername-are-dangerous.html" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading="lazy" aria-hidden="true">
-        <i>blog.hboeck.de</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Aug 18, 2021.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='MozillaPSL'>
-        
-        list/public_suffix_list.dat at master<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://github.com/publicsuffix/list/blob/master/public_suffix_list.dat" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
-        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://publicsuffix.org/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading="lazy" aria-hidden="true">
-        <i>publicsuffix.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Aug 18, 2021.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Sleevi2021'>
-        
-        GitHub - sleevi/psl-problems<i>.</i>
-        
-    </cite>
-    
-     Ryan Sleevi.
-    
-    
-    
-    
-    <a href="https://github.com/sleevi/psl-problems" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
-        <i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Aug 18, 2021.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/sleevi-ryan'>Sleevi, Ryan</a>
-    
-</aside>
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/blog.hboeck.de' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading="lazy" aria-hidden="true">
-            blog.hboeck.de
-        </a>
-    
-        <a href='/domains/github.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=github.com" loading="lazy" aria-hidden="true">
-            github.com
-        </a>
-    
-        <a href='/domains/httpd.apache.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading="lazy" aria-hidden="true">
-            httpd.apache.org
-        </a>
-    
-        <a href='/domains/publicsuffix.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading="lazy" aria-hidden="true">
-            publicsuffix.org
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/02-threat-models/">&laquo; 02. Threat Models for Web Security</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/05-sql-injection/">SQL Injection &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+propagating the changes; entries growing stale and proving tricky to delete. <span class=citation-ref><a href=#shortcomingsPSL></a></span></p></div></div><h3 id=solution-html5-postmessage>Solution: HTML5 postMessage</h3><ul><li>Message-passing API that allows security checks</li><li>Browser reports origin of message</li><li>JS code must enforce access control</li></ul><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ApacheDocs>mod_userdir - Apache HTTP Server Version 2.4<i>.</i></cite>
+<a href=https://httpd.apache.org/docs/2.4/mod/mod_userdir.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading=lazy aria-hidden=true>
+<i>httpd.apache.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://blog.hboeck.de/archives/899-Userdir-URLs-like-httpsexample.orgusername-are-dangerous.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading=lazy aria-hidden=true>
+<i>blog.hboeck.de</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Aug 18, 2021.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=MozillaPSL>list/public_suffix_list.dat at master<i>.</i></cite>
+<a href=https://github.com/publicsuffix/list/blob/master/public_suffix_list.dat target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://publicsuffix.org/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading=lazy aria-hidden=true>
+<i>publicsuffix.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Aug 18, 2021.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Sleevi2021>GitHub - sleevi/psl-problems<i>.</i></cite>
+Ryan Sleevi.
+<a href=https://github.com/sleevi/psl-problems target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Aug 18, 2021.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/sleevi-ryan>Sleevi, Ryan</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/blog.hboeck.de style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=blog.hboeck.de" loading=lazy aria-hidden=true>
+blog.hboeck.de</a>
+<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true>
+github.com</a>
+<a href=/domains/httpd.apache.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=httpd.apache.org" loading=lazy aria-hidden=true>
+httpd.apache.org</a>
+<a href=/domains/publicsuffix.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=publicsuffix.org" loading=lazy aria-hidden=true>
+publicsuffix.org</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/02-threat-models/>&#171; 02. Threat Models for Web Security</a>
+<a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/05-sql-injection/>SQL Injection &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

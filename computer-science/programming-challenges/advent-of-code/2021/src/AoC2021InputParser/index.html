@@ -1,513 +1,279 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html><html lang=en><head><title>AoC 2021 Input Parser | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/>Advent of Code 2021</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/>AoC 2021 Input Parser</a></li></ul></nav><section><header><h1>AoC 2021 Input Parser</h1><p class=meta>Dated Mar 7, 2022;
+last modified on Mon, 07 Mar 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#day-03-binary-diagnostic>Day 03: Binary Diagnostic</a></li><li><a href=#day-04-giant-squid>Day 04: Giant Squid</a></li><li><a href=#day-05-hydrothermal-venture>Day 05: Hydrothermal Venture</a></li><li><a href=#day-06-lanternfish>Day 06: Lanternfish</a></li><li><a href=#day-07-treachery-of-whales>Day 07: Treachery of Whales</a></li><li><a href=#day-08-seven-segment-search>Day 08: Seven Segment Search</a></li><li><a href=#day-09-smoke-basin>Day 09: Smoke Basin</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>{-#  OPTIONS_GHC -Wall  #-}</span>
 
-    <head>
-        <title>
-            
-                AoC 2021 Input Parser | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
+<span style=color:#75715e>--  {-# LANGUAGE FlexibleContexts #-}</span>
 
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
+<span style=color:#75715e>--  The `(..)` syntax represents all of the constructors for the data type. [1]</span>
+<span style=color:#75715e>--  Without that export, we can pattern-match in BinaryDiagnostic.hs because we</span>
+<span style=color:#75715e>--  run into a &#34;Not in scope: data constructor ‘BinaryDiagnostics’&#34; error.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  [1]: https://stackoverflow.com/a/34548070/7812406</span>
+<span style=color:#00a8c8>module</span> <span style=color:#111>AoC2021InputParser</span>
+  <span style=color:#111>(</span> <span style=color:#75af00>parseBinaryDiagnosticInput</span><span style=color:#111>,</span>
+    <span style=color:#75af00>parseBingoInput</span><span style=color:#111>,</span>
+    <span style=color:#75af00>parseHydrothermalVents</span><span style=color:#111>,</span>
+    <span style=color:#75af00>parseLanternfishInternalTimers</span><span style=color:#111>,</span>
+    <span style=color:#75af00>parseHorizontalCrabPositions</span><span style=color:#111>,</span>
+    <span style=color:#75af00>parseSevenSegmentsDisplay</span><span style=color:#111>,</span>
+    <span style=color:#75af00>parseHeightMap</span><span style=color:#111>,</span>
+  <span style=color:#111>)</span>
+<span style=color:#00a8c8>where</span>
 
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
+<span style=color:#00a8c8>import</span> <span style=color:#111>BinaryDiagnostic.BinaryDiagnostic</span> <span style=color:#111>(</span><span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>),</span> <span style=color:#75af00>diagNums</span><span style=color:#111>,</span> <span style=color:#75af00>diagWidth</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Control.DeepSeq</span> <span style=color:#111>((</span><span style=color:#f92672>$!!</span><span style=color:#111>))</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.Char</span> <span style=color:#111>(</span><span style=color:#75af00>digitToInt</span><span style=color:#111>,</span> <span style=color:#75af00>ord</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.Maybe</span> <span style=color:#111>(</span><span style=color:#75af00>isJust</span><span style=color:#111>,</span> <span style=color:#75af00>listToMaybe</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.String</span> <span style=color:#111>(</span><span style=color:#00a8c8>IsString</span> <span style=color:#111>(</span><span style=color:#75af00>fromString</span><span style=color:#111>))</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>Data.List.Split</span> <span style=color:#00a8c8>as</span> <span style=color:#111>Split</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>Data.Vector</span> <span style=color:#00a8c8>as</span> <span style=color:#111>V</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>GiantSquid</span> <span style=color:#111>(</span><span style=color:#00a8c8>Board</span><span style=color:#111>,</span> <span style=color:#00a8c8>DrawnNumbers</span><span style=color:#111>,</span> <span style=color:#00a8c8>Tile</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>HydrothermalVenture.HydrothermalVenture</span> <span style=color:#00a8c8>as</span> <span style=color:#111>HV</span> <span style=color:#111>(</span><span style=color:#00a8c8>LineSegment</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>),</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>))</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Paths_advent_of_code_y2021</span> <span style=color:#111>(</span><span style=color:#75af00>getDataFileName</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>System.IO</span> <span style=color:#111>(</span><span style=color:#00a8c8>IOMode</span> <span style=color:#111>(</span><span style=color:#00a8c8>ReadMode</span><span style=color:#111>),</span> <span style=color:#75af00>hGetContents</span><span style=color:#111>,</span> <span style=color:#75af00>withFile</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Text.Parsec</span> <span style=color:#111>(</span><span style=color:#75af00>endOfLine</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Text.ParserCombinators.Parsec</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Text.Read</span> <span style=color:#111>(</span><span style=color:#75af00>readMaybe</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>AoC2021.SevenSegmentSearch</span> <span style=color:#00a8c8>as</span> <span style=color:#111>SevenSegmentSearch</span> <span style=color:#111>(</span><span style=color:#00a8c8>SevenSegmentDisplay</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>))</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>Data.IntSet</span> <span style=color:#00a8c8>as</span> <span style=color:#111>IntSet</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>AoC2021.SmokeBasin</span> <span style=color:#00a8c8>as</span> <span style=color:#111>SmokeBasin</span> <span style=color:#111>(</span><span style=color:#00a8c8>HeightMap</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>Data.Massiv.Array</span> <span style=color:#00a8c8>as</span> <span style=color:#111>MassivArray</span> <span style=color:#111>(</span><span style=color:#111>empty</span><span style=color:#111>,</span> <span style=color:#111>fromLists&#39;</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>Data.Massiv.Core</span> <span style=color:#00a8c8>as</span> <span style=color:#111>MassivCore</span> <span style=color:#111>(</span><span style=color:#00a8c8>Comp</span><span style=color:#111>(</span><span style=color:#00a8c8>Seq</span><span style=color:#111>))</span>
+</code></pre></div><h2 id=day-03-binary-diagnostic>Day 03: Binary Diagnostic</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>--  The `Numeric` module has a `readBin` function [1], but for some reason, I get</span>
+<span style=color:#75715e>--  a &#34;Variable not in scope: readBin&#34; error. However, `readDec`, `readOct` and</span>
+<span style=color:#75715e>--  `readHex` work...</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  [1]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Numeric.html#v:readBin</span>
+<span style=color:#75af00>readBin&#39;</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>String</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>readBin&#39;</span> <span style=color:#111>binString</span> <span style=color:#f92672>=</span> <span style=color:#111>fst</span> <span style=color:#f92672>$</span> <span style=color:#111>foldr</span> <span style=color:#111>f</span> <span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>binString</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>f</span> <span style=color:#111>c</span> <span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#111>powerOf2</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>s</span> <span style=color:#f92672>+</span> <span style=color:#111>powerOf2</span> <span style=color:#f92672>*</span> <span style=color:#111>digitToInt</span> <span style=color:#111>c</span><span style=color:#111>,</span> <span style=color:#111>powerOf2</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>2</span><span style=color:#111>)</span>
 
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
+<span style=color:#75715e>--  The file is a list of binary digits of the same width, e.g.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  00100</span>
+<span style=color:#75715e>--  11110</span>
+<span style=color:#75af00>parseBinaryDiagnosticInput</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#00a8c8>BinaryDiagnostics</span>
+<span style=color:#75af00>parseBinaryDiagnosticInput</span> <span style=color:#111>fp</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>validatedFP</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#111>fp</span>
+  <span style=color:#111>withFile</span>
+    <span style=color:#111>validatedFP</span>
+    <span style=color:#00a8c8>ReadMode</span>
+    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
+        <span style=color:#111>s</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetContents</span> <span style=color:#111>h</span>
+        <span style=color:#00a8c8>let</span> <span style=color:#111>ls</span> <span style=color:#f92672>=</span> <span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>)</span>
+        <span style=color:#00a8c8>let</span> <span style=color:#111>width</span> <span style=color:#f92672>=</span> <span style=color:#111>maybe</span> <span style=color:#ae81ff>0</span> <span style=color:#111>length</span> <span style=color:#111>(</span><span style=color:#111>listToMaybe</span> <span style=color:#111>ls</span><span style=color:#111>)</span>
+        <span style=color:#75715e>--  With lazy I/O, `h` gets closed as soon as we leave `withFile`. This</span>
+        <span style=color:#75715e>--  introduces errors of the form &#34;hGetContents: illegal operation</span>
+        <span style=color:#75715e>--  (delayed read on closed handle)&#34;. [1]</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>--  In the expression `f $!! x`, `x` is fully evaluated before `f` is</span>
+        <span style=color:#75715e>--  applied to it. [1] [2]</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>--  Alternatively, one can use `readFile` which holds the file open until</span>
+        <span style=color:#75715e>--  it has finished reading the file [1]. However, [3] says that</span>
+        <span style=color:#75715e>--  `readFile` reads the file lazily. Hmm...</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>--  [1]: https://stackoverflow.com/a/26949379/7812406</span>
+        <span style=color:#75715e>--  [2]: https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/Control-DeepSeq.html#v:-36--33--33-</span>
+        <span style=color:#75715e>--  [3]: https://hackage.haskell.org/package/base-4.16.0.0/docs/html#v:readFile</span>
+        <span style=color:#111>return</span> <span style=color:#f92672>$!!</span> <span style=color:#111>(</span><span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>{</span><span style=color:#111>diagWidth</span> <span style=color:#f92672>=</span> <span style=color:#111>width</span><span style=color:#111>,</span> <span style=color:#111>diagNums</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>readBin&#39;</span> <span style=color:#111>ls</span><span style=color:#111>})</span>
+    <span style=color:#111>)</span>
+</code></pre></div><h2 id=day-04-giant-squid>Day 04: Giant Squid</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>--  `endBy` expects the very last item to be followed by the separator. It</span>
+<span style=color:#75715e>--  continues parsing until it can&#39;t parse any more content. [1]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  TODO: Is it possible to define `bingoFile` as `endBy bingoSection doubleEOL`?</span>
+<span style=color:#75715e>--  The last double EOL is partly consumed by `bingoElementSeparator` that also</span>
+<span style=color:#75715e>--  matches a new line.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  [1]: http://book.realworldhaskell.org/read/using-parsec.html</span>
+<span style=color:#75af00>bingoFile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[[</span><span style=color:#00a8c8>String</span><span style=color:#111>]]</span>
+<span style=color:#75af00>bingoFile</span> <span style=color:#f92672>=</span> <span style=color:#111>endBy</span> <span style=color:#111>bingoSection</span> <span style=color:#111>endOfLine</span>
 
-        
+<span style=color:#75715e>--  `sepBy` takes two functions as arguments. The first function parses some sort</span>
+<span style=color:#75715e>--  of content, while the second function parses a separator. `sepBy` starts by</span>
+<span style=color:#75715e>--  trying to parse content, then separators, and alternates back and forth until</span>
+<span style=color:#75715e>--  it can&#39;t parse a separator. It returns a list of all the content it was able</span>
+<span style=color:#75715e>--  to parse. [1]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  [1]: http://book.realworldhaskell.org/read/using-parsec.html</span>
+<span style=color:#75af00>bingoSection</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>String</span><span style=color:#111>]</span>
+<span style=color:#75af00>bingoSection</span> <span style=color:#f92672>=</span> <span style=color:#111>sepBy</span> <span style=color:#111>bingoElement</span> <span style=color:#111>bingoElementSeparator</span>
 
+<span style=color:#75af00>bingoElement</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#00a8c8>String</span>
+<span style=color:#75af00>bingoElement</span> <span style=color:#f92672>=</span> <span style=color:#111>many</span> <span style=color:#111>digit</span>
 
-    </head>
+<span style=color:#75af00>bingoElementSeparator</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#00a8c8>Char</span>
+<span style=color:#75af00>bingoElementSeparator</span> <span style=color:#f92672>=</span> <span style=color:#111>try</span> <span style=color:#111>(</span><span style=color:#111>char</span> <span style=color:#d88200>&#39;,&#39;</span><span style=color:#111>)</span> <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>try</span> <span style=color:#111>(</span><span style=color:#111>char</span> <span style=color:#d88200>&#39; &#39;</span><span style=color:#111>)</span> <span style=color:#f92672>&lt;?&gt;</span> <span style=color:#d88200>&#34;separator for element&#34;</span>
 
-    <svg id="background-svg"></svg>
+<span style=color:#75715e>--  `try` applies a parser, and if it fails, then `try` behaves as if it hadn&#39;t</span>
+<span style=color:#75715e>--  consumed any input at all, and tries the option on the right of the `&lt;|&gt;`.</span>
+<span style=color:#75715e>--  Note that `try` only has an effect if its on the left side of a `&lt;|&gt;`. [1]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  `&lt;?&gt;` tries the parser on its left. In the event of a failure, it presents an</span>
+<span style=color:#75715e>--  error message instead of trying another parser. The error message should</span>
+<span style=color:#75715e>--  complete the sentence, &#34;Expecting...&#34;. [1]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  [1]: http://book.realworldhaskell.org/read/using-parsec.html</span>
+<span style=color:#75715e>--  eol = try (string &#34;\n\r\n\r&#34;)</span>
+<span style=color:#75715e>--          &lt;|&gt; try (string &#34;\r\n\r\n&#34;)</span>
+<span style=color:#75715e>--          &lt;|&gt; try (string &#34;\n\n&#34;)</span>
+<span style=color:#75715e>--          &lt;|&gt; string &#34;\r\r&#34;</span>
+<span style=color:#75715e>--          &lt;?&gt; &#34;end of line followed by empty line&#34;</span>
 
-    <body>
+<span style=color:#75715e>--  File format: the first line contains the numbers to draw. The rest is a new</span>
+<span style=color:#75715e>--  line followed by a 5x5 grid of numbers representing a board.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--  22 13 17 11  0</span>
+<span style=color:#75715e>--   8  2 23  4 24</span>
+<span style=color:#75715e>--  21  9 14 16  7</span>
+<span style=color:#75715e>--   6 10  3 18  5</span>
+<span style=color:#75715e>--   1 12 20 15 19</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--   3 15  0  2 22</span>
+<span style=color:#75715e>--   9 18 13 17  5</span>
+<span style=color:#75715e>--  19  8  7 25 23</span>
+<span style=color:#75715e>--  20 11 10 24  4</span>
+<span style=color:#75715e>--  14 21 16 12  6</span>
+<span style=color:#75af00>parseBingoInput</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>(</span><span style=color:#00a8c8>DrawnNumbers</span><span style=color:#111>,</span> <span style=color:#111>[</span><span style=color:#00a8c8>Board</span><span style=color:#111>])</span>
+<span style=color:#75af00>parseBingoInput</span> <span style=color:#111>fp</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>dataFp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#111>fp</span>
+  <span style=color:#75715e>--  Objective: Try using `readFile` and see if `($!!)` is needed to fully</span>
+  <span style=color:#75715e>--  evaluate the contents before exiting this function.</span>
+  <span style=color:#111>fileContents</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readFile</span> <span style=color:#111>dataFp</span>
+  <span style=color:#00a8c8>case</span> <span style=color:#111>parse</span> <span style=color:#111>bingoFile</span> <span style=color:#d88200>&#34;&#34;</span> <span style=color:#111>fileContents</span> <span style=color:#00a8c8>of</span>
+    <span style=color:#00a8c8>Left</span> <span style=color:#111>e</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
+      <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Error parsing input&#34;</span>
+      <span style=color:#111>print</span> <span style=color:#111>e</span>
+      <span style=color:#111>return</span> <span style=color:#111>(</span><span style=color:#00a8c8>[]</span><span style=color:#111>,</span> <span style=color:#00a8c8>[]</span><span style=color:#111>)</span>
+    <span style=color:#00a8c8>Right</span> <span style=color:#111>r</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
+      <span style=color:#00a8c8>let</span> <span style=color:#111>parseInt</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>String</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+          <span style=color:#111>parseInt</span> <span style=color:#111>s</span> <span style=color:#f92672>=</span> <span style=color:#111>read</span> <span style=color:#111>s</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span>
 
-        <div class="container" id="main_div">
+          <span style=color:#111>drawnNumbers</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>parseInt</span> <span style=color:#111>(</span><span style=color:#111>head</span> <span style=color:#111>r</span><span style=color:#111>)</span>
 
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
+          <span style=color:#111>tile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>String</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Tile</span>
+          <span style=color:#111>tile</span> <span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>parseInt</span> <span style=color:#111>x</span><span style=color:#111>,</span> <span style=color:#00a8c8>False</span><span style=color:#111>)</span>
 
-            
+          <span style=color:#75715e>--  TODO: Figure out how to parse multiple spaces as</span>
+          <span style=color:#75715e>--  separators, and get rid of the `isValidNum` filter.</span>
+          <span style=color:#111>isValidNum</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>String</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
+          <span style=color:#111>isValidNum</span> <span style=color:#111>s</span> <span style=color:#f92672>=</span> <span style=color:#111>isJust</span> <span style=color:#111>(</span><span style=color:#111>readMaybe</span> <span style=color:#111>s</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Maybe</span> <span style=color:#00a8c8>Int</span><span style=color:#111>)</span>
 
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
+          <span style=color:#111>parseBoards</span> <span style=color:#f92672>::</span> <span style=color:#111>[[</span><span style=color:#00a8c8>String</span><span style=color:#111>]]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Board</span><span style=color:#111>]</span>
+          <span style=color:#111>parseBoards</span> <span style=color:#111>([</span><span style=color:#00a8c8>_</span><span style=color:#111>]</span> <span style=color:#00a8c8>:</span> <span style=color:#111>l1</span> <span style=color:#00a8c8>:</span> <span style=color:#111>l2</span> <span style=color:#00a8c8>:</span> <span style=color:#111>l3</span> <span style=color:#00a8c8>:</span> <span style=color:#111>l4</span> <span style=color:#00a8c8>:</span> <span style=color:#111>l5</span> <span style=color:#00a8c8>:</span> <span style=color:#111>ls</span><span style=color:#111>)</span> <span style=color:#f92672>=</span>
+            <span style=color:#00a8c8>let</span> <span style=color:#111>nums</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>filter</span> <span style=color:#111>isValidNum</span> <span style=color:#111>(</span><span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>fromList</span> <span style=color:#111>(</span><span style=color:#111>l1</span> <span style=color:#f92672>++</span> <span style=color:#111>l2</span> <span style=color:#f92672>++</span> <span style=color:#111>l3</span> <span style=color:#f92672>++</span> <span style=color:#111>l4</span> <span style=color:#f92672>++</span> <span style=color:#111>l5</span><span style=color:#111>))</span>
+                <span style=color:#111>board</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>map</span> <span style=color:#111>tile</span> <span style=color:#111>nums</span>
+             <span style=color:#00a8c8>in</span> <span style=color:#111>(</span><span style=color:#111>board</span><span style=color:#111>,</span> <span style=color:#00a8c8>False</span><span style=color:#111>)</span> <span style=color:#00a8c8>:</span> <span style=color:#111>parseBoards</span> <span style=color:#111>ls</span>
+          <span style=color:#111>parseBoards</span> <span style=color:#111>[</span><span style=color:#111>l1</span><span style=color:#111>,</span> <span style=color:#111>l2</span><span style=color:#111>,</span> <span style=color:#111>l3</span><span style=color:#111>,</span> <span style=color:#111>l4</span><span style=color:#111>,</span> <span style=color:#111>l5</span><span style=color:#111>]</span> <span style=color:#f92672>=</span>
+            <span style=color:#00a8c8>let</span> <span style=color:#111>nums</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>filter</span> <span style=color:#111>isValidNum</span> <span style=color:#111>(</span><span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>fromList</span> <span style=color:#111>(</span><span style=color:#111>l1</span> <span style=color:#f92672>++</span> <span style=color:#111>l2</span> <span style=color:#f92672>++</span> <span style=color:#111>l3</span> <span style=color:#f92672>++</span> <span style=color:#111>l4</span> <span style=color:#f92672>++</span> <span style=color:#111>l5</span><span style=color:#111>))</span>
+                <span style=color:#111>board</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>map</span> <span style=color:#111>tile</span> <span style=color:#111>nums</span>
+             <span style=color:#00a8c8>in</span> <span style=color:#111>[(</span><span style=color:#111>board</span><span style=color:#111>,</span> <span style=color:#00a8c8>False</span><span style=color:#111>)]</span>
+          <span style=color:#111>parseBoards</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
 
+      <span style=color:#111>return</span> <span style=color:#111>(</span><span style=color:#111>drawnNumbers</span><span style=color:#111>,</span> <span style=color:#111>parseBoards</span> <span style=color:#111>(</span><span style=color:#111>tail</span> <span style=color:#111>r</span><span style=color:#111>))</span>
+</code></pre></div><h2 id=day-05-hydrothermal-venture>Day 05: Hydrothermal Venture</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>hydrothermalFile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#00a8c8>LineSegment</span><span style=color:#111>]</span>
+<span style=color:#75af00>hydrothermalFile</span> <span style=color:#f92672>=</span> <span style=color:#111>endBy</span> <span style=color:#111>hydrothermalLine</span> <span style=color:#111>endOfLine</span>
 
+<span style=color:#75715e>--  Parses &#34;0,9 -&gt; 5,9&#34; into a `LineSegment`.</span>
+<span style=color:#75af00>hydrothermalLine</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#00a8c8>LineSegment</span>
+<span style=color:#75af00>hydrothermalLine</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>do</span> <span style=color:#111>p1</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>commaSeparatedCoordinates</span> <span style=color:#75715e>--  Underscores to avoid shadowing.</span>
+     <span style=color:#00a8c8>_</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>string</span> <span style=color:#d88200>&#34; -&gt; &#34;</span>
+     <span style=color:#111>p2</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>commaSeparatedCoordinates</span>
+     <span style=color:#111>return</span> <span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#00a8c8>LineSegment</span> <span style=color:#111>{</span><span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#111>p1</span> <span style=color:#f92672>=</span> <span style=color:#111>p1</span><span style=color:#111>,</span> <span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#111>p2</span> <span style=color:#f92672>=</span> <span style=color:#111>p2</span><span style=color:#111>}</span>
 
+<span style=color:#75715e>--  Parses &#34;0,9&#34; into (0, 9)</span>
+<span style=color:#75af00>commaSeparatedCoordinates</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#00a8c8>Point</span>
+<span style=color:#75af00>commaSeparatedCoordinates</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>do</span> <span style=color:#111>x</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>many1</span> <span style=color:#111>digit</span>
+     <span style=color:#00a8c8>_</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>char</span> <span style=color:#d88200>&#39;,&#39;</span>
+     <span style=color:#111>y</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>many1</span> <span style=color:#111>digit</span>
+     <span style=color:#111>return</span> <span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#111>x</span><span style=color:#f92672>=</span><span style=color:#111>read</span> <span style=color:#111>x</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>,</span> <span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#111>y</span><span style=color:#f92672>=</span> <span style=color:#111>read</span> <span style=color:#111>y</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>}</span>
 
+<span style=color:#75af00>reportError</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>ParseError</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>reportError</span> <span style=color:#111>e</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Error parsing input&#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>e</span>
 
+<span style=color:#75af00>parseHydrothermalVents</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>[</span><span style=color:#00a8c8>HV</span><span style=color:#f92672>.</span><span style=color:#00a8c8>LineSegment</span><span style=color:#111>]</span>
+<span style=color:#75af00>parseHydrothermalVents</span> <span style=color:#111>fp</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>dataFp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#111>fp</span>
+  <span style=color:#111>fileContents</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readFile</span> <span style=color:#111>dataFp</span>
+  <span style=color:#00a8c8>case</span> <span style=color:#111>parse</span> <span style=color:#111>hydrothermalFile</span> <span style=color:#d88200>&#34;Hydrothermal Parser&#34;</span> <span style=color:#111>fileContents</span> <span style=color:#00a8c8>of</span>
+    <span style=color:#00a8c8>Left</span> <span style=color:#111>e</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>{</span><span style=color:#111>reportError</span> <span style=color:#111>e</span><span style=color:#111>;</span> <span style=color:#111>return</span> <span style=color:#00a8c8>[]</span><span style=color:#111>}</span>
+    <span style=color:#00a8c8>Right</span> <span style=color:#111>r</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>return</span> <span style=color:#111>r</span>
 
+<span style=color:#75af00>singleLineCommaDelimitedFile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>singleLineCommaDelimitedFile</span> <span style=color:#f92672>=</span>
+  <span style=color:#111>sepBy</span> <span style=color:#111>(</span><span style=color:#00a8c8>do</span> <span style=color:#111>x</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>many1</span> <span style=color:#111>digit</span><span style=color:#111>;</span> <span style=color:#111>return</span> <span style=color:#111>(</span><span style=color:#111>read</span> <span style=color:#111>x</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>))</span> <span style=color:#111>(</span><span style=color:#111>char</span> <span style=color:#d88200>&#39;,&#39;</span><span style=color:#111>)</span>
 
+<span style=color:#75af00>parseSingleLineCommaDelimitedFile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>parseSingleLineCommaDelimitedFile</span> <span style=color:#111>fp</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>dataFp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#111>fp</span>
+  <span style=color:#111>fileContents</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readFile</span> <span style=color:#111>dataFp</span>
+  <span style=color:#00a8c8>case</span> <span style=color:#111>parse</span> <span style=color:#111>singleLineCommaDelimitedFile</span> <span style=color:#d88200>&#34;Single Comma-Delimited Int Parser&#34;</span> <span style=color:#111>fileContents</span> <span style=color:#00a8c8>of</span>
+    <span style=color:#00a8c8>Left</span> <span style=color:#111>e</span>  <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>{</span><span style=color:#111>reportError</span> <span style=color:#111>e</span><span style=color:#111>;</span> <span style=color:#111>return</span> <span style=color:#00a8c8>[]</span><span style=color:#111>}</span>
+    <span style=color:#00a8c8>Right</span> <span style=color:#111>r</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>return</span> <span style=color:#111>r</span>
+</code></pre></div><h2 id=day-06-lanternfish>Day 06: Lanternfish</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>parseLanternfishInternalTimers</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>parseLanternfishInternalTimers</span> <span style=color:#f92672>=</span> <span style=color:#111>parseSingleLineCommaDelimitedFile</span>
+</code></pre></div><h2 id=day-07-treachery-of-whales>Day 07: Treachery of Whales</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>parseHorizontalCrabPositions</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>parseHorizontalCrabPositions</span> <span style=color:#f92672>=</span> <span style=color:#111>parseSingleLineCommaDelimitedFile</span>
+</code></pre></div><h2 id=day-08-seven-segment-search>Day 08: Seven Segment Search</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>--  Sample line:</span>
+<span style=color:#75715e>--  fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg</span>
+<span style=color:#75af00>sevenSegmentsDisplayLine</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#00a8c8>SevenSegmentDisplay</span>
+<span style=color:#75af00>sevenSegmentsDisplayLine</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#75715e>--  TODO: Is there syntax for avoiding the intermediate _allSegments variable?</span>
+  <span style=color:#111>_allSegments</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>many1</span> <span style=color:#111>(</span><span style=color:#111>noneOf</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\r\n</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>uniquePatternsAndOutputs</span> <span style=color:#f92672>=</span> <span style=color:#111>splitAt</span> <span style=color:#ae81ff>10</span> <span style=color:#f92672>$</span> <span style=color:#00a8c8>Split</span><span style=color:#f92672>.</span><span style=color:#111>split</span> <span style=color:#111>(</span><span style=color:#00a8c8>Split</span><span style=color:#f92672>.</span><span style=color:#111>dropDelims</span> <span style=color:#f92672>.</span> <span style=color:#00a8c8>Split</span><span style=color:#f92672>.</span><span style=color:#111>dropInnerBlanks</span> <span style=color:#f92672>$</span> <span style=color:#00a8c8>Split</span><span style=color:#f92672>.</span><span style=color:#111>oneOf</span> <span style=color:#d88200>&#34;| &#34;</span><span style=color:#111>)</span> <span style=color:#111>_allSegments</span>
 
+  <span style=color:#00a8c8>let</span> <span style=color:#111>stringsToIntSets</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#00a8c8>IntSet</span><span style=color:#f92672>.</span><span style=color:#111>fromList</span> <span style=color:#f92672>.</span> <span style=color:#111>map</span> <span style=color:#111>ord</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>String</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>IntSet</span><span style=color:#f92672>.</span><span style=color:#00a8c8>IntSet</span><span style=color:#111>]</span>
+  <span style=color:#111>return</span> <span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#00a8c8>SevenSegmentDisplay</span><span style=color:#111>{</span>
+    <span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#111>uniquePatterns</span> <span style=color:#f92672>=</span> <span style=color:#111>stringsToIntSets</span> <span style=color:#111>(</span><span style=color:#111>fst</span> <span style=color:#111>uniquePatternsAndOutputs</span><span style=color:#111>),</span>
+    <span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#111>outputValues</span> <span style=color:#f92672>=</span> <span style=color:#111>stringsToIntSets</span> <span style=color:#111>(</span><span style=color:#111>snd</span> <span style=color:#111>uniquePatternsAndOutputs</span><span style=color:#111>)}</span>
 
+<span style=color:#75af00>sevenSegmentsDisplayFile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#00a8c8>SevenSegmentDisplay</span><span style=color:#111>]</span>
+<span style=color:#75af00>sevenSegmentsDisplayFile</span> <span style=color:#f92672>=</span> <span style=color:#111>endBy</span> <span style=color:#111>sevenSegmentsDisplayLine</span> <span style=color:#111>endOfLine</span>
 
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/">AoC 2021 Input Parser</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> AoC 2021 Input Parser</h1>
-    <p class="meta">
-        
-        Dated Mar 7, 2022;
-        
-        last modified on Mon, 07 Mar 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#day-03-binary-diagnostic">Day 03: Binary Diagnostic</a></li>
-    <li><a href="#day-04-giant-squid">Day 04: Giant Squid</a></li>
-    <li><a href="#day-05-hydrothermal-venture">Day 05: Hydrothermal Venture</a></li>
-    <li><a href="#day-06-lanternfish">Day 06: Lanternfish</a></li>
-    <li><a href="#day-07-treachery-of-whales">Day 07: Treachery of Whales</a></li>
-    <li><a href="#day-08-seven-segment-search">Day 08: Seven Segment Search</a></li>
-    <li><a href="#day-09-smoke-basin">Day 09: Smoke Basin</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  OPTIONS_GHC -Wall  #-}</span>
-
-<span style="color:#75715e">--  {-# LANGUAGE FlexibleContexts #-}</span>
-
-<span style="color:#75715e">--  The `(..)` syntax represents all of the constructors for the data type. [1]</span>
-<span style="color:#75715e">--  Without that export, we can pattern-match in BinaryDiagnostic.hs because we</span>
-<span style="color:#75715e">--  run into a &#34;Not in scope: data constructor ‘BinaryDiagnostics’&#34; error.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  [1]: https://stackoverflow.com/a/34548070/7812406</span>
-<span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021InputParser</span>
-  <span style="color:#111">(</span> <span style="color:#75af00">parseBinaryDiagnosticInput</span><span style="color:#111">,</span>
-    <span style="color:#75af00">parseBingoInput</span><span style="color:#111">,</span>
-    <span style="color:#75af00">parseHydrothermalVents</span><span style="color:#111">,</span>
-    <span style="color:#75af00">parseLanternfishInternalTimers</span><span style="color:#111">,</span>
-    <span style="color:#75af00">parseHorizontalCrabPositions</span><span style="color:#111">,</span>
-    <span style="color:#75af00">parseSevenSegmentsDisplay</span><span style="color:#111">,</span>
-    <span style="color:#75af00">parseHeightMap</span><span style="color:#111">,</span>
-  <span style="color:#111">)</span>
-<span style="color:#00a8c8">where</span>
-
-<span style="color:#00a8c8">import</span> <span style="color:#111">BinaryDiagnostic.BinaryDiagnostic</span> <span style="color:#111">(</span><span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#75af00">diagNums</span><span style="color:#111">,</span> <span style="color:#75af00">diagWidth</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Control.DeepSeq</span> <span style="color:#111">((</span><span style="color:#f92672">$!!</span><span style="color:#111">))</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Char</span> <span style="color:#111">(</span><span style="color:#75af00">digitToInt</span><span style="color:#111">,</span> <span style="color:#75af00">ord</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Maybe</span> <span style="color:#111">(</span><span style="color:#75af00">isJust</span><span style="color:#111">,</span> <span style="color:#75af00">listToMaybe</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.String</span> <span style="color:#111">(</span><span style="color:#00a8c8">IsString</span> <span style="color:#111">(</span><span style="color:#75af00">fromString</span><span style="color:#111">))</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.List.Split</span> <span style="color:#00a8c8">as</span> <span style="color:#111">Split</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Vector</span> <span style="color:#00a8c8">as</span> <span style="color:#111">V</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">GiantSquid</span> <span style="color:#111">(</span><span style="color:#00a8c8">Board</span><span style="color:#111">,</span> <span style="color:#00a8c8">DrawnNumbers</span><span style="color:#111">,</span> <span style="color:#00a8c8">Tile</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">HydrothermalVenture.HydrothermalVenture</span> <span style="color:#00a8c8">as</span> <span style="color:#111">HV</span> <span style="color:#111">(</span><span style="color:#00a8c8">LineSegment</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">))</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Paths_advent_of_code_y2021</span> <span style="color:#111">(</span><span style="color:#75af00">getDataFileName</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">System.IO</span> <span style="color:#111">(</span><span style="color:#00a8c8">IOMode</span> <span style="color:#111">(</span><span style="color:#00a8c8">ReadMode</span><span style="color:#111">),</span> <span style="color:#75af00">hGetContents</span><span style="color:#111">,</span> <span style="color:#75af00">withFile</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Text.Parsec</span> <span style="color:#111">(</span><span style="color:#75af00">endOfLine</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Text.ParserCombinators.Parsec</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Text.Read</span> <span style="color:#111">(</span><span style="color:#75af00">readMaybe</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.SevenSegmentSearch</span> <span style="color:#00a8c8">as</span> <span style="color:#111">SevenSegmentSearch</span> <span style="color:#111">(</span><span style="color:#00a8c8">SevenSegmentDisplay</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">))</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.IntSet</span> <span style="color:#00a8c8">as</span> <span style="color:#111">IntSet</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.SmokeBasin</span> <span style="color:#00a8c8">as</span> <span style="color:#111">SmokeBasin</span> <span style="color:#111">(</span><span style="color:#00a8c8">HeightMap</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Massiv.Array</span> <span style="color:#00a8c8">as</span> <span style="color:#111">MassivArray</span> <span style="color:#111">(</span><span style="color:#111">empty</span><span style="color:#111">,</span> <span style="color:#111">fromLists&#39;</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Massiv.Core</span> <span style="color:#00a8c8">as</span> <span style="color:#111">MassivCore</span> <span style="color:#111">(</span><span style="color:#00a8c8">Comp</span><span style="color:#111">(</span><span style="color:#00a8c8">Seq</span><span style="color:#111">))</span>
-</code></pre></div><h2 id="day-03-binary-diagnostic">Day 03: Binary Diagnostic</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">--  The `Numeric` module has a `readBin` function [1], but for some reason, I get</span>
-<span style="color:#75715e">--  a &#34;Variable not in scope: readBin&#34; error. However, `readDec`, `readOct` and</span>
-<span style="color:#75715e">--  `readHex` work...</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  [1]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Numeric.html#v:readBin</span>
-<span style="color:#75af00">readBin&#39;</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">readBin&#39;</span> <span style="color:#111">binString</span> <span style="color:#f92672">=</span> <span style="color:#111">fst</span> <span style="color:#f92672">$</span> <span style="color:#111">foldr</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">binString</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">f</span> <span style="color:#111">c</span> <span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">,</span> <span style="color:#111">powerOf2</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">s</span> <span style="color:#f92672">+</span> <span style="color:#111">powerOf2</span> <span style="color:#f92672">*</span> <span style="color:#111">digitToInt</span> <span style="color:#111">c</span><span style="color:#111">,</span> <span style="color:#111">powerOf2</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span><span style="color:#111">)</span>
-
-<span style="color:#75715e">--  The file is a list of binary digits of the same width, e.g.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  00100</span>
-<span style="color:#75715e">--  11110</span>
-<span style="color:#75af00">parseBinaryDiagnosticInput</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#00a8c8">BinaryDiagnostics</span>
-<span style="color:#75af00">parseBinaryDiagnosticInput</span> <span style="color:#111">fp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">validatedFP</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#111">fp</span>
-  <span style="color:#111">withFile</span>
-    <span style="color:#111">validatedFP</span>
-    <span style="color:#00a8c8">ReadMode</span>
-    <span style="color:#111">(</span> <span style="color:#75af00">\</span><span style="color:#111">h</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
-        <span style="color:#111">s</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">hGetContents</span> <span style="color:#111">h</span>
-        <span style="color:#00a8c8">let</span> <span style="color:#111">ls</span> <span style="color:#f92672">=</span> <span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)</span>
-        <span style="color:#00a8c8">let</span> <span style="color:#111">width</span> <span style="color:#f92672">=</span> <span style="color:#111">maybe</span> <span style="color:#ae81ff">0</span> <span style="color:#111">length</span> <span style="color:#111">(</span><span style="color:#111">listToMaybe</span> <span style="color:#111">ls</span><span style="color:#111">)</span>
-        <span style="color:#75715e">--  With lazy I/O, `h` gets closed as soon as we leave `withFile`. This</span>
-        <span style="color:#75715e">--  introduces errors of the form &#34;hGetContents: illegal operation</span>
-        <span style="color:#75715e">--  (delayed read on closed handle)&#34;. [1]</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">--  In the expression `f $!! x`, `x` is fully evaluated before `f` is</span>
-        <span style="color:#75715e">--  applied to it. [1] [2]</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">--  Alternatively, one can use `readFile` which holds the file open until</span>
-        <span style="color:#75715e">--  it has finished reading the file [1]. However, [3] says that</span>
-        <span style="color:#75715e">--  `readFile` reads the file lazily. Hmm...</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">--  [1]: https://stackoverflow.com/a/26949379/7812406</span>
-        <span style="color:#75715e">--  [2]: https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/Control-DeepSeq.html#v:-36--33--33-</span>
-        <span style="color:#75715e">--  [3]: https://hackage.haskell.org/package/base-4.16.0.0/docs/html#v:readFile</span>
-        <span style="color:#111">return</span> <span style="color:#f92672">$!!</span> <span style="color:#111">(</span><span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">{</span><span style="color:#111">diagWidth</span> <span style="color:#f92672">=</span> <span style="color:#111">width</span><span style="color:#111">,</span> <span style="color:#111">diagNums</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">readBin&#39;</span> <span style="color:#111">ls</span><span style="color:#111">})</span>
-    <span style="color:#111">)</span>
-</code></pre></div><h2 id="day-04-giant-squid">Day 04: Giant Squid</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">--  `endBy` expects the very last item to be followed by the separator. It</span>
-<span style="color:#75715e">--  continues parsing until it can&#39;t parse any more content. [1]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  TODO: Is it possible to define `bingoFile` as `endBy bingoSection doubleEOL`?</span>
-<span style="color:#75715e">--  The last double EOL is partly consumed by `bingoElementSeparator` that also</span>
-<span style="color:#75715e">--  matches a new line.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  [1]: http://book.realworldhaskell.org/read/using-parsec.html</span>
-<span style="color:#75af00">bingoFile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[[</span><span style="color:#00a8c8">String</span><span style="color:#111">]]</span>
-<span style="color:#75af00">bingoFile</span> <span style="color:#f92672">=</span> <span style="color:#111">endBy</span> <span style="color:#111">bingoSection</span> <span style="color:#111">endOfLine</span>
-
-<span style="color:#75715e">--  `sepBy` takes two functions as arguments. The first function parses some sort</span>
-<span style="color:#75715e">--  of content, while the second function parses a separator. `sepBy` starts by</span>
-<span style="color:#75715e">--  trying to parse content, then separators, and alternates back and forth until</span>
-<span style="color:#75715e">--  it can&#39;t parse a separator. It returns a list of all the content it was able</span>
-<span style="color:#75715e">--  to parse. [1]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  [1]: http://book.realworldhaskell.org/read/using-parsec.html</span>
-<span style="color:#75af00">bingoSection</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]</span>
-<span style="color:#75af00">bingoSection</span> <span style="color:#f92672">=</span> <span style="color:#111">sepBy</span> <span style="color:#111">bingoElement</span> <span style="color:#111">bingoElementSeparator</span>
-
-<span style="color:#75af00">bingoElement</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#00a8c8">String</span>
-<span style="color:#75af00">bingoElement</span> <span style="color:#f92672">=</span> <span style="color:#111">many</span> <span style="color:#111">digit</span>
-
-<span style="color:#75af00">bingoElementSeparator</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#00a8c8">Char</span>
-<span style="color:#75af00">bingoElementSeparator</span> <span style="color:#f92672">=</span> <span style="color:#111">try</span> <span style="color:#111">(</span><span style="color:#111">char</span> <span style="color:#d88200">&#39;,&#39;</span><span style="color:#111">)</span> <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#111">try</span> <span style="color:#111">(</span><span style="color:#111">char</span> <span style="color:#d88200">&#39; &#39;</span><span style="color:#111">)</span> <span style="color:#f92672">&lt;?&gt;</span> <span style="color:#d88200">&#34;separator for element&#34;</span>
-
-<span style="color:#75715e">--  `try` applies a parser, and if it fails, then `try` behaves as if it hadn&#39;t</span>
-<span style="color:#75715e">--  consumed any input at all, and tries the option on the right of the `&lt;|&gt;`.</span>
-<span style="color:#75715e">--  Note that `try` only has an effect if its on the left side of a `&lt;|&gt;`. [1]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  `&lt;?&gt;` tries the parser on its left. In the event of a failure, it presents an</span>
-<span style="color:#75715e">--  error message instead of trying another parser. The error message should</span>
-<span style="color:#75715e">--  complete the sentence, &#34;Expecting...&#34;. [1]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  [1]: http://book.realworldhaskell.org/read/using-parsec.html</span>
-<span style="color:#75715e">--  eol = try (string &#34;\n\r\n\r&#34;)</span>
-<span style="color:#75715e">--          &lt;|&gt; try (string &#34;\r\n\r\n&#34;)</span>
-<span style="color:#75715e">--          &lt;|&gt; try (string &#34;\n\n&#34;)</span>
-<span style="color:#75715e">--          &lt;|&gt; string &#34;\r\r&#34;</span>
-<span style="color:#75715e">--          &lt;?&gt; &#34;end of line followed by empty line&#34;</span>
-
-<span style="color:#75715e">--  File format: the first line contains the numbers to draw. The rest is a new</span>
-<span style="color:#75715e">--  line followed by a 5x5 grid of numbers representing a board.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--  22 13 17 11  0</span>
-<span style="color:#75715e">--   8  2 23  4 24</span>
-<span style="color:#75715e">--  21  9 14 16  7</span>
-<span style="color:#75715e">--   6 10  3 18  5</span>
-<span style="color:#75715e">--   1 12 20 15 19</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--   3 15  0  2 22</span>
-<span style="color:#75715e">--   9 18 13 17  5</span>
-<span style="color:#75715e">--  19  8  7 25 23</span>
-<span style="color:#75715e">--  20 11 10 24  4</span>
-<span style="color:#75715e">--  14 21 16 12  6</span>
-<span style="color:#75af00">parseBingoInput</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">(</span><span style="color:#00a8c8">DrawnNumbers</span><span style="color:#111">,</span> <span style="color:#111">[</span><span style="color:#00a8c8">Board</span><span style="color:#111">])</span>
-<span style="color:#75af00">parseBingoInput</span> <span style="color:#111">fp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">dataFp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#111">fp</span>
-  <span style="color:#75715e">--  Objective: Try using `readFile` and see if `($!!)` is needed to fully</span>
-  <span style="color:#75715e">--  evaluate the contents before exiting this function.</span>
-  <span style="color:#111">fileContents</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">readFile</span> <span style="color:#111">dataFp</span>
-  <span style="color:#00a8c8">case</span> <span style="color:#111">parse</span> <span style="color:#111">bingoFile</span> <span style="color:#d88200">&#34;&#34;</span> <span style="color:#111">fileContents</span> <span style="color:#00a8c8">of</span>
-    <span style="color:#00a8c8">Left</span> <span style="color:#111">e</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
-      <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Error parsing input&#34;</span>
-      <span style="color:#111">print</span> <span style="color:#111">e</span>
-      <span style="color:#111">return</span> <span style="color:#111">(</span><span style="color:#00a8c8">[]</span><span style="color:#111">,</span> <span style="color:#00a8c8">[]</span><span style="color:#111">)</span>
-    <span style="color:#00a8c8">Right</span> <span style="color:#111">r</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
-      <span style="color:#00a8c8">let</span> <span style="color:#111">parseInt</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-          <span style="color:#111">parseInt</span> <span style="color:#111">s</span> <span style="color:#f92672">=</span> <span style="color:#111">read</span> <span style="color:#111">s</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span>
-
-          <span style="color:#111">drawnNumbers</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">parseInt</span> <span style="color:#111">(</span><span style="color:#111">head</span> <span style="color:#111">r</span><span style="color:#111">)</span>
-
-          <span style="color:#111">tile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Tile</span>
-          <span style="color:#111">tile</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">parseInt</span> <span style="color:#111">x</span><span style="color:#111">,</span> <span style="color:#00a8c8">False</span><span style="color:#111">)</span>
-
-          <span style="color:#75715e">--  TODO: Figure out how to parse multiple spaces as</span>
-          <span style="color:#75715e">--  separators, and get rid of the `isValidNum` filter.</span>
-          <span style="color:#111">isValidNum</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bool</span>
-          <span style="color:#111">isValidNum</span> <span style="color:#111">s</span> <span style="color:#f92672">=</span> <span style="color:#111">isJust</span> <span style="color:#111">(</span><span style="color:#111">readMaybe</span> <span style="color:#111">s</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Maybe</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
-
-          <span style="color:#111">parseBoards</span> <span style="color:#f92672">::</span> <span style="color:#111">[[</span><span style="color:#00a8c8">String</span><span style="color:#111">]]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Board</span><span style="color:#111">]</span>
-          <span style="color:#111">parseBoards</span> <span style="color:#111">([</span><span style="color:#00a8c8">_</span><span style="color:#111">]</span> <span style="color:#00a8c8">:</span> <span style="color:#111">l1</span> <span style="color:#00a8c8">:</span> <span style="color:#111">l2</span> <span style="color:#00a8c8">:</span> <span style="color:#111">l3</span> <span style="color:#00a8c8">:</span> <span style="color:#111">l4</span> <span style="color:#00a8c8">:</span> <span style="color:#111">l5</span> <span style="color:#00a8c8">:</span> <span style="color:#111">ls</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
-            <span style="color:#00a8c8">let</span> <span style="color:#111">nums</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">filter</span> <span style="color:#111">isValidNum</span> <span style="color:#111">(</span><span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#111">(</span><span style="color:#111">l1</span> <span style="color:#f92672">++</span> <span style="color:#111">l2</span> <span style="color:#f92672">++</span> <span style="color:#111">l3</span> <span style="color:#f92672">++</span> <span style="color:#111">l4</span> <span style="color:#f92672">++</span> <span style="color:#111">l5</span><span style="color:#111">))</span>
-                <span style="color:#111">board</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">map</span> <span style="color:#111">tile</span> <span style="color:#111">nums</span>
-             <span style="color:#00a8c8">in</span> <span style="color:#111">(</span><span style="color:#111">board</span><span style="color:#111">,</span> <span style="color:#00a8c8">False</span><span style="color:#111">)</span> <span style="color:#00a8c8">:</span> <span style="color:#111">parseBoards</span> <span style="color:#111">ls</span>
-          <span style="color:#111">parseBoards</span> <span style="color:#111">[</span><span style="color:#111">l1</span><span style="color:#111">,</span> <span style="color:#111">l2</span><span style="color:#111">,</span> <span style="color:#111">l3</span><span style="color:#111">,</span> <span style="color:#111">l4</span><span style="color:#111">,</span> <span style="color:#111">l5</span><span style="color:#111">]</span> <span style="color:#f92672">=</span>
-            <span style="color:#00a8c8">let</span> <span style="color:#111">nums</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">filter</span> <span style="color:#111">isValidNum</span> <span style="color:#111">(</span><span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#111">(</span><span style="color:#111">l1</span> <span style="color:#f92672">++</span> <span style="color:#111">l2</span> <span style="color:#f92672">++</span> <span style="color:#111">l3</span> <span style="color:#f92672">++</span> <span style="color:#111">l4</span> <span style="color:#f92672">++</span> <span style="color:#111">l5</span><span style="color:#111">))</span>
-                <span style="color:#111">board</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">map</span> <span style="color:#111">tile</span> <span style="color:#111">nums</span>
-             <span style="color:#00a8c8">in</span> <span style="color:#111">[(</span><span style="color:#111">board</span><span style="color:#111">,</span> <span style="color:#00a8c8">False</span><span style="color:#111">)]</span>
-          <span style="color:#111">parseBoards</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
-
-      <span style="color:#111">return</span> <span style="color:#111">(</span><span style="color:#111">drawnNumbers</span><span style="color:#111">,</span> <span style="color:#111">parseBoards</span> <span style="color:#111">(</span><span style="color:#111">tail</span> <span style="color:#111">r</span><span style="color:#111">))</span>
-</code></pre></div><h2 id="day-05-hydrothermal-venture">Day 05: Hydrothermal Venture</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">hydrothermalFile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#00a8c8">LineSegment</span><span style="color:#111">]</span>
-<span style="color:#75af00">hydrothermalFile</span> <span style="color:#f92672">=</span> <span style="color:#111">endBy</span> <span style="color:#111">hydrothermalLine</span> <span style="color:#111">endOfLine</span>
-
-<span style="color:#75715e">--  Parses &#34;0,9 -&gt; 5,9&#34; into a `LineSegment`.</span>
-<span style="color:#75af00">hydrothermalLine</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#00a8c8">LineSegment</span>
-<span style="color:#75af00">hydrothermalLine</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">do</span> <span style="color:#111">p1</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">commaSeparatedCoordinates</span> <span style="color:#75715e">--  Underscores to avoid shadowing.</span>
-     <span style="color:#00a8c8">_</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">string</span> <span style="color:#d88200">&#34; -&gt; &#34;</span>
-     <span style="color:#111">p2</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">commaSeparatedCoordinates</span>
-     <span style="color:#111">return</span> <span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#00a8c8">LineSegment</span> <span style="color:#111">{</span><span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#111">p1</span> <span style="color:#f92672">=</span> <span style="color:#111">p1</span><span style="color:#111">,</span> <span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#111">p2</span> <span style="color:#f92672">=</span> <span style="color:#111">p2</span><span style="color:#111">}</span>
-
-<span style="color:#75715e">--  Parses &#34;0,9&#34; into (0, 9)</span>
-<span style="color:#75af00">commaSeparatedCoordinates</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Point</span>
-<span style="color:#75af00">commaSeparatedCoordinates</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">do</span> <span style="color:#111">x</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">many1</span> <span style="color:#111">digit</span>
-     <span style="color:#00a8c8">_</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">char</span> <span style="color:#d88200">&#39;,&#39;</span>
-     <span style="color:#111">y</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">many1</span> <span style="color:#111">digit</span>
-     <span style="color:#111">return</span> <span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#111">x</span><span style="color:#f92672">=</span><span style="color:#111">read</span> <span style="color:#111">x</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#111">y</span><span style="color:#f92672">=</span> <span style="color:#111">read</span> <span style="color:#111">y</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">}</span>
-
-<span style="color:#75af00">reportError</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">ParseError</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">reportError</span> <span style="color:#111">e</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Error parsing input&#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">e</span>
-
-<span style="color:#75af00">parseHydrothermalVents</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">[</span><span style="color:#00a8c8">HV</span><span style="color:#f92672">.</span><span style="color:#00a8c8">LineSegment</span><span style="color:#111">]</span>
-<span style="color:#75af00">parseHydrothermalVents</span> <span style="color:#111">fp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">dataFp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#111">fp</span>
-  <span style="color:#111">fileContents</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">readFile</span> <span style="color:#111">dataFp</span>
-  <span style="color:#00a8c8">case</span> <span style="color:#111">parse</span> <span style="color:#111">hydrothermalFile</span> <span style="color:#d88200">&#34;Hydrothermal Parser&#34;</span> <span style="color:#111">fileContents</span> <span style="color:#00a8c8">of</span>
-    <span style="color:#00a8c8">Left</span> <span style="color:#111">e</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span> <span style="color:#111">{</span><span style="color:#111">reportError</span> <span style="color:#111">e</span><span style="color:#111">;</span> <span style="color:#111">return</span> <span style="color:#00a8c8">[]</span><span style="color:#111">}</span>
-    <span style="color:#00a8c8">Right</span> <span style="color:#111">r</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">return</span> <span style="color:#111">r</span>
-
-<span style="color:#75af00">singleLineCommaDelimitedFile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">singleLineCommaDelimitedFile</span> <span style="color:#f92672">=</span>
-  <span style="color:#111">sepBy</span> <span style="color:#111">(</span><span style="color:#00a8c8">do</span> <span style="color:#111">x</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">many1</span> <span style="color:#111">digit</span><span style="color:#111">;</span> <span style="color:#111">return</span> <span style="color:#111">(</span><span style="color:#111">read</span> <span style="color:#111">x</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">))</span> <span style="color:#111">(</span><span style="color:#111">char</span> <span style="color:#d88200">&#39;,&#39;</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">parseSingleLineCommaDelimitedFile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">parseSingleLineCommaDelimitedFile</span> <span style="color:#111">fp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">dataFp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#111">fp</span>
-  <span style="color:#111">fileContents</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">readFile</span> <span style="color:#111">dataFp</span>
-  <span style="color:#00a8c8">case</span> <span style="color:#111">parse</span> <span style="color:#111">singleLineCommaDelimitedFile</span> <span style="color:#d88200">&#34;Single Comma-Delimited Int Parser&#34;</span> <span style="color:#111">fileContents</span> <span style="color:#00a8c8">of</span>
-    <span style="color:#00a8c8">Left</span> <span style="color:#111">e</span>  <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span> <span style="color:#111">{</span><span style="color:#111">reportError</span> <span style="color:#111">e</span><span style="color:#111">;</span> <span style="color:#111">return</span> <span style="color:#00a8c8">[]</span><span style="color:#111">}</span>
-    <span style="color:#00a8c8">Right</span> <span style="color:#111">r</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">return</span> <span style="color:#111">r</span>
-</code></pre></div><h2 id="day-06-lanternfish">Day 06: Lanternfish</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">parseLanternfishInternalTimers</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">parseLanternfishInternalTimers</span> <span style="color:#f92672">=</span> <span style="color:#111">parseSingleLineCommaDelimitedFile</span>
-</code></pre></div><h2 id="day-07-treachery-of-whales">Day 07: Treachery of Whales</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">parseHorizontalCrabPositions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">parseHorizontalCrabPositions</span> <span style="color:#f92672">=</span> <span style="color:#111">parseSingleLineCommaDelimitedFile</span>
-</code></pre></div><h2 id="day-08-seven-segment-search">Day 08: Seven Segment Search</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">--  Sample line:</span>
-<span style="color:#75715e">--  fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg</span>
-<span style="color:#75af00">sevenSegmentsDisplayLine</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#00a8c8">SevenSegmentDisplay</span>
-<span style="color:#75af00">sevenSegmentsDisplayLine</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#75715e">--  TODO: Is there syntax for avoiding the intermediate _allSegments variable?</span>
-  <span style="color:#111">_allSegments</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">many1</span> <span style="color:#111">(</span><span style="color:#111">noneOf</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\r\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">)</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">uniquePatternsAndOutputs</span> <span style="color:#f92672">=</span> <span style="color:#111">splitAt</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">Split</span><span style="color:#f92672">.</span><span style="color:#111">split</span> <span style="color:#111">(</span><span style="color:#00a8c8">Split</span><span style="color:#f92672">.</span><span style="color:#111">dropDelims</span> <span style="color:#f92672">.</span> <span style="color:#00a8c8">Split</span><span style="color:#f92672">.</span><span style="color:#111">dropInnerBlanks</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">Split</span><span style="color:#f92672">.</span><span style="color:#111">oneOf</span> <span style="color:#d88200">&#34;| &#34;</span><span style="color:#111">)</span> <span style="color:#111">_allSegments</span>
-
-  <span style="color:#00a8c8">let</span> <span style="color:#111">stringsToIntSets</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#111">fromList</span> <span style="color:#f92672">.</span> <span style="color:#111">map</span> <span style="color:#111">ord</span><span style="color:#111">)</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">String</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">IntSet</span><span style="color:#f92672">.</span><span style="color:#00a8c8">IntSet</span><span style="color:#111">]</span>
-  <span style="color:#111">return</span> <span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">{</span>
-    <span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#111">uniquePatterns</span> <span style="color:#f92672">=</span> <span style="color:#111">stringsToIntSets</span> <span style="color:#111">(</span><span style="color:#111">fst</span> <span style="color:#111">uniquePatternsAndOutputs</span><span style="color:#111">),</span>
-    <span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#111">outputValues</span> <span style="color:#f92672">=</span> <span style="color:#111">stringsToIntSets</span> <span style="color:#111">(</span><span style="color:#111">snd</span> <span style="color:#111">uniquePatternsAndOutputs</span><span style="color:#111">)}</span>
-
-<span style="color:#75af00">sevenSegmentsDisplayFile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span>
-<span style="color:#75af00">sevenSegmentsDisplayFile</span> <span style="color:#f92672">=</span> <span style="color:#111">endBy</span> <span style="color:#111">sevenSegmentsDisplayLine</span> <span style="color:#111">endOfLine</span>
-
-<span style="color:#75af00">parseSevenSegmentsDisplay</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">[</span><span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#00a8c8">SevenSegmentDisplay</span><span style="color:#111">]</span>
-<span style="color:#75af00">parseSevenSegmentsDisplay</span> <span style="color:#111">fp</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">dataFp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#111">fp</span>
-  <span style="color:#111">fileContents</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">readFile</span> <span style="color:#111">dataFp</span>
-  <span style="color:#00a8c8">case</span> <span style="color:#111">parse</span> <span style="color:#111">sevenSegmentsDisplayFile</span> <span style="color:#d88200">&#34;Seven Segment Display&#34;</span> <span style="color:#111">fileContents</span> <span style="color:#00a8c8">of</span>
-    <span style="color:#00a8c8">Left</span> <span style="color:#111">e</span>  <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span> <span style="color:#111">{</span><span style="color:#111">reportError</span> <span style="color:#111">e</span><span style="color:#111">;</span> <span style="color:#111">return</span> <span style="color:#00a8c8">[]</span><span style="color:#111">}</span>
-    <span style="color:#00a8c8">Right</span> <span style="color:#111">r</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span> <span style="color:#111">{</span><span style="color:#111">return</span> <span style="color:#111">r</span><span style="color:#111">}</span>
+<span style=color:#75af00>parseSevenSegmentsDisplay</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>[</span><span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#00a8c8>SevenSegmentDisplay</span><span style=color:#111>]</span>
+<span style=color:#75af00>parseSevenSegmentsDisplay</span> <span style=color:#111>fp</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>dataFp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#111>fp</span>
+  <span style=color:#111>fileContents</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readFile</span> <span style=color:#111>dataFp</span>
+  <span style=color:#00a8c8>case</span> <span style=color:#111>parse</span> <span style=color:#111>sevenSegmentsDisplayFile</span> <span style=color:#d88200>&#34;Seven Segment Display&#34;</span> <span style=color:#111>fileContents</span> <span style=color:#00a8c8>of</span>
+    <span style=color:#00a8c8>Left</span> <span style=color:#111>e</span>  <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>{</span><span style=color:#111>reportError</span> <span style=color:#111>e</span><span style=color:#111>;</span> <span style=color:#111>return</span> <span style=color:#00a8c8>[]</span><span style=color:#111>}</span>
+    <span style=color:#00a8c8>Right</span> <span style=color:#111>r</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>{</span><span style=color:#111>return</span> <span style=color:#111>r</span><span style=color:#111>}</span>
 </code></pre></div><p>I gave up on using <code>parsec</code> to parse a line of the form <code>cg bdaec gdafb agbcfd gdcbef | cg cg fdcagb cbg</code> because the <code>|</code> and space delimiter kept tripping
 up my <code>endBy sevenSegmentsDisplayLine endOfLine</code> construction. Interested in how
-others parsed this line.</p>
-<p><span class="citation-ref"><a href="#Mazon2021-08"></a></span> did <code>(digits, _:display) = splitAt 10 (map readObservation (words l))</code>. This is more readable than my
-<code>splitAt 10 $ Split.split (Split.dropDelims . Split.dropInnerBlanks $ Split.oneOf &quot;| &quot;) l</code>. I was so preoccupied by taking care of the <code>|</code> that I
-didn&rsquo;t ask whether I could pattern-match it away using <code>_:display</code>.</p>
-<h2 id="day-09-smoke-basin">Day 09: Smoke Basin</h2>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">--  Sample line: &#34;2199943210&#34;</span>
-<span style="color:#75af00">heightMapLine</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">heightMapLine</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">do</span> <span style="color:#111">heights</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">many1</span> <span style="color:#111">digit</span>
-     <span style="color:#111">return</span> <span style="color:#111">(</span><span style="color:#111">map</span> <span style="color:#111">digitToInt</span> <span style="color:#111">heights</span><span style="color:#111">)</span>
+others parsed this line.</p><p><span class=citation-ref><a href=#Mazon2021-08></a></span>did <code>(digits, _:display) = splitAt 10 (map readObservation (words l))</code>. This is more readable than my
+<code>splitAt 10 $ Split.split (Split.dropDelims . Split.dropInnerBlanks $ Split.oneOf "| ") l</code>. I was so preoccupied by taking care of the <code>|</code> that I
+didn&rsquo;t ask whether I could pattern-match it away using <code>_:display</code>.</p><h2 id=day-09-smoke-basin>Day 09: Smoke Basin</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>--  Sample line: &#34;2199943210&#34;</span>
+<span style=color:#75af00>heightMapLine</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>heightMapLine</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>do</span> <span style=color:#111>heights</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>many1</span> <span style=color:#111>digit</span>
+     <span style=color:#111>return</span> <span style=color:#111>(</span><span style=color:#111>map</span> <span style=color:#111>digitToInt</span> <span style=color:#111>heights</span><span style=color:#111>)</span>
 
-<span style="color:#75af00">heightMapFile</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Parser</span> <span style="color:#111">[[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]]</span>
-<span style="color:#75af00">heightMapFile</span> <span style="color:#f92672">=</span> <span style="color:#111">endBy</span> <span style="color:#111">heightMapLine</span> <span style="color:#111">endOfLine</span>
+<span style=color:#75af00>heightMapFile</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]]</span>
+<span style=color:#75af00>heightMapFile</span> <span style=color:#f92672>=</span> <span style=color:#111>endBy</span> <span style=color:#111>heightMapLine</span> <span style=color:#111>endOfLine</span>
 
-<span style="color:#75af00">parseHeightMap</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">FilePath</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#00a8c8">SmokeBasin</span><span style="color:#f92672">.</span><span style="color:#00a8c8">HeightMap</span>
-<span style="color:#75af00">parseHeightMap</span> <span style="color:#111">fp</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">do</span> <span style="color:#111">dataFp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#111">fp</span>
-     <span style="color:#111">fileContents</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">readFile</span> <span style="color:#111">dataFp</span>
-     <span style="color:#00a8c8">case</span> <span style="color:#111">parse</span> <span style="color:#111">heightMapFile</span> <span style="color:#d88200">&#34;Height Map&#34;</span> <span style="color:#111">fileContents</span> <span style="color:#00a8c8">of</span>
-       <span style="color:#00a8c8">Left</span> <span style="color:#111">e</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span> <span style="color:#111">{</span><span style="color:#111">reportError</span> <span style="color:#111">e</span><span style="color:#111">;</span> <span style="color:#111">return</span> <span style="color:#00a8c8">MassivArray</span><span style="color:#f92672">.</span><span style="color:#111">empty</span><span style="color:#111">}</span>
-       <span style="color:#00a8c8">Right</span> <span style="color:#111">r</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span> <span style="color:#111">{</span><span style="color:#111">return</span> <span style="color:#111">(</span><span style="color:#00a8c8">MassivArray</span><span style="color:#f92672">.</span><span style="color:#111">fromLists&#39;</span> <span style="color:#00a8c8">MassivCore</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Seq</span> <span style="color:#111">r</span><span style="color:#111">)}</span>
-</code></pre></div><h2 id="references">References</h2>
-<ol>
-<li>
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Mazon2021-08'>
-        
-        AoC Day 8: Seven Segment Search<i>.</i>
-        
-    </cite>
-    
-     Jean-Baptiste Mazon.
-    
-    
-    
-    
-    <a href="https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=xn--sant-epa.ti-pun.ch" loading="lazy" aria-hidden="true">
-        <i>xn--sant-epa.ti-pun.ch</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Mar 15, 2022.
-    
-    
-</div>
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/mazon-jean-baptiste'>Mazon, Jean-Baptiste</a>
-    
-</aside>
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/xn--sant-epa.ti-pun.ch' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=xn--sant-epa.ti-pun.ch" loading="lazy" aria-hidden="true">
-            xn--sant-epa.ti-pun.ch
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/">&laquo; AoC 2021 Day 10: Syntax Scoring</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/">AoC 2021 Main &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<span style=color:#75af00>parseHeightMap</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>FilePath</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#00a8c8>SmokeBasin</span><span style=color:#f92672>.</span><span style=color:#00a8c8>HeightMap</span>
+<span style=color:#75af00>parseHeightMap</span> <span style=color:#111>fp</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>do</span> <span style=color:#111>dataFp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#111>fp</span>
+     <span style=color:#111>fileContents</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readFile</span> <span style=color:#111>dataFp</span>
+     <span style=color:#00a8c8>case</span> <span style=color:#111>parse</span> <span style=color:#111>heightMapFile</span> <span style=color:#d88200>&#34;Height Map&#34;</span> <span style=color:#111>fileContents</span> <span style=color:#00a8c8>of</span>
+       <span style=color:#00a8c8>Left</span> <span style=color:#111>e</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>{</span><span style=color:#111>reportError</span> <span style=color:#111>e</span><span style=color:#111>;</span> <span style=color:#111>return</span> <span style=color:#00a8c8>MassivArray</span><span style=color:#f92672>.</span><span style=color:#111>empty</span><span style=color:#111>}</span>
+       <span style=color:#00a8c8>Right</span> <span style=color:#111>r</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>{</span><span style=color:#111>return</span> <span style=color:#111>(</span><span style=color:#00a8c8>MassivArray</span><span style=color:#f92672>.</span><span style=color:#111>fromLists&#39;</span> <span style=color:#00a8c8>MassivCore</span><span style=color:#f92672>.</span><span style=color:#00a8c8>Seq</span> <span style=color:#111>r</span><span style=color:#111>)}</span>
+</code></pre></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Mazon2021-08>AoC Day 8: Seven Segment Search<i>.</i></cite>
+Jean-Baptiste Mazon.
+<a href=https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=xn--sant-epa.ti-pun.ch" loading=lazy aria-hidden=true>
+<i>xn--sant-epa.ti-pun.ch</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Mar 15, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/mazon-jean-baptiste>Mazon, Jean-Baptiste</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/xn--sant-epa.ti-pun.ch style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=xn--sant-epa.ti-pun.ch" loading=lazy aria-hidden=true>
+xn--sant-epa.ti-pun.ch</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/SyntaxScoring/>&#171; AoC 2021 Day 10: Syntax Scoring</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/>AoC 2021 Main &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

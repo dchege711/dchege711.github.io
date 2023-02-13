@@ -1,1041 +1,363 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                AoC 2021 Day 03: Binary Diagnostic | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/">AoC 2021 Day 03: Binary Diagnostic</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> AoC 2021 Day 03: Binary Diagnostic</h1>
-    <p class="meta">
-        
-        Dated Feb 23, 2022;
-        
-        last modified on Wed, 23 Feb 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#problem-description">Problem Description</a>
-      <ul>
-        <li><a href="#part-one">Part One</a></li>
-        <li><a href="#part-two">Part Two</a></li>
-      </ul>
-    </li>
-    <li><a href="#my-solution">My Solution</a></li>
-    <li><a href="#learning-from-others-solutions">Learning from Others' Solutions</a>
-      <ul>
-        <li><a href="#potpourri">Potpourri</a></li>
-        <li><a href="#computing-most-common-and-least-common-bits">Computing Most Common and Least Common Bits</a></li>
-        <li><a href="#structure-of-the-solution-to-part-ii">Structure of the Solution to Part II</a></li>
-        <li><a href="#efficiency-of-collections-types">Efficiency of Collections Types</a></li>
-        <li><a href="#converting-binary-representation-to-decimal">Converting Binary Representation to Decimal</a></li>
-      </ul>
-    </li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='AoC2021-03'>
-        
-        Day 3 - Advent of Code 2021<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://adventofcode.com/2021/day/3" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
-        <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 23, 2022.
-    
-    
-</div>
-
-<h2 id="problem-description">Problem Description</h2>
-<h3 id="part-one">Part One</h3>
-<p>The submarine has been making some odd creaking noises, so you ask it to
-produce a diagnostic report just in case.</p>
-<p>The diagnostic report (your puzzle input) consists of a list of binary
+<!doctype html><html lang=en><head><title>AoC 2021 Day 03: Binary Diagnostic | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/>Advent of Code 2021</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/>AoC 2021 Day 03: Binary Diagnostic</a></li></ul></nav><section><header><h1>AoC 2021 Day 03: Binary Diagnostic</h1><p class=meta>Dated Feb 23, 2022;
+last modified on Wed, 23 Feb 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#problem-description>Problem Description</a><ul><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li></ul></li><li><a href=#my-solution>My Solution</a></li><li><a href=#learning-from-others-solutions>Learning from Others' Solutions</a><ul><li><a href=#potpourri>Potpourri</a></li><li><a href=#computing-most-common-and-least-common-bits>Computing Most Common and Least Common Bits</a></li><li><a href=#structure-of-the-solution-to-part-ii>Structure of the Solution to Part II</a></li><li><a href=#efficiency-of-collections-types>Efficiency of Collections Types</a></li><li><a href=#converting-binary-representation-to-decimal>Converting Binary Representation to Decimal</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=AoC2021-03>Day 3 - Advent of Code 2021<i>.</i></cite>
+<a href=https://adventofcode.com/2021/day/3 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true>
+<i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 23, 2022.</div><h2 id=problem-description>Problem Description</h2><h3 id=part-one>Part One</h3><p>The submarine has been making some odd creaking noises, so you ask it to
+produce a diagnostic report just in case.</p><p>The diagnostic report (your puzzle input) consists of a list of binary
 numbers which, when decoded properly, can tell you many useful things
 about the conditions of the submarine. The first parameter to check is
-the <strong>power consumption</strong>.</p>
-<p>You need to use the binary numbers in the diagnostic report to generate
+the <strong>power consumption</strong>.</p><p>You need to use the binary numbers in the diagnostic report to generate
 two new binary numbers (called the <strong>gamma rate</strong> and the <strong>epsilon
 rate</strong>). The power consumption can then be found by multiplying the
-gamma rate by the epsilon rate.</p>
-<p>Each bit in the gamma rate can be determined by finding the <strong>most
+gamma rate by the epsilon rate.</p><p>Each bit in the gamma rate can be determined by finding the <strong>most
 common bit in the corresponding position</strong> of all numbers in the
-diagnostic report.</p>
-<p>The epsilon rate is calculated in a similar way; rather than use the
-most common bit, the least common bit from each position is used.</p>
-<p>Use the binary numbers in your diagnostic report to calculate the gamma
+diagnostic report.</p><p>The epsilon rate is calculated in a similar way; rather than use the
+most common bit, the least common bit from each position is used.</p><p>Use the binary numbers in your diagnostic report to calculate the gamma
 rate and epsilon rate, then multiply them together. <strong>What is the power
 consumption of the submarine?</strong> (Be sure to represent your answer in
-decimal, not binary.)</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>I don&rsquo;t see a fault in part 1. I anticipate that part II will involve
+decimal, not binary.)</p><div class=comment-holder><div class=comment><p>I don&rsquo;t see a fault in part 1. I anticipate that part II will involve
 more bit manipulation in the name of getting more measurements beyond
-power consumption. Update: That guess was correct.</p>
-</div>
-</div>
-
-
-<h3 id="part-two">Part Two</h3>
-<p>Next, you should verify the <strong>life support rating</strong>, which can
+power consumption. Update: That guess was correct.</p></div></div><h3 id=part-two>Part Two</h3><p>Next, you should verify the <strong>life support rating</strong>, which can
 determined by multiplying the <strong>oxygen generator rating</strong> by the
-<strong>CO2 scrubber rating</strong>.</p>
-<p>Both the oxygen generator rating and the CO2 scrubber rating are values
+<strong>CO2 scrubber rating</strong>.</p><p>Both the oxygen generator rating and the CO2 scrubber rating are values
 that can be found on your diagnostic report - finding them is the tricky
 part. Both values are located using a similar process that involves
 filtering out values until one remains. Before searching for either
 rating value, start with the full list of binary numbers from your
 diagnostic report and <strong>consider just the first bit</strong> of those numbers.
-Then:</p>
-<ul>
-<li>Keep only numbers selected by the <strong>bit criteria</strong> for the type of
+Then:</p><ul><li>Keep only numbers selected by the <strong>bit criteria</strong> for the type of
 rating value for which you are searching. Discard numbers which do not
-match the bit criteria.</li>
-<li>If you only have one number left, stop; this is the rating value for
-which you are searching.</li>
-<li>Otherwise, repeat the process, considering the next bit to the right.</li>
-</ul>
-<p>The <strong>bit criteria</strong> depends on which type of rating value you want to
-find:</p>
-<ul>
-<li>To find <strong>oxygen generator rating</strong>, determine the <strong>most common</strong>
+match the bit criteria.</li><li>If you only have one number left, stop; this is the rating value for
+which you are searching.</li><li>Otherwise, repeat the process, considering the next bit to the right.</li></ul><p>The <strong>bit criteria</strong> depends on which type of rating value you want to
+find:</p><ul><li>To find <strong>oxygen generator rating</strong>, determine the <strong>most common</strong>
 value (<code>0</code> or <code>1</code>) in the current bit position, and only keep the
 numbers with that bit in that position. If <code>0</code> and <code>1</code> are equally
-common, keep values with a <code>1</code> in the position being considered.</li>
-<li>To find <strong>CO2 scrubber rating</strong>, determine the <strong>least common</strong> value
+common, keep values with a <code>1</code> in the position being considered.</li><li>To find <strong>CO2 scrubber rating</strong>, determine the <strong>least common</strong> value
 (<code>0</code> or <code>1</code>) in the current bit position, and only keep the numbers
 with that bit in that position. If <code>0</code> and <code>1</code> are equally common,
-keep values with a <code>0</code> in the position being considered.</li>
-</ul>
-<p>Use the binary numbers in your diagnostic report to calculate the oxygen
+keep values with a <code>0</code> in the position being considered.</li></ul><p>Use the binary numbers in your diagnostic report to calculate the oxygen
 generator rating and CO2 scrubber rating, then multiply then together.
 <strong>What is the life support rating of the submarine?</strong> (Be sure to
-represent your answer in decimal, not binary.)</p>
-<h2 id="my-solution">My Solution</h2>
+represent your answer in decimal, not binary.)</p><h2 id=my-solution>My Solution</h2><div id=BinaryDiagnostic.hs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-haskell data-lang=haskell><span style=color:#75715e>{-# LANGUAGE RecordWildCards #-}</span>
+<span style=color:#75715e>{-# OPTIONS_GHC -Wall #-}</span>
 
+<span style=color:#00a8c8>module</span> <span style=color:#111>BinaryDiagnostic.BinaryDiagnostic</span>
+  <span style=color:#111>(</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>),</span>
+    <span style=color:#75af00>powerConsumption</span><span style=color:#111>,</span>
+    <span style=color:#75af00>lifeSupportRating</span><span style=color:#111>,</span>
+  <span style=color:#111>)</span>
+<span style=color:#00a8c8>where</span>
 
-<div id='BinaryDiagnostic.hs'><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">{-# LANGUAGE RecordWildCards #-}</span>
-<span style="color:#75715e">{-# OPTIONS_GHC -Wall #-}</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Control.DeepSeq</span> <span style=color:#111>(</span><span style=color:#00a8c8>NFData</span><span style=color:#111>,</span> <span style=color:#75af00>rnf</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.Bits</span> <span style=color:#111>(</span><span style=color:#00a8c8>Bits</span> <span style=color:#111>(</span><span style=color:#75af00>testBit</span><span style=color:#111>))</span>
 
-<span style="color:#00a8c8">module</span> <span style="color:#111">BinaryDiagnostic.BinaryDiagnostic</span>
-  <span style="color:#111">(</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span>
-    <span style="color:#75af00">powerConsumption</span><span style="color:#111">,</span>
-    <span style="color:#75af00">lifeSupportRating</span><span style="color:#111">,</span>
-  <span style="color:#111">)</span>
-<span style="color:#00a8c8">where</span>
+<span style=color:#75715e>-- Without the underscore prefix, I need to add `diagWidth` and `diagNums` to the</span>
+<span style=color:#75715e>-- export list to avoid `Wunused-top-binds` [1]. The field names share the top</span>
+<span style=color:#75715e>-- level namespace with ordinary variables and classes. [2] That&#39;s kinda</span>
+<span style=color:#75715e>-- inconvenient.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- [1]: https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html?highlight=unused-top-binds#ghc-flag--Wunused-top-binds</span>
+<span style=color:#75715e>-- [2]: https://www.haskell.org/tutorial/moretypes.html#sect6.2</span>
+<span style=color:#00a8c8>data</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>{</span><span style=color:#111>diagWidth</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>,</span> <span style=color:#111>diagNums</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]}</span>
 
-<span style="color:#00a8c8">import</span> <span style="color:#111">Control.DeepSeq</span> <span style="color:#111">(</span><span style="color:#00a8c8">NFData</span><span style="color:#111">,</span> <span style="color:#75af00">rnf</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Bits</span> <span style="color:#111">(</span><span style="color:#00a8c8">Bits</span> <span style="color:#111">(</span><span style="color:#75af00">testBit</span><span style="color:#111">))</span>
+<span style=color:#75715e>-- For the `($!!)` operator to work on `BinaryDiagnostics`, we need to be an</span>
+<span style=color:#75715e>-- instance of `NFData`. [1] ([2] for syntax)</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- [1]: https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/Control-DeepSeq.html#t:NFData</span>
+<span style=color:#75715e>-- [2]: https://stackoverflow.com/a/31478918/7812406</span>
+<span style=color:#00a8c8>instance</span> <span style=color:#00a8c8>NFData</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#00a8c8>where</span>
+  <span style=color:#111>rnf</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>{</span><span style=color:#f92672>..</span><span style=color:#111>}</span> <span style=color:#f92672>=</span> <span style=color:#111>rnf</span> <span style=color:#111>diagWidth</span> <span style=color:#111>`</span><span style=color:#111>seq</span><span style=color:#111>`</span> <span style=color:#111>rnf</span> <span style=color:#111>diagNums</span>
 
-<span style="color:#75715e">-- Without the underscore prefix, I need to add `diagWidth` and `diagNums` to the</span>
-<span style="color:#75715e">-- export list to avoid `Wunused-top-binds` [1]. The field names share the top</span>
-<span style="color:#75715e">-- level namespace with ordinary variables and classes. [2] That&#39;s kinda</span>
-<span style="color:#75715e">-- inconvenient.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- [1]: https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/using-warnings.html?highlight=unused-top-binds#ghc-flag--Wunused-top-binds</span>
-<span style="color:#75715e">-- [2]: https://www.haskell.org/tutorial/moretypes.html#sect6.2</span>
-<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">{</span><span style="color:#111">diagWidth</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#111">diagNums</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]}</span>
+<span style=color:#75715e>-- | `toBitList n b` returns a `[Int]` representing the b-least significant</span>
+<span style=color:#75715e>-- | bits of `n`, e.g. `toBitList 22 5 == [1, 0, 1, 1, 0]`.</span>
+<span style=color:#75af00>toBitList</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>toBitList</span> <span style=color:#111>n</span> <span style=color:#111>numBits</span> <span style=color:#f92672>=</span>
+  <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>i</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>if</span> <span style=color:#111>testBit</span> <span style=color:#111>n</span> <span style=color:#111>i</span> <span style=color:#00a8c8>then</span> <span style=color:#ae81ff>1</span> <span style=color:#00a8c8>else</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span> <span style=color:#111>[(</span><span style=color:#111>numBits</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>),</span> <span style=color:#111>(</span><span style=color:#111>numBits</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>2</span><span style=color:#111>)</span> <span style=color:#f92672>..</span> <span style=color:#ae81ff>0</span><span style=color:#111>]</span>
 
-<span style="color:#75715e">-- For the `($!!)` operator to work on `BinaryDiagnostics`, we need to be an</span>
-<span style="color:#75715e">-- instance of `NFData`. [1] ([2] for syntax)</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- [1]: https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/Control-DeepSeq.html#t:NFData</span>
-<span style="color:#75715e">-- [2]: https://stackoverflow.com/a/31478918/7812406</span>
-<span style="color:#00a8c8">instance</span> <span style="color:#00a8c8">NFData</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#00a8c8">where</span>
-  <span style="color:#111">rnf</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">{</span><span style="color:#f92672">..</span><span style="color:#111">}</span> <span style="color:#f92672">=</span> <span style="color:#111">rnf</span> <span style="color:#111">diagWidth</span> <span style="color:#111">`</span><span style="color:#111">seq</span><span style="color:#111">`</span> <span style="color:#111">rnf</span> <span style="color:#111">diagNums</span>
+<span style=color:#75715e>-- | `fromBitList ds` returns the `Int` formed when `ds` is treated like a bit</span>
+<span style=color:#75715e>-- | representation of an integer, e.g. `fromBitList [1, 0, 1, 1, 0] == 22`.</span>
+<span style=color:#75af00>fromBitList</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>fromBitList</span> <span style=color:#111>ds</span> <span style=color:#f92672>=</span> <span style=color:#111>fst</span> <span style=color:#f92672>$</span> <span style=color:#111>foldr</span> <span style=color:#111>f</span> <span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>ds</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>f</span> <span style=color:#111>d</span> <span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#111>powerOf2</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>s</span> <span style=color:#f92672>+</span> <span style=color:#111>powerOf2</span> <span style=color:#f92672>*</span> <span style=color:#111>d</span><span style=color:#111>,</span> <span style=color:#111>powerOf2</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>2</span><span style=color:#111>)</span>
 
-<span style="color:#75715e">-- | `toBitList n b` returns a `[Int]` representing the b-least significant</span>
-<span style="color:#75715e">-- | bits of `n`, e.g. `toBitList 22 5 == [1, 0, 1, 1, 0]`.</span>
-<span style="color:#75af00">toBitList</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">toBitList</span> <span style="color:#111">n</span> <span style="color:#111">numBits</span> <span style="color:#f92672">=</span>
-  <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">i</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">testBit</span> <span style="color:#111">n</span> <span style="color:#111">i</span> <span style="color:#00a8c8">then</span> <span style="color:#ae81ff">1</span> <span style="color:#00a8c8">else</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span> <span style="color:#111">[(</span><span style="color:#111">numBits</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">),</span> <span style="color:#111">(</span><span style="color:#111">numBits</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span><span style="color:#111">)</span> <span style="color:#f92672">..</span> <span style="color:#ae81ff">0</span><span style="color:#111">]</span>
+<span style=color:#75715e>-- | Flips any `0` to `1` and anything else to `0`. Assumes the input `[Int]` is</span>
+<span style=color:#75715e>-- | just zeros and ones.</span>
+<span style=color:#75af00>flipZerosAndOnes</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>flipZerosAndOnes</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>num</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>if</span> <span style=color:#111>num</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#00a8c8>then</span> <span style=color:#ae81ff>1</span> <span style=color:#00a8c8>else</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
 
-<span style="color:#75715e">-- | `fromBitList ds` returns the `Int` formed when `ds` is treated like a bit</span>
-<span style="color:#75715e">-- | representation of an integer, e.g. `fromBitList [1, 0, 1, 1, 0] == 22`.</span>
-<span style="color:#75af00">fromBitList</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">fromBitList</span> <span style="color:#111">ds</span> <span style="color:#f92672">=</span> <span style="color:#111">fst</span> <span style="color:#f92672">$</span> <span style="color:#111">foldr</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">ds</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">f</span> <span style="color:#111">d</span> <span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">,</span> <span style="color:#111">powerOf2</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">s</span> <span style="color:#f92672">+</span> <span style="color:#111">powerOf2</span> <span style="color:#f92672">*</span> <span style="color:#111">d</span><span style="color:#111">,</span> <span style="color:#111">powerOf2</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span><span style="color:#111">)</span>
+<span style=color:#75715e>-- | `bitFrequencies numBits nums` returns an `[Int]` of size `numBits` where</span>
+<span style=color:#75715e>-- | the i&#39;th element encodes the relative frequency of the bit at position</span>
+<span style=color:#75715e>-- | `numBits - i`.</span>
+<span style=color:#75af00>bitFrequencies</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>bitFrequencies</span> <span style=color:#111>numBits</span> <span style=color:#f92672>=</span> <span style=color:#111>foldr</span> <span style=color:#111>updateCumulativeFrequencies</span> <span style=color:#111>(</span><span style=color:#111>replicate</span> <span style=color:#111>numBits</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>zerosToNegativeOnes</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+    <span style=color:#111>zerosToNegativeOnes</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>if</span> <span style=color:#111>i</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#00a8c8>then</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span> <span style=color:#00a8c8>else</span> <span style=color:#111>i</span>
 
-<span style="color:#75715e">-- | Flips any `0` to `1` and anything else to `0`. Assumes the input `[Int]` is</span>
-<span style="color:#75715e">-- | just zeros and ones.</span>
-<span style="color:#75af00">flipZerosAndOnes</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">flipZerosAndOnes</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">num</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">num</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">then</span> <span style="color:#ae81ff">1</span> <span style="color:#00a8c8">else</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
+    <span style=color:#111>updateCumulativeFrequencies</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+    <span style=color:#111>updateCumulativeFrequencies</span> <span style=color:#111>num</span> <span style=color:#111>cumulativeBitFrequencies</span> <span style=color:#f92672>=</span>
+      <span style=color:#111>zipWith</span>
+        <span style=color:#111>(</span><span style=color:#f92672>+</span><span style=color:#111>)</span>
+        <span style=color:#111>cumulativeBitFrequencies</span>
+        <span style=color:#111>(</span> <span style=color:#111>map</span>
+            <span style=color:#111>zerosToNegativeOnes</span>
+            <span style=color:#111>(</span> <span style=color:#111>toBitList</span> <span style=color:#111>num</span> <span style=color:#111>numBits</span>
+            <span style=color:#111>)</span>
+        <span style=color:#111>)</span>
 
-<span style="color:#75715e">-- | `bitFrequencies numBits nums` returns an `[Int]` of size `numBits` where</span>
-<span style="color:#75715e">-- | the i&#39;th element encodes the relative frequency of the bit at position</span>
-<span style="color:#75715e">-- | `numBits - i`.</span>
-<span style="color:#75af00">bitFrequencies</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">bitFrequencies</span> <span style="color:#111">numBits</span> <span style="color:#f92672">=</span> <span style="color:#111">foldr</span> <span style="color:#111">updateCumulativeFrequencies</span> <span style="color:#111">(</span><span style="color:#111">replicate</span> <span style="color:#111">numBits</span> <span style="color:#ae81ff">0</span><span style="color:#111">)</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">zerosToNegativeOnes</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-    <span style="color:#111">zerosToNegativeOnes</span> <span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">i</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#00a8c8">then</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#00a8c8">else</span> <span style="color:#111">i</span>
+<span style=color:#75715e>-- | Convert frequency values to either 0 or 1 depending on whether the value</span>
+<span style=color:#75715e>-- | is negative or positive. In case the value is zero, `tieValue` is used.</span>
+<span style=color:#75af00>frequenciesToZeroOne</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+<span style=color:#75af00>frequenciesToZeroOne</span> <span style=color:#111>tieValue</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>f</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>f</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+    <span style=color:#111>f</span> <span style=color:#111>freq</span>
+      <span style=color:#f92672>|</span> <span style=color:#111>freq</span> <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+      <span style=color:#f92672>|</span> <span style=color:#111>freq</span> <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+      <span style=color:#f92672>|</span> <span style=color:#111>otherwise</span> <span style=color:#f92672>=</span> <span style=color:#111>tieValue</span>
 
-    <span style="color:#111">updateCumulativeFrequencies</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-    <span style="color:#111">updateCumulativeFrequencies</span> <span style="color:#111">num</span> <span style="color:#111">cumulativeBitFrequencies</span> <span style="color:#f92672">=</span>
-      <span style="color:#111">zipWith</span>
-        <span style="color:#111">(</span><span style="color:#f92672">+</span><span style="color:#111">)</span>
-        <span style="color:#111">cumulativeBitFrequencies</span>
-        <span style="color:#111">(</span> <span style="color:#111">map</span>
-            <span style="color:#111">zerosToNegativeOnes</span>
-            <span style="color:#111">(</span> <span style="color:#111">toBitList</span> <span style="color:#111">num</span> <span style="color:#111">numBits</span>
-            <span style="color:#111">)</span>
-        <span style="color:#111">)</span>
+<span style=color:#00a8c8>type</span> <span style=color:#00a8c8>BitFrequencySummarizer</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
 
-<span style="color:#75715e">-- | Convert frequency values to either 0 or 1 depending on whether the value</span>
-<span style="color:#75715e">-- | is negative or positive. In case the value is zero, `tieValue` is used.</span>
-<span style="color:#75af00">frequenciesToZeroOne</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-<span style="color:#75af00">frequenciesToZeroOne</span> <span style="color:#111">tieValue</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">f</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">f</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-    <span style="color:#111">f</span> <span style="color:#111">freq</span>
-      <span style="color:#f92672">|</span> <span style="color:#111">freq</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-      <span style="color:#f92672">|</span> <span style="color:#111">freq</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-      <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#111">tieValue</span>
+<span style=color:#75715e>-- | `majorityBits numBits tieValue nums` returns an `[Int]` where the element</span>
+<span style=color:#75715e>-- at index `i` is the most common bit at position `i`. In case of a tie,</span>
+<span style=color:#75715e>-- `tieBreaker` is placed into `i`.</span>
+<span style=color:#75af00>majorityBits</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>BitFrequencySummarizer</span>
+<span style=color:#75af00>majorityBits</span> <span style=color:#111>numBits</span> <span style=color:#111>nums</span> <span style=color:#f92672>=</span>
+  <span style=color:#111>frequenciesToZeroOne</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#111>bitFrequencies</span> <span style=color:#111>numBits</span> <span style=color:#111>nums</span><span style=color:#111>)</span>
 
-<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">BitFrequencySummarizer</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
+<span style=color:#75715e>-- | `majorityBits numBits tieValue nums` returns an `[Int]` where the element</span>
+<span style=color:#75715e>-- at index `i` is the least common bit at position `i`. In case of a tie,</span>
+<span style=color:#75715e>-- `tieBreaker` is placed into `i`.</span>
+<span style=color:#75af00>minorityBits</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>BitFrequencySummarizer</span>
+<span style=color:#75af00>minorityBits</span> <span style=color:#111>numBits</span> <span style=color:#111>nums</span> <span style=color:#f92672>=</span>
+  <span style=color:#111>frequenciesToZeroOne</span> <span style=color:#ae81ff>0</span> <span style=color:#111>(</span><span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#f92672>*</span> <span style=color:#111>(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>))</span> <span style=color:#111>(</span><span style=color:#111>bitFrequencies</span> <span style=color:#111>numBits</span> <span style=color:#111>nums</span><span style=color:#111>))</span>
 
-<span style="color:#75715e">-- | `majorityBits numBits tieValue nums` returns an `[Int]` where the element</span>
-<span style="color:#75715e">-- at index `i` is the most common bit at position `i`. In case of a tie,</span>
-<span style="color:#75715e">-- `tieBreaker` is placed into `i`.</span>
-<span style="color:#75af00">majorityBits</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">BitFrequencySummarizer</span>
-<span style="color:#75af00">majorityBits</span> <span style="color:#111">numBits</span> <span style="color:#111">nums</span> <span style="color:#f92672">=</span>
-  <span style="color:#111">frequenciesToZeroOne</span> <span style="color:#ae81ff">1</span> <span style="color:#111">(</span><span style="color:#111">bitFrequencies</span> <span style="color:#111">numBits</span> <span style="color:#111">nums</span><span style="color:#111">)</span>
+<span style=color:#75715e>-- The BinaryLiterals language extension adds syntactic sugar for `0b11001001`</span>
+<span style=color:#75715e>-- [1]. But I didn&#39;t end up using binary representation. `Data.Bits` provides</span>
+<span style=color:#75715e>-- utilities for working with `Int`, so why not? [2]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- [1]: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/binary_literals.html</span>
+<span style=color:#75715e>-- [2]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-Bits.html</span>
 
-<span style="color:#75715e">-- | `majorityBits numBits tieValue nums` returns an `[Int]` where the element</span>
-<span style="color:#75715e">-- at index `i` is the least common bit at position `i`. In case of a tie,</span>
-<span style="color:#75715e">-- `tieBreaker` is placed into `i`.</span>
-<span style="color:#75af00">minorityBits</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">BitFrequencySummarizer</span>
-<span style="color:#75af00">minorityBits</span> <span style="color:#111">numBits</span> <span style="color:#111">nums</span> <span style="color:#f92672">=</span>
-  <span style="color:#111">frequenciesToZeroOne</span> <span style="color:#ae81ff">0</span> <span style="color:#111">(</span><span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#f92672">*</span> <span style="color:#111">(</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">))</span> <span style="color:#111">(</span><span style="color:#111">bitFrequencies</span> <span style="color:#111">numBits</span> <span style="color:#111">nums</span><span style="color:#111">))</span>
+<span style=color:#75715e>-- | Solution for Advent of Code Day 3: Part I.</span>
+<span style=color:#75af00>powerConsumption</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>powerConsumption</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>{</span><span style=color:#f92672>..</span><span style=color:#111>}</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>majorities</span> <span style=color:#f92672>=</span> <span style=color:#111>majorityBits</span> <span style=color:#111>diagWidth</span> <span style=color:#111>diagNums</span>
+      <span style=color:#111>gammaRate</span> <span style=color:#f92672>=</span> <span style=color:#111>fromBitList</span> <span style=color:#111>majorities</span>
+      <span style=color:#111>epsilonRate</span> <span style=color:#f92672>=</span> <span style=color:#111>fromBitList</span> <span style=color:#111>(</span><span style=color:#111>flipZerosAndOnes</span> <span style=color:#111>majorities</span><span style=color:#111>)</span>
+   <span style=color:#00a8c8>in</span> <span style=color:#111>gammaRate</span> <span style=color:#f92672>*</span> <span style=color:#111>epsilonRate</span>
 
-<span style="color:#75715e">-- The BinaryLiterals language extension adds syntactic sugar for `0b11001001`</span>
-<span style="color:#75715e">-- [1]. But I didn&#39;t end up using binary representation. `Data.Bits` provides</span>
-<span style="color:#75715e">-- utilities for working with `Int`, so why not? [2]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- [1]: https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/binary_literals.html</span>
-<span style="color:#75715e">-- [2]: https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-Bits.html</span>
+<span style=color:#75715e>-- | `lastNumStanding nums width f positionToCheck` recursively finds an `Int`</span>
+<span style=color:#75715e>-- | that matches the rules of AoC Day 3: Part II.</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>BitFrequencySummarizer</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#00a8c8>[]</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#111>[</span><span style=color:#111>x</span><span style=color:#111>]</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>=</span> <span style=color:#111>x</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#111>nums</span> <span style=color:#111>width</span> <span style=color:#111>f</span> <span style=color:#111>positionToCheck</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>expectedValues</span> <span style=color:#f92672>=</span> <span style=color:#111>f</span> <span style=color:#111>width</span> <span style=color:#111>nums</span>
+      <span style=color:#111>shouldBeSet</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>expectedValues</span> <span style=color:#f92672>!!</span> <span style=color:#111>positionToCheck</span><span style=color:#111>)</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span> <span style=color:#75715e>-- (*/_＼)</span>
+      <span style=color:#111>bitIndex</span> <span style=color:#f92672>=</span> <span style=color:#111>length</span> <span style=color:#111>expectedValues</span> <span style=color:#f92672>-</span> <span style=color:#111>positionToCheck</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>
+      <span style=color:#111>matchingNums</span> <span style=color:#f92672>=</span> <span style=color:#111>filter</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>n</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>testBit</span> <span style=color:#111>n</span> <span style=color:#111>bitIndex</span> <span style=color:#f92672>==</span> <span style=color:#111>shouldBeSet</span><span style=color:#111>)</span> <span style=color:#111>nums</span>
+   <span style=color:#00a8c8>in</span> <span style=color:#00a8c8>if</span> <span style=color:#111>null</span> <span style=color:#111>matchingNums</span>
+        <span style=color:#00a8c8>then</span> <span style=color:#111>last</span> <span style=color:#111>nums</span>
+        <span style=color:#00a8c8>else</span> <span style=color:#111>lastNumStanding</span> <span style=color:#111>matchingNums</span> <span style=color:#111>width</span> <span style=color:#111>f</span> <span style=color:#111>(</span><span style=color:#111>positionToCheck</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
 
-<span style="color:#75715e">-- | Solution for Advent of Code Day 3: Part I.</span>
-<span style="color:#75af00">powerConsumption</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">powerConsumption</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">{</span><span style="color:#f92672">..</span><span style="color:#111">}</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">majorities</span> <span style="color:#f92672">=</span> <span style="color:#111">majorityBits</span> <span style="color:#111">diagWidth</span> <span style="color:#111">diagNums</span>
-      <span style="color:#111">gammaRate</span> <span style="color:#f92672">=</span> <span style="color:#111">fromBitList</span> <span style="color:#111">majorities</span>
-      <span style="color:#111">epsilonRate</span> <span style="color:#f92672">=</span> <span style="color:#111">fromBitList</span> <span style="color:#111">(</span><span style="color:#111">flipZerosAndOnes</span> <span style="color:#111">majorities</span><span style="color:#111">)</span>
-   <span style="color:#00a8c8">in</span> <span style="color:#111">gammaRate</span> <span style="color:#f92672">*</span> <span style="color:#111">epsilonRate</span>
-
-<span style="color:#75715e">-- | `lastNumStanding nums width f positionToCheck` recursively finds an `Int`</span>
-<span style="color:#75715e">-- | that matches the rules of AoC Day 3: Part II.</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">BitFrequencySummarizer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#00a8c8">[]</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">]</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#111">nums</span> <span style="color:#111">width</span> <span style="color:#111">f</span> <span style="color:#111">positionToCheck</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">expectedValues</span> <span style="color:#f92672">=</span> <span style="color:#111">f</span> <span style="color:#111">width</span> <span style="color:#111">nums</span>
-      <span style="color:#111">shouldBeSet</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">expectedValues</span> <span style="color:#f92672">!!</span> <span style="color:#111">positionToCheck</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- (*/_＼)</span>
-      <span style="color:#111">bitIndex</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#111">expectedValues</span> <span style="color:#f92672">-</span> <span style="color:#111">positionToCheck</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
-      <span style="color:#111">matchingNums</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">n</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">testBit</span> <span style="color:#111">n</span> <span style="color:#111">bitIndex</span> <span style="color:#f92672">==</span> <span style="color:#111">shouldBeSet</span><span style="color:#111">)</span> <span style="color:#111">nums</span>
-   <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">matchingNums</span>
-        <span style="color:#00a8c8">then</span> <span style="color:#111">last</span> <span style="color:#111">nums</span>
-        <span style="color:#00a8c8">else</span> <span style="color:#111">lastNumStanding</span> <span style="color:#111">matchingNums</span> <span style="color:#111">width</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#111">positionToCheck</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
-
-<span style="color:#75715e">-- | Solution for Advent of Code Day 3: Part II.</span>
-<span style="color:#75af00">lifeSupportRating</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">lifeSupportRating</span> <span style="color:#00a8c8">BinaryDiagnostics</span> <span style="color:#111">{</span><span style="color:#f92672">..</span><span style="color:#111">}</span> <span style="color:#f92672">=</span>
-  <span style="color:#75715e">-- Partial application allows us to pass less than the full number of args to</span>
-  <span style="color:#75715e">-- a function that takes multiple arguments.</span>
-  <span style="color:#75715e">--</span>
-  <span style="color:#75715e">-- [1]: https://wiki.haskell.org/Partial_application</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">f</span> <span style="color:#f92672">=</span> <span style="color:#111">lastNumStanding</span> <span style="color:#111">diagNums</span> <span style="color:#111">diagWidth</span>
-   <span style="color:#00a8c8">in</span> <span style="color:#111">f</span> <span style="color:#111">majorityBits</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">*</span> <span style="color:#111">f</span> <span style="color:#111">minorityBits</span> <span style="color:#ae81ff">0</span>
-</code></pre></div></div>
-
-<h2 id="learning-from-others-solutions">Learning from Others' Solutions</h2>
-<h3 id="potpourri">Potpourri</h3>
-<p>Although I didn&rsquo;t find a way to declare a type for a <code>[Int]</code> whose size
+<span style=color:#75715e>-- | Solution for Advent of Code Day 3: Part II.</span>
+<span style=color:#75af00>lifeSupportRating</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>lifeSupportRating</span> <span style=color:#00a8c8>BinaryDiagnostics</span> <span style=color:#111>{</span><span style=color:#f92672>..</span><span style=color:#111>}</span> <span style=color:#f92672>=</span>
+  <span style=color:#75715e>-- Partial application allows us to pass less than the full number of args to</span>
+  <span style=color:#75715e>-- a function that takes multiple arguments.</span>
+  <span style=color:#75715e>--</span>
+  <span style=color:#75715e>-- [1]: https://wiki.haskell.org/Partial_application</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>f</span> <span style=color:#f92672>=</span> <span style=color:#111>lastNumStanding</span> <span style=color:#111>diagNums</span> <span style=color:#111>diagWidth</span>
+   <span style=color:#00a8c8>in</span> <span style=color:#111>f</span> <span style=color:#111>majorityBits</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>*</span> <span style=color:#111>f</span> <span style=color:#111>minorityBits</span> <span style=color:#ae81ff>0</span>
+</code></pre></div></div><h2 id=learning-from-others-solutions>Learning from Others' Solutions</h2><h3 id=potpourri>Potpourri</h3><p>Although I didn&rsquo;t find a way to declare a type for a <code>[Int]</code> whose size
 if fixed after reading an input file, it would have still been more
-readable to have something like <code>type Bits = [Int]</code>, as shown in <span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span>&rsquo;s code.</p>
-<h3 id="computing-most-common-and-least-common-bits">Computing Most Common and Least Common Bits</h3>
-<p>My <code>majorityBits</code> and <code>minorityBits</code> (should have been more aptly named
-<code>mostCommonBits</code> and <code>leastCommonBits</code>) have a lot going in them.</p>
-<p><span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span> has a more elegant implementation which
-shows a deeper understanding of math:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">-- The type of `(1 -)` is `Num a =&gt; a -&gt; a`. Huh! I can rationalize it</span>
-<span style="color:#75715e">-- as applying eta reduction to `f x = 1 - x`.</span>
+readable to have something like <code>type Bits = [Int]</code>, as shown in <span class=citation-ref><a href=#HiddingAoC2021-03></a></span>&rsquo;s code.</p><h3 id=computing-most-common-and-least-common-bits>Computing Most Common and Least Common Bits</h3><p>My <code>majorityBits</code> and <code>minorityBits</code> (should have been more aptly named
+<code>mostCommonBits</code> and <code>leastCommonBits</code>) have a lot going in them.</p><p><span class=citation-ref><a href=#HiddingAoC2021-03></a></span>has a more elegant implementation which
+shows a deeper understanding of math:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>-- The type of `(1 -)` is `Num a =&gt; a -&gt; a`. Huh! I can rationalize it</span>
+<span style=color:#75715e>-- as applying eta reduction to `f x = 1 - x`.</span>
 
-<span style="color:#75af00">invertBinary</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Bits</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bits</span>
-<span style="color:#75af00">invertBinary</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span><span style="color:#111">)</span>
+<span style=color:#75af00>invertBinary</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Bits</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bits</span>
+<span style=color:#75af00>invertBinary</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span><span style=color:#111>)</span>
 
-<span style="color:#75715e">-- `foldl1 (zipWith (+)) bits` sums up all the bits at a given position.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- If the sum at position `i` is greater than N/2, then we can infer</span>
-<span style="color:#75715e">-- that 1 is more common than 0 at position `i`, and vice-versa if less</span>
-<span style="color:#75715e">-- than N/2. There is a tie if the sum is exactly N/2.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- `(`div` N) . (* 2)` multiplies a number by 2 and then does integer</span>
-<span style="color:#75715e">-- division by N. That is a nifty way of avoiding the N/2 which may not</span>
-<span style="color:#75715e">-- be an integer.</span>
+<span style=color:#75715e>-- `foldl1 (zipWith (+)) bits` sums up all the bits at a given position.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- If the sum at position `i` is greater than N/2, then we can infer</span>
+<span style=color:#75715e>-- that 1 is more common than 0 at position `i`, and vice-versa if less</span>
+<span style=color:#75715e>-- than N/2. There is a tie if the sum is exactly N/2.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- `(`div` N) . (* 2)` multiplies a number by 2 and then does integer</span>
+<span style=color:#75715e>-- division by N. That is a nifty way of avoiding the N/2 which may not</span>
+<span style=color:#75715e>-- be an integer.</span>
 
-<span style="color:#75af00">mostCommonBits</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Bits</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bits</span>
-<span style="color:#75af00">mostCommonBits</span> <span style="color:#111">bits</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span> <span style="color:#111">((`</span><span style="color:#111">div</span><span style="color:#111">`</span> <span style="color:#111">length</span> <span style="color:#111">bits</span><span style="color:#111">)</span> <span style="color:#f92672">.</span> <span style="color:#111">(</span><span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span><span style="color:#111">))</span>
-                    <span style="color:#f92672">$</span> <span style="color:#111">foldl1</span> <span style="color:#111">(</span><span style="color:#111">zipWith</span> <span style="color:#111">(</span><span style="color:#f92672">+</span><span style="color:#111">))</span> <span style="color:#111">bits</span>
+<span style=color:#75af00>mostCommonBits</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Bits</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bits</span>
+<span style=color:#75af00>mostCommonBits</span> <span style=color:#111>bits</span> <span style=color:#f92672>=</span> <span style=color:#111>map</span> <span style=color:#111>((`</span><span style=color:#111>div</span><span style=color:#111>`</span> <span style=color:#111>length</span> <span style=color:#111>bits</span><span style=color:#111>)</span> <span style=color:#f92672>.</span> <span style=color:#111>(</span><span style=color:#f92672>*</span> <span style=color:#ae81ff>2</span><span style=color:#111>))</span>
+                    <span style=color:#f92672>$</span> <span style=color:#111>foldl1</span> <span style=color:#111>(</span><span style=color:#111>zipWith</span> <span style=color:#111>(</span><span style=color:#f92672>+</span><span style=color:#111>))</span> <span style=color:#111>bits</span>
 
-<span style="color:#75af00">leastCommonBits</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Bits</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bits</span>
-<span style="color:#75af00">leastCommonBits</span> <span style="color:#f92672">=</span> <span style="color:#111">invertBinary</span> <span style="color:#f92672">.</span> <span style="color:#111">mostCommon</span>
-</code></pre></div><p>&hellip; The functions used by <span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span> did not occur
+<span style=color:#75af00>leastCommonBits</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Bits</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bits</span>
+<span style=color:#75af00>leastCommonBits</span> <span style=color:#f92672>=</span> <span style=color:#111>invertBinary</span> <span style=color:#f92672>.</span> <span style=color:#111>mostCommon</span>
+</code></pre></div><p>&mldr; The functions used by <span class=citation-ref><a href=#HiddingAoC2021-03></a></span>did not occur
 to me at all. Upon reading the problem description, I had an idea of
 how I&rsquo;d go about it, and the only unknowns were translating my plan into
 valid Haskell. I should spend more time thinking through my approach
-before I rush into coding it.</p>
-<p>Several folks in <span class="citation-ref"><a href="#rHaskellAoC2021Day03"></a></span> use <span class="citation-ref"><a href="#Data.List.transpose"></a></span> when calculating <code>mostCommonBits</code>. This is
+before I rush into coding it.</p><p>Several folks in <span class=citation-ref><a href=#rHaskellAoC2021Day03></a></span>use <span class=citation-ref><a href=#Data.List.transpose></a></span>when calculating <code>mostCommonBits</code>. This is
 quite convenient as the data for the i-th bit position is all in the
-same array!</p>
-<h3 id="structure-of-the-solution-to-part-ii">Structure of the Solution to Part II</h3>
-<p>The recursive nature gave me problems. I wonder how others did it. My
-approach was:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">lastNumStanding</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">BitFrequencySummarizer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#00a8c8">[]</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#111">[</span><span style="color:#111">x</span><span style="color:#111">]</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#f92672">=</span> <span style="color:#111">x</span>
-<span style="color:#75af00">lastNumStanding</span> <span style="color:#111">nums</span> <span style="color:#111">width</span> <span style="color:#111">f</span> <span style="color:#111">positionToCheck</span> <span style="color:#f92672">=</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">expectedValues</span> <span style="color:#f92672">=</span> <span style="color:#111">f</span> <span style="color:#111">width</span> <span style="color:#111">nums</span>
-      <span style="color:#111">shouldBeSet</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">expectedValues</span> <span style="color:#f92672">!!</span> <span style="color:#111">positionToCheck</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>
-      <span style="color:#111">bitIndex</span> <span style="color:#f92672">=</span> <span style="color:#111">length</span> <span style="color:#111">expectedValues</span> <span style="color:#f92672">-</span> <span style="color:#111">positionToCheck</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
-      <span style="color:#111">matchingNums</span> <span style="color:#f92672">=</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">n</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">testBit</span> <span style="color:#111">n</span> <span style="color:#111">bitIndex</span> <span style="color:#f92672">==</span> <span style="color:#111">shouldBeSet</span><span style="color:#111">)</span> <span style="color:#111">nums</span>
-   <span style="color:#00a8c8">in</span> <span style="color:#00a8c8">if</span> <span style="color:#111">null</span> <span style="color:#111">matchingNums</span>
-        <span style="color:#00a8c8">then</span> <span style="color:#111">last</span> <span style="color:#111">nums</span>
-        <span style="color:#00a8c8">else</span> <span style="color:#111">lastNumStanding</span> <span style="color:#111">matchingNums</span> <span style="color:#111">width</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#111">positionToCheck</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
-</code></pre></div><p>&hellip; and I&rsquo;m not proud about it. For instance, I keep passing a <code>width</code>
+same array!</p><h3 id=structure-of-the-solution-to-part-ii>Structure of the Solution to Part II</h3><p>The recursive nature gave me problems. I wonder how others did it. My
+approach was:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>lastNumStanding</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>BitFrequencySummarizer</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#00a8c8>[]</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#111>[</span><span style=color:#111>x</span><span style=color:#111>]</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>=</span> <span style=color:#111>x</span>
+<span style=color:#75af00>lastNumStanding</span> <span style=color:#111>nums</span> <span style=color:#111>width</span> <span style=color:#111>f</span> <span style=color:#111>positionToCheck</span> <span style=color:#f92672>=</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>expectedValues</span> <span style=color:#f92672>=</span> <span style=color:#111>f</span> <span style=color:#111>width</span> <span style=color:#111>nums</span>
+      <span style=color:#111>shouldBeSet</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>expectedValues</span> <span style=color:#f92672>!!</span> <span style=color:#111>positionToCheck</span><span style=color:#111>)</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span>
+      <span style=color:#111>bitIndex</span> <span style=color:#f92672>=</span> <span style=color:#111>length</span> <span style=color:#111>expectedValues</span> <span style=color:#f92672>-</span> <span style=color:#111>positionToCheck</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>
+      <span style=color:#111>matchingNums</span> <span style=color:#f92672>=</span> <span style=color:#111>filter</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>n</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>testBit</span> <span style=color:#111>n</span> <span style=color:#111>bitIndex</span> <span style=color:#f92672>==</span> <span style=color:#111>shouldBeSet</span><span style=color:#111>)</span> <span style=color:#111>nums</span>
+   <span style=color:#00a8c8>in</span> <span style=color:#00a8c8>if</span> <span style=color:#111>null</span> <span style=color:#111>matchingNums</span>
+        <span style=color:#00a8c8>then</span> <span style=color:#111>last</span> <span style=color:#111>nums</span>
+        <span style=color:#00a8c8>else</span> <span style=color:#111>lastNumStanding</span> <span style=color:#111>matchingNums</span> <span style=color:#111>width</span> <span style=color:#111>f</span> <span style=color:#111>(</span><span style=color:#111>positionToCheck</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+</code></pre></div><p>&mldr; and I&rsquo;m not proud about it. For instance, I keep passing a <code>width</code>
 parameter that never changes. This parameter was necessitated by the
 fact that I represent the bits as an <code>Int</code>, and use <code>testBit</code> to extract
 information. A better abstraction would have been to represent <code>10111</code>
-as <code>[1, 0, 1, 1, 1]</code>, instead of as <code>23</code>.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Naming-wise, <span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span>&rsquo;s <code>findRating</code> is better
+as <code>[1, 0, 1, 1, 1]</code>, instead of as <code>23</code>.</p><div class=comment-holder><div class=comment><p>Naming-wise, <span class=citation-ref><a href=#HiddingAoC2021-03></a></span>&rsquo;s <code>findRating</code> is better
 than <code>lastNumStanding</code>. Even better is <code>rating</code> as <code>get*</code> and <code>find*</code>
-are not idiomatic.</p>
-</div>
-</div>
-
-
-<p><span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span> had a solution of the form:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">findRating</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">BitFrequencySummarizer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Bits</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Bits</span>
-<span style="color:#75715e">-- We don&#39;t need to match `findRating _ _ []` because we always have</span>
-<span style="color:#75715e">-- a non-empty `[Bits]` and our base case is the single item `[Bits]`.</span>
-<span style="color:#75af00">findRating</span> <span style="color:#00a8c8">_</span> <span style="color:#00a8c8">_</span> <span style="color:#111">[</span><span style="color:#111">b</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#111">b</span>
-<span style="color:#75af00">findRating</span> <span style="color:#111">f</span> <span style="color:#111">idx</span> <span style="color:#111">bits</span> <span style="color:#f92672">=</span>
-  <span style="color:#75715e">-- I don&#39;t think that unconditionally calling `findRating` with</span>
-  <span style="color:#75715e">-- the filtered list is safe. What if the filtered list is empty? We&#39;d</span>
-  <span style="color:#75715e">-- go into an infinite loop!</span>
-  <span style="color:#111">findRating</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#111">idx</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
-  <span style="color:#75715e">-- `(!!)` crashes if the index is out of bounds. However, if we have a</span>
-  <span style="color:#75715e">-- `Data.Vector`, then `(!?)` is safe, and returns `Maybe Int` [2].</span>
-  <span style="color:#75715e">-- Another point in the bag for `Data.Vector`.</span>
-  <span style="color:#75715e">--</span>
-  <span style="color:#75715e">-- [1]: https://hackage.haskell.org/package/base-4.16.0.0/docs/GHC-List.html#v:-33--33-</span>
-  <span style="color:#75715e">-- [2]: https://hackage.haskell.org/package/vector-0.12.3.1/docs/Data-Vector.html#v:-33--63-</span>
-  <span style="color:#f92672">$</span> <span style="color:#111">filter</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">b</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">b</span> <span style="color:#f92672">!?</span> <span style="color:#111">idx</span> <span style="color:#f92672">==</span> <span style="color:#111">mc</span> <span style="color:#f92672">!?</span> <span style="color:#111">idx</span><span style="color:#111">)</span> <span style="color:#111">bits</span>
-  <span style="color:#00a8c8">where</span> <span style="color:#111">mc</span> <span style="color:#f92672">=</span> <span style="color:#111">f</span> <span style="color:#111">bits</span>
-</code></pre></div><h3 id="efficiency-of-collections-types">Efficiency of Collections Types</h3>
-<p>To represent the bit sequence, <span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span> decided to
-use <code>Vector Int</code> from the 
-<a href="https://hackage.haskell.org/package/vector"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    vector
+are not idiomatic.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-03></a></span>had a solution of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>findRating</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>BitFrequencySummarizer</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Bits</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bits</span>
+<span style=color:#75715e>-- We don&#39;t need to match `findRating _ _ []` because we always have</span>
+<span style=color:#75715e>-- a non-empty `[Bits]` and our base case is the single item `[Bits]`.</span>
+<span style=color:#75af00>findRating</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>_</span> <span style=color:#111>[</span><span style=color:#111>b</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>b</span>
+<span style=color:#75af00>findRating</span> <span style=color:#111>f</span> <span style=color:#111>idx</span> <span style=color:#111>bits</span> <span style=color:#f92672>=</span>
+  <span style=color:#75715e>-- I don&#39;t think that unconditionally calling `findRating` with</span>
+  <span style=color:#75715e>-- the filtered list is safe. What if the filtered list is empty? We&#39;d</span>
+  <span style=color:#75715e>-- go into an infinite loop!</span>
+  <span style=color:#111>findRating</span> <span style=color:#111>f</span> <span style=color:#111>(</span><span style=color:#111>idx</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+  <span style=color:#75715e>-- `(!!)` crashes if the index is out of bounds. However, if we have a</span>
+  <span style=color:#75715e>-- `Data.Vector`, then `(!?)` is safe, and returns `Maybe Int` [2].</span>
+  <span style=color:#75715e>-- Another point in the bag for `Data.Vector`.</span>
+  <span style=color:#75715e>--</span>
+  <span style=color:#75715e>-- [1]: https://hackage.haskell.org/package/base-4.16.0.0/docs/GHC-List.html#v:-33--33-</span>
+  <span style=color:#75715e>-- [2]: https://hackage.haskell.org/package/vector-0.12.3.1/docs/Data-Vector.html#v:-33--63-</span>
+  <span style=color:#f92672>$</span> <span style=color:#111>filter</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>b</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>b</span> <span style=color:#f92672>!?</span> <span style=color:#111>idx</span> <span style=color:#f92672>==</span> <span style=color:#111>mc</span> <span style=color:#f92672>!?</span> <span style=color:#111>idx</span><span style=color:#111>)</span> <span style=color:#111>bits</span>
+  <span style=color:#00a8c8>where</span> <span style=color:#111>mc</span> <span style=color:#f92672>=</span> <span style=color:#111>f</span> <span style=color:#111>bits</span>
+</code></pre></div><h3 id=efficiency-of-collections-types>Efficiency of Collections Types</h3><p>To represent the bit sequence, <span class=citation-ref><a href=#HiddingAoC2021-03></a></span>decided to
+use <code>Vector Int</code> from the
+<a href=https://hackage.haskell.org/package/vector target=_blank rel=noopener>vector
 package
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-, while I used
-<code>[Int]</code>.</p>
-<p><span class="citation-ref"><a href="#SOPhillipListsArraysVectorSequences"></a></span> discusses tradeoffs:</p>
-<ul>
-<li>Lists give \(O(1)\) <code>cons</code> and pattern matching, and are purely
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, while I used
+<code>[Int]</code>.</p><p><span class=citation-ref><a href=#SOPhillipListsArraysVectorSequences></a></span>discusses tradeoffs:</p><ul><li>Lists give \(O(1)\) <code>cons</code> and pattern matching, and are purely
 functional and lazy. However, indexing takes \(O(k)\) time, they
 have poor data locality, and poor space efficiency (pointer overhead
-per item).</li>
-</ul>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>A <code>[Foo]</code> is a singly-linked list of pointers to either a thunk (can
+per item).</li></ul><div class=comment-holder><div class=comment><p>A <code>[Foo]</code> is a singly-linked list of pointers to either a thunk (can
 take up more space than a <code>Foo</code>) that produces a <code>Foo</code> when evaluated,
-or an actual <code>Foo</code>. <span class="citation-ref"><a href="#FPCVector"></a></span></p>
-</div>
-</div>
-
-
-<ul>
-<li>
-<p><code>Data.Sequence</code> are purely functional, have amortized \(O(1)\) to
+or an actual <code>Foo</code>. <span class=citation-ref><a href=#FPCVector></a></span></p></div></div><ul><li><p><code>Data.Sequence</code> are purely functional, have amortized \(O(1)\) to
 access the beginning and end, and have \(O(log\ n)\) access to the
 middle. However, poor data locality, and only work for finite
-collections.</p>
-</li>
-<li>
-<p>Arrays provide \(O(1)\) access, and have good data locality, but they
+collections.</p></li><li><p>Arrays provide \(O(1)\) access, and have good data locality, but they
 do not fit very well with the lazy pure functional world, and are a
-pain to use.</p>
-</li>
-<li>
-<p><code>Data.Vector</code> provides all of the array goodness in a higher level and
+pain to use.</p></li><li><p><code>Data.Vector</code> provides all of the array goodness in a higher level and
 cleaner APIs, with caveats like: mutable arrays need live in the <code>IO</code>
-or <code>ST</code> monads; prepending requires copying over elements. <span class="citation-ref"><a href="#FPCVector"></a></span>.</p>
-</li>
-</ul>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><span class="citation-ref"><a href="#SOPhillipListsArraysVectorSequences"></a></span> mentions <code>[Char]</code> as a
+or <code>ST</code> monads; prepending requires copying over elements. <span class=citation-ref><a href=#FPCVector></a></span>.</p></li></ul><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#SOPhillipListsArraysVectorSequences></a></span>mentions <code>[Char]</code> as a
 notable example of lists screwing up performance, and therefore a
 recommendation to use <code>Data.Text</code> or the very fast <code>Data.ByteString</code>.
-<span class="citation-ref"><a href="#HWikiPerfStrings"></a></span> has sample perf numbers.</p>
-</div>
-</div>
-
-
-<p><code>Data.Vector</code> exposes boxed vectors and unboxed vectors. Say we have a
+<span class=citation-ref><a href=#HWikiPerfStrings></a></span>has sample perf numbers.</p></div></div><p><code>Data.Vector</code> exposes boxed vectors and unboxed vectors. Say we have a
 vector of <code>Int</code>s. If it is boxed, then we have a pointer to an <code>Int</code>, or
 a thunk that produces an <code>Int</code> if evaluated. If unboxed, then we have
 the <code>Int</code> itself, no thunks. Boxed vectors said to be value lazy, while
 unboxed vectors are said to be value strict. Boxed vectors are
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#functor target=_blank rel=noopener>instances of <code>Functor</code> and can therefore be <code>fmap</code>&rsquo;d on
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>. <span class=citation-ref><a href=#FPCVector></a></span></p><div class=comment-holder><div class=comment><p><a id=Data.Vector.StreamFusion></a><code>Data.Vector</code> uses stream fusion to
+optimize memory usage. For example,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>Data.Vector.Unboxed</span> <span style=color:#00a8c8>as</span> <span style=color:#111>V</span>
 
-<a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#functor"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    instances of <code>Functor</code> and can therefore be <code>fmap</code>&rsquo;d on
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-. <span class="citation-ref"><a href="#FPCVector"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><a id="Data.Vector.StreamFusion"></a><code>Data.Vector</code> uses stream fusion to
-optimize memory usage. For example,</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">Data.Vector.Unboxed</span> <span style="color:#00a8c8">as</span> <span style="color:#111">V</span>
-
-<span style="color:#75af00">main</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">main</span> <span style="color:#f92672">=</span> <span style="color:#111">print</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">sum</span> <span style="color:#f92672">$</span> <span style="color:#00a8c8">V</span><span style="color:#f92672">.</span><span style="color:#111">enumFromTo</span> <span style="color:#ae81ff">1</span> <span style="color:#111">(</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">9</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span>
-</code></pre></div><p>&hellip; allocates a total of 52kb with <code>-O2</code> optimization (instead of the
+<span style=color:#75af00>main</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>main</span> <span style=color:#f92672>=</span> <span style=color:#111>print</span> <span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>sum</span> <span style=color:#f92672>$</span> <span style=color:#00a8c8>V</span><span style=color:#f92672>.</span><span style=color:#111>enumFromTo</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#ae81ff>10</span><span style=color:#f92672>^</span><span style=color:#ae81ff>9</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>)</span>
+</code></pre></div><p>&mldr; allocates a total of 52kb with <code>-O2</code> optimization (instead of the
 expected <code>10^9 * sizeof int</code>) because GHC determines that creating a
-vector is unnecessary and instead create an tight inner loop. <span class="citation-ref"><a href="#FPCVector"></a></span></p>
-</div>
-</div>
-
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><code>Data.Vector</code> also exposes Storable vectors which hold <code>Storable</code> types.
+vector is unnecessary and instead create an tight inner loop. <span class=citation-ref><a href=#FPCVector></a></span></p></div></div><div class=comment-holder><div class=comment><p><code>Data.Vector</code> also exposes Storable vectors which hold <code>Storable</code> types.
 These types are stored in <code>malloc</code>ed memory that isn&rsquo;t moved around by
 the garbage collector. Although this can lead to memory fragmentation,
 such types can be shared with programs in other languages through the
-
-<a href="https://wiki.haskell.org/Foreign_Function_Interface"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    Foreign Function
+<a href=https://wiki.haskell.org/Foreign_Function_Interface target=_blank rel=noopener>Foreign Function
 Interface (FFI)
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-.</p>
-<p>I&rsquo;m not currently interested in <code>Storable</code> types though.</p>
-</div>
-</div>
-
-
-<p>The general guideline is:</p>
-<ul>
-<li>Use unboxed vectors if you don&rsquo;t need to pass values to a C FFI, and
-you have 
-<a href="https://hackage.haskell.org/package/vector-0.12.3.1/docs/Data-Vector-Primitive.html#t:Prim"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    a <code>Prim</code>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><p>I&rsquo;m not currently interested in <code>Storable</code> types though.</p></div></div><p>The general guideline is:</p><ul><li>Use unboxed vectors if you don&rsquo;t need to pass values to a C FFI, and
+you have
+<a href=https://hackage.haskell.org/package/vector-0.12.3.1/docs/Data-Vector-Primitive.html#t:Prim target=_blank rel=noopener>a <code>Prim</code>
 instance
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-.</li>
-<li>Use a storable vector is you have a <code>Storable</code> instance.</li>
-<li>Otherwise, use a boxed vector.</li>
-</ul>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</li><li>Use a storable vector is you have a <code>Storable</code> instance.</li><li>Otherwise, use a boxed vector.</li></ul><div class=comment-holder><div class=comment><p>Maybe #1 can be, if you need to <code>fmap</code>, use a boxed vector?</p></div></div><p><span class=citation-ref><a href=#FPCVector></a></span></p><h3 id=converting-binary-representation-to-decimal>Converting Binary Representation to Decimal</h3><p>My solution was:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>fromBitList</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>fromBitList</span> <span style=color:#111>ds</span> <span style=color:#f92672>=</span> <span style=color:#111>fst</span> <span style=color:#f92672>$</span> <span style=color:#111>foldr</span> <span style=color:#111>f</span> <span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>ds</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>f</span> <span style=color:#111>d</span> <span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#111>powerOf2</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>s</span> <span style=color:#f92672>+</span> <span style=color:#111>powerOf2</span> <span style=color:#f92672>*</span> <span style=color:#111>d</span><span style=color:#111>,</span> <span style=color:#111>powerOf2</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>2</span><span style=color:#111>)</span>
+</code></pre></div><p>&mldr; I don&rsquo;t like that I&rsquo;m carrying over two pieces of information in the
+fold.</p><p><span class=citation-ref><a href=#HiddingAoC2021-03></a></span>had a solution of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>binaryToDecimal</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>binaryToDecimal</span> <span style=color:#f92672>=</span> <span style=color:#111>go</span> <span style=color:#ae81ff>0</span>
+  <span style=color:#00a8c8>where</span> <span style=color:#111>go</span> <span style=color:#111>n</span> <span style=color:#111>(</span><span style=color:#111>b</span><span style=color:#00a8c8>:</span><span style=color:#111>bs</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>go</span> <span style=color:#111>(</span><span style=color:#ae81ff>2</span><span style=color:#f92672>*</span><span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#111>bs</span>
+        <span style=color:#111>go</span> <span style=color:#111>n</span> <span style=color:#00a8c8>[]</span>     <span style=color:#f92672>=</span> <span style=color:#111>n</span>
 
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Maybe #1 can be, if you need to <code>fmap</code>, use a boxed vector?</p>
-</div>
-</div>
-
-
-<p><span class="citation-ref"><a href="#FPCVector"></a></span></p>
-<h3 id="converting-binary-representation-to-decimal">Converting Binary Representation to Decimal</h3>
-<p>My solution was:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">fromBitList</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">fromBitList</span> <span style="color:#111">ds</span> <span style="color:#f92672">=</span> <span style="color:#111">fst</span> <span style="color:#f92672">$</span> <span style="color:#111">foldr</span> <span style="color:#111">f</span> <span style="color:#111">(</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span> <span style="color:#111">ds</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">f</span> <span style="color:#111">d</span> <span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">,</span> <span style="color:#111">powerOf2</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">s</span> <span style="color:#f92672">+</span> <span style="color:#111">powerOf2</span> <span style="color:#f92672">*</span> <span style="color:#111">d</span><span style="color:#111">,</span> <span style="color:#111">powerOf2</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span><span style="color:#111">)</span>
-</code></pre></div><p>&hellip; I don&rsquo;t like that I&rsquo;m carrying over two pieces of information in the
-fold.</p>
-<p><span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span> had a solution of the form:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">binaryToDecimal</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">binaryToDecimal</span> <span style="color:#f92672">=</span> <span style="color:#111">go</span> <span style="color:#ae81ff">0</span>
-  <span style="color:#00a8c8">where</span> <span style="color:#111">go</span> <span style="color:#111">n</span> <span style="color:#111">(</span><span style="color:#111">b</span><span style="color:#00a8c8">:</span><span style="color:#111">bs</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">go</span> <span style="color:#111">(</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#111">n</span> <span style="color:#f92672">+</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">bs</span>
-        <span style="color:#111">go</span> <span style="color:#111">n</span> <span style="color:#00a8c8">[]</span>     <span style="color:#f92672">=</span> <span style="color:#111">n</span>
-
-<span style="color:#75715e">-- The recursive `go` is tricky. Tracing a sample call (with fully</span>
-<span style="color:#75715e">-- evaluated parameters for clarity)</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">--                                = go  0 [1, 0, 1, 1, 1]</span>
-<span style="color:#75715e">--  = go ( 2*0 + 1)  [0, 1, 1, 1] = go  1    [0, 1, 1, 1]</span>
-<span style="color:#75715e">--  = go ( 2*1 + 0)     [1, 1, 1] = go  2       [1, 1, 1]</span>
-<span style="color:#75715e">--  = go ( 2*2 + 1)        [1, 1] = go  5          [1, 1]</span>
-<span style="color:#75715e">--  = go ( 2*5 + 1)           [1] = go 11             [1]</span>
-<span style="color:#75715e">--  = go (2*11 + 1)           [0] = go 23              []</span>
-<span style="color:#75715e">--  = 23</span>
-</code></pre></div><p>Even after tracing through <span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span>&rsquo;s recursive
+<span style=color:#75715e>-- The recursive `go` is tricky. Tracing a sample call (with fully</span>
+<span style=color:#75715e>-- evaluated parameters for clarity)</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>--                                = go  0 [1, 0, 1, 1, 1]</span>
+<span style=color:#75715e>--  = go ( 2*0 + 1)  [0, 1, 1, 1] = go  1    [0, 1, 1, 1]</span>
+<span style=color:#75715e>--  = go ( 2*1 + 0)     [1, 1, 1] = go  2       [1, 1, 1]</span>
+<span style=color:#75715e>--  = go ( 2*2 + 1)        [1, 1] = go  5          [1, 1]</span>
+<span style=color:#75715e>--  = go ( 2*5 + 1)           [1] = go 11             [1]</span>
+<span style=color:#75715e>--  = go (2*11 + 1)           [0] = go 23              []</span>
+<span style=color:#75715e>--  = 23</span>
+</code></pre></div><p>Even after tracing through <span class=citation-ref><a href=#HiddingAoC2021-03></a></span>&rsquo;s recursive
 <code>fromBinary</code>, I&rsquo;m not sure how one could come up with it. Building up
 the solution from the least significant bit is more intuitive to me, not
 so for the most-significant-bit-first approach. Maybe algebraic
-manipulation might help?</p>
-<p>$$ 10111_2 = (2^4 \cdot 1) + (2^3 \cdot 0) + (2^2 \cdot 1) + (2^1 \cdot 1) + (2^0 \cdot 1) $$</p>
-<p>The algebraic form didn&rsquo;t help. Maybe the intuition for the MSB-first
+manipulation might help?</p><p>$$ 10111_2 = (2^4 \cdot 1) + (2^3 \cdot 0) + (2^2 \cdot 1) + (2^1 \cdot 1) + (2^0 \cdot 1) $$</p><p>The algebraic form didn&rsquo;t help. Maybe the intuition for the MSB-first
 approach is that whenever we see a new digit <code>b</code>, we need to multiply
 whatever we have by <code>2</code> and then add <code>b</code>. That is the best answer we can
 give <em>at that moment</em>. The various values for <code>n</code> in the <code>go n</code> calls
-are \(0_2, 1_2, 10_2, 101_2, 1011_2, 10111_2\).</p>
-<p><span class="citation-ref"><a href="#SESam2021"></a></span> uses a left-fold:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75af00">binaryToDecimal</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">binaryToDecimal</span> <span style="color:#f92672">=</span> <span style="color:#111">foldl</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">acc</span> <span style="color:#111">x</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">acc</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#111">x</span><span style="color:#111">)</span> <span style="color:#ae81ff">0</span>
-</code></pre></div><p>&hellip; which is basically what <span class="citation-ref"><a href="#HiddingAoC2021-03"></a></span> did, but
+are \(0_2, 1_2, 10_2, 101_2, 1011_2, 10111_2\).</p><p><span class=citation-ref><a href=#SESam2021></a></span>uses a left-fold:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>binaryToDecimal</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>binaryToDecimal</span> <span style=color:#f92672>=</span> <span style=color:#111>foldl</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>acc</span> <span style=color:#111>x</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>acc</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>2</span> <span style=color:#f92672>+</span> <span style=color:#111>x</span><span style=color:#111>)</span> <span style=color:#ae81ff>0</span>
+</code></pre></div><p>&mldr; which is basically what <span class=citation-ref><a href=#HiddingAoC2021-03></a></span>did, but
 using the standard library. That said, if using a left fold, the strict
 <code>foldl'</code> is a better choice to avoid stack overflow of pending thunks.
-<span class="citation-ref"><a href="#Data.List.foldl"></a></span></p>
-<h2 id="references">References</h2>
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='HiddingAoC2021-03'>
-        
-        Advent of Code 2021: Day 3: Binary Diagnostic<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://jhidding.github.io/aoc2021/#day-3-binary-diagnostic" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
-        <i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='SOPhillipListsArraysVectorSequences'>
-        
-        Haskell: Lists, Arrays, Vectors, Sequences - Stack Overflow<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://stackoverflow.com/a/9613203/7812406" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
-        <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='HWikiPerfStrings'>
-        
-        Performance/Strings - HaskellWiki<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://wiki.haskell.org/Performance/Strings" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
-        <i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='SESam2021'>
-        
-        performance - Advent of Code 2021, Day 3 in Haskell - Code Review Stack Exchange<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://codereview.stackexchange.com/questions/270654/advent-of-code-2021-day-3-in-haskell" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=codereview.stackexchange.com" loading="lazy" aria-hidden="true">
-        <i>codereview.stackexchange.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Data.List.foldl'>
-        
-        Data.List &gt; foldl&#39;<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-List.html#v:foldl-39-" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
-        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='rHaskellAoC2021Day03'>
-        
-        Advent of Code 2021 day 3 : haskell<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://www.reddit.com/r/haskell/comments/r7r1g8/advent_of_code_2021_day_3/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading="lazy" aria-hidden="true">
-        <i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Data.List.transpose'>
-        
-        Data.List.transpose<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-List.html#v:transpose" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
-        <i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 25, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='FPCVector'>
-        
-        vector: Efficient Packed-Memory Data Representations<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://www.fpcomplete.com/haskell/library/vector/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading="lazy" aria-hidden="true">
-        <i>www.fpcomplete.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 26, 2022.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/adventofcode.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading="lazy" aria-hidden="true">
-            adventofcode.com
-        </a>
-    
-        <a href='/domains/codereview.stackexchange.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=codereview.stackexchange.com" loading="lazy" aria-hidden="true">
-            codereview.stackexchange.com
-        </a>
-    
-        <a href='/domains/hackage.haskell.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading="lazy" aria-hidden="true">
-            hackage.haskell.org
-        </a>
-    
-        <a href='/domains/jhidding.github.io' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading="lazy" aria-hidden="true">
-            jhidding.github.io
-        </a>
-    
-        <a href='/domains/stackoverflow.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
-            stackoverflow.com
-        </a>
-    
-        <a href='/domains/wiki.haskell.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading="lazy" aria-hidden="true">
-            wiki.haskell.org
-        </a>
-    
-        <a href='/domains/www.fpcomplete.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading="lazy" aria-hidden="true">
-            www.fpcomplete.com
-        </a>
-    
-        <a href='/domains/www.reddit.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading="lazy" aria-hidden="true">
-            www.reddit.com
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/Dive/02-dive/">&laquo; AoC 2021 Day 02: Dive!</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/GiantSquid/">AoC 2021 Day 04: Giant Squid &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<span class=citation-ref><a href=#Data.List.foldl></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=HiddingAoC2021-03>Advent of Code 2021: Day 3: Binary Diagnostic<i>.</i></cite>
+<a href=https://jhidding.github.io/aoc2021/#day-3-binary-diagnostic target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true>
+<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=SOPhillipListsArraysVectorSequences>Haskell: Lists, Arrays, Vectors, Sequences - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/a/9613203/7812406 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=HWikiPerfStrings>Performance/Strings - HaskellWiki<i>.</i></cite>
+<a href=https://wiki.haskell.org/Performance/Strings target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading=lazy aria-hidden=true>
+<i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=SESam2021>performance - Advent of Code 2021, Day 3 in Haskell - Code Review Stack Exchange<i>.</i></cite>
+<a href=https://codereview.stackexchange.com/questions/270654/advent-of-code-2021-day-3-in-haskell target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=codereview.stackexchange.com" loading=lazy aria-hidden=true>
+<i>codereview.stackexchange.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Data.List.foldl>Data.List > foldl'<i>.</i></cite>
+<a href=https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-List.html#v:foldl-39- target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true>
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=rHaskellAoC2021Day03>Advent of Code 2021 day 3 : haskell<i>.</i></cite>
+<a href=https://www.reddit.com/r/haskell/comments/r7r1g8/advent_of_code_2021_day_3/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Data.List.transpose>Data.List.transpose<i>.</i></cite>
+<a href=https://hackage.haskell.org/package/base-4.16.0.0/docs/Data-List.html#v:transpose target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true>
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=FPCVector>vector: Efficient Packed-Memory Data Representations<i>.</i></cite>
+<a href=https://www.fpcomplete.com/haskell/library/vector/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading=lazy aria-hidden=true>
+<i>www.fpcomplete.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 26, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/adventofcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true>
+adventofcode.com</a>
+<a href=/domains/codereview.stackexchange.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=codereview.stackexchange.com" loading=lazy aria-hidden=true>
+codereview.stackexchange.com</a>
+<a href=/domains/hackage.haskell.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true>
+hackage.haskell.org</a>
+<a href=/domains/jhidding.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true>
+jhidding.github.io</a>
+<a href=/domains/stackoverflow.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
+stackoverflow.com</a>
+<a href=/domains/wiki.haskell.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading=lazy aria-hidden=true>
+wiki.haskell.org</a>
+<a href=/domains/www.fpcomplete.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading=lazy aria-hidden=true>
+www.fpcomplete.com</a>
+<a href=/domains/www.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true>
+www.reddit.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/Dive/02-dive/>&#171; AoC 2021 Day 02: Dive!</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/GiantSquid/>AoC 2021 Day 04: Giant Squid &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

@@ -1,374 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Computer Graphics Potpourri | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/computer-graphics/2021-01-03-potpourri/">Computer Graphics Potpourri</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Computer Graphics Potpourri</h1>
-    <p class="meta">
-        
-        Dated Jan 3, 2021;
-        
-        last modified on Mon, 05 Sep 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#retained-mode-vs-immediate-mode">Retained Mode vs. Immediate Mode</a></li>
-    <li><a href="#parallel-reality-pixel">Parallel Reality™ Pixel</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <h2 id="retained-mode-vs-immediate-mode">Retained Mode vs. Immediate Mode</h2>
-<p>In retained mode, the graphics library exposes an API to the application for
+<!doctype html><html lang=en><head><title>Computer Graphics Potpourri | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/computer-graphics/2021-01-03-potpourri/>Computer Graphics Potpourri</a></li></ul></nav><section><header><h1>Computer Graphics Potpourri</h1><p class=meta>Dated Jan 3, 2021;
+last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#retained-mode-vs-immediate-mode>Retained Mode vs. Immediate Mode</a></li><li><a href=#parallel-reality-pixel>Parallel Reality™ Pixel</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=retained-mode-vs-immediate-mode>Retained Mode vs. Immediate Mode</h2><p>In retained mode, the graphics library exposes an API to the application for
 building/updating a scene. However, the graphics library is in charge of issuing
 drawing commands. In contrast, an immediate-mode API allows the application to
 issue the drawing commands. Retained-mode APIs abstract away initialization,
 state maintenance and cleanup, but uses more memory. Immediate-mode APIs allow
-for more targeted optimizations. <span class="citation-ref"><a href="#MicrosoftDocs"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><a href="https://reactjs.org/">https://reactjs.org/</a> is one of the more popular retained-mode web APIs.</p>
-</div>
-</div>
-
-
-<h2 id="parallel-reality-pixel">Parallel Reality™ Pixel</h2>
-<p>Conventional pixels output only a single color at any moment. Parallel
+for more targeted optimizations. <span class=citation-ref><a href=#MicrosoftDocs></a></span></p><div class=comment-holder><div class=comment><p><a href=https://reactjs.org/>https://reactjs.org/</a> is one of the more popular retained-mode web APIs.</p></div></div><h2 id=parallel-reality-pixel>Parallel Reality™ Pixel</h2><p>Conventional pixels output only a single color at any moment. Parallel
 Reality™ pixels can simultaneously output up to millions of controllable
-rays of different colors and brightness. <span class="citation-ref"><a href="#ParallelRealityPixel"></a></span></p>
-<figure>
-    <img src="/img/computer-science/computer-graphics/parallel-reality-airport-disaply.webp"
-         alt="Parallel Reality™ display at DTW Airport. Obtained from
+rays of different colors and brightness. <span class=citation-ref><a href=#ParallelRealityPixel></a></span></p><figure><img src=/img/computer-science/computer-graphics/parallel-reality-airport-disaply.webp alt="Parallel Reality™ display at DTW Airport. Obtained from
 Baskas2022. Passengers opt in, and then motion sensors in ceiling
 track them around. The display can serve up to 100 people in a
-designated viewing area. Everyone else gets generic info."/> <figcaption>
-            <p>Parallel Reality™ display at DTW Airport. Obtained from
+designated viewing area. Everyone else gets generic info."><figcaption><p>Parallel Reality™ display at DTW Airport. Obtained from
 Baskas2022. Passengers opt in, and then motion sensors in ceiling
 track them around. The display can serve up to 100 people in a
-designated viewing area. Everyone else gets generic info.</p>
-        </figcaption>
-</figure>
-
-<p><span class="citation-ref"><a href="#Baskas2022"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>At some point, there were TVs which could show different content
-depending on the viewing angle. What happened to them? 
-<a href="https://www.theverge.com/2012/8/31/3282583/samsung-oled-tv-multi-view-hands-on-video"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    Samsung was in
+designated viewing area. Everyone else gets generic info.</p></figcaption></figure><p><span class=citation-ref><a href=#Baskas2022></a></span></p><div class=comment-holder><div class=comment><p>At some point, there were TVs which could show different content
+depending on the viewing angle. What happened to them?
+<a href=https://www.theverge.com/2012/8/31/3282583/samsung-oled-tv-multi-view-hands-on-video target=_blank rel=noopener>Samsung was in
 the news with one back in
 2012
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-,
-but that TV requires special polarizing glasses. Naïvely put, 
-<a href="https://www.nbcnews.com/tech/gadgets/samsung-oled-tv-will-let-two-viewers-watch-two-shows-flna1b7872324"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    the OLEDs
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+but that TV requires special polarizing glasses. Naïvely put,
+<a href=https://www.nbcnews.com/tech/gadgets/samsung-oled-tv-will-let-two-viewers-watch-two-shows-flna1b7872324 target=_blank rel=noopener>the OLEDs
 rapidly flicker back and forth between the two
 views
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-.</p>
-</div>
-</div>
-
-
-<h2 id="references">References</h2>
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='far fa-fw fa-newspaper' cited-by-count=''>
-    <cite id='MicrosoftDocs'>
-        
-        Retained Mode Versus Immediate Mode - Win32 apps | Microsoft Docs<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://docs.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading="lazy" aria-hidden="true">
-        <i>docs.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='far fa-fw fa-newspaper' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='ParallelRealityPixel'>
-        
-        The Parallel Reality Technology<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://www.misappliedsciences.com/home/technology.html" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.misappliedsciences.com" loading="lazy" aria-hidden="true">
-        <i>www.misappliedsciences.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jul 16, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Baskas2022'>
-        
-        Detroit&#39;s new personalized flight information board is straight out of a sci-fi novel<i>.</i>
-        
-    </cite>
-    
-     Harriet Baskas.
-    
-    
-    
-    
-    <a href="https://thepointsguy.com/news/personal-flight-information-display-dtw/" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=thepointsguy.com" loading="lazy" aria-hidden="true">
-        <i>thepointsguy.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-     Jul 16, 2022.
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Jul 16, 2022.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-<aside id="tags-holder" style="margin: 0 0 2% 0;">
-    Tags:
-    
-        <a href="/tags/computer-graphics">#computer-graphics</a>
-    
-        <a href="/tags/computer-science">#computer-science</a>
-    
-</aside>
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/baskas-harriet'>Baskas, Harriet</a>
-    
-</aside>
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/docs.microsoft.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading="lazy" aria-hidden="true">
-            docs.microsoft.com
-        </a>
-    
-        <a href='/domains/thepointsguy.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=thepointsguy.com" loading="lazy" aria-hidden="true">
-            thepointsguy.com
-        </a>
-    
-        <a href='/domains/www.misappliedsciences.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.misappliedsciences.com" loading="lazy" aria-hidden="true">
-            www.misappliedsciences.com
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/2021-10-28-socio-economic-equity-in-tech/">&laquo; Socio-Economic Equity in Tech</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/">Software Dependencies &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="far fa-fw fa-newspaper" cited-by-count><cite id=MicrosoftDocs>Retained Mode Versus Immediate Mode - Win32 apps | Microsoft Docs<i>.</i></cite>
+<a href=https://docs.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading=lazy aria-hidden=true>
+<i>docs.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="far fa-fw fa-newspaper" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ParallelRealityPixel>The Parallel Reality Technology<i>.</i></cite>
+<a href=https://www.misappliedsciences.com/home/technology.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.misappliedsciences.com" loading=lazy aria-hidden=true>
+<i>www.misappliedsciences.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jul 16, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Baskas2022>Detroit's new personalized flight information board is straight out of a sci-fi novel<i>.</i></cite>
+Harriet Baskas.
+<a href=https://thepointsguy.com/news/personal-flight-information-display-dtw/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=thepointsguy.com" loading=lazy aria-hidden=true>
+<i>thepointsguy.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jul 16, 2022.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jul 16, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/computer-graphics>#computer-graphics</a>
+<a href=/tags/computer-science>#computer-science</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/baskas-harriet>Baskas, Harriet</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/docs.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=docs.microsoft.com" loading=lazy aria-hidden=true>
+docs.microsoft.com</a>
+<a href=/domains/thepointsguy.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=thepointsguy.com" loading=lazy aria-hidden=true>
+thepointsguy.com</a>
+<a href=/domains/www.misappliedsciences.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.misappliedsciences.com" loading=lazy aria-hidden=true>
+www.misappliedsciences.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/2021-10-28-socio-economic-equity-in-tech/>&#171; Socio-Economic Equity in Tech</a>
+<a href=https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/>Software Dependencies &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

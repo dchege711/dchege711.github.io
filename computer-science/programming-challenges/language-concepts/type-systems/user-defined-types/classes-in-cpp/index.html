@@ -1,1666 +1,462 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Classes in C&#43;&#43; | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/">Language Concepts</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/">Type Systems</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/">User-Defined Types</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/">Classes in C&#43;&#43;</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Classes in C&#43;&#43;</h1>
-    <p class="meta">
-        
-        Dated May 12, 2022;
-        
-        last modified on Thu, 12 May 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#concrete-types">Concrete Types</a>
-      <ul>
-        <li><a href="#an-arithmetic-type">An Arithmetic Type</a>
-          <ul>
-            <li><a href="#inlining">Inlining</a></li>
-            <li><a href="#default-constructors">Default Constructors</a></li>
-            <li><a href="#out-of-class-operator-definitions">Out-of-Class Operator Definitions</a></li>
-            <li><a href="#defining-instance-variables">Defining Instance Variables</a></li>
-          </ul>
-        </li>
-        <li><a href="#containers">Containers</a>
-          <ul>
-            <li><a href="#motivation-for-the-destructor-mechanism">Motivation for the Destructor Mechanism</a></li>
-            <li><a href="#initializing-containers">Initializing Containers</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#abstract-types">Abstract Types</a>
-      <ul>
-        <li><a href="#using-an-abstract-class">Using an Abstract Class</a></li>
-        <li><a href="#the-virtual-function-table">The Virtual Function Table</a></li>
-        <li><a href="#protected-and-private-inheritance">Protected and Private Inheritance</a></li>
-        <li><a href="#class-hierarchies">Class Hierarchies</a></li>
-        <li><a href="#the-case-for-private-virtual-functions">The Case for Private Virtual Functions</a></li>
-      </ul>
-    </li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> quotes Doug McIlroy:</p>
-<blockquote>
-<p>Those types are not &ldquo;abstract&rdquo;; they are as real as <code>int</code> and <code>float</code>.</p>
-</blockquote>
-<p>What is the context of this quote?</p>
-</div>
-</div>
-
-
-<p>A class is a user-defined type provided to represent a concept in the
+<!doctype html><html lang=en><head><title>Classes in C++ | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/>Classes in C++</a></li></ul></nav><section><header><h1>Classes in C++</h1><p class=meta>Dated May 12, 2022;
+last modified on Thu, 12 May 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#concrete-types>Concrete Types</a><ul><li><a href=#an-arithmetic-type>An Arithmetic Type</a><ul><li><a href=#inlining>Inlining</a></li><li><a href=#default-constructors>Default Constructors</a></li><li><a href=#out-of-class-operator-definitions>Out-of-Class Operator Definitions</a></li><li><a href=#defining-instance-variables>Defining Instance Variables</a></li></ul></li><li><a href=#containers>Containers</a><ul><li><a href=#motivation-for-the-destructor-mechanism>Motivation for the Destructor Mechanism</a></li><li><a href=#initializing-containers>Initializing Containers</a></li></ul></li></ul></li><li><a href=#abstract-types>Abstract Types</a><ul><li><a href=#using-an-abstract-class>Using an Abstract Class</a></li><li><a href=#the-virtual-function-table>The Virtual Function Table</a></li><li><a href=#protected-and-private-inheritance>Protected and Private Inheritance</a></li><li><a href=#class-hierarchies>Class Hierarchies</a></li><li><a href=#the-case-for-private-virtual-functions>The Case for Private Virtual Functions</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class="comment open-comment"><p><span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>quotes Doug McIlroy:</p><blockquote><p>Those types are not &ldquo;abstract&rdquo;; they are as real as <code>int</code> and <code>float</code>.</p></blockquote><p>What is the context of this quote?</p></div></div><p>A class is a user-defined type provided to represent a concept in the
 code of a program. Essentially, all language facilities beyond the
 fundamental types, operators, and statements exist to help define better
-class or to use them more conveniently. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Sometimes I have problems defining the concept that is going to be
+class or to use them more conveniently. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=comment-holder><div class=comment><p>Sometimes I have problems defining the concept that is going to be
 encapsulated as a class. Other times, the naming is hard, and I result
-to common patterns like <code>FooManager</code>.</p>
-</div>
-</div>
-
-
-<p>A class is the language mechanism for separating the interface to a type
+to common patterns like <code>FooManager</code>.</p></div></div><p>A class is the language mechanism for separating the interface to a type
 (to be used by all), and its implementation (which has access to
-otherwise inaccessible data). <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
-<h2 id="concrete-types">Concrete Types</h2>
-<p>The basic idea of concrete classes is that they behave &ldquo;just like
+otherwise inaccessible data). <span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><h2 id=concrete-types>Concrete Types</h2><p>The basic idea of concrete classes is that they behave &ldquo;just like
 built-in types&rdquo;. The defining characteristic of a concrete type is that
 its representation is part of its definition. If the representation
-changes in any significant way, a user must recompile. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>For some concrete types, e.g. <code>std::vector</code> and <code>std::string</code>, the
+changes in any significant way, a user must recompile. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>For some concrete types, e.g. <code>std::vector</code> and <code>std::string</code>, the
 representation may have pointers to data stored in the free store
 (dynamic memory, heap). Such types can be considered resource handles
-with carefully crafted interfaces. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>The &ldquo;representation is part of definition&rdquo; property allows us to:</p>
-<ul>
-<li>Place objects of concrete types on the stack and in other objects.</li>
-<li>Refer to objects directly (and not just through pointers or
-references).</li>
-<li>Initialize objects immediately and completely.</li>
-<li>Copy and move objects.</li>
-</ul>
-<p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<h3 id="an-arithmetic-type">An Arithmetic Type</h3>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// From Stroustrup2018
-</span><span style="color:#75715e"></span>
-<span style="color:#00a8c8">class</span> <span style="color:#75af00">complex</span> <span style="color:#111">{</span>
-  <span style="color:#00a8c8">double</span> <span style="color:#111">re</span><span style="color:#111">,</span> <span style="color:#111">im</span><span style="color:#111">;</span> <span style="color:#75715e">// representation: two doubles
-</span><span style="color:#75715e"></span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">complex</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">r</span><span style="color:#111">,</span> <span style="color:#00a8c8">double</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#f92672">:</span><span style="color:#111">re</span><span style="color:#111">(</span><span style="color:#111">r</span><span style="color:#111">),</span> <span style="color:#111">im</span><span style="color:#111">(</span><span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
-  <span style="color:#111">complex</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">r</span><span style="color:#111">)</span> <span style="color:#f92672">:</span><span style="color:#111">re</span><span style="color:#111">(</span><span style="color:#111">r</span><span style="color:#111">),</span> <span style="color:#111">im</span><span style="color:#111">{</span><span style="color:#ae81ff">0</span><span style="color:#111">}</span> <span style="color:#111">{}</span>
-  <span style="color:#111">complex</span><span style="color:#111">()</span> <span style="color:#f92672">:</span><span style="color:#111">re</span><span style="color:#111">{</span><span style="color:#ae81ff">0</span><span style="color:#111">},</span> <span style="color:#111">im</span><span style="color:#111">{</span><span style="color:#ae81ff">0</span><span style="color:#111">}</span> <span style="color:#111">{}</span>
+with carefully crafted interfaces. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>The &ldquo;representation is part of definition&rdquo; property allows us to:</p><ul><li>Place objects of concrete types on the stack and in other objects.</li><li>Refer to objects directly (and not just through pointers or
+references).</li><li>Initialize objects immediately and completely.</li><li>Copy and move objects.</li></ul><p><span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><h3 id=an-arithmetic-type>An Arithmetic Type</h3><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#75715e>// From Stroustrup2018
+</span><span style=color:#75715e></span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>complex</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>double</span> <span style=color:#111>re</span><span style=color:#111>,</span> <span style=color:#111>im</span><span style=color:#111>;</span> <span style=color:#75715e>// representation: two doubles
+</span><span style=color:#75715e></span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>complex</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span> <span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#f92672>:</span><span style=color:#111>re</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>),</span> <span style=color:#111>im</span><span style=color:#111>(</span><span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#111>{}</span>
+  <span style=color:#111>complex</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span> <span style=color:#111>r</span><span style=color:#111>)</span> <span style=color:#f92672>:</span><span style=color:#111>re</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>),</span> <span style=color:#111>im</span><span style=color:#111>{</span><span style=color:#ae81ff>0</span><span style=color:#111>}</span> <span style=color:#111>{}</span>
+  <span style=color:#111>complex</span><span style=color:#111>()</span> <span style=color:#f92672>:</span><span style=color:#111>re</span><span style=color:#111>{</span><span style=color:#ae81ff>0</span><span style=color:#111>},</span> <span style=color:#111>im</span><span style=color:#111>{</span><span style=color:#ae81ff>0</span><span style=color:#111>}</span> <span style=color:#111>{}</span>
 
-  <span style="color:#00a8c8">double</span> <span style="color:#75af00">real</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">re</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">real</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#111">re</span> <span style="color:#f92672">=</span> <span style="color:#111">d</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-  <span style="color:#00a8c8">double</span> <span style="color:#75af00">imag</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">im</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">imag</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span> <span style="color:#111">d</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#111">im</span> <span style="color:#f92672">=</span> <span style="color:#111">d</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+  <span style=color:#00a8c8>double</span> <span style=color:#75af00>real</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>re</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>real</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span> <span style=color:#111>d</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#111>re</span> <span style=color:#f92672>=</span> <span style=color:#111>d</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+  <span style=color:#00a8c8>double</span> <span style=color:#75af00>imag</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>im</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>imag</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span> <span style=color:#111>d</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#111>im</span> <span style=color:#f92672>=</span> <span style=color:#111>d</span><span style=color:#111>;</span> <span style=color:#111>}</span>
 
-  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">+=</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">z</span><span style="color:#111">)</span> <span style="color:#111">{</span>
-    <span style="color:#111">re</span> <span style="color:#f92672">+=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">re</span><span style="color:#111">;</span>
-    <span style="color:#111">im</span> <span style="color:#f92672">+=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">im</span><span style="color:#111">;</span>
-    <span style="color:#00a8c8">return</span> <span style="color:#f92672">*</span><span style="color:#00a8c8">this</span><span style="color:#111">;</span>
-  <span style="color:#111">}</span>
+  <span style=color:#111>complex</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>+=</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>z</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+    <span style=color:#111>re</span> <span style=color:#f92672>+=</span> <span style=color:#111>z</span><span style=color:#111>.</span><span style=color:#111>re</span><span style=color:#111>;</span>
+    <span style=color:#111>im</span> <span style=color:#f92672>+=</span> <span style=color:#111>z</span><span style=color:#111>.</span><span style=color:#111>im</span><span style=color:#111>;</span>
+    <span style=color:#00a8c8>return</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>this</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
 
-  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">-=</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">z</span><span style="color:#111">)</span> <span style="color:#111">{</span>
-    <span style="color:#111">re</span> <span style="color:#f92672">-=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">re</span><span style="color:#111">;</span>
-    <span style="color:#111">im</span> <span style="color:#f92672">-=</span> <span style="color:#111">z</span><span style="color:#111">.</span><span style="color:#111">im</span><span style="color:#111">;</span>
-    <span style="color:#00a8c8">return</span> <span style="color:#f92672">*</span><span style="color:#00a8c8">this</span><span style="color:#111">;</span>
-  <span style="color:#111">}</span>
+  <span style=color:#111>complex</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>-=</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>z</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+    <span style=color:#111>re</span> <span style=color:#f92672>-=</span> <span style=color:#111>z</span><span style=color:#111>.</span><span style=color:#111>re</span><span style=color:#111>;</span>
+    <span style=color:#111>im</span> <span style=color:#f92672>-=</span> <span style=color:#111>z</span><span style=color:#111>.</span><span style=color:#111>im</span><span style=color:#111>;</span>
+    <span style=color:#00a8c8>return</span> <span style=color:#f92672>*</span><span style=color:#00a8c8>this</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
 
-  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">*=</span><span style="color:#111">(</span><span style="color:#111">complex</span><span style="color:#111">);</span> <span style="color:#75715e">// defined out-of-class somewhere
-</span><span style="color:#75715e"></span>  <span style="color:#111">complex</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">/=</span><span style="color:#111">(</span><span style="color:#111">complex</span><span style="color:#111">);</span> <span style="color:#75715e">// defined out-of-class somewhere
-</span><span style="color:#75715e"></span><span style="color:#111">};</span>
-</code></pre></div>
-
-
-<div class="comment-holder">
-    <div class="comment"><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> notes that <code>complex</code>&rsquo;s representation
-has to be compatible with what Fortran provided 60 years ago.</p>
-<p>Why is C++&rsquo;s compatibility with Fortran important? 
-<a href="https://www.intel.com/content/www/us/en/develop/documentation/onemkl-macos-developer-guide/top/language-specific-usage-options/mixed-language-programming-with-onemkl/using-complex-types-in-c-c.html"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    Intel says something
+  <span style=color:#111>complex</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>*=</span><span style=color:#111>(</span><span style=color:#111>complex</span><span style=color:#111>);</span> <span style=color:#75715e>// defined out-of-class somewhere
+</span><span style=color:#75715e></span>  <span style=color:#111>complex</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>/=</span><span style=color:#111>(</span><span style=color:#111>complex</span><span style=color:#111>);</span> <span style=color:#75715e>// defined out-of-class somewhere
+</span><span style=color:#75715e></span><span style=color:#111>};</span>
+</code></pre></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>notes that <code>complex</code>&rsquo;s representation
+has to be compatible with what Fortran provided 60 years ago.</p><p>Why is C++&rsquo;s compatibility with Fortran important?
+<a href=https://www.intel.com/content/www/us/en/develop/documentation/onemkl-macos-developer-guide/top/language-specific-usage-options/mixed-language-programming-with-onemkl/using-complex-types-in-c-c.html target=_blank rel=noopener>Intel says something
 similar
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-.
-It seems that mixing Fortran and C++ is commonplace, e.g. 
-<a href="https://www.ibm.com/docs/en/xl-fortran-aix/15.1.2?topic=calls-mixing-fortran"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    IBM&rsquo;s
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+It seems that mixing Fortran and C++ is commonplace, e.g.
+<a href="https://www.ibm.com/docs/en/xl-fortran-aix/15.1.2?topic=calls-mixing-fortran" target=_blank rel=noopener>IBM&rsquo;s
 instructions
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-.</p>
-</div>
-</div>
-
-
-<h4 id="inlining">Inlining</h4>
-<p>Simple operations (such as constructors, <code>+=</code>, <code>imag</code>, etc.) must be
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p></div></div><h4 id=inlining>Inlining</h4><p>Simple operations (such as constructors, <code>+=</code>, <code>imag</code>, etc.) must be
 inlined (implemented without function calls in the generated machine
-code) <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span>. <span class="citation-ref"><a href="#isoCPPInlineFunctions"></a></span> paints a more subtle picture of the effect of inlining on
-performance. Inline functions might make the executable:</p>
-<ul>
-<li>Larger as the inlined functions get expanded in multiple places.</li>
-<li>Smaller if the expansion generates less code than the code to push/pop
-registers/parameters.</li>
-<li>Faster by removing unnecessary instructions, increasing cache hits
-because of improved locality.</li>
-<li>Slower if it&rsquo;s larger and therefore more thrashing.</li>
-</ul>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Thrashing occurs when a computer&rsquo;s virtual memory resources are
-overused, leading to a constant state of paging and page faults. <span class="citation-ref"><a href="#wikiThrashing"></a></span></p>
-</div>
-</div>
-
-
-<p>Inlining might even be irrelevant to speed because most systems are not
-CPU-bound (most are I/O-bound, database-bound, or network-bound). <span class="citation-ref"><a href="#isoCPPInlineFunctions"></a></span></p>
-<p>Compilers are not obligated to <code>inline</code> (or not to <code>inline</code>). The
+code) <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>. <span class=citation-ref><a href=#isoCPPInlineFunctions></a></span>paints a more subtle picture of the effect of inlining on
+performance. Inline functions might make the executable:</p><ul><li>Larger as the inlined functions get expanded in multiple places.</li><li>Smaller if the expansion generates less code than the code to push/pop
+registers/parameters.</li><li>Faster by removing unnecessary instructions, increasing cache hits
+because of improved locality.</li><li>Slower if it&rsquo;s larger and therefore more thrashing.</li></ul><div class=comment-holder><div class=comment><p>Thrashing occurs when a computer&rsquo;s virtual memory resources are
+overused, leading to a constant state of paging and page faults. <span class=citation-ref><a href=#wikiThrashing></a></span></p></div></div><p>Inlining might even be irrelevant to speed because most systems are not
+CPU-bound (most are I/O-bound, database-bound, or network-bound). <span class=citation-ref><a href=#isoCPPInlineFunctions></a></span></p><p>Compilers are not obligated to <code>inline</code> (or not to <code>inline</code>). The
 meaning of <code>inline</code> has evolved to be &ldquo;multiple definitions are
-permitted&rdquo; rather than &ldquo;inlining is preferred&rdquo;. <span class="citation-ref"><a href="#cppReferenceInlineSpecifier"></a></span></p>
-<h4 id="default-constructors">Default Constructors</h4>
-<p>By defining a default constructor (one that can be invoked without
+permitted&rdquo; rather than &ldquo;inlining is preferred&rdquo;. <span class=citation-ref><a href=#cppReferenceInlineSpecifier></a></span></p><h4 id=default-constructors>Default Constructors</h4><p>By defining a default constructor (one that can be invoked without
 arguments), one eliminates the possibility of uninitialized variables of
-that type. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> One can also have <code>complex() = delete;</code>, which will cause a compiler error if the default constructor
-gets selected. <span class="citation-ref"><a href="#cppReferenceDefaultConstructor"></a></span></p>
-<h4 id="out-of-class-operator-definitions">Out-of-Class Operator Definitions</h4>
-<p>Operations that do not require direct access to the representation can
-be defined separately from the class definition, e.g.</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">+</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">+=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">-</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">-=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">-</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">{</span><span style="color:#f92672">-</span><span style="color:#111">a</span><span style="color:#111">.</span><span style="color:#111">real</span><span style="color:#111">(),</span> <span style="color:#f92672">-</span><span style="color:#111">a</span><span style="color:#111">.</span><span style="color:#111">imag</span><span style="color:#111">()};</span> <span style="color:#111">}</span>
-<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">*</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">*=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-<span style="color:#111">complex</span> <span style="color:#00a8c8">operator</span><span style="color:#f92672">/</span><span style="color:#111">(</span><span style="color:#111">complex</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#111">complex</span> <span style="color:#111">b</span><span style="color:#111">)</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">a</span> <span style="color:#f92672">/=</span> <span style="color:#111">b</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+that type. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>One can also have <code>complex() = delete;</code>, which will cause a compiler error if the default constructor
+gets selected. <span class=citation-ref><a href=#cppReferenceDefaultConstructor></a></span></p><h4 id=out-of-class-operator-definitions>Out-of-Class Operator Definitions</h4><p>Operations that do not require direct access to the representation can
+be defined separately from the class definition, e.g.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#111>complex</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>+</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>complex</span> <span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#f92672>+=</span> <span style=color:#111>b</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+<span style=color:#111>complex</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>-</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>complex</span> <span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#f92672>-=</span> <span style=color:#111>b</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+<span style=color:#111>complex</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>-</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>a</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>{</span><span style=color:#f92672>-</span><span style=color:#111>a</span><span style=color:#111>.</span><span style=color:#111>real</span><span style=color:#111>(),</span> <span style=color:#f92672>-</span><span style=color:#111>a</span><span style=color:#111>.</span><span style=color:#111>imag</span><span style=color:#111>()};</span> <span style=color:#111>}</span>
+<span style=color:#111>complex</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>*</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>complex</span> <span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#f92672>*=</span> <span style=color:#111>b</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+<span style=color:#111>complex</span> <span style=color:#00a8c8>operator</span><span style=color:#f92672>/</span><span style=color:#111>(</span><span style=color:#111>complex</span> <span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>complex</span> <span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#f92672>/=</span> <span style=color:#111>b</span><span style=color:#111>;</span> <span style=color:#111>}</span>
 </code></pre></div><p>An argument passed by value is copied, and therefore it can be modified
-without affecting the caller&rsquo;s copy. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> Had
+without affecting the caller&rsquo;s copy. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>Had
 we received the arguments by reference, implementing <code>a + b</code> as <code>a += b</code>
 because of performance may lead to buggy programs because users expect
-<code>a + b</code> to make a copy. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>The <code>return a += b;</code> statement caught me off-guard. Looks like invalid
-syntax.</p>
-</div>
-</div>
-
-
-<p>ISOCPP has considered letting users define their own operators several
+<code>a + b</code> to make a copy. <span class=citation-ref><a href=#isoCPPOperatorOverloading></a></span></p><div class=comment-holder><div class=comment><p>The <code>return a += b;</code> statement caught me off-guard. Looks like invalid
+syntax.</p></div></div><p>ISOCPP has considered letting users define their own operators several
 times, and the answer has always been that the likely problems outweigh
-the likely benefits <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span>.</p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Other languages, like Haskell, allow custom operators. I&rsquo;ve sometimes
-found the syntax unintuitive, e.g. <code>&lt;|&gt;</code>.</p>
-</div>
-</div>
-
-
-<p>Some operators, e.g. <code>.</code>, <code>::</code>, <code>sizeof</code>, and <code>?:</code>, cannot be
+the likely benefits <span class=citation-ref><a href=#isoCPPOperatorOverloading></a></span>.</p><div class=comment-holder><div class=comment><p>Other languages, like Haskell, allow custom operators. I&rsquo;ve sometimes
+found the syntax unintuitive, e.g. <code>&lt;|></code>.</p></div></div><p>Some operators, e.g. <code>.</code>, <code>::</code>, <code>sizeof</code>, and <code>?:</code>, cannot be
 overridden. Furthermore, one can&rsquo;t define an operator all of whose
-operands/parameters are of primitive types. <span class="citation-ref"><a href="#isoCPPOperatorOverloading"></a></span></p>
-<h4 id="defining-instance-variables">Defining Instance Variables</h4>
-<table>
-<thead>
-<tr>
-<th></th>
-<th><code>Bar</code></th>
-<th><code>optional&lt;Bar&gt;</code></th>
-<th><code>unique_ptr&lt;Bar&gt;</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Supports delayed construction</td>
-<td></td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Always safe to access</td>
-<td>✅</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Can transfer ownership of <code>Bar</code></td>
-<td></td>
-<td></td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Can store subclasses of <code>Bar</code></td>
-<td></td>
-<td></td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Movable</td>
-<td>If <code>Bar</code> is movable</td>
-<td>If <code>Bar</code> is movable</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Copyable</td>
-<td>If <code>Bar</code> is copyable</td>
-<td>If <code>Bar</code> is copyable</td>
-<td></td>
-</tr>
-<tr>
-<td>Friendly to CPU caches</td>
-<td>✅</td>
-<td>✅</td>
-<td></td>
-</tr>
-<tr>
-<td>No heap allocation</td>
-<td>✅</td>
-<td>✅</td>
-<td></td>
-</tr>
-<tr>
-<td>Memory usage</td>
-<td><code>sizeof(Bar)</code></td>
-<td><code>sizeof(Bar) + sizeof(bool)</code> (+ padding)</td>
-<td><code>sizeof(Bar*)</code> (+ non-empty custom deleter if present) when null; <code>sizeof(Bar*) + sizeof(Bar)</code> otherwise</td>
-</tr>
-<tr>
-<td>Object lifetime</td>
-<td>Same as enclosing scope</td>
-<td>Restricted to enclosing scope</td>
-<td>Unrestricted</td>
-</tr>
-<tr>
-<td>Call <code>f(Bar*)</code></td>
-<td><code>f(&amp;bar_)</code></td>
-<td><code>f(opt_.value())</code> or <code>f(&amp;*opt_)</code></td>
-<td><code>f(ptr_.get())</code> or <code>f(&amp;*ptr_)</code></td>
-</tr>
-<tr>
-<td>Remove value</td>
-<td>N/A</td>
-<td><code>opt_.reset()</code> or <code>opt_ = nullopt</code></td>
-<td><code>ptr_.reset()</code> or <code>ptr_ = nullptr</code></td>
-</tr>
-</tbody>
-</table>
-<p><span class="citation-ref"><a href="#abseilToTW123"></a></span></p>
-<h3 id="containers">Containers</h3>
-<p>A <strong>container</strong> is an object holding a collection of elements. It should
+operands/parameters are of primitive types. <span class=citation-ref><a href=#isoCPPOperatorOverloading></a></span></p><h4 id=defining-instance-variables>Defining Instance Variables</h4><table><thead><tr><th></th><th><code>Bar</code></th><th><code>optional&lt;Bar></code></th><th><code>unique_ptr&lt;Bar></code></th></tr></thead><tbody><tr><td>Supports delayed construction</td><td></td><td>✅</td><td>✅</td></tr><tr><td>Always safe to access</td><td>✅</td><td></td><td></td></tr><tr><td>Can transfer ownership of <code>Bar</code></td><td></td><td></td><td>✅</td></tr><tr><td>Can store subclasses of <code>Bar</code></td><td></td><td></td><td>✅</td></tr><tr><td>Movable</td><td>If <code>Bar</code> is movable</td><td>If <code>Bar</code> is movable</td><td>✅</td></tr><tr><td>Copyable</td><td>If <code>Bar</code> is copyable</td><td>If <code>Bar</code> is copyable</td><td></td></tr><tr><td>Friendly to CPU caches</td><td>✅</td><td>✅</td><td></td></tr><tr><td>No heap allocation</td><td>✅</td><td>✅</td><td></td></tr><tr><td>Memory usage</td><td><code>sizeof(Bar)</code></td><td><code>sizeof(Bar) + sizeof(bool)</code> (+ padding)</td><td><code>sizeof(Bar*)</code> (+ non-empty custom deleter if present) when null; <code>sizeof(Bar*) + sizeof(Bar)</code> otherwise</td></tr><tr><td>Object lifetime</td><td>Same as enclosing scope</td><td>Restricted to enclosing scope</td><td>Unrestricted</td></tr><tr><td>Call <code>f(Bar*)</code></td><td><code>f(&bar_)</code></td><td><code>f(opt_.value())</code> or <code>f(&*opt_)</code></td><td><code>f(ptr_.get())</code> or <code>f(&*ptr_)</code></td></tr><tr><td>Remove value</td><td>N/A</td><td><code>opt_.reset()</code> or <code>opt_ = nullopt</code></td><td><code>ptr_.reset()</code> or <code>ptr_ = nullptr</code></td></tr></tbody></table><p><span class=citation-ref><a href=#abseilToTW123></a></span></p><h3 id=containers>Containers</h3><p>A <strong>container</strong> is an object holding a collection of elements. It should
 be simple to understand, establish useful invariants, and provide
-range-checked access. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<h4 id="motivation-for-the-destructor-mechanism">Motivation for the Destructor Mechanism</h4>
-<p>Although C++ provides an interface for plugging in a garbage collector,
+range-checked access. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><h4 id=motivation-for-the-destructor-mechanism>Motivation for the Destructor Mechanism</h4><p>Although C++ provides an interface for plugging in a garbage collector,
 aim to use the destructor pattern to reduce headache (e.g. GC&rsquo;s
-availability not being guaranteed) <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span>:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#f92672">:</span> <span style="color:#111">elem</span><span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#00a8c8">double</span><span style="color:#111">[</span><span style="color:#111">s</span><span style="color:#111">]},</span> <span style="color:#111">sz</span><span style="color:#111">{</span><span style="color:#111">s</span><span style="color:#111">}</span> <span style="color:#111">{</span> <span style="color:#75715e">// Ctor: acquires
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// resources from the free store.
-</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">!=</span> <span style="color:#111">s</span><span style="color:#111">;</span> <span style="color:#f92672">++</span><span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#75715e">// Initialize elements
-</span><span style="color:#75715e"></span>      <span style="color:#111">elem</span><span style="color:#111">[</span><span style="color:#111">i</span><span style="color:#111">]</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
-  <span style="color:#111">}</span>
+availability not being guaranteed) <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>Vector</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Vector</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>s</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>elem</span><span style=color:#111>{</span><span style=color:#00a8c8>new</span> <span style=color:#00a8c8>double</span><span style=color:#111>[</span><span style=color:#111>s</span><span style=color:#111>]},</span> <span style=color:#111>sz</span><span style=color:#111>{</span><span style=color:#111>s</span><span style=color:#111>}</span> <span style=color:#111>{</span> <span style=color:#75715e>// Ctor: acquires
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// resources from the free store.
+</span><span style=color:#75715e></span>    <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#f92672>!=</span> <span style=color:#111>s</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#75715e>// Initialize elements
+</span><span style=color:#75715e></span>      <span style=color:#111>elem</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
 
-  <span style="color:#f92672">~</span><span style="color:#111">Vector</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#75715e">// Destructor: release resources
-</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">delete</span><span style="color:#111">[]</span> <span style="color:#111">elem</span><span style="color:#111">;</span>
-  <span style="color:#111">}</span>
+  <span style=color:#f92672>~</span><span style=color:#111>Vector</span><span style=color:#111>()</span> <span style=color:#111>{</span> <span style=color:#75715e>// Destructor: release resources
+</span><span style=color:#75715e></span>    <span style=color:#00a8c8>delete</span><span style=color:#111>[]</span> <span style=color:#111>elem</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
 
-  <span style="color:#00a8c8">double</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#111">[](</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">);</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#75af00">size</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span><span style="color:#111">;</span>
+  <span style=color:#00a8c8>double</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>);</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#75af00>size</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span><span style=color:#111>;</span>
 
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">double</span><span style="color:#f92672">*</span> <span style="color:#111">elem</span><span style="color:#111">;</span> <span style="color:#75715e">// Points to an array of sz doubles
-</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">int</span> <span style="color:#111">sz</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>double</span><span style=color:#f92672>*</span> <span style=color:#111>elem</span><span style=color:#111>;</span> <span style=color:#75715e>// Points to an array of sz doubles
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>int</span> <span style=color:#111>sz</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
 </code></pre></div><p>The technique of acquiring resources in a constructor and releasing them
 in a destructor, known as <strong>Resource Acquisition Is Initialization
 (RAII)</strong>, allows us to avoid naked <code>new</code> and <code>delete</code> operations in
-general code. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>In RAII, resource acquisition must succeed for initialization to
+general code. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>In RAII, resource acquisition must succeed for initialization to
 succeed. The resource is guaranteed to be held between when
 initialization finishes and finalization starts (holding the resources)
 is a class invariant, and to be held only when the object is alive. If
-there are no object leaks, then there are no resource leaks. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
-<p>RAII only works for resources acquired and released by stack-allocated
+there are no object leaks, then there are no resource leaks. <span class=citation-ref><a href=#wikiRAII></a></span></p><p>RAII only works for resources acquired and released by stack-allocated
 objects, where there is a well-defined static object lifetime. Heap
 based objects must be deleted along all possible execution paths to
-trigger their destructor. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
-<p>Notice that regardless of the number of elements, the <code>Vector</code> object
+trigger their destructor. <span class=citation-ref><a href=#wikiRAII></a></span></p><p>Notice that regardless of the number of elements, the <code>Vector</code> object
 itself is always the same size. A fixed-size handle referring to a
 variable amount of data &ldquo;elsewhere&rdquo; is a common technique for handling
-varying amounts of information in C++. <span class="citation-ref"><a href="#Stroustrup2018-Ch2"></a></span></p>
-<p>In C++, stack unwinding (popping one or more frames off the stack to
+varying amounts of information in C++. <span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><p>In C++, stack unwinding (popping one or more frames off the stack to
 resume execution elsewhere in the program) is only guaranteed to happen
 if the exception is caught somewhere. If it&rsquo;s not caught, <code>terminate</code> is
 called and stack unwinding at this point is implementation-defined. The
 OS usually releases program resources at termination, so it usually
-works out. <span class="citation-ref"><a href="#wikiRAII"></a></span></p>
-<h4 id="initializing-containers">Initializing Containers</h4>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector</span> <span style="color:#111">{</span>
-  <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-    <span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">initializer_list</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">double</span><span style="color:#f92672">&gt;</span><span style="color:#111">);</span>
-    <span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span>    <span style="color:#00a8c8">void</span> <span style="color:#75af00">push_back</span><span style="color:#111">(</span><span style="color:#00a8c8">double</span><span style="color:#111">);</span> <span style="color:#75715e">// Useful for an arbitrary number of elements.
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ...
-</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+works out. <span class=citation-ref><a href=#wikiRAII></a></span></p><h4 id=initializing-containers>Initializing Containers</h4><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>Vector</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+    <span style=color:#111>Vector</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>initializer_list</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;</span><span style=color:#111>);</span>
+    <span style=color:#75715e>// ...
+</span><span style=color:#75715e></span>    <span style=color:#00a8c8>void</span> <span style=color:#75af00>push_back</span><span style=color:#111>(</span><span style=color:#00a8c8>double</span><span style=color:#111>);</span> <span style=color:#75715e>// Useful for an arbitrary number of elements.
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// ...
+</span><span style=color:#75715e></span><span style=color:#111>};</span>
 </code></pre></div><p>The <code>std::initializer_list</code> is a standard-library type know to the
 compiler. Whenever we use a <code>{}</code>-list, the compiler creates an object of
-type <code>initializer_list</code> to give to the program, e.g. <code>Vector v = {1, 2, 3, 4, 5}</code>. The initializer-list constructor may be defined as: <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">Vector</span><span style="color:#f92672">::</span><span style="color:#111">Vector</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">initializer_list</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">double</span><span style="color:#f92672">&gt;</span> <span style="color:#111">lst</span><span style="color:#111">)</span>
-    <span style="color:#f92672">:</span> <span style="color:#111">elem</span><span style="color:#111">{</span><span style="color:#00a8c8">new</span> <span style="color:#00a8c8">double</span><span style="color:#111">[</span><span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">size</span><span style="color:#111">()]},</span> <span style="color:#111">sz</span><span style="color:#111">{</span><span style="color:#00a8c8">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">int</span><span style="color:#f92672">&gt;</span><span style="color:#111">(</span><span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">size</span><span style="color:#111">())}</span> <span style="color:#111">{</span>
-  <span style="color:#111">copy</span><span style="color:#111">(</span><span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">begin</span><span style="color:#111">(),</span> <span style="color:#111">lst</span><span style="color:#111">.</span><span style="color:#111">end</span><span style="color:#111">(),</span> <span style="color:#111">elem</span><span style="color:#111">)</span> <span style="color:#75715e">// Copy from lst into elem
-</span><span style="color:#75715e"></span><span style="color:#111">}</span>
-</code></pre></div><p>An object of type <code>std::initializer_list&lt;T&gt;</code> is a lightweight proxy
+type <code>initializer_list</code> to give to the program, e.g. <code>Vector v = {1, 2, 3, 4, 5}</code>. The initializer-list constructor may be defined as: <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#111>Vector</span><span style=color:#f92672>::</span><span style=color:#111>Vector</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>initializer_list</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>double</span><span style=color:#f92672>&gt;</span> <span style=color:#111>lst</span><span style=color:#111>)</span>
+    <span style=color:#f92672>:</span> <span style=color:#111>elem</span><span style=color:#111>{</span><span style=color:#00a8c8>new</span> <span style=color:#00a8c8>double</span><span style=color:#111>[</span><span style=color:#111>lst</span><span style=color:#111>.</span><span style=color:#111>size</span><span style=color:#111>()]},</span> <span style=color:#111>sz</span><span style=color:#111>{</span><span style=color:#00a8c8>static_cast</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>lst</span><span style=color:#111>.</span><span style=color:#111>size</span><span style=color:#111>())}</span> <span style=color:#111>{</span>
+  <span style=color:#111>copy</span><span style=color:#111>(</span><span style=color:#111>lst</span><span style=color:#111>.</span><span style=color:#111>begin</span><span style=color:#111>(),</span> <span style=color:#111>lst</span><span style=color:#111>.</span><span style=color:#111>end</span><span style=color:#111>(),</span> <span style=color:#111>elem</span><span style=color:#111>)</span> <span style=color:#75715e>// Copy from lst into elem
+</span><span style=color:#75715e></span><span style=color:#111>}</span>
+</code></pre></div><p>An object of type <code>std::initializer_list&lt;T></code> is a lightweight proxy
 object that provides access to an array of objects of type <code>const T</code>.
 Copying a <code>std::initializer_list</code> does not copy the underlying objects.
-<span class="citation-ref"><a href="#cppReferenceInitializerList"></a></span></p>
-<p>The <code>static_cast</code> is used to convert from the unsigned <code>size_t</code> returned
+<span class=citation-ref><a href=#cppReferenceInitializerList></a></span></p><p>The <code>static_cast</code> is used to convert from the unsigned <code>size_t</code> returned
 by <code>initializer_list::size()</code>. We&rsquo;re assuming that a handwritten list
 won&rsquo;t have more elements than the largest integer. <code>*cast</code>s should be
-used sparingly as they are error-prone. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Containers may define their <code>container::size_type</code> as they wish. It may
+used sparingly as they are error-prone. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=comment-holder><div class=comment><p>Containers may define their <code>container::size_type</code> as they wish. It may
 not always be <code>std::size_t</code>. That said, <code>std::size_t</code> can store the
 maximum size of a theoretically object of any type (including array). A
 type whose size cannot be represented by <code>std::size_t</code> is ill-formed.
-<span class="citation-ref"><a href="#cppReferenceSizeT"></a></span></p>
-<p>Programs using other types, e.g. <code>unsigned int</code>, for array-indexing and
+<span class=citation-ref><a href=#cppReferenceSizeT></a></span></p><p>Programs using other types, e.g. <code>unsigned int</code>, for array-indexing and
 loop counting may fail on 64-bit systems when the index exceeds
-<code>UINT_MAX</code> or if the program relies on 32-bit modular arithmetic. <span class="citation-ref"><a href="#cppReferenceSizeT"></a></span></p>
-</div>
-</div>
+<code>UINT_MAX</code> or if the program relies on 32-bit modular arithmetic. <span class=citation-ref><a href=#cppReferenceSizeT></a></span></p></div></div><div class=comment-holder><div class=comment><p>Dangerous casting can allow one to modify private variables:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>Foo</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Foo</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>i_</span><span style=color:#111>(</span><span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#111>{}</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#75af00>i</span><span style=color:#111>()</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>i_</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>i_</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
 
-
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Dangerous casting can allow one to modify private variables:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Foo</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Foo</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#f92672">:</span> <span style="color:#111">i_</span><span style="color:#111">(</span><span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#75af00">i</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">i_</span><span style="color:#111">;</span> <span style="color:#111">}</span>
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#111">i_</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
-
-<span style="color:#111">Foo</span> <span style="color:#75af00">foo</span><span style="color:#111">(</span><span style="color:#ae81ff">10</span><span style="color:#111">);</span>
-<span style="color:#f92672">*</span><span style="color:#111">(</span><span style="color:#00a8c8">reinterpret_cast</span><span style="color:#f92672">&lt;</span><span style="color:#00a8c8">int</span><span style="color:#f92672">*&gt;</span><span style="color:#111">(</span><span style="color:#f92672">&amp;</span><span style="color:#111">foo</span><span style="color:#111">))</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">500</span><span style="color:#111">;</span>
-<span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">cout</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#111">foo</span><span style="color:#111">.</span><span style="color:#111">i</span><span style="color:#111">();</span> <span style="color:#75715e">// prints -500.
-</span></code></pre></div><p><span class="citation-ref"><a href="#soWhyDoesCppAllowPrivateMemberModification"></a></span></p>
-<p>C++ tries to guard against Murphy, not Machiavelli. <span class="citation-ref"><a href="#Conway"></a></span></p>
-</div>
-</div>
-
-
-<h2 id="abstract-types">Abstract Types</h2>
-<p>An abstract type is a type that completely insulates a user from
+<span style=color:#111>Foo</span> <span style=color:#75af00>foo</span><span style=color:#111>(</span><span style=color:#ae81ff>10</span><span style=color:#111>);</span>
+<span style=color:#f92672>*</span><span style=color:#111>(</span><span style=color:#00a8c8>reinterpret_cast</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>*&gt;</span><span style=color:#111>(</span><span style=color:#f92672>&amp;</span><span style=color:#111>foo</span><span style=color:#111>))</span> <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>500</span><span style=color:#111>;</span>
+<span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>foo</span><span style=color:#111>.</span><span style=color:#111>i</span><span style=color:#111>();</span> <span style=color:#75715e>// prints -500.
+</span></code></pre></div><p><span class=citation-ref><a href=#soWhyDoesCppAllowPrivateMemberModification></a></span></p><p>C++ tries to guard against Murphy, not Machiavelli. <span class=citation-ref><a href=#Conway></a></span></p></div></div><h2 id=abstract-types>Abstract Types</h2><p>An abstract type is a type that completely insulates a user from
 implementation details. The interface is decoupled from the
-representation, and there are no genuine local variables. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// Container is an abstract class because it has a pure virtual
-</span><span style="color:#75715e">// function.
-</span><span style="color:#75715e"></span><span style="color:#00a8c8">class</span> <span style="color:#75af00">Container</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#75715e">// It is common for abstract classes to not have a constructor. After
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// all, there is no data to initialize.
-</span><span style="color:#75715e"></span>
-  <span style="color:#75715e">// The destructor is declared virtual so that derived classes can
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// define implementations. Someone destroying a Container through a
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// pointer has no idea what resources are owned by its implementation.
-</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">Container</span><span style="color:#111">()</span> <span style="color:#111">{}</span>
+representation, and there are no genuine local variables. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#75715e>// Container is an abstract class because it has a pure virtual
+</span><span style=color:#75715e>// function.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Container</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#75715e>// It is common for abstract classes to not have a constructor. After
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// all, there is no data to initialize.
+</span><span style=color:#75715e></span>
+  <span style=color:#75715e>// The destructor is declared virtual so that derived classes can
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// define implementations. Someone destroying a Container through a
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// pointer has no idea what resources are owned by its implementation.
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>virtual</span> <span style=color:#f92672>~</span><span style=color:#111>Container</span><span style=color:#111>()</span> <span style=color:#111>{}</span>
 
-  <span style="color:#75715e">// The &#34;= 0&#34; syntax says the function is pure virtual. Some class
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// derived from Container MUST define the function.
-</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">double</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#111">[](</span><span style="color:#00a8c8">int</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+  <span style=color:#75715e>// The &#34;= 0&#34; syntax says the function is pure virtual. Some class
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// derived from Container MUST define the function.
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>double</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
 
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">size</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
-</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>An abstract class cannot be instantiated; we can&rsquo;t do <code>Container c;</code> -
-we don&rsquo;t even know the size of <code>Container</code>. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<h3 id="using-an-abstract-class">Using an Abstract Class</h3>
-<p>For <code>Container</code> to be useful, we need a class that implements the
-functions required by the interface:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// &#34;: public&#34; can be read as &#34;is derived from&#34;.
-</span><span style="color:#75715e">// Vector_container is said to be derived from class Container, or a
-</span><span style="color:#75715e">// subclass.
-</span><span style="color:#75715e">// Container is said to be a base class of Vector_container, or a
-</span><span style="color:#75715e">// superclass.
-</span><span style="color:#75715e">// The derived class is said to inherit members from its base class, and
-</span><span style="color:#75715e">// so the use of base and derived classes is commonly referred to as
-</span><span style="color:#75715e">// inheritance.
-</span><span style="color:#75715e"></span><span style="color:#00a8c8">class</span> <span style="color:#75af00">Vector_container</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Container</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Vector_container</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#f92672">:</span> <span style="color:#111">v</span><span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">{}</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>int</span> <span style=color:#75af00>size</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
+</code></pre></div><p><span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>An abstract class cannot be instantiated; we can&rsquo;t do <code>Container c;</code> -
+we don&rsquo;t even know the size of <code>Container</code>. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><h3 id=using-an-abstract-class>Using an Abstract Class</h3><p>For <code>Container</code> to be useful, we need a class that implements the
+functions required by the interface:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#75715e>// &#34;: public&#34; can be read as &#34;is derived from&#34;.
+</span><span style=color:#75715e>// Vector_container is said to be derived from class Container, or a
+</span><span style=color:#75715e>// subclass.
+</span><span style=color:#75715e>// Container is said to be a base class of Vector_container, or a
+</span><span style=color:#75715e>// superclass.
+</span><span style=color:#75715e>// The derived class is said to inherit members from its base class, and
+</span><span style=color:#75715e>// so the use of base and derived classes is commonly referred to as
+</span><span style=color:#75715e>// inheritance.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Vector_container</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>Container</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Vector_container</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>s</span><span style=color:#111>)</span> <span style=color:#f92672>:</span> <span style=color:#111>v</span><span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>)</span> <span style=color:#111>{}</span>
 
-  <span style="color:#75715e">// `-Winconsistent-missing-destructor-override` warns about the
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// missing &#34;override&#34; below.
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// &lt;span class=&#34;citation-ref&#34;&gt;&lt;a href=&#34;#clangDiagnosticsMissingOverrides&#34;&gt;&lt;/a&gt;&lt;/span&gt;
-</span><span style="color:#75715e"></span>  <span style="color:#f92672">~</span><span style="color:#111">Vector_container</span><span style="color:#111">()</span> <span style="color:#111">{}</span>
+  <span style=color:#75715e>// `-Winconsistent-missing-destructor-override` warns about the
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// missing &#34;override&#34; below.
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// &lt;span class=&#34;citation-ref&#34;&gt;&lt;a href=&#34;#clangDiagnosticsMissingOverrides&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+</span><span style=color:#75715e></span>  <span style=color:#f92672>~</span><span style=color:#111>Vector_container</span><span style=color:#111>()</span> <span style=color:#111>{}</span>
 
-  <span style="color:#75715e">// The use of &#34;override&#34; is optional, but being explicit helps the
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// compiler catch mistakes.
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">//
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// `-Winconsistent-missing-override`, which warns if the &#34;override&#34;
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// keyword is not specified when it should, is enabled by default.
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// &lt;span class=&#34;citation-ref&#34;&gt;&lt;a href=&#34;#clangDiagnosticsMissingOverrides&#34;&gt;&lt;/a&gt;&lt;/span&gt;
-</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">double</span><span style="color:#f92672">&amp;</span> <span style="color:#00a8c8">operator</span><span style="color:#111">[](</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span><span style="color:#111">)</span> <span style="color:#00a8c8">override</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">v</span><span style="color:#111">[</span><span style="color:#111">i</span><span style="color:#111">];</span> <span style="color:#111">}</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#75af00">size</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">override</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">v</span><span style="color:#111">.</span><span style="color:#111">size</span><span style="color:#111">();</span> <span style="color:#111">}</span>
+  <span style=color:#75715e>// The use of &#34;override&#34; is optional, but being explicit helps the
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// compiler catch mistakes.
+</span><span style=color:#75715e></span>  <span style=color:#75715e>//
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// `-Winconsistent-missing-override`, which warns if the &#34;override&#34;
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// keyword is not specified when it should, is enabled by default.
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// &lt;span class=&#34;citation-ref&#34;&gt;&lt;a href=&#34;#clangDiagnosticsMissingOverrides&#34;&gt;&lt;/a&gt;&lt;/span&gt;
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>double</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#00a8c8>override</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>v</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>];</span> <span style=color:#111>}</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#75af00>size</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#00a8c8>override</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>size</span><span style=color:#111>();</span> <span style=color:#111>}</span>
 
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Vector</span> <span style="color:#111">v</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
 </code></pre></div><p><code>Vector_container</code> can be initialized and referred to as a <code>Container</code>,
-i.e. <code>Container* p = new Vector_container(10)</code>. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>A <code>Container</code> can be used like this:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#75af00">use</span><span style="color:#111">(</span><span style="color:#111">Container</span><span style="color:#f92672">&amp;</span> <span style="color:#111">c</span><span style="color:#111">)</span> <span style="color:#111">{</span>
-  <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">int</span> <span style="color:#111">sz</span> <span style="color:#f92672">=</span> <span style="color:#111">c</span><span style="color:#111">.</span><span style="color:#111">size</span><span style="color:#111">();</span>
-  <span style="color:#00a8c8">for</span> <span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span> <span style="color:#111">i</span> <span style="color:#f92672">!=</span> <span style="color:#111">sz</span><span style="color:#111">;</span> <span style="color:#f92672">++</span><span style="color:#111">i</span><span style="color:#111">)</span>
-    <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">cout</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#111">c</span><span style="color:#111">[</span><span style="color:#111">i</span><span style="color:#111">]</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#d88200">&#39;\n&#39;</span><span style="color:#111">;</span>
-<span style="color:#111">}</span>
-</code></pre></div><p><code>use(Container&amp;)</code> has no idea if its argument is a <code>Vector_container</code>,
+i.e. <code>Container* p = new Vector_container(10)</code>. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>A <code>Container</code> can be used like this:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>void</span> <span style=color:#75af00>use</span><span style=color:#111>(</span><span style=color:#111>Container</span><span style=color:#f92672>&amp;</span> <span style=color:#111>c</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>const</span> <span style=color:#00a8c8>int</span> <span style=color:#111>sz</span> <span style=color:#f92672>=</span> <span style=color:#111>c</span><span style=color:#111>.</span><span style=color:#111>size</span><span style=color:#111>();</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#f92672>!=</span> <span style=color:#111>sz</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>i</span><span style=color:#111>)</span>
+    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>c</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#d88200>&#39;\n&#39;</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>use(Container&)</code> has no idea if its argument is a <code>Vector_container</code>,
 or some other kind of container, and it doesn&rsquo;t need to know.
-<span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>If the implementation of <code>Vector_container</code> changed, <code>use(Container&amp;)</code>
+<span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>If the implementation of <code>Vector_container</code> changed, <code>use(Container&)</code>
 need not be re-compiled. The flip side of this flexibility is that
 <code>Container</code> objects must be manipulated through pointers or references.
-<span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<p>Objects are constructed &ldquo;bottom up&rdquo; (base first) by constructors, and
-destroyed &ldquo;top down&rdquo; (derived first) by destructors. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<h3 id="the-virtual-function-table">The Virtual Function Table</h3>
-<p>A <code>Container</code> object must contain information to allow it to select the
+<span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><p>Objects are constructed &ldquo;bottom up&rdquo; (base first) by constructors, and
+destroyed &ldquo;top down&rdquo; (derived first) by destructors. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><h3 id=the-virtual-function-table>The Virtual Function Table</h3><p>A <code>Container</code> object must contain information to allow it to select the
 right function to call at runtime. A common implementation is a virtual
 function table, or simply the <code>vtbl</code>. Each class with virtual functions
-has its own <code>vtbl</code>. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<figure>
-    <img src="/img/computer-science/programming-challenges/language-concepts/cpp/virtual-function-table.jpg"
-         alt="Graphical representation of a virtual function table. Source: Stroustrup2018-Ch4."/> <figcaption>
-            <p>Graphical representation of a virtual function table. Source: Stroustrup2018-Ch4.</p>
-        </figcaption>
-</figure>
-
-<p>The implementation of the caller needs only to know the location of the
+has its own <code>vtbl</code>. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><figure><img src=/img/computer-science/programming-challenges/language-concepts/cpp/virtual-function-table.jpg alt="Graphical representation of a virtual function table. Source: Stroustrup2018-Ch4."><figcaption><p>Graphical representation of a virtual function table. Source: Stroustrup2018-Ch4.</p></figcaption></figure><p>The implementation of the caller needs only to know the location of the
 pointer to the <code>vtbl</code> in a <code>Container</code>, and the index used for each
 virtual function. The virtual call mechanism can be made almost as
-efficient as the &ldquo;normal function call mechanism (within 25%). <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-<h3 id="protected-and-private-inheritance">Protected and Private Inheritance</h3>
-<p>There is also protected inheritance, and private inheritance. It is all
-about access to the inherited members. From <span class="citation-ref"><a href="#soPublicPrivateAndProtectedInheritance"></a></span>:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">A</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#111">x</span><span style="color:#111">;</span>
- <span style="color:#00a8c8">protected</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#111">y</span><span style="color:#111">;</span>
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#111">z</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
+efficient as the &ldquo;normal function call mechanism (within 25%). <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><h3 id=protected-and-private-inheritance>Protected and Private Inheritance</h3><p>There is also protected inheritance, and private inheritance. It is all
+about access to the inherited members. From <span class=citation-ref><a href=#soPublicPrivateAndProtectedInheritance></a></span>:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>A</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>x</span><span style=color:#111>;</span>
+ <span style=color:#00a8c8>protected</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>y</span><span style=color:#111>;</span>
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>z</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
 
-<span style="color:#00a8c8">class</span> <span style="color:#75af00">B</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">A</span> <span style="color:#111">{</span>
-  <span style="color:#75715e">// x is public; y is protected; z is not accessible from B.
-</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>B</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>A</span> <span style=color:#111>{</span>
+  <span style=color:#75715e>// x is public; y is protected; z is not accessible from B.
+</span><span style=color:#75715e></span><span style=color:#111>};</span>
 
-<span style="color:#00a8c8">class</span> <span style="color:#75af00">C</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">protected</span> <span style="color:#111">A</span> <span style="color:#111">{</span>
-  <span style="color:#75715e">// x is protected; y is protected; z is not accessible from C.
-</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>C</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>protected</span> <span style=color:#111>A</span> <span style=color:#111>{</span>
+  <span style=color:#75715e>// x is protected; y is protected; z is not accessible from C.
+</span><span style=color:#75715e></span><span style=color:#111>};</span>
 
-<span style="color:#00a8c8">class</span> <span style="color:#75af00">D</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">private</span> <span style="color:#111">A</span> <span style="color:#111">{</span> <span style="color:#75715e">// &#39;private&#39; is default for classes.
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// x is private; y is private; z is not accessible from D
-</span><span style="color:#75715e"></span><span style="color:#111">};</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>D</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>private</span> <span style=color:#111>A</span> <span style=color:#111>{</span> <span style=color:#75715e>// &#39;private&#39; is default for classes.
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// x is private; y is private; z is not accessible from D
+</span><span style=color:#75715e></span><span style=color:#111>};</span>
 </code></pre></div><p>Notice that derived classes cannot expose inherited members beyond the
 access level defined in the base class. But a derived class can hide the
-inherited members.</p>
-<p>Note that neither <code>C</code> nor <code>D</code> can be accessed through a pointer or
+inherited members.</p><p>Note that neither <code>C</code> nor <code>D</code> can be accessed through a pointer or
 reference to <code>A</code>, i.e. <code>A* a = new C();</code> fails to compile with the error
-<code>'A' is an inaccessible base of 'C'</code>.</p>
-<p><code>class D : private A {};</code> can be read as, <em>&quot;<code>D</code> is implemented in terms
-of <code>A</code> (with a possibly more restricted interface)&quot;</em>. <span class="citation-ref"><a href="#soAIsAnInaccessibleBaseOfB"></a></span></p>
+<code>'A' is an inaccessible base of 'C'</code>.</p><p><code>class D : private A {};</code> can be read as, <em>"<code>D</code> is implemented in terms
+of <code>A</code> (with a possibly more restricted interface)"</em>. <span class=citation-ref><a href=#soAIsAnInaccessibleBaseOfB></a></span></p><div class=comment-holder><div class=comment><p>In true Machiavellian fashion, we can also do:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>D</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>private</span> <span style=color:#111>A</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>A</span><span style=color:#f92672>*</span> <span style=color:#111>AsA</span><span style=color:#111>()</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>this</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+<span style=color:#111>};</span>
+</code></pre></div><p>&mldr; which in turn allows:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#111>D</span><span style=color:#f92672>*</span> <span style=color:#111>d</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>D</span><span style=color:#111>();</span>
+<span style=color:#111>A</span><span style=color:#f92672>*</span> <span style=color:#111>a</span> <span style=color:#f92672>=</span> <span style=color:#111>d</span><span style=color:#f92672>-&gt;</span><span style=color:#111>AsA</span><span style=color:#111>()</span>
+</code></pre></div><p><span class=citation-ref><a href=#soAIsAnInaccessibleBaseOfB></a></span></p></div></div><h3 id=class-hierarchies>Class Hierarchies</h3><p>A class hierarchy is a set of classes ordered in a lattice created by
+derivation (e.g., <code>: public</code>).</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>Shape</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#f92672>~</span><span style=color:#111>Shape</span><span style=color:#111>()</span> <span style=color:#111>{}</span>
 
+  <span style=color:#00a8c8>virtual</span> <span style=color:#111>Point</span> <span style=color:#75af00>center</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>move</span><span style=color:#111>(</span><span style=color:#111>Point</span> <span style=color:#111>to</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
 
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>draw</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>rotate</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>angle</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
 
-<div class="comment-holder">
-    <div class="comment"><p>In true Machiavellian fashion, we can also do:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">D</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">private</span> <span style="color:#111">A</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">A</span><span style="color:#f92672">*</span> <span style="color:#111">AsA</span><span style="color:#111">()</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#00a8c8">this</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-<span style="color:#111">};</span>
-</code></pre></div><p>&hellip; which in turn allows:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#111">D</span><span style="color:#f92672">*</span> <span style="color:#111">d</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">new</span> <span style="color:#111">D</span><span style="color:#111">();</span>
-<span style="color:#111">A</span><span style="color:#f92672">*</span> <span style="color:#111">a</span> <span style="color:#f92672">=</span> <span style="color:#111">d</span><span style="color:#f92672">-&gt;</span><span style="color:#111">AsA</span><span style="color:#111">()</span>
-</code></pre></div><p><span class="citation-ref"><a href="#soAIsAnInaccessibleBaseOfB"></a></span></p>
-</div>
-</div>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>Circle</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>Shape</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Circle</span><span style=color:#111>(</span><span style=color:#111>Point</span> <span style=color:#111>center</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>radius</span><span style=color:#111>);</span>
 
+  <span style=color:#111>Point</span> <span style=color:#75af00>center</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#00a8c8>override</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>center_</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>move</span><span style=color:#111>(</span><span style=color:#111>Point</span> <span style=color:#111>to</span><span style=color:#111>)</span> <span style=color:#00a8c8>override</span> <span style=color:#111>{</span> <span style=color:#111>center_</span> <span style=color:#f92672>=</span> <span style=color:#111>to</span><span style=color:#111>;</span> <span style=color:#111>}</span>
 
-<h3 id="class-hierarchies">Class Hierarchies</h3>
-<p>A class hierarchy is a set of classes ordered in a lattice created by
-derivation (e.g., <code>: public</code>).</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Shape</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#f92672">~</span><span style="color:#111">Shape</span><span style="color:#111">()</span> <span style="color:#111">{}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>draw</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#00a8c8>override</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>rotate</span><span style=color:#111>(</span><span style=color:#111>iny</span><span style=color:#111>)</span> <span style=color:#00a8c8>override</span> <span style=color:#111>{}</span>
 
-  <span style="color:#00a8c8">virtual</span> <span style="color:#111">Point</span> <span style="color:#75af00">center</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">move</span><span style="color:#111">(</span><span style="color:#111">Point</span> <span style="color:#111">to</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Point</span> <span style=color:#111>center_</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>radius_</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
 
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">draw</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">rotate</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">angle</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>Smiley</span> <span style=color:#f92672>:</span> <span style=color:#00a8c8>public</span> <span style=color:#111>Circle</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#111>Smiley</span><span style=color:#111>(</span><span style=color:#111>Point</span> <span style=color:#111>center</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>radius</span><span style=color:#111>)</span>
+      <span style=color:#f92672>:</span> <span style=color:#111>Circle</span><span style=color:#111>{</span><span style=color:#111>center</span><span style=color:#111>,</span> <span style=color:#111>radius</span><span style=color:#111>},</span> <span style=color:#111>mouth_</span><span style=color:#111>{</span><span style=color:#00a8c8>nullptr</span><span style=color:#111>}</span> <span style=color:#111>{}</span>
 
-<span style="color:#00a8c8">class</span> <span style="color:#75af00">Circle</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Shape</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Circle</span><span style="color:#111">(</span><span style="color:#111">Point</span> <span style="color:#111">center</span><span style="color:#111">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">radius</span><span style="color:#111">);</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>move</span><span style=color:#111>(</span><span style=color:#111>Point</span> <span style=color:#111>to</span><span style=color:#111>)</span> <span style=color:#00a8c8>override</span><span style=color:#111>;</span>
 
-  <span style="color:#111">Point</span> <span style="color:#75af00">center</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">override</span> <span style="color:#111">{</span> <span style="color:#00a8c8">return</span> <span style="color:#111">center_</span><span style="color:#111">;</span> <span style="color:#111">}</span>
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">move</span><span style="color:#111">(</span><span style="color:#111">Point</span> <span style="color:#111">to</span><span style="color:#111">)</span> <span style="color:#00a8c8">override</span> <span style="color:#111">{</span> <span style="color:#111">center_</span> <span style="color:#f92672">=</span> <span style="color:#111">to</span><span style="color:#111">;</span> <span style="color:#111">}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>draw</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#00a8c8>override</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>rotate</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>)</span> <span style=color:#00a8c8>override</span><span style=color:#111>;</span>
 
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">draw</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">override</span><span style="color:#111">;</span>
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">rotate</span><span style="color:#111">(</span><span style="color:#111">iny</span><span style="color:#111">)</span> <span style="color:#00a8c8">override</span> <span style="color:#111">{}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>add_eye</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>unique_ptr</span><span style=color:#f92672>&lt;</span><span style=color:#111>Shape</span><span style=color:#f92672>&gt;</span> <span style=color:#111>s</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+    <span style=color:#111>eyes</span><span style=color:#111>.</span><span style=color:#111>push_back</span><span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>);</span>
+  <span style=color:#111>}</span>
+  <span style=color:#00a8c8>void</span> <span style=color:#75af00>set_mouth</span><span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>unique_ptr</span><span style=color:#f92672>&lt;</span><span style=color:#111>Shape</span><span style=color:#f92672>&gt;</span> <span style=color:#111>s</span><span style=color:#111>);</span>
 
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Point</span> <span style="color:#111">center_</span><span style="color:#111">;</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#111">radius_</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>void</span> <span style=color:#75af00>wink</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>eye_index</span><span style=color:#111>);</span>
 
-<span style="color:#00a8c8">class</span> <span style="color:#75af00">Smiley</span> <span style="color:#f92672">:</span> <span style="color:#00a8c8">public</span> <span style="color:#111">Circle</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#111">Smiley</span><span style="color:#111">(</span><span style="color:#111">Point</span> <span style="color:#111">center</span><span style="color:#111">,</span> <span style="color:#00a8c8">int</span> <span style="color:#111">radius</span><span style="color:#111">)</span>
-      <span style="color:#f92672">:</span> <span style="color:#111">Circle</span><span style="color:#111">{</span><span style="color:#111">center</span><span style="color:#111">,</span> <span style="color:#111">radius</span><span style="color:#111">},</span> <span style="color:#111">mouth_</span><span style="color:#111">{</span><span style="color:#00a8c8">nullptr</span><span style="color:#111">}</span> <span style="color:#111">{}</span>
-
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">move</span><span style="color:#111">(</span><span style="color:#111">Point</span> <span style="color:#111">to</span><span style="color:#111">)</span> <span style="color:#00a8c8">override</span><span style="color:#111">;</span>
-
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">draw</span><span style="color:#111">()</span> <span style="color:#00a8c8">const</span> <span style="color:#00a8c8">override</span><span style="color:#111">;</span>
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">rotate</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span><span style="color:#111">)</span> <span style="color:#00a8c8">override</span><span style="color:#111">;</span>
-
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">add_eye</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">Shape</span><span style="color:#f92672">&gt;</span> <span style="color:#111">s</span><span style="color:#111">)</span> <span style="color:#111">{</span>
-    <span style="color:#111">eyes</span><span style="color:#111">.</span><span style="color:#111">push_back</span><span style="color:#111">(</span><span style="color:#111">s</span><span style="color:#111">);</span>
-  <span style="color:#111">}</span>
-  <span style="color:#00a8c8">void</span> <span style="color:#75af00">set_mouth</span><span style="color:#111">(</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">Shape</span><span style="color:#f92672">&gt;</span> <span style="color:#111">s</span><span style="color:#111">);</span>
-
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">void</span> <span style="color:#75af00">wink</span><span style="color:#111">(</span><span style="color:#00a8c8">int</span> <span style="color:#111">eye_index</span><span style="color:#111">);</span>
-
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#75715e">// We use unique_ptr so that we don&#39;t have to manually call delete in
-</span><span style="color:#75715e"></span>  <span style="color:#75715e">// our destructor. unique_ptr will call delete on our behalf.
-</span><span style="color:#75715e"></span>  <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">vector</span><span style="color:#f92672">&lt;</span><span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">Shape</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#111">eyes_</span><span style="color:#111">;</span>
-  <span style="color:#111">std</span><span style="color:#f92672">::</span><span style="color:#111">unique_ptr</span><span style="color:#f92672">&lt;</span><span style="color:#111">Shape</span><span style="color:#f92672">&gt;</span> <span style="color:#111">mouth_</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
-</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p><code>Circle</code> is a kind of a <code>Shape</code>, but the &ldquo;is a kind of a&rdquo; relationship
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#75715e>// We use unique_ptr so that we don&#39;t have to manually call delete in
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// our destructor. unique_ptr will call delete on our behalf.
+</span><span style=color:#75715e></span>  <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>unique_ptr</span><span style=color:#f92672>&lt;</span><span style=color:#111>Shape</span><span style=color:#f92672>&gt;&gt;</span> <span style=color:#111>eyes_</span><span style=color:#111>;</span>
+  <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>unique_ptr</span><span style=color:#f92672>&lt;</span><span style=color:#111>Shape</span><span style=color:#f92672>&gt;</span> <span style=color:#111>mouth_</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
+</code></pre></div><p><span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=comment-holder><div class=comment><p><code>Circle</code> is a kind of a <code>Shape</code>, but the &ldquo;is a kind of a&rdquo; relationship
 starts breaking down when relating <code>Smiley</code> to <code>Circle</code>. Perhaps a
 better definition would be <code>class Smiley : private Circle {};</code> because
 while <code>Smiley</code> is implemented using a <code>Circle</code>, it is awkward to say
-that it&rsquo;s a circle.</p>
-</div>
-</div>
-
-
-<p>A class hierarchy offers <strong>interface inheritance</strong>: an object of a
+that it&rsquo;s a circle.</p></div></div><p>A class hierarchy offers <strong>interface inheritance</strong>: an object of a
 derived class can be used used wherever an object of a base class is
-required. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span> A stronger version of this is
-<strong>The Liskov Substitution Principle</strong>: <em>If \(S\) is a subtype of \(<br>
-T\), then objects of type \(T\) in a program may be replaced with
+required. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span>A stronger version of this is
+<strong>The Liskov Substitution Principle</strong>: <em>If \(S\) is a subtype of \(<br>T\), then objects of type \(T\) in a program may be replaced with
 objects of type \(S\) without altering any of the desirable properties
-of that program (e.g. correctness).</em> <span class="citation-ref"><a href="#wikiLoskov"></a></span></p>
-<p>A class hierarchy also offers <strong>implementation inheritance</strong>, e.g.
+of that program (e.g. correctness).</em> <span class=citation-ref><a href=#wikiLoskov></a></span></p><p>A class hierarchy also offers <strong>implementation inheritance</strong>, e.g.
 <code>Smiley</code> uses <code>Circle</code>&rsquo;s constructor, and may use <code>Circle::draw()</code>. Such
-base classes often have data members and constructors. <span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment open-comment"><p>There&rsquo;s an alternate school of though popularized by Item #33 in Scott
-Myers' &ldquo;Effective C++&quot;: <em>Make non-leaf classes abstract</em>. The major
-argument, as gleaned from 
-<a href="https://lists.accu.org/pipermail/effective-cpp/2003-June/002221.html"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    this mailing
+base classes often have data members and constructors. <span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=comment-holder><div class="comment open-comment"><p>There&rsquo;s an alternate school of though popularized by Item #33 in Scott
+Myers' &ldquo;Effective C++": <em>Make non-leaf classes abstract</em>. The major
+argument, as gleaned from
+<a href=https://lists.accu.org/pipermail/effective-cpp/2003-June/002221.html target=_blank rel=noopener>this mailing
 list
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-,
-is to avoid partial assignment.</p>
-</div>
-</div>
-
-
-<p><code>dynamic_cast&lt;Derived*&gt;(p)</code> returns <code>nullptr</code> if <code>p</code> does not point to a
-<code>Derived</code>, while <code>dynamic_cast&lt;Derived&gt;(*p)</code> throws a <code>bad_cast</code>
-exception if <code>*p</code> is not of type <code>Derived</code>. For example:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">void</span> <span style="color:#75af00">use</span><span style="color:#111">(</span><span style="color:#111">Shape</span><span style="color:#f92672">*</span> <span style="color:#111">shape</span><span style="color:#111">)</span> <span style="color:#111">{</span>
-  <span style="color:#00a8c8">if</span> <span style="color:#111">(</span><span style="color:#111">Smiley</span><span style="color:#f92672">*</span> <span style="color:#111">smiley</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">dynamic_cast</span><span style="color:#f92672">&lt;</span><span style="color:#111">Smiley</span><span style="color:#f92672">*&gt;</span><span style="color:#111">(</span><span style="color:#111">shape</span><span style="color:#111">))</span> <span style="color:#111">{</span>
-    <span style="color:#75715e">// `shape` points to a Smiley.
-</span><span style="color:#75715e"></span>  <span style="color:#111">}</span>
-<span style="color:#111">}</span>
-</code></pre></div><p><span class="citation-ref"><a href="#Stroustrup2018-Ch4"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Some typed languages like Haskell do not have the ability to query types
-at runtime. They do type erasure. <span class="citation-ref"><a href="#cis194Spring2013ParametricPolymorphism"></a></span> <span class="citation-ref"><a href="#wikiTypeErasure"></a></span></p>
-</div>
-</div>
-
-
-<h3 id="the-case-for-private-virtual-functions">The Case for Private Virtual Functions</h3>
-<p>Consider this traditional base class:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Widget</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#111">Process</span><span style="color:#111">(</span><span style="color:#111">Gadget</span><span style="color:#f92672">&amp;</span><span style="color:#111">);</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">bool</span> <span style="color:#75af00">IsDone</span><span style="color:#111">();</span>
-<span style="color:#111">};</span>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+is to avoid partial assignment.</p></div></div><p><code>dynamic_cast&lt;Derived*>(p)</code> returns <code>nullptr</code> if <code>p</code> does not point to a
+<code>Derived</code>, while <code>dynamic_cast&lt;Derived>(*p)</code> throws a <code>bad_cast</code>
+exception if <code>*p</code> is not of type <code>Derived</code>. For example:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>void</span> <span style=color:#75af00>use</span><span style=color:#111>(</span><span style=color:#111>Shape</span><span style=color:#f92672>*</span> <span style=color:#111>shape</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>Smiley</span><span style=color:#f92672>*</span> <span style=color:#111>smiley</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>dynamic_cast</span><span style=color:#f92672>&lt;</span><span style=color:#111>Smiley</span><span style=color:#f92672>*&gt;</span><span style=color:#111>(</span><span style=color:#111>shape</span><span style=color:#111>))</span> <span style=color:#111>{</span>
+    <span style=color:#75715e>// `shape` points to a Smiley.
+</span><span style=color:#75715e></span>  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><span class=citation-ref><a href=#Stroustrup2018-Ch4></a></span></p><div class=comment-holder><div class=comment><p>Some typed languages like Haskell do not have the ability to query types
+at runtime. They do type erasure. <span class=citation-ref><a href=#cis194Spring2013ParametricPolymorphism></a></span><span class=citation-ref><a href=#wikiTypeErasure></a></span></p></div></div><h3 id=the-case-for-private-virtual-functions>The Case for Private Virtual Functions</h3><p>Consider this traditional base class:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>Widget</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>int</span> <span style=color:#111>Process</span><span style=color:#111>(</span><span style=color:#111>Gadget</span><span style=color:#f92672>&amp;</span><span style=color:#111>);</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>bool</span> <span style=color:#75af00>IsDone</span><span style=color:#111>();</span>
+<span style=color:#111>};</span>
 </code></pre></div><p>Each virtual function is specifying two things: the interface
 (because it&rsquo;s <code>public</code>), and the implementation detail (because derived
-classes can replace the implementation). <span class="citation-ref"><a href="#Sutter2001"></a></span></p>
-<p>To separate interface from internals, consider the Template Method
-pattern:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-cpp" data-lang="cpp"><span style="color:#00a8c8">class</span> <span style="color:#75af00">Widget</span> <span style="color:#111">{</span>
- <span style="color:#00a8c8">public</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">int</span> <span style="color:#111">Process</span><span style="color:#111">(</span><span style="color:#111">Gadget</span><span style="color:#f92672">&amp;</span><span style="color:#111">);</span> <span style="color:#75715e">// Uses DoProcess...()
-</span><span style="color:#75715e"></span>  <span style="color:#00a8c8">bool</span> <span style="color:#75af00">IsDone</span><span style="color:#111">();</span> <span style="color:#75715e">// Uses DoIsDone()
-</span><span style="color:#75715e"></span>
- <span style="color:#00a8c8">private</span><span style="color:#f92672">:</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#111">DoProcessPhase1</span><span style="color:#111">(</span><span style="color:#111">Gadget</span><span style="color:#f92672">&amp;</span><span style="color:#111">);</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">int</span> <span style="color:#75af00">DoProcessPhase2</span><span style="color:#111">(</span><span style="color:#111">Gadget</span><span style="color:#f92672">&amp;</span><span style="color:#111">);</span>
-  <span style="color:#00a8c8">virtual</span> <span style="color:#00a8c8">bool</span> <span style="color:#75af00">DoIsDone</span><span style="color:#111">()</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#111">;</span>
-<span style="color:#111">};</span>
-</code></pre></div><p>With this separation, there are several benefits:</p>
-<ul>
-<li>The base class has complete control of its interface and policy. It
+classes can replace the implementation). <span class=citation-ref><a href=#Sutter2001></a></span></p><p>To separate interface from internals, consider the Template Method
+pattern:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cpp data-lang=cpp><span style=color:#00a8c8>class</span> <span style=color:#75af00>Widget</span> <span style=color:#111>{</span>
+ <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>Process</span><span style=color:#111>(</span><span style=color:#111>Gadget</span><span style=color:#f92672>&amp;</span><span style=color:#111>);</span> <span style=color:#75715e>// Uses DoProcess...()
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>bool</span> <span style=color:#75af00>IsDone</span><span style=color:#111>();</span> <span style=color:#75715e>// Uses DoIsDone()
+</span><span style=color:#75715e></span>
+ <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>int</span> <span style=color:#111>DoProcessPhase1</span><span style=color:#111>(</span><span style=color:#111>Gadget</span><span style=color:#f92672>&amp;</span><span style=color:#111>);</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>int</span> <span style=color:#75af00>DoProcessPhase2</span><span style=color:#111>(</span><span style=color:#111>Gadget</span><span style=color:#f92672>&amp;</span><span style=color:#111>);</span>
+  <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>bool</span> <span style=color:#75af00>DoIsDone</span><span style=color:#111>()</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+<span style=color:#111>};</span>
+</code></pre></div><p>With this separation, there are several benefits:</p><ul><li>The base class has complete control of its interface and policy. It
 can enforce invariants, and insert instrumentation in the non-virtual
-interface functions.</li>
-<li>The interface and the implementation can be changed independently,
+interface functions.</li><li>The interface and the implementation can be changed independently,
 e.g. adding <code>DoProcessPhase3</code> would only affect classes that subclass
-<code>Widget</code>, while users of <code>Widget</code> will be unaffected.</li>
-</ul>
-<p><span class="citation-ref"><a href="#Sutter2001"></a></span></p>
-<p>If the derived class need to invoke the base implementation of a virtual
+<code>Widget</code>, while users of <code>Widget</code> will be unaffected.</li></ul><p><span class=citation-ref><a href=#Sutter2001></a></span></p><p>If the derived class need to invoke the base implementation of a virtual
 function, then declare the virtual function in the <code>protected</code> section.
 Otherwise, default to virtual functions being <code>private</code> because they
-exist to customize behavior, and not to be called. <span class="citation-ref"><a href="#Sutter2001"></a></span></p>
-
-
-
-<div class="comment-holder">
-    <div class="comment"><p>My intuition was that a private virtual function could not be overridden
+exist to customize behavior, and not to be called. <span class=citation-ref><a href=#Sutter2001></a></span></p><div class=comment-holder><div class=comment><p>My intuition was that a private virtual function could not be overridden
 in a derived class because the derived class can&rsquo;t access the virtual
 function. But there&rsquo;s a difference, the derived class indeed can&rsquo;t
-<em>call</em> the base class&rsquo;s virtual function, but it can <em>override</em> it!</p>
-</div>
-</div>
-
-
-<h2 id="references">References</h2>
-<ol>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
-    <cite id='Stroustrup2018-Ch2'>
-        
-        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
-        Chapter 2. User-Defined Types<i>.</i>
-    </cite>
-    
-     Bjarne Stroustrup.
-    
-    
-    
-    
-    
-    
-    
-     2018.
-     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
-        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
-    
-    
-    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count=''>
-    <cite id='Stroustrup2018-Ch4'>
-        
-        A Tour of C&#43;&#43; (Second Edition)<i>.</i>
-        Chapter 4. Classes<i>.</i>
-    </cite>
-    
-     Bjarne Stroustrup.
-    
-    
-    
-    
-    
-    
-    
-     2018.
-     <a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target="_blank" rel="noopener">
-        ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i></a>.
-    
-    
-    <i class='fas fa-fw fa-book' aria-hidden="true"></i>
-    
-    
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='cppReferenceInlineSpecifier'>
-        
-        inline specifier<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.cppreference.com/w/cpp/language/inline" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
-        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 12, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='cppReferenceDefaultConstructor'>
-        
-        Default constructors<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.cppreference.com/w/cpp/language/default_constructor" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
-        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 12, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='isoCPPOperatorOverloading'>
-        
-        Operator Overloading, C&#43;&#43; FAQ<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://isocpp.org/wiki/faq/operator-overloading" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy" aria-hidden="true">
-        <i>isocpp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 13, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='isoCPPInlineFunctions'>
-        
-        Inline Functions, C&#43;&#43; FAQ<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://isocpp.org/wiki/faq/inline-functions#inline-member-fns-more" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy" aria-hidden="true">
-        <i>isocpp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 13, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='wikiThrashing'>
-        
-        Thrashing (computer science)<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Thrashing_%28computer_science%29" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 13, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='wikiRAII'>
-        
-        Resource acquisition is initialization - Wikipedia<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='cppReferenceInitializerList'>
-        
-        std::initializer_list - cppreference.com<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.cppreference.com/w/cpp/utility/initializer_list" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
-        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='cppReferenceSizeT'>
-        
-        std::size_t - cppreference.com<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.cppreference.com/w/cpp/types/size_t" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
-        <i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='clangDiagnosticsMissingOverrides'>
-        
-        Diagnostic flags in Clang — Clang 15.0.0 git documentation &gt; Winconsistent-missing-*override<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://clang.llvm.org/docs/DiagnosticsReference.html#winconsistent-missing-override" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading="lazy" aria-hidden="true">
-        <i>clang.llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    <a href="https://clang.llvm.org/docs/DiagnosticsReference.html#winconsistent-missing-destructor-override" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading="lazy" aria-hidden="true">
-        <i>clang.llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='soPublicPrivateAndProtectedInheritance'>
-        
-        What is the difference between public, private, and protected inheritance in C&#43;&#43;? - Stack Overflow<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://stackoverflow.com/a/1372858/7812406" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
-        <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Sutter2001'>
-        
-        Virtuality<i>.</i>
-        
-    </cite>
-    
-     Herb Sutter.
-    
-    
-    
-    
-    <a href="http://www.gotw.ca/publications/mill18.htm" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.gotw.ca" loading="lazy" aria-hidden="true">
-        <i>www.gotw.ca</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-     Sep 1, 2001.
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='soAIsAnInaccessibleBaseOfB'>
-        
-        c&#43;&#43; - Inheritance: &#39;A&#39; is an inaccessible base of &#39;B&#39; - Stack Overflow<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://stackoverflow.com/a/9661959/7812406" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
-        <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='soWhyDoesCppAllowPrivateMemberModification'>
-        
-        Why does C&#43;&#43; allow private members to be modified using this approach? - Stack Overflow<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://stackoverflow.com/questions/12093319/why-does-c-allow-private-members-to-be-modified-using-this-approach" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
-        <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='Conway'>
-        
-        Damian Conway quote: C&#43;&#43; tries to guard against Murphy, not Machiavelli.<i></i>
-        
-    </cite>
-    
-     Damian Conway.
-    
-    
-    
-    
-    <a href="https://www.azquotes.com/quote/678702" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.azquotes.com" loading="lazy" aria-hidden="true">
-        <i>www.azquotes.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='wikiLoskov'>
-        
-        Liskov substitution principle - Wikipedia<i>.</i>
-        
-    </cite>
-    
-     Barbara Liskov.
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Liskov_substitution_principle" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 28, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='wikiTypeErasure'>
-        
-        Type erasure - Wikipedia<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://en.wikipedia.org/wiki/Type_erasure" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-        <i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 30, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='cis194Spring2013ParametricPolymorphism'>
-        
-        05-type-classes<i>.</i>
-        
-    </cite>
-    
-     Brent Yorgey.
-    
-    
-    
-    
-    <a href="https://www.seas.upenn.edu/~cis194/spring13/lectures/05-type-classes.html#parametricity" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading="lazy" aria-hidden="true">
-        <i>www.seas.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 30, 2022.
-    
-    
-</div>
-
-</li>
-<li>
-
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='abseilToTW123'>
-        
-        abseil / Tip of the Week #123: absl::optional and std::unique_ptr<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://abseil.io/tips/123" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
-        <i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed May 31, 2022.
-    
-    
-</div>
-
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-<aside id="authors-holder" style="margin: 0 0 2% 0;">
-    Cited Authors:
-    
-        <a href='/cited-authors/conway-damian'>Conway, Damian</a>
-    
-        <a href='/cited-authors/liskov-barbara'>Liskov, Barbara</a>
-    
-        <a href='/cited-authors/stroustrup-bjarne'>Stroustrup, Bjarne</a>
-    
-        <a href='/cited-authors/sutter-herb'>Sutter, Herb</a>
-    
-        <a href='/cited-authors/yorgey-brent'>Yorgey, Brent</a>
-    
-</aside>
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/abseil.io' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=abseil.io" loading="lazy" aria-hidden="true">
-            abseil.io
-        </a>
-    
-        <a href='/domains/clang.llvm.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading="lazy" aria-hidden="true">
-            clang.llvm.org
-        </a>
-    
-        <a href='/domains/en.cppreference.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading="lazy" aria-hidden="true">
-            en.cppreference.com
-        </a>
-    
-        <a href='/domains/en.wikipedia.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading="lazy" aria-hidden="true">
-            en.wikipedia.org
-        </a>
-    
-        <a href='/domains/isocpp.org' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading="lazy" aria-hidden="true">
-            isocpp.org
-        </a>
-    
-        <a href='/domains/stackoverflow.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading="lazy" aria-hidden="true">
-            stackoverflow.com
-        </a>
-    
-        <a href='/domains/www.azquotes.com' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.azquotes.com" loading="lazy" aria-hidden="true">
-            www.azquotes.com
-        </a>
-    
-        <a href='/domains/www.gotw.ca' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.gotw.ca" loading="lazy" aria-hidden="true">
-            www.gotw.ca
-        </a>
-    
-        <a href='/domains/www.seas.upenn.edu' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading="lazy" aria-hidden="true">
-            www.seas.upenn.edu
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/">Structures in C&#43;&#43; &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<em>call</em> the base class&rsquo;s virtual function, but it can <em>override</em> it!</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count><cite id=Stroustrup2018-Ch2>A Tour of C++ (Second Edition)<i>.</i>
+Chapter 2. User-Defined Types<i>.</i></cite>
+Bjarne Stroustrup.
+2018.
+<a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target=_blank rel=noopener>ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count><cite id=Stroustrup2018-Ch4>A Tour of C++ (Second Edition)<i>.</i>
+Chapter 4. Classes<i>.</i></cite>
+Bjarne Stroustrup.
+2018.
+<a href="https://openlibrary.org/search?isbn=978-0-13-499783-4" target=_blank rel=noopener>ISBN: 978-0-13-499783-4 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=cppReferenceInlineSpecifier>inline specifier<i>.</i></cite>
+<a href=https://en.cppreference.com/w/cpp/language/inline target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true>
+<i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 12, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=cppReferenceDefaultConstructor>Default constructors<i>.</i></cite>
+<a href=https://en.cppreference.com/w/cpp/language/default_constructor target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true>
+<i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 12, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=isoCPPOperatorOverloading>Operator Overloading, C++ FAQ<i>.</i></cite>
+<a href=https://isocpp.org/wiki/faq/operator-overloading target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading=lazy aria-hidden=true>
+<i>isocpp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 13, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=isoCPPInlineFunctions>Inline Functions, C++ FAQ<i>.</i></cite>
+<a href=https://isocpp.org/wiki/faq/inline-functions#inline-member-fns-more target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading=lazy aria-hidden=true>
+<i>isocpp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 13, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=wikiThrashing>Thrashing (computer science)<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Thrashing_%28computer_science%29 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 13, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=wikiRAII>Resource acquisition is initialization - Wikipedia<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=cppReferenceInitializerList>std::initializer_list - cppreference.com<i>.</i></cite>
+<a href=https://en.cppreference.com/w/cpp/utility/initializer_list target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true>
+<i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=cppReferenceSizeT>std::size_t - cppreference.com<i>.</i></cite>
+<a href=https://en.cppreference.com/w/cpp/types/size_t target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true>
+<i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=clangDiagnosticsMissingOverrides>Diagnostic flags in Clang — Clang 15.0.0 git documentation > Winconsistent-missing-*override<i>.</i></cite>
+<a href=https://clang.llvm.org/docs/DiagnosticsReference.html#winconsistent-missing-override target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading=lazy aria-hidden=true>
+<i>clang.llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://clang.llvm.org/docs/DiagnosticsReference.html#winconsistent-missing-destructor-override target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading=lazy aria-hidden=true>
+<i>clang.llvm.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=soPublicPrivateAndProtectedInheritance>What is the difference between public, private, and protected inheritance in C++? - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/a/1372858/7812406 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Sutter2001>Virtuality<i>.</i></cite>
+Herb Sutter.
+<a href=http://www.gotw.ca/publications/mill18.htm target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.gotw.ca" loading=lazy aria-hidden=true>
+<i>www.gotw.ca</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Sep 1, 2001.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=soAIsAnInaccessibleBaseOfB>c++ - Inheritance: 'A' is an inaccessible base of 'B' - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/a/9661959/7812406 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=soWhyDoesCppAllowPrivateMemberModification>Why does C++ allow private members to be modified using this approach? - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/questions/12093319/why-does-c-allow-private-members-to-be-modified-using-this-approach target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=Conway>Damian Conway quote: C++ tries to guard against Murphy, not Machiavelli.<i></i></cite>
+Damian Conway.
+<a href=https://www.azquotes.com/quote/678702 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.azquotes.com" loading=lazy aria-hidden=true>
+<i>www.azquotes.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=wikiLoskov>Liskov substitution principle - Wikipedia<i>.</i></cite>
+Barbara Liskov.
+<a href=https://en.wikipedia.org/wiki/Liskov_substitution_principle target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=wikiTypeErasure>Type erasure - Wikipedia<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Type_erasure target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 30, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=cis194Spring2013ParametricPolymorphism>05-type-classes<i>.</i></cite>
+Brent Yorgey.
+<a href=https://www.seas.upenn.edu/~cis194/spring13/lectures/05-type-classes.html#parametricity target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading=lazy aria-hidden=true>
+<i>www.seas.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 30, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=abseilToTW123>abseil / Tip of the Week #123: absl::optional and std::unique_ptr<i>.</i></cite>
+<a href=https://abseil.io/tips/123 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=abseil.io" loading=lazy aria-hidden=true>
+<i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 31, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/conway-damian>Conway, Damian</a>
+<a href=/cited-authors/liskov-barbara>Liskov, Barbara</a>
+<a href=/cited-authors/stroustrup-bjarne>Stroustrup, Bjarne</a>
+<a href=/cited-authors/sutter-herb>Sutter, Herb</a>
+<a href=/cited-authors/yorgey-brent>Yorgey, Brent</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/abseil.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=abseil.io" loading=lazy aria-hidden=true>
+abseil.io</a>
+<a href=/domains/clang.llvm.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=clang.llvm.org" loading=lazy aria-hidden=true>
+clang.llvm.org</a>
+<a href=/domains/en.cppreference.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true>
+en.cppreference.com</a>
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+en.wikipedia.org</a>
+<a href=/domains/isocpp.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=isocpp.org" loading=lazy aria-hidden=true>
+isocpp.org</a>
+<a href=/domains/stackoverflow.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
+stackoverflow.com</a>
+<a href=/domains/www.azquotes.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.azquotes.com" loading=lazy aria-hidden=true>
+www.azquotes.com</a>
+<a href=/domains/www.gotw.ca style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.gotw.ca" loading=lazy aria-hidden=true>
+www.gotw.ca</a>
+<a href=/domains/www.seas.upenn.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.seas.upenn.edu" loading=lazy aria-hidden=true>
+www.seas.upenn.edu</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/structures-in-cpp/>Structures in C++ &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

@@ -1,318 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                AoC 2021 Day 05: Hydrothermal Venture | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/HydrothermalVenture/05-hydrothermal-venture/">AoC 2021 Day 05: Hydrothermal Venture</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> AoC 2021 Day 05: Hydrothermal Venture</h1>
-    <p class="meta">
-        
-        Dated Feb 27, 2022;
-        
-        last modified on Sun, 27 Feb 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#problem-statement">Problem Statement</a>
-      <ul>
-        <li><a href="#part-one">Part One</a></li>
-        <li><a href="#part-two">Part Two</a></li>
-      </ul>
-    </li>
-    <li><a href="#my-solution">My Solution</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <h2 id="problem-statement">Problem Statement</h2>
-<h3 id="part-one">Part One</h3>
-<p>You come across a field of <strong>hydrothermal vents</strong> on the ocean floor!
+<!doctype html><html lang=en><head><title>AoC 2021 Day 05: Hydrothermal Venture | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/>Advent of Code 2021</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/HydrothermalVenture/05-hydrothermal-venture/>AoC 2021 Day 05: Hydrothermal Venture</a></li></ul></nav><section><header><h1>AoC 2021 Day 05: Hydrothermal Venture</h1><p class=meta>Dated Feb 27, 2022;
+last modified on Sun, 27 Feb 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#problem-statement>Problem Statement</a><ul><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li></ul></li><li><a href=#my-solution>My Solution</a></li></ul></nav></aside><article id=main-article><h2 id=problem-statement>Problem Statement</h2><h3 id=part-one>Part One</h3><p>You come across a field of <strong>hydrothermal vents</strong> on the ocean floor!
 These vents constantly produce large, opaque clouds, so it would be best
-to avoid them if possible.</p>
-<p>They tend to form in <strong>lines</strong>; the submarine hopefully produces a list
-of nearby lines of vents (your puzzle input) for you to review.</p>
-<p>Each line of vents is given as a line segment in the format <code>(x1, y1 -&gt; x2, y2)</code>, where <code>x1,y1</code> are the coordinates of one end of the line
+to avoid them if possible.</p><p>They tend to form in <strong>lines</strong>; the submarine hopefully produces a list
+of nearby lines of vents (your puzzle input) for you to review.</p><p>Each line of vents is given as a line segment in the format <code>(x1, y1 -> x2, y2)</code>, where <code>x1,y1</code> are the coordinates of one end of the line
 segment, and <code>x2,y2</code> are the coordinates of the other end. These line
-segments include the points at both ends. In other words:</p>
-<ul>
-<li>An entry like <code>1,2 -&gt; 1,3</code> covers points <code>1,1</code>, <code>1,2</code>, and <code>1,3</code>.</li>
-<li>An entry like <code>9,7 -&gt; 7,7</code> covers points <code>9,7</code>, <code>8,7</code>, and <code>7,7</code>.</li>
-</ul>
-<p>For now, <strong>only consider horizontal and vertical lines:</strong> lines where
-either <code>x1 == x2</code> or <code>y1 == y2</code>.</p>
-<p>To avoid the most dangerous areas, you need to determine <strong>the number of
+segments include the points at both ends. In other words:</p><ul><li>An entry like <code>1,2 -> 1,3</code> covers points <code>1,1</code>, <code>1,2</code>, and <code>1,3</code>.</li><li>An entry like <code>9,7 -> 7,7</code> covers points <code>9,7</code>, <code>8,7</code>, and <code>7,7</code>.</li></ul><p>For now, <strong>only consider horizontal and vertical lines:</strong> lines where
+either <code>x1 == x2</code> or <code>y1 == y2</code>.</p><p>To avoid the most dangerous areas, you need to determine <strong>the number of
 points where at least two lines overlap</strong>. <strong>At how many points do at
-least two lines overlap?</strong></p>
-<h3 id="part-two">Part Two</h3>
-<p>Unfortunately, considering only horizontal and vertical lines doesn&rsquo;t
-give you the full picture; you need to also consider <strong>diagonal lines</strong>.</p>
-<p>Because of the limits of the hydrothermal vent mapping system, the lines
+least two lines overlap?</strong></p><h3 id=part-two>Part Two</h3><p>Unfortunately, considering only horizontal and vertical lines doesn&rsquo;t
+give you the full picture; you need to also consider <strong>diagonal lines</strong>.</p><p>Because of the limits of the hydrothermal vent mapping system, the lines
 in your list will only ever be horizontal, vertical, or a diagonal line
-at exactly 45 degrees. In other words:</p>
-<ul>
-<li>An entry like <code>1,1 -&gt; 3,3</code> covers points <code>1,1</code>, <code>2,2</code>, and <code>3,3</code>.</li>
-<li>An entry like <code>9,7 -&gt; 7.9</code> covers points <code>9,7</code>, <code>8,8</code>, and <code>7,9</code>.</li>
-</ul>
-<p>Consider all of the lines. <strong>At how many points do at least two lines
-overlap?</strong></p>
-<h2 id="my-solution">My Solution</h2>
+at exactly 45 degrees. In other words:</p><ul><li>An entry like <code>1,1 -> 3,3</code> covers points <code>1,1</code>, <code>2,2</code>, and <code>3,3</code>.</li><li>An entry like <code>9,7 -> 7.9</code> covers points <code>9,7</code>, <code>8,8</code>, and <code>7,9</code>.</li></ul><p>Consider all of the lines. <strong>At how many points do at least two lines
+overlap?</strong></p><h2 id=my-solution>My Solution</h2><div id=HydrothermalVenture.hs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-haskell data-lang=haskell><span style=color:#75715e>{-# OPTIONS_GHC -Wall #-}</span>
 
+<span style=color:#00a8c8>module</span> <span style=color:#111>HydrothermalVenture.HydrothermalVenture</span>
+  <span style=color:#111>(</span> <span style=color:#75af00>pointsWithAtLeastTwoRightSegmentOverlaps</span><span style=color:#111>,</span>
+    <span style=color:#75af00>pointsWithAtLeastTwoSegmentOverlaps</span><span style=color:#111>,</span>
+    <span style=color:#00a8c8>LineSegment</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>),</span>
+    <span style=color:#00a8c8>Point</span> <span style=color:#111>(</span><span style=color:#f92672>..</span><span style=color:#111>),</span>
+  <span style=color:#111>)</span>
+<span style=color:#00a8c8>where</span>
 
-<div id='HydrothermalVenture.hs'><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">{-# OPTIONS_GHC -Wall #-}</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.List</span> <span style=color:#111>(</span><span style=color:#75af00>group</span><span style=color:#111>,</span> <span style=color:#75af00>sort</span><span style=color:#111>)</span>
 
-<span style="color:#00a8c8">module</span> <span style="color:#111">HydrothermalVenture.HydrothermalVenture</span>
-  <span style="color:#111">(</span> <span style="color:#75af00">pointsWithAtLeastTwoRightSegmentOverlaps</span><span style="color:#111">,</span>
-    <span style="color:#75af00">pointsWithAtLeastTwoSegmentOverlaps</span><span style="color:#111">,</span>
-    <span style="color:#00a8c8">LineSegment</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span>
-    <span style="color:#00a8c8">Point</span> <span style="color:#111">(</span><span style="color:#f92672">..</span><span style="color:#111">),</span>
-  <span style="color:#111">)</span>
-<span style="color:#00a8c8">where</span>
+<span style=color:#75715e>-- The input text is of the form:</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- 0,9 -&gt; 5,9</span>
+<span style=color:#75715e>-- 8,0 -&gt; 0,8</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- The points don&#39;t make sense individually, so grouping them together as a line</span>
+<span style=color:#75715e>-- segment makes sense.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- Kinda wild that deriving `Eq` and `Ord` simply works!</span>
+<span style=color:#00a8c8>data</span> <span style=color:#00a8c8>Point</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span><span style=color:#111>}</span> <span style=color:#00a8c8>deriving</span> <span style=color:#111>(</span><span style=color:#00a8c8>Eq</span><span style=color:#111>,</span> <span style=color:#00a8c8>Ord</span><span style=color:#111>,</span> <span style=color:#00a8c8>Show</span><span style=color:#111>)</span>
 
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.List</span> <span style="color:#111">(</span><span style="color:#75af00">group</span><span style="color:#111">,</span> <span style="color:#75af00">sort</span><span style="color:#111">)</span>
+<span style=color:#00a8c8>data</span> <span style=color:#00a8c8>LineSegment</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>LineSegment</span> <span style=color:#111>{</span><span style=color:#111>p1</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Point</span><span style=color:#111>,</span> <span style=color:#111>p2</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Point</span><span style=color:#111>}</span>
 
-<span style="color:#75715e">-- The input text is of the form:</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- 0,9 -&gt; 5,9</span>
-<span style="color:#75715e">-- 8,0 -&gt; 0,8</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- The points don&#39;t make sense individually, so grouping them together as a line</span>
-<span style="color:#75715e">-- segment makes sense.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- Kinda wild that deriving `Eq` and `Ord` simply works!</span>
-<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">Point</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span><span style="color:#111">}</span> <span style="color:#00a8c8">deriving</span> <span style="color:#111">(</span><span style="color:#00a8c8">Eq</span><span style="color:#111">,</span> <span style="color:#00a8c8">Ord</span><span style="color:#111">,</span> <span style="color:#00a8c8">Show</span><span style="color:#111">)</span>
+<span style=color:#00a8c8>type</span> <span style=color:#00a8c8>LineSegmentDiscretizer</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>LineSegment</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Point</span><span style=color:#111>]</span>
 
-<span style="color:#00a8c8">data</span> <span style="color:#00a8c8">LineSegment</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">LineSegment</span> <span style="color:#111">{</span><span style="color:#111">p1</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Point</span><span style="color:#111">,</span> <span style="color:#111">p2</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Point</span><span style="color:#111">}</span>
+<span style=color:#75af00>discretizeRightLineSegment</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>LineSegmentDiscretizer</span>
+<span style=color:#75af00>discretizeRightLineSegment</span> <span style=color:#00a8c8>LineSegment</span> <span style=color:#111>{</span><span style=color:#111>p1</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x1</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y1</span><span style=color:#111>},</span> <span style=color:#111>p2</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x2</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y2</span><span style=color:#111>}}</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>x1</span> <span style=color:#f92672>==</span> <span style=color:#111>x2</span> <span style=color:#f92672>||</span> <span style=color:#111>y1</span> <span style=color:#f92672>==</span> <span style=color:#111>y2</span> <span style=color:#f92672>=</span>
+    <span style=color:#00a8c8>let</span> <span style=color:#111>steps</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+        <span style=color:#111>steps</span> <span style=color:#111>i1</span> <span style=color:#111>i2</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>if</span> <span style=color:#111>i2</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>i1</span> <span style=color:#00a8c8>then</span> <span style=color:#111>[</span><span style=color:#111>i1</span> <span style=color:#f92672>..</span> <span style=color:#111>i2</span><span style=color:#111>]</span> <span style=color:#00a8c8>else</span> <span style=color:#111>[</span><span style=color:#111>i2</span> <span style=color:#f92672>..</span> <span style=color:#111>i1</span><span style=color:#111>]</span>
+        <span style=color:#111>xs</span> <span style=color:#f92672>=</span> <span style=color:#111>steps</span> <span style=color:#111>x1</span> <span style=color:#111>x2</span>
+        <span style=color:#111>ys</span> <span style=color:#f92672>=</span> <span style=color:#111>steps</span> <span style=color:#111>y1</span> <span style=color:#111>y2</span>
+     <span style=color:#00a8c8>in</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>p</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>head</span> <span style=color:#111>p</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>p</span> <span style=color:#f92672>!!</span> <span style=color:#ae81ff>1</span><span style=color:#111>})</span> <span style=color:#111>(</span><span style=color:#111>sequence</span> <span style=color:#111>[</span><span style=color:#111>xs</span><span style=color:#111>,</span> <span style=color:#111>ys</span><span style=color:#111>])</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>otherwise</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
 
-<span style="color:#00a8c8">type</span> <span style="color:#00a8c8">LineSegmentDiscretizer</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">LineSegment</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Point</span><span style="color:#111">]</span>
+<span style=color:#75af00>groupSegmentOverlaps</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>LineSegmentDiscretizer</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>LineSegment</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[[</span><span style=color:#00a8c8>Point</span><span style=color:#111>]]</span>
+<span style=color:#75af00>groupSegmentOverlaps</span> <span style=color:#111>discretizer</span> <span style=color:#111>lineSegments</span> <span style=color:#f92672>=</span>
+  <span style=color:#75715e>-- In an imperative language with mutable data, I&#39;d have had a mapping from</span>
+  <span style=color:#75715e>-- points to counts, and then looped over the map to get those w/ counts &gt;=</span>
+  <span style=color:#75715e>-- 2. But we don&#39;t have mutability...</span>
+  <span style=color:#75715e>--</span>
+  <span style=color:#75715e>-- Suppose we had a list of points with a vent, e.g. [(x1, y1), (x2, y2),</span>
+  <span style=color:#75715e>-- (x3, y3), (x1, y1), (x4, y4)]. How do I get counts without mutability?</span>
+  <span style=color:#75715e>--</span>
+  <span style=color:#75715e>-- Seems like some version of folding, where the accumulator is of the form</span>
+  <span style=color:#75715e>-- [(x1, x2, 2), (x2, y2, 1), (x3, y3, 1), (x4, y4, 1)]. Feels pretty</span>
+  <span style=color:#75715e>-- inefficient. Or we can sort the list, and then keeping count doesn&#39;t need</span>
+  <span style=color:#75715e>-- take quadratic(?) time.</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>expandSegmentsToPoints</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>LineSegment</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#00a8c8>Point</span><span style=color:#111>]</span>
+      <span style=color:#111>expandSegmentsToPoints</span> <span style=color:#00a8c8>[]</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
+      <span style=color:#111>expandSegmentsToPoints</span> <span style=color:#111>(</span><span style=color:#111>seg</span> <span style=color:#00a8c8>:</span> <span style=color:#111>segs</span><span style=color:#111>)</span> <span style=color:#f92672>=</span>
+        <span style=color:#111>discretizer</span> <span style=color:#111>seg</span> <span style=color:#f92672>++</span> <span style=color:#111>expandSegmentsToPoints</span> <span style=color:#111>segs</span>
+   <span style=color:#00a8c8>in</span> <span style=color:#111>group</span> <span style=color:#111>(</span><span style=color:#111>sort</span> <span style=color:#111>(</span><span style=color:#111>expandSegmentsToPoints</span> <span style=color:#111>lineSegments</span><span style=color:#111>))</span>
 
-<span style="color:#75af00">discretizeRightLineSegment</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">LineSegmentDiscretizer</span>
-<span style="color:#75af00">discretizeRightLineSegment</span> <span style="color:#00a8c8">LineSegment</span> <span style="color:#111">{</span><span style="color:#111">p1</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x1</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y1</span><span style="color:#111">},</span> <span style="color:#111">p2</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x2</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y2</span><span style="color:#111">}}</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">x1</span> <span style="color:#f92672">==</span> <span style="color:#111">x2</span> <span style="color:#f92672">||</span> <span style="color:#111">y1</span> <span style="color:#f92672">==</span> <span style="color:#111">y2</span> <span style="color:#f92672">=</span>
-    <span style="color:#00a8c8">let</span> <span style="color:#111">steps</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Int</span><span style="color:#111">]</span>
-        <span style="color:#111">steps</span> <span style="color:#111">i1</span> <span style="color:#111">i2</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">if</span> <span style="color:#111">i2</span> <span style="color:#f92672">&gt;</span> <span style="color:#111">i1</span> <span style="color:#00a8c8">then</span> <span style="color:#111">[</span><span style="color:#111">i1</span> <span style="color:#f92672">..</span> <span style="color:#111">i2</span><span style="color:#111">]</span> <span style="color:#00a8c8">else</span> <span style="color:#111">[</span><span style="color:#111">i2</span> <span style="color:#f92672">..</span> <span style="color:#111">i1</span><span style="color:#111">]</span>
-        <span style="color:#111">xs</span> <span style="color:#f92672">=</span> <span style="color:#111">steps</span> <span style="color:#111">x1</span> <span style="color:#111">x2</span>
-        <span style="color:#111">ys</span> <span style="color:#f92672">=</span> <span style="color:#111">steps</span> <span style="color:#111">y1</span> <span style="color:#111">y2</span>
-     <span style="color:#00a8c8">in</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">p</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">head</span> <span style="color:#111">p</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">p</span> <span style="color:#f92672">!!</span> <span style="color:#ae81ff">1</span><span style="color:#111">})</span> <span style="color:#111">(</span><span style="color:#111">sequence</span> <span style="color:#111">[</span><span style="color:#111">xs</span><span style="color:#111">,</span> <span style="color:#111">ys</span><span style="color:#111">])</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
+<span style=color:#75af00>pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>LineSegment</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style=color:#111>segs</span> <span style=color:#f92672>=</span>
+  <span style=color:#111>length</span>
+    <span style=color:#111>(</span> <span style=color:#111>filter</span>
+        <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>ps</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>length</span> <span style=color:#111>ps</span> <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+        <span style=color:#111>(</span> <span style=color:#111>groupSegmentOverlaps</span>
+            <span style=color:#111>discretizeRightLineSegment</span>
+            <span style=color:#111>segs</span>
+        <span style=color:#111>)</span>
+    <span style=color:#111>)</span>
 
-<span style="color:#75af00">groupSegmentOverlaps</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">LineSegmentDiscretizer</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">LineSegment</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[[</span><span style="color:#00a8c8">Point</span><span style="color:#111">]]</span>
-<span style="color:#75af00">groupSegmentOverlaps</span> <span style="color:#111">discretizer</span> <span style="color:#111">lineSegments</span> <span style="color:#f92672">=</span>
-  <span style="color:#75715e">-- In an imperative language with mutable data, I&#39;d have had a mapping from</span>
-  <span style="color:#75715e">-- points to counts, and then looped over the map to get those w/ counts &gt;=</span>
-  <span style="color:#75715e">-- 2. But we don&#39;t have mutability...</span>
-  <span style="color:#75715e">--</span>
-  <span style="color:#75715e">-- Suppose we had a list of points with a vent, e.g. [(x1, y1), (x2, y2),</span>
-  <span style="color:#75715e">-- (x3, y3), (x1, y1), (x4, y4)]. How do I get counts without mutability?</span>
-  <span style="color:#75715e">--</span>
-  <span style="color:#75715e">-- Seems like some version of folding, where the accumulator is of the form</span>
-  <span style="color:#75715e">-- [(x1, x2, 2), (x2, y2, 1), (x3, y3, 1), (x4, y4, 1)]. Feels pretty</span>
-  <span style="color:#75715e">-- inefficient. Or we can sort the list, and then keeping count doesn&#39;t need</span>
-  <span style="color:#75715e">-- take quadratic(?) time.</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">expandSegmentsToPoints</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">LineSegment</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">[</span><span style="color:#00a8c8">Point</span><span style="color:#111">]</span>
-      <span style="color:#111">expandSegmentsToPoints</span> <span style="color:#00a8c8">[]</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
-      <span style="color:#111">expandSegmentsToPoints</span> <span style="color:#111">(</span><span style="color:#111">seg</span> <span style="color:#00a8c8">:</span> <span style="color:#111">segs</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
-        <span style="color:#111">discretizer</span> <span style="color:#111">seg</span> <span style="color:#f92672">++</span> <span style="color:#111">expandSegmentsToPoints</span> <span style="color:#111">segs</span>
-   <span style="color:#00a8c8">in</span> <span style="color:#111">group</span> <span style="color:#111">(</span><span style="color:#111">sort</span> <span style="color:#111">(</span><span style="color:#111">expandSegmentsToPoints</span> <span style="color:#111">lineSegments</span><span style="color:#111">))</span>
+<span style=color:#75af00>discretizeDiagonalLineSegment</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>LineSegmentDiscretizer</span>
+<span style=color:#75af00>discretizeDiagonalLineSegment</span> <span style=color:#00a8c8>LineSegment</span> <span style=color:#111>{</span><span style=color:#111>p1</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x1</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y1</span><span style=color:#111>},</span> <span style=color:#111>p2</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x2</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y2</span><span style=color:#111>}}</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>abs</span> <span style=color:#111>(</span><span style=color:#111>x1</span> <span style=color:#f92672>-</span> <span style=color:#111>x2</span><span style=color:#111>)</span> <span style=color:#f92672>==</span> <span style=color:#111>abs</span> <span style=color:#111>(</span><span style=color:#111>y1</span> <span style=color:#f92672>-</span> <span style=color:#111>y2</span><span style=color:#111>)</span> <span style=color:#f92672>=</span>
+    <span style=color:#00a8c8>let</span> <span style=color:#111>absDiff</span> <span style=color:#f92672>=</span> <span style=color:#111>abs</span> <span style=color:#111>(</span><span style=color:#111>x1</span> <span style=color:#f92672>-</span> <span style=color:#111>x2</span><span style=color:#111>)</span>
+        <span style=color:#111>xs</span> <span style=color:#f92672>=</span> <span style=color:#111>[</span><span style=color:#111>x1</span><span style=color:#111>,</span> <span style=color:#111>x1</span> <span style=color:#f92672>+</span> <span style=color:#111>step</span> <span style=color:#f92672>..</span> <span style=color:#111>x2</span><span style=color:#111>]</span>
+          <span style=color:#00a8c8>where</span>
+            <span style=color:#111>step</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>x2</span> <span style=color:#f92672>-</span> <span style=color:#111>x1</span><span style=color:#111>)</span> <span style=color:#111>`</span><span style=color:#111>div</span><span style=color:#111>`</span> <span style=color:#111>absDiff</span>
+        <span style=color:#111>ys</span> <span style=color:#f92672>=</span> <span style=color:#111>[</span><span style=color:#111>y1</span><span style=color:#111>,</span> <span style=color:#111>y1</span> <span style=color:#f92672>+</span> <span style=color:#111>step</span> <span style=color:#f92672>..</span> <span style=color:#111>y2</span><span style=color:#111>]</span>
+          <span style=color:#00a8c8>where</span>
+            <span style=color:#111>step</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>y2</span> <span style=color:#f92672>-</span> <span style=color:#111>y1</span><span style=color:#111>)</span> <span style=color:#111>`</span><span style=color:#111>div</span><span style=color:#111>`</span> <span style=color:#111>absDiff</span>
+     <span style=color:#00a8c8>in</span> <span style=color:#111>zipWith</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>x&#39;</span> <span style=color:#111>y&#39;</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x&#39;</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y&#39;</span><span style=color:#111>})</span> <span style=color:#111>xs</span> <span style=color:#111>ys</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>otherwise</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
 
-<span style="color:#75af00">pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">LineSegment</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style="color:#111">segs</span> <span style="color:#f92672">=</span>
-  <span style="color:#111">length</span>
-    <span style="color:#111">(</span> <span style="color:#111">filter</span>
-        <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">ps</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">length</span> <span style="color:#111">ps</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
-        <span style="color:#111">(</span> <span style="color:#111">groupSegmentOverlaps</span>
-            <span style="color:#111">discretizeRightLineSegment</span>
-            <span style="color:#111">segs</span>
-        <span style="color:#111">)</span>
-    <span style="color:#111">)</span>
+<span style=color:#75af00>discretizeLineSegments</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>LineSegmentDiscretizer</span>
+<span style=color:#75af00>discretizeLineSegments</span> <span style=color:#111>lineSeg</span><span style=color:#f92672>@</span><span style=color:#00a8c8>LineSegment</span> <span style=color:#111>{</span><span style=color:#111>p1</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x1</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y1</span><span style=color:#111>},</span> <span style=color:#111>p2</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Point</span> <span style=color:#111>{</span><span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x2</span><span style=color:#111>,</span> <span style=color:#111>y</span> <span style=color:#f92672>=</span> <span style=color:#111>y2</span><span style=color:#111>}}</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>x1</span> <span style=color:#f92672>==</span> <span style=color:#111>x2</span> <span style=color:#f92672>||</span> <span style=color:#111>y1</span> <span style=color:#f92672>==</span> <span style=color:#111>y2</span> <span style=color:#f92672>=</span> <span style=color:#111>discretizeRightLineSegment</span> <span style=color:#111>lineSeg</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>abs</span> <span style=color:#111>(</span><span style=color:#111>x1</span> <span style=color:#f92672>-</span> <span style=color:#111>x2</span><span style=color:#111>)</span> <span style=color:#f92672>==</span> <span style=color:#111>abs</span> <span style=color:#111>(</span><span style=color:#111>y1</span> <span style=color:#f92672>-</span> <span style=color:#111>y2</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>discretizeDiagonalLineSegment</span> <span style=color:#111>lineSeg</span>
+  <span style=color:#f92672>|</span> <span style=color:#111>otherwise</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
 
-<span style="color:#75af00">discretizeDiagonalLineSegment</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">LineSegmentDiscretizer</span>
-<span style="color:#75af00">discretizeDiagonalLineSegment</span> <span style="color:#00a8c8">LineSegment</span> <span style="color:#111">{</span><span style="color:#111">p1</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x1</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y1</span><span style="color:#111">},</span> <span style="color:#111">p2</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x2</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y2</span><span style="color:#111">}}</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">abs</span> <span style="color:#111">(</span><span style="color:#111">x1</span> <span style="color:#f92672">-</span> <span style="color:#111">x2</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">abs</span> <span style="color:#111">(</span><span style="color:#111">y1</span> <span style="color:#f92672">-</span> <span style="color:#111">y2</span><span style="color:#111">)</span> <span style="color:#f92672">=</span>
-    <span style="color:#00a8c8">let</span> <span style="color:#111">absDiff</span> <span style="color:#f92672">=</span> <span style="color:#111">abs</span> <span style="color:#111">(</span><span style="color:#111">x1</span> <span style="color:#f92672">-</span> <span style="color:#111">x2</span><span style="color:#111">)</span>
-        <span style="color:#111">xs</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">x1</span><span style="color:#111">,</span> <span style="color:#111">x1</span> <span style="color:#f92672">+</span> <span style="color:#111">step</span> <span style="color:#f92672">..</span> <span style="color:#111">x2</span><span style="color:#111">]</span>
-          <span style="color:#00a8c8">where</span>
-            <span style="color:#111">step</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">x2</span> <span style="color:#f92672">-</span> <span style="color:#111">x1</span><span style="color:#111">)</span> <span style="color:#111">`</span><span style="color:#111">div</span><span style="color:#111">`</span> <span style="color:#111">absDiff</span>
-        <span style="color:#111">ys</span> <span style="color:#f92672">=</span> <span style="color:#111">[</span><span style="color:#111">y1</span><span style="color:#111">,</span> <span style="color:#111">y1</span> <span style="color:#f92672">+</span> <span style="color:#111">step</span> <span style="color:#f92672">..</span> <span style="color:#111">y2</span><span style="color:#111">]</span>
-          <span style="color:#00a8c8">where</span>
-            <span style="color:#111">step</span> <span style="color:#f92672">=</span> <span style="color:#111">(</span><span style="color:#111">y2</span> <span style="color:#f92672">-</span> <span style="color:#111">y1</span><span style="color:#111">)</span> <span style="color:#111">`</span><span style="color:#111">div</span><span style="color:#111">`</span> <span style="color:#111">absDiff</span>
-     <span style="color:#00a8c8">in</span> <span style="color:#111">zipWith</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">x&#39;</span> <span style="color:#111">y&#39;</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x&#39;</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y&#39;</span><span style="color:#111">})</span> <span style="color:#111">xs</span> <span style="color:#111">ys</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
-
-<span style="color:#75af00">discretizeLineSegments</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">LineSegmentDiscretizer</span>
-<span style="color:#75af00">discretizeLineSegments</span> <span style="color:#111">lineSeg</span><span style="color:#f92672">@</span><span style="color:#00a8c8">LineSegment</span> <span style="color:#111">{</span><span style="color:#111">p1</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x1</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y1</span><span style="color:#111">},</span> <span style="color:#111">p2</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">Point</span> <span style="color:#111">{</span><span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#111">x2</span><span style="color:#111">,</span> <span style="color:#111">y</span> <span style="color:#f92672">=</span> <span style="color:#111">y2</span><span style="color:#111">}}</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">x1</span> <span style="color:#f92672">==</span> <span style="color:#111">x2</span> <span style="color:#f92672">||</span> <span style="color:#111">y1</span> <span style="color:#f92672">==</span> <span style="color:#111">y2</span> <span style="color:#f92672">=</span> <span style="color:#111">discretizeRightLineSegment</span> <span style="color:#111">lineSeg</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">abs</span> <span style="color:#111">(</span><span style="color:#111">x1</span> <span style="color:#f92672">-</span> <span style="color:#111">x2</span><span style="color:#111">)</span> <span style="color:#f92672">==</span> <span style="color:#111">abs</span> <span style="color:#111">(</span><span style="color:#111">y1</span> <span style="color:#f92672">-</span> <span style="color:#111">y2</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">discretizeDiagonalLineSegment</span> <span style="color:#111">lineSeg</span>
-  <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">[]</span>
-
-<span style="color:#75af00">pointsWithAtLeastTwoSegmentOverlaps</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">LineSegment</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">pointsWithAtLeastTwoSegmentOverlaps</span> <span style="color:#111">segs</span> <span style="color:#f92672">=</span>
-  <span style="color:#111">length</span>
-    <span style="color:#111">(</span> <span style="color:#111">filter</span>
-        <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">ps</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">length</span> <span style="color:#111">ps</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#111">)</span>
-        <span style="color:#111">(</span> <span style="color:#111">groupSegmentOverlaps</span>
-            <span style="color:#111">discretizeLineSegments</span>
-            <span style="color:#111">segs</span>
-        <span style="color:#111">)</span>
-    <span style="color:#111">)</span>
-</code></pre></div></div>
-
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/GiantSquid/">&laquo; AoC 2021 Day 04: Giant Squid</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/Lanternfish/">AoC 2021 Day 06: Lanternfish &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<span style=color:#75af00>pointsWithAtLeastTwoSegmentOverlaps</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>LineSegment</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>pointsWithAtLeastTwoSegmentOverlaps</span> <span style=color:#111>segs</span> <span style=color:#f92672>=</span>
+  <span style=color:#111>length</span>
+    <span style=color:#111>(</span> <span style=color:#111>filter</span>
+        <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>ps</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>length</span> <span style=color:#111>ps</span> <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+        <span style=color:#111>(</span> <span style=color:#111>groupSegmentOverlaps</span>
+            <span style=color:#111>discretizeLineSegments</span>
+            <span style=color:#111>segs</span>
+        <span style=color:#111>)</span>
+    <span style=color:#111>)</span>
+</code></pre></div></div></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/GiantSquid/>&#171; AoC 2021 Day 04: Giant Squid</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/Lanternfish/>AoC 2021 Day 06: Lanternfish &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

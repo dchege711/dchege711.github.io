@@ -1,416 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                022. Name Scores | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/">Project Euler</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/022-name-scores/022-name-scores/">022. Name Scores</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> 022. Name Scores</h1>
-    <p class="meta">
-        
-        Dated Feb 18, 2022;
-        
-        last modified on Fri, 18 Feb 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#problem-statement">Problem Statement</a></li>
-    <li><a href="#my-solution">My Solution</a></li>
-    <li><a href="#learning-from-others-solutions">Learning from Others' Solutions</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='ProjectEuler022'>
-        
-        #22 Names scores - Project Euler<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://projecteuler.net/problem=22" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
-        <i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 18, 2022.
-    
-    
-</div>
-
-<h2 id="problem-statement">Problem Statement</h2>
-<p>Using <code>names.txt</code>, a 46K text file containing over 5,000 first names,
+<!doctype html><html lang=en><head><title>022. Name Scores | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/project-euler/>Project Euler</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/project-euler/022-name-scores/022-name-scores/>022. Name Scores</a></li></ul></nav><section><header><h1>022. Name Scores</h1><p class=meta>Dated Feb 18, 2022;
+last modified on Fri, 18 Feb 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#problem-statement>Problem Statement</a></li><li><a href=#my-solution>My Solution</a></li><li><a href=#learning-from-others-solutions>Learning from Others' Solutions</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ProjectEuler022>#22 Names scores - Project Euler<i>.</i></cite>
+<a href="https://projecteuler.net/problem=22" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy aria-hidden=true>
+<i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 18, 2022.</div><h2 id=problem-statement>Problem Statement</h2><p>Using <code>names.txt</code>, a 46K text file containing over 5,000 first names,
 begin by sorting it into alphabetical order. Then working out the
 alphabetical value for each name, multiply this value by its
-alphabetical position in the list to obtain a name score.</p>
-<p>For example, when the list is sorted into alphabetical order, COLIN,
+alphabetical position in the list to obtain a name score.</p><p>For example, when the list is sorted into alphabetical order, COLIN,
 which is worth \(3 + 15 + 12 + 9 + 14 = 53\), is the 938th name in the
-list. So COLIN would obtain a score of \(938 \times 53 = 49{,}714\).</p>
-<p>What is the total of all name scores in the file?</p>
-<h2 id="my-solution">My Solution</h2>
-<p>This problem is a brute-force kind of problem, so no fancy shortcuts can
+list. So COLIN would obtain a score of \(938 \times 53 = 49{,}714\).</p><p>What is the total of all name scores in the file?</p><h2 id=my-solution>My Solution</h2><p>This problem is a brute-force kind of problem, so no fancy shortcuts can
 make it feasible to solve by hand. Will solve this in Haskell to
-continue learning more about functional programming.</p>
+continue learning more about functional programming.</p><div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-haskell data-lang=haskell><span style=color:#75715e>{-# OPTIONS_GHC -Wall #-}</span>
 
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.Char</span> <span style=color:#111>(</span><span style=color:#75af00>isAlpha</span><span style=color:#111>,</span> <span style=color:#75af00>ord</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.List</span> <span style=color:#111>(</span><span style=color:#75af00>sort</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.String</span> <span style=color:#111>(</span><span style=color:#00a8c8>IsString</span> <span style=color:#111>(</span><span style=color:#75af00>fromString</span><span style=color:#111>))</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.Text.Lazy</span> <span style=color:#111>(</span><span style=color:#00a8c8>Text</span><span style=color:#111>,</span> <span style=color:#75af00>split</span><span style=color:#111>,</span> <span style=color:#75af00>unpack</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>System.IO</span>
+  <span style=color:#111>(</span> <span style=color:#00a8c8>BufferMode</span> <span style=color:#111>(</span><span style=color:#00a8c8>LineBuffering</span><span style=color:#111>),</span>
+    <span style=color:#00a8c8>IOMode</span> <span style=color:#111>(</span><span style=color:#00a8c8>ReadMode</span><span style=color:#111>),</span>
+    <span style=color:#75af00>hGetLine</span><span style=color:#111>,</span>
+    <span style=color:#75af00>hSetBuffering</span><span style=color:#111>,</span>
+    <span style=color:#75af00>withFile</span><span style=color:#111>,</span>
+  <span style=color:#111>)</span>
 
-<div id=''><div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">{-# OPTIONS_GHC -Wall #-}</span>
+<span style=color:#75af00>getNameScore</span> <span style=color:#f92672>::</span> <span style=color:#111>(</span><span style=color:#00a8c8>Text</span><span style=color:#111>,</span> <span style=color:#00a8c8>Int</span><span style=color:#111>)</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>getNameScore</span> <span style=color:#111>(</span><span style=color:#111>name</span><span style=color:#111>,</span> <span style=color:#111>pos</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>score</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>startingOrdValue</span> <span style=color:#f92672>=</span> <span style=color:#111>ord</span> <span style=color:#d88200>&#39;A&#39;</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>
+    <span style=color:#111>score</span> <span style=color:#f92672>=</span>
+      <span style=color:#111>pos</span>
+        <span style=color:#f92672>*</span> <span style=color:#111>sum</span>
+          <span style=color:#111>(</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>c</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>ord</span> <span style=color:#111>c</span> <span style=color:#f92672>-</span> <span style=color:#111>startingOrdValue</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>filter</span> <span style=color:#111>isAlpha</span> <span style=color:#111>(</span><span style=color:#111>unpack</span> <span style=color:#111>name</span><span style=color:#111>))</span>
+          <span style=color:#111>)</span>
 
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Char</span> <span style="color:#111">(</span><span style="color:#75af00">isAlpha</span><span style="color:#111">,</span> <span style="color:#75af00">ord</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.List</span> <span style="color:#111">(</span><span style="color:#75af00">sort</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.String</span> <span style="color:#111">(</span><span style="color:#00a8c8">IsString</span> <span style="color:#111">(</span><span style="color:#75af00">fromString</span><span style="color:#111">))</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.Text.Lazy</span> <span style="color:#111">(</span><span style="color:#00a8c8">Text</span><span style="color:#111">,</span> <span style="color:#75af00">split</span><span style="color:#111">,</span> <span style="color:#75af00">unpack</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">System.IO</span>
-  <span style="color:#111">(</span> <span style="color:#00a8c8">BufferMode</span> <span style="color:#111">(</span><span style="color:#00a8c8">LineBuffering</span><span style="color:#111">),</span>
-    <span style="color:#00a8c8">IOMode</span> <span style="color:#111">(</span><span style="color:#00a8c8">ReadMode</span><span style="color:#111">),</span>
-    <span style="color:#75af00">hGetLine</span><span style="color:#111">,</span>
-    <span style="color:#75af00">hSetBuffering</span><span style="color:#111">,</span>
-    <span style="color:#75af00">withFile</span><span style="color:#111">,</span>
-  <span style="color:#111">)</span>
+<span style=color:#75715e>-- In an imperative language, I&#39;d have thoughtlessly written a parameter-less</span>
+<span style=color:#75715e>-- function (hard-corded) to fetch the names from disk. But Haskell&#39;s functional</span>
+<span style=color:#75715e>-- nature makes me think about what it means for a function to take no</span>
+<span style=color:#75715e>-- parameters. Something about that feels wrong. Granted, I could make it take</span>
+<span style=color:#75715e>-- the filepath as a parameter. [1] suggests something like</span>
+<span style=color:#75715e>-- `sumOfNameScores :: Int`.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- Not to fret though. I ended up placing the I/O logic in the main function,</span>
+<span style=color:#75715e>-- so `sumOfNameScores` is a proper function with input paramaters.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- [1]: https://stackoverflow.com/a/52349907/7812406</span>
+<span style=color:#75af00>sumOfNameScores</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Text</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
+<span style=color:#75af00>sumOfNameScores</span> <span style=color:#111>names</span> <span style=color:#f92672>=</span> <span style=color:#111>score</span>
+  <span style=color:#00a8c8>where</span>
+    <span style=color:#111>sortedNames</span> <span style=color:#f92672>=</span> <span style=color:#111>sort</span> <span style=color:#111>names</span>
 
-<span style="color:#75af00">getNameScore</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Text</span><span style="color:#111">,</span> <span style="color:#00a8c8">Int</span><span style="color:#111">)</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">getNameScore</span> <span style="color:#111">(</span><span style="color:#111">name</span><span style="color:#111">,</span> <span style="color:#111">pos</span><span style="color:#111">)</span> <span style="color:#f92672">=</span> <span style="color:#111">score</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">startingOrdValue</span> <span style="color:#f92672">=</span> <span style="color:#111">ord</span> <span style="color:#d88200">&#39;A&#39;</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
-    <span style="color:#111">score</span> <span style="color:#f92672">=</span>
-      <span style="color:#111">pos</span>
-        <span style="color:#f92672">*</span> <span style="color:#111">sum</span>
-          <span style="color:#111">(</span> <span style="color:#111">map</span> <span style="color:#111">(</span><span style="color:#75af00">\</span><span style="color:#111">c</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">ord</span> <span style="color:#111">c</span> <span style="color:#f92672">-</span> <span style="color:#111">startingOrdValue</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#111">filter</span> <span style="color:#111">isAlpha</span> <span style="color:#111">(</span><span style="color:#111">unpack</span> <span style="color:#111">name</span><span style="color:#111">))</span>
-          <span style="color:#111">)</span>
+    <span style=color:#75715e>-- [1] contends that needing an index while processing a list is a code</span>
+    <span style=color:#75715e>-- smell for an inefficient algorithm, and that we should look into using a</span>
+    <span style=color:#75715e>-- vector.</span>
+    <span style=color:#75715e>--</span>
+    <span style=color:#75715e>-- Currying is the process of transforming a function that takes multiple</span>
+    <span style=color:#75715e>-- arguments in a tuple as its argument, into a function that takes just a</span>
+    <span style=color:#75715e>-- single argument and returns another function which accepts further</span>
+    <span style=color:#75715e>-- arguments, e.g. `g :: (a, b) -&gt; c` after currying becomes into `f :: a -&gt;</span>
+    <span style=color:#75715e>-- (b -&gt; c)`. Currying is especially useful as it allows partial</span>
+    <span style=color:#75715e>-- application. [2]</span>
+    <span style=color:#75715e>--</span>
+    <span style=color:#75715e>-- [1]: https://stackoverflow.com/a/16191987/7812406</span>
+    <span style=color:#75715e>-- [2]: https://wiki.haskell.org/Currying</span>
+    <span style=color:#111>score</span> <span style=color:#f92672>=</span> <span style=color:#111>sum</span> <span style=color:#111>(</span><span style=color:#111>zipWith</span> <span style=color:#111>(</span><span style=color:#111>curry</span> <span style=color:#111>getNameScore</span><span style=color:#111>)</span> <span style=color:#111>sortedNames</span> <span style=color:#111>[</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>..</span><span style=color:#111>])</span>
 
-<span style="color:#75715e">-- In an imperative language, I&#39;d have thoughtlessly written a parameter-less</span>
-<span style="color:#75715e">-- function (hard-corded) to fetch the names from disk. But Haskell&#39;s functional</span>
-<span style="color:#75715e">-- nature makes me think about what it means for a function to take no</span>
-<span style="color:#75715e">-- parameters. Something about that feels wrong. Granted, I could make it take</span>
-<span style="color:#75715e">-- the filepath as a parameter. [1] suggests something like</span>
-<span style="color:#75715e">-- `sumOfNameScores :: Int`.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- Not to fret though. I ended up placing the I/O logic in the main function,</span>
-<span style="color:#75715e">-- so `sumOfNameScores` is a proper function with input paramaters.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- [1]: https://stackoverflow.com/a/52349907/7812406</span>
-<span style="color:#75af00">sumOfNameScores</span> <span style="color:#f92672">::</span> <span style="color:#111">[</span><span style="color:#00a8c8">Text</span><span style="color:#111">]</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">Int</span>
-<span style="color:#75af00">sumOfNameScores</span> <span style="color:#111">names</span> <span style="color:#f92672">=</span> <span style="color:#111">score</span>
-  <span style="color:#00a8c8">where</span>
-    <span style="color:#111">sortedNames</span> <span style="color:#f92672">=</span> <span style="color:#111">sort</span> <span style="color:#111">names</span>
+<span style=color:#75715e>-- Pure code refers to functions that always return the same result when given</span>
+<span style=color:#75715e>-- the same input, have no side effects (e.g. I/O on files, printing to screen),</span>
+<span style=color:#75715e>-- and never alter state. I/O in Haskell is impure code. [1]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- A side effect is anything that causes the evaluation of an expression to</span>
+<span style=color:#75715e>-- interact with something outside itself. Side effects are time-sensitive, e.g.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- * It matters when one modifies a global variable as it may affect the</span>
+<span style=color:#75715e>--   evaluation of other expressions.</span>
+<span style=color:#75715e>-- * It matters when an item is printed to screen as it may need to be in a</span>
+<span style=color:#75715e>--   certain order w.r.t. other writes to the screen.</span>
+<span style=color:#75715e>-- * It matters when we read from a file or the network as the contents of the</span>
+<span style=color:#75715e>--   file may affect the outcome.</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- [2]</span>
+<span style=color:#75715e>--</span>
+<span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io.html</span>
+<span style=color:#75715e>-- [2]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/6-laziness#side-effects-and-purity</span>
+<span style=color:#75af00>main</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>main</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;The total of all the name scores in names.txt is &#34;</span>
 
-    <span style="color:#75715e">-- [1] contends that needing an index while processing a list is a code</span>
-    <span style="color:#75715e">-- smell for an inefficient algorithm, and that we should look into using a</span>
-    <span style="color:#75715e">-- vector.</span>
-    <span style="color:#75715e">--</span>
-    <span style="color:#75715e">-- Currying is the process of transforming a function that takes multiple</span>
-    <span style="color:#75715e">-- arguments in a tuple as its argument, into a function that takes just a</span>
-    <span style="color:#75715e">-- single argument and returns another function which accepts further</span>
-    <span style="color:#75715e">-- arguments, e.g. `g :: (a, b) -&gt; c` after currying becomes into `f :: a -&gt;</span>
-    <span style="color:#75715e">-- (b -&gt; c)`. Currying is especially useful as it allows partial</span>
-    <span style="color:#75715e">-- application. [2]</span>
-    <span style="color:#75715e">--</span>
-    <span style="color:#75715e">-- [1]: https://stackoverflow.com/a/16191987/7812406</span>
-    <span style="color:#75715e">-- [2]: https://wiki.haskell.org/Currying</span>
-    <span style="color:#111">score</span> <span style="color:#f92672">=</span> <span style="color:#111">sum</span> <span style="color:#111">(</span><span style="color:#111">zipWith</span> <span style="color:#111">(</span><span style="color:#111">curry</span> <span style="color:#111">getNameScore</span><span style="color:#111">)</span> <span style="color:#111">sortedNames</span> <span style="color:#111">[</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">..</span><span style="color:#111">])</span>
+  <span style=color:#75715e>-- Open file handles ought to be closed. [1] suggested using the `openFile`</span>
+  <span style=color:#75715e>-- function together with the `bracket` function to ensure that the handle got</span>
+  <span style=color:#75715e>-- closed. However, HLint further suggested the `withFile` function, which is</span>
+  <span style=color:#75715e>-- less verbose, and achieves the same safety. [1] does not mention the</span>
+  <span style=color:#75715e>-- `withFile` function (maybe it was introduced later?)</span>
+  <span style=color:#75715e>--</span>
+  <span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io-case-study-a-library-for-searching-the-filesystem.html#find.acquire.use.release</span>
+  <span style=color:#111>withFile</span>
+    <span style=color:#d88200>&#34;scratchpad/names.txt&#34;</span>
+    <span style=color:#00a8c8>ReadMode</span>
+    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
+        <span style=color:#75715e>-- Haskell tries to make educated guesses on the buffering used in I/O.</span>
+        <span style=color:#75715e>-- In this case though, we know that names.txt is a list of</span>
+        <span style=color:#75715e>-- comma-delimited names in one line, so `LineBuffering` makes more</span>
+        <span style=color:#75715e>-- sense. The default was `BlockBuffering Nothing`, which means use an</span>
+        <span style=color:#75715e>-- implementation-defined block size.</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io.html#id615631</span>
+        <span style=color:#111>hSetBuffering</span> <span style=color:#111>h</span> <span style=color:#00a8c8>LineBuffering</span>
 
-<span style="color:#75715e">-- Pure code refers to functions that always return the same result when given</span>
-<span style="color:#75715e">-- the same input, have no side effects (e.g. I/O on files, printing to screen),</span>
-<span style="color:#75715e">-- and never alter state. I/O in Haskell is impure code. [1]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- A side effect is anything that causes the evaluation of an expression to</span>
-<span style="color:#75715e">-- interact with something outside itself. Side effects are time-sensitive, e.g.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- * It matters when one modifies a global variable as it may affect the</span>
-<span style="color:#75715e">--   evaluation of other expressions.</span>
-<span style="color:#75715e">-- * It matters when an item is printed to screen as it may need to be in a</span>
-<span style="color:#75715e">--   certain order w.r.t. other writes to the screen.</span>
-<span style="color:#75715e">-- * It matters when we read from a file or the network as the contents of the</span>
-<span style="color:#75715e">--   file may affect the outcome.</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- [2]</span>
-<span style="color:#75715e">--</span>
-<span style="color:#75715e">-- [1]: http://book.realworldhaskell.org/read/io.html</span>
-<span style="color:#75715e">-- [2]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/6-laziness#side-effects-and-purity</span>
-<span style="color:#75af00">main</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">main</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;The total of all the name scores in names.txt is &#34;</span>
+        <span style=color:#75715e>-- The `&lt;-` binds the result from executing an I/O action to a name.</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io.html#x_CC</span>
+        <span style=color:#111>allNamesStr</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetLine</span> <span style=color:#111>h</span>
 
-  <span style="color:#75715e">-- Open file handles ought to be closed. [1] suggested using the `openFile`</span>
-  <span style="color:#75715e">-- function together with the `bracket` function to ensure that the handle got</span>
-  <span style="color:#75715e">-- closed. However, HLint further suggested the `withFile` function, which is</span>
-  <span style="color:#75715e">-- less verbose, and achieves the same safety. [1] does not mention the</span>
-  <span style="color:#75715e">-- `withFile` function (maybe it was introduced later?)</span>
-  <span style="color:#75715e">--</span>
-  <span style="color:#75715e">-- [1]: http://book.realworldhaskell.org/read/io-case-study-a-library-for-searching-the-filesystem.html#find.acquire.use.release</span>
-  <span style="color:#111">withFile</span>
-    <span style="color:#d88200">&#34;scratchpad/names.txt&#34;</span>
-    <span style="color:#00a8c8">ReadMode</span>
-    <span style="color:#111">(</span> <span style="color:#75af00">\</span><span style="color:#111">h</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
-        <span style="color:#75715e">-- Haskell tries to make educated guesses on the buffering used in I/O.</span>
-        <span style="color:#75715e">-- In this case though, we know that names.txt is a list of</span>
-        <span style="color:#75715e">-- comma-delimited names in one line, so `LineBuffering` makes more</span>
-        <span style="color:#75715e">-- sense. The default was `BlockBuffering Nothing`, which means use an</span>
-        <span style="color:#75715e">-- implementation-defined block size.</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">-- [1]: http://book.realworldhaskell.org/read/io.html#id615631</span>
-        <span style="color:#111">hSetBuffering</span> <span style="color:#111">h</span> <span style="color:#00a8c8">LineBuffering</span>
+        <span style=color:#75715e>-- Surprised that Haskell&#39;s core library lacks a string splitter!</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>-- The `fromString` is needed to form a `Text` out of the `String` type</span>
+        <span style=color:#75715e>-- (which is an alias for `[Char]`).</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>-- [1]: https://stackoverflow.com/a/37895439/7812406</span>
 
-        <span style="color:#75715e">-- The `&lt;-` binds the result from executing an I/O action to a name.</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">-- [1]: http://book.realworldhaskell.org/read/io.html#x_CC</span>
-        <span style="color:#111">allNamesStr</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">hGetLine</span> <span style="color:#111">h</span>
-
-        <span style="color:#75715e">-- Surprised that Haskell&#39;s core library lacks a string splitter!</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">-- The `fromString` is needed to form a `Text` out of the `String` type</span>
-        <span style="color:#75715e">-- (which is an alias for `[Char]`).</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">-- [1]: https://stackoverflow.com/a/37895439/7812406</span>
-
-        <span style="color:#75715e">-- If `?` is an operator, then:</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">--    `(?y)` is equivalent to the function `\x -&gt; x ? y`</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">--    `(y?)` is equivalent to the function `\x -&gt; y ? x`</span>
-        <span style="color:#75715e">--</span>
-        <span style="color:#75715e">-- [1]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/4-higher-order-programming-and-type-inference#anonymous-functions</span>
-        <span style="color:#111">print</span> <span style="color:#f92672">$</span> <span style="color:#111">sumOfNameScores</span> <span style="color:#111">(</span><span style="color:#111">split</span> <span style="color:#111">(</span><span style="color:#f92672">==</span> <span style="color:#d88200">&#39;,&#39;</span><span style="color:#111">)</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">allNamesStr</span><span style="color:#111">))</span>
-    <span style="color:#111">)</span>
-</code></pre></div></div>
-
-<h2 id="learning-from-others-solutions">Learning from Others' Solutions</h2>
-<p>Problem 022 did not have tricky bits, so <span class="citation-ref"><a href="#ProjectEuler022Thread"></a></span> doesn&rsquo;t offer much beyond decisions like:</p>
-<ul>
-<li>How the list is parsed, e.g. 
-<a href="https://docs.python.org/3/library/csv.html"
-    
-    
-    
-        target="_blank" rel="noopener"
-    >
-    python has an in-built <code>csv</code>
+        <span style=color:#75715e>-- If `?` is an operator, then:</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>--    `(?y)` is equivalent to the function `\x -&gt; x ? y`</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>--    `(y?)` is equivalent to the function `\x -&gt; y ? x`</span>
+        <span style=color:#75715e>--</span>
+        <span style=color:#75715e>-- [1]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/4-higher-order-programming-and-type-inference#anonymous-functions</span>
+        <span style=color:#111>print</span> <span style=color:#f92672>$</span> <span style=color:#111>sumOfNameScores</span> <span style=color:#111>(</span><span style=color:#111>split</span> <span style=color:#111>(</span><span style=color:#f92672>==</span> <span style=color:#d88200>&#39;,&#39;</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>allNamesStr</span><span style=color:#111>))</span>
+    <span style=color:#111>)</span>
+</code></pre></div></div><h2 id=learning-from-others-solutions>Learning from Others' Solutions</h2><p>Problem 022 did not have tricky bits, so <span class=citation-ref><a href=#ProjectEuler022Thread></a></span>doesn&rsquo;t offer much beyond decisions like:</p><ul><li>How the list is parsed, e.g.
+<a href=https://docs.python.org/3/library/csv.html target=_blank rel=noopener>python has an in-built <code>csv</code>
 module
-     <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-</a>
-, some users
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, some users
 slapped some <code>[]</code> around the names.txt&rsquo;s contents which made the
-contents a valid array.</li>
-<li>Stripping of the quotation marks. I chose to ignore them using
-<code>isAlpha</code>.</li>
-<li>Use of constants. I chose to use <code>ord 'A' - 1</code> in place of <code>64</code>.</li>
-</ul>
-<h2 id="references">References</h2>
-<ol>
-<li>
-    
-
-<div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count=''>
-    <cite id='ProjectEuler022Thread'>
-        
-        Thread 22 - Project Euler<i>.</i>
-        
-    </cite>
-    
-    
-    
-    
-    
-    
-    <a href="https://projecteuler.net/thread=22" target="_blank" rel="noopener">
-        <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
-        <i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden="true"></i>
-    </a>.
-    
-    
-    
-    
-    
-    
-    
-    <i class='fas fa-fw fa-globe' aria-hidden="true"></i>
-    
-     Accessed Feb 18, 2022.
-    
-    
-</div>
-</li>
-</ol>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-<aside id="tags-holder" style="margin: 0 0 2% 0;">
-    Tags:
-    
-        <a href="/tags/haskell">#haskell</a>
-    
-</aside>
-
-
-
-
-
-
-<aside id="domains-holder" style="margin: 0 0 2% 0;">
-    Cited Domains:
-    
-        <a href='/domains/projecteuler.net' style="margin: 0px 2px;">
-            <img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading="lazy" aria-hidden="true">
-            projecteuler.net
-        </a>
-    
-</aside>
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/project-euler/021-amicable-numbers/021-amicable-numbers/">&laquo; 021. Amicable Numbers</a>
-        
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+contents a valid array.</li><li>Stripping of the quotation marks. I chose to ignore them using
+<code>isAlpha</code>.</li><li>Use of constants. I chose to use <code>ord 'A' - 1</code> in place of <code>64</code>.</li></ul><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ProjectEuler022Thread>Thread 22 - Project Euler<i>.</i></cite>
+<a href="https://projecteuler.net/thread=22" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy aria-hidden=true>
+<i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 18, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/haskell>#haskell</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/projecteuler.net style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy aria-hidden=true>
+projecteuler.net</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/project-euler/021-amicable-numbers/021-amicable-numbers/>&#171; 021. Amicable Numbers</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

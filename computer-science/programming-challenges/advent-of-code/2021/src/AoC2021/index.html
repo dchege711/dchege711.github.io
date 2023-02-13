@@ -1,361 +1,193 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>
-            
-                AoC 2021 Solution Runner | curiosities.dev
-            
-        </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="/css/all_font_awesome_v5.9.min.css" />
-        
-        <link rel="shortcut icon" href="/img/favicon_io/favicon.ico">
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon_io/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_io/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon_io/favicon-16x16.png">
-
-        <link rel="stylesheet" href="/css/vs.css">
-        <script type="text/javascript" src="/js/highlight.min.js"></script>
-        <script>
-            
-            const hjlsURLRegex = /https?:\/\/[^\s<]+/g
-            const hjlsCitationRegex = /&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-            hljs.addPlugin({
-                "after:highlight": (result) => {
-                    result.value = result.value.replaceAll(
-                        hjlsURLRegex, "<a href='$&' target='_blank'>$&</a>");
-                    console.log(result.value);
-                    result.value = result.value.replaceAll(
-                        hjlsCitationRegex, "<span class='citation-ref'><a href='$1'></a></span>");
-                }
-            });
-            hljs.highlightAll();
-        </script>
-
-        <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-        </script>
-
-        <script type="text/javascript" src="/js/d3/d3.min.js"></script>
-        <script type="text/javascript" src="/js/PlotUtils.js"></script>
-        <script type="text/javascript" src="/js/OrganizeCitations.js"></script>
-        <script type="text/javascript" src="/js/HighlightAnchor.js"></script>
-        <script type="text/javascript" src="/js/SummaryPageUtils.js"></script>
-        <script type="text/javascript" src="/js/AnimateBackground.js"></script>
-
-        
-
-
-    </head>
-
-    <svg id="background-svg"></svg>
-
-    <body>
-
-        <div class="container" id="main_div">
-
-            
-            <form action="/search" method="get" id="globalSearchForm">
-                <input type="text" id="q" name="q" title="Search Query">
-                <input type="submit" id="submitButton" value="Search">
-            </form>
-
-            
-
-            <nav aria-label="Breadcrumb" class="breadcrumb">
-    <ul>
-        
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://www.curiosities.dev/">Home</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/">Computer Science &amp; Software Engineering</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/">Programming Challenges</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/">Advent of Code</a>
-</li>
-
-
-<li>
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/">Advent of Code 2021</a>
-</li>
-
-
-<li class="active">
-  <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/">AoC 2021 Solution Runner</a>
-</li>
-
-    </ul>
-</nav>
-
-
-
-            
-<section>
-    <header>
-    <h1> AoC 2021 Solution Runner</h1>
-    <p class="meta">
-        
-        Dated Apr 11, 2022;
-        
-        last modified on Mon, 11 Apr 2022
-        
-    </p>
-    </header>
-
-    <div id="toc-then-article">
-        <aside id="toc">
-            <nav id="TableOfContents"></nav>
-        </aside>
-
-        <article id="main-article">
-            <div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2"><code class="language-hs" data-lang="hs"><span style="color:#75715e">{-#  OPTIONS_GHC -Wall  #-}</span>
-
-<span style="color:#00a8c8">module</span> <span style="color:#111">AoC2021</span> <span style="color:#111">(</span><span style="color:#75af00">runSolution</span><span style="color:#111">)</span> <span style="color:#00a8c8">where</span>
-
-<span style="color:#75715e">--  https://cabal.readthedocs.io/en/3.4/cabal-package.html#accessing-data-files-from-package-code</span>
-
-<span style="color:#00a8c8">import</span> <span style="color:#111">AoC2021InputParser</span>
-    <span style="color:#111">(</span> <span style="color:#75af00">parseBinaryDiagnosticInput</span><span style="color:#111">,</span> <span style="color:#75af00">parseBingoInput</span><span style="color:#111">,</span> <span style="color:#75af00">parseHydrothermalVents</span><span style="color:#111">,</span>
-      <span style="color:#75af00">parseLanternfishInternalTimers</span><span style="color:#111">,</span> <span style="color:#75af00">parseHorizontalCrabPositions</span><span style="color:#111">,</span>
-      <span style="color:#75af00">parseSevenSegmentsDisplay</span><span style="color:#111">,</span> <span style="color:#75af00">parseHeightMap</span> <span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">BinaryDiagnostic.BinaryDiagnostic</span> <span style="color:#111">(</span><span style="color:#75af00">lifeSupportRating</span><span style="color:#111">,</span> <span style="color:#75af00">powerConsumption</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Data.String</span> <span style="color:#111">(</span><span style="color:#00a8c8">IsString</span> <span style="color:#111">(</span><span style="color:#75af00">fromString</span><span style="color:#111">))</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Dive.Dive</span> <span style="color:#111">(</span><span style="color:#75af00">productOfFinalPosition</span><span style="color:#111">,</span> <span style="color:#75af00">productOfFinalPositionWithNewIntepretation</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">GiantSquid</span> <span style="color:#111">(</span><span style="color:#75af00">scoreOfFirstWinningBoard</span><span style="color:#111">,</span> <span style="color:#75af00">scoreOfLastWinningBoard</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">HydrothermalVenture.HydrothermalVenture</span>
-  <span style="color:#111">(</span> <span style="color:#75af00">pointsWithAtLeastTwoRightSegmentOverlaps</span><span style="color:#111">,</span>
-    <span style="color:#75af00">pointsWithAtLeastTwoSegmentOverlaps</span><span style="color:#111">,</span>
-  <span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.Lanternfish</span> <span style="color:#111">(</span><span style="color:#75af00">numOfFishIn80Days</span><span style="color:#111">,</span> <span style="color:#75af00">numOfFishIn256Days</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.TreacheryOfWhales</span> <span style="color:#00a8c8">as</span> <span style="color:#111">TreacheryOfWhales</span>
-  <span style="color:#111">(</span>
-    <span style="color:#111">minFuelForAlignmentWithConstantBurnRate</span><span style="color:#111">,</span>
-    <span style="color:#111">minFuelForAlignmentWithIncreasingBurnRate</span>
-  <span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Paths_advent_of_code_y2021</span> <span style="color:#111">(</span><span style="color:#75af00">getDataFileName</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">SonarSweep</span> <span style="color:#111">(</span> <span style="color:#75af00">num3MeasurementIncreases</span><span style="color:#111">,</span> <span style="color:#75af00">numIncreases</span> <span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">System.IO</span> <span style="color:#111">(</span><span style="color:#00a8c8">IOMode</span> <span style="color:#111">(</span><span style="color:#00a8c8">ReadMode</span><span style="color:#111">),</span> <span style="color:#75af00">hGetContents</span><span style="color:#111">,</span> <span style="color:#75af00">withFile</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.SevenSegmentSearch</span> <span style="color:#00a8c8">as</span> <span style="color:#111">SevenSegmentSearch</span>
-  <span style="color:#111">(</span><span style="color:#111">numOf1478AppearancesInOutput</span><span style="color:#111">,</span> <span style="color:#111">sumOfOutputValues</span><span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#00a8c8">qualified</span> <span style="color:#111">AoC2021.SmokeBasin</span> <span style="color:#00a8c8">as</span> <span style="color:#111">SmokeBasin</span>
-  <span style="color:#111">(</span>
-    <span style="color:#111">sumOfRiskLevelsOfLowPoints</span><span style="color:#111">,</span>
-    <span style="color:#111">productOf3LargestBasins</span>
-  <span style="color:#111">)</span>
-<span style="color:#00a8c8">import</span> <span style="color:#111">Text.Printf</span> <span style="color:#111">(</span><span style="color:#75af00">printf</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">allSolutions</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">allSolutions</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">solution01</span>
-  <span style="color:#111">solution02</span>
-  <span style="color:#111">solution03</span>
-  <span style="color:#111">solution04</span>
-  <span style="color:#111">solution05</span>
-  <span style="color:#111">solution06</span>
-  <span style="color:#111">solution07</span>
-  <span style="color:#111">solution08</span>
-  <span style="color:#111">solution09</span>
-
-<span style="color:#75af00">runSolution</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">allSolutions</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution01</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution02</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution03</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution04</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution05</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">6</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution06</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution07</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution08</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#ae81ff">9</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">solution09</span>
-<span style="color:#75af00">runSolution</span> <span style="color:#111">x</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span> <span style="color:#111">putStrLn</span> <span style="color:#111">(</span><span style="color:#d88200">&#34;Day &#34;</span> <span style="color:#f92672">++</span> <span style="color:#111">show</span> <span style="color:#111">x</span> <span style="color:#f92672">++</span> <span style="color:#d88200">&#34; has no associated solution.&#34;</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">solution01</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution01</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#75715e">--  hGetContents is lazy in that data is only read as the characters are</span>
-  <span style="color:#75715e">--  processed. The lazy evaluation of the string is transparent, and so it can</span>
-  <span style="color:#75715e">--  be passed to pure functions without any issues. However, if we try to hold</span>
-  <span style="color:#75715e">--  onto `s` past the call to `numIncreases`, then we lose the memory</span>
-  <span style="color:#75715e">--  efficiency as the compiler is forced to keep its value in memory for future</span>
-  <span style="color:#75715e">--  use. Note that closing a handle before fully consuming its results will</span>
-  <span style="color:#75715e">--  make you miss on the stream&#39;s data that had not been evaluated before the</span>
-  <span style="color:#75715e">--  handle&#39;s close. [1] [2]</span>
-  <span style="color:#75715e">--</span>
-  <span style="color:#75715e">--  [1]: http://book.realworldhaskell.org/read/io.html#io.lazy.hGetContents</span>
-  <span style="color:#75715e">--  [2]: https://hackage.haskell.org/package/base-4.16.0.0/docs/System-IO.html#v:hGetContents</span>
-
-  <span style="color:#111">fp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#d88200">&#34;src/scratchpad/01-sonar-sweep.input.txt&#34;</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 01. Sonar Sweep&#34;</span>
-  <span style="color:#111">withFile</span>
-    <span style="color:#111">fp</span>
-    <span style="color:#00a8c8">ReadMode</span>
-    <span style="color:#111">(</span> <span style="color:#75af00">\</span><span style="color:#111">h</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
-        <span style="color:#111">s</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">hGetContents</span> <span style="color:#111">h</span>
-        <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Number of measurements larger than previous measurement: &#34;</span>
-        <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">SonarSweep</span><span style="color:#f92672">.</span><span style="color:#111">numIncreases</span> <span style="color:#111">(</span><span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)))</span>
-        <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Number of 3-measurements larger than previous 3-measurement: &#34;</span>
-        <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">SonarSweep</span><span style="color:#f92672">.</span><span style="color:#111">num3MeasurementIncreases</span> <span style="color:#111">(</span><span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)))</span>
-    <span style="color:#111">)</span>
-
-<span style="color:#75af00">solution02</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution02</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">fp</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">getDataFileName</span> <span style="color:#d88200">&#34;src/Dive/scratchpad/input.txt&#34;</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 02. Dive!&#34;</span>
-  <span style="color:#111">withFile</span>
-    <span style="color:#111">fp</span>
-    <span style="color:#00a8c8">ReadMode</span>
-    <span style="color:#111">(</span> <span style="color:#75af00">\</span><span style="color:#111">h</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">do</span>
-        <span style="color:#111">s</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">hGetContents</span> <span style="color:#111">h</span>
-        <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Product of final horizontal position and final depth: &#34;</span>
-        <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#111">productOfFinalPosition</span> <span style="color:#111">(</span><span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)))</span>
-        <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Product of final horizontal position and final depth &#34;</span>
-        <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;with new instructions of : &#34;</span>
-        <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#111">productOfFinalPositionWithNewIntepretation</span> <span style="color:#111">(</span><span style="color:#111">lines</span> <span style="color:#111">(</span><span style="color:#111">fromString</span> <span style="color:#111">s</span><span style="color:#111">)))</span>
-    <span style="color:#111">)</span>
-
-<span style="color:#75af00">solution03</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution03</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 03. Binary Diagnostic&#34;</span>
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Power Consumption: &#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseBinaryDiagnosticInput</span> <span style="color:#d88200">&#34;src/BinaryDiagnostic/scratchpad/input.txt&#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#111">powerConsumption</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Life Support Rating: &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#111">lifeSupportRating</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">solution04</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution04</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 04. Giant Squid&#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseBingoInput</span> <span style="color:#d88200">&#34;src/scratchpad/04-giant-squid.input.txt&#34;</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Score of first winning board: &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">GiantSquid</span><span style="color:#f92672">.</span><span style="color:#111">scoreOfFirstWinningBoard</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Score of last winning board: &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">GiantSquid</span><span style="color:#f92672">.</span><span style="color:#111">scoreOfLastWinningBoard</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">solution05</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution05</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 05. Hydrothermal Venture&#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseHydrothermalVents</span> <span style="color:#d88200">&#34;src/HydrothermalVenture/scratchpad/input.txt&#34;</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Num Points Where &gt;= 2 Right Lines Overlap: &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#111">pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Num Points Where &gt;= 2 Lines Overlap: &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#111">pointsWithAtLeastTwoSegmentOverlaps</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">solution06</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution06</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 06. Lanternfish&#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseLanternfishInternalTimers</span> <span style="color:#d88200">&#34;src/scratchpad/06-lanternfish.input.txt&#34;</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Number of lanternfish after 80 days: (360610) &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">AoC2021</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Lanternfish</span><span style="color:#f92672">.</span><span style="color:#111">numOfFishIn80Days</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Number of lanternfish after 256 days: (1631629590423) &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">AoC2021</span><span style="color:#f92672">.</span><span style="color:#00a8c8">Lanternfish</span><span style="color:#f92672">.</span><span style="color:#111">numOfFishIn256Days</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">solution07</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution07</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 07. The Treachery of Whales&#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseHorizontalCrabPositions</span> <span style="color:#d88200">&#34;src/scratchpad/07-treachery-of-whales.input.txt&#34;</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Min fuel needed to align horizontal positions: (329389) &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">TreacheryOfWhales</span><span style="color:#f92672">.</span><span style="color:#111">minFuelForAlignmentWithConstantBurnRate</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Min fuel needed to align with increasing burn rate: &#34;</span>
-  <span style="color:#111">print</span> <span style="color:#111">(</span><span style="color:#00a8c8">TreacheryOfWhales</span><span style="color:#f92672">.</span><span style="color:#111">minFuelForAlignmentWithIncreasingBurnRate</span> <span style="color:#111">input</span><span style="color:#111">)</span>
-
-<span style="color:#75af00">printCheckedSolution</span> <span style="color:#f92672">::</span> <span style="color:#111">(</span><span style="color:#00a8c8">Eq</span> <span style="color:#111">a</span><span style="color:#111">,</span> <span style="color:#00a8c8">Show</span> <span style="color:#111">a</span><span style="color:#111">)</span> <span style="color:#f92672">=&gt;</span> <span style="color:#111">a</span> <span style="color:#f92672">-&gt;</span> <span style="color:#111">a</span> <span style="color:#f92672">-&gt;</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">printCheckedSolution</span> <span style="color:#111">actual</span> <span style="color:#111">expected</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">actualStr</span> <span style="color:#f92672">=</span> <span style="color:#111">show</span> <span style="color:#111">actual</span>
-  <span style="color:#00a8c8">let</span> <span style="color:#111">mark</span> <span style="color:#f92672">|</span> <span style="color:#111">actual</span> <span style="color:#f92672">==</span> <span style="color:#111">expected</span> <span style="color:#f92672">=</span> <span style="color:#d88200">&#34;✅&#34;</span>
-           <span style="color:#f92672">|</span> <span style="color:#111">otherwise</span>          <span style="color:#f92672">=</span> <span style="color:#d88200">&#34;❌ (expected &#34;</span> <span style="color:#f92672">++</span> <span style="color:#111">show</span> <span style="color:#111">expected</span> <span style="color:#f92672">++</span> <span style="color:#d88200">&#34;)&#34;</span>
-  <span style="color:#111">printf</span> <span style="color:#d88200">&#34;%s %s</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span> <span style="color:#111">actualStr</span> <span style="color:#111">mark</span>
-
-<span style="color:#75af00">solution08</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution08</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 08. Seven Segment Search&#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseSevenSegmentsDisplay</span> <span style="color:#d88200">&#34;src/scratchpad/08-seven-segment-search.input.txt&#34;</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Number of times the digits 1, 4, 7, or 8 appear in output: &#34;</span>
-  <span style="color:#111">printCheckedSolution</span> <span style="color:#111">(</span><span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#111">numOf1478AppearancesInOutput</span> <span style="color:#111">input</span><span style="color:#111">)</span> <span style="color:#ae81ff">330</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Sum of output values: &#34;</span>
-  <span style="color:#111">printCheckedSolution</span> <span style="color:#111">(</span><span style="color:#00a8c8">SevenSegmentSearch</span><span style="color:#f92672">.</span><span style="color:#111">sumOfOutputValues</span> <span style="color:#111">input</span><span style="color:#111">)</span> <span style="color:#ae81ff">1010472</span>
-
-<span style="color:#75af00">solution09</span> <span style="color:#f92672">::</span> <span style="color:#00a8c8">IO</span> <span style="color:#111">()</span>
-<span style="color:#75af00">solution09</span> <span style="color:#f92672">=</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">putStrLn</span> <span style="color:#d88200">&#34;Day 09. Smoke Basin&#34;</span>
-  <span style="color:#111">input</span> <span style="color:#f92672">&lt;-</span> <span style="color:#111">parseHeightMap</span> <span style="color:#d88200">&#34;src/scratchpad/09-smoke-basin.input.txt&#34;</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 1: Sum of the risk levels of all low points on heightmap: &#34;</span>
-  <span style="color:#111">printCheckedSolution</span> <span style="color:#111">(</span><span style="color:#00a8c8">SmokeBasin</span><span style="color:#f92672">.</span><span style="color:#111">sumOfRiskLevelsOfLowPoints</span> <span style="color:#111">input</span><span style="color:#111">)</span> <span style="color:#ae81ff">417</span>
-
-  <span style="color:#111">putStr</span> <span style="color:#d88200">&#34;</span><span style="color:#8045ff">\t</span><span style="color:#d88200">Part 2: Product of the 3 largest basins: &#34;</span>
-  <span style="color:#111">printCheckedSolution</span> <span style="color:#111">(</span><span style="color:#00a8c8">SmokeBasin</span><span style="color:#f92672">.</span><span style="color:#111">productOf3LargestBasins</span> <span style="color:#111">input</span><span style="color:#111">)</span> <span style="color:#ae81ff">1148965</span>
-</code></pre></div>
-        </article>
-
-        <div style="font-size: smaller;">
-
-
-
-
-
-
-</div>
-
-    </div>
-    <footer>
-        
-        
-        
-            
-        
-
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/">&laquo; AoC 2021 Main</a>
-        
-        
-            <a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/test/AoC2021Test/">AoC 2021 Test Code &raquo;</a>
-        
-
-    </footer>
-</section>
-
-
-        </div>
-
-        <footer>
-            <a href="mailto:d.chege711@gmail.com">Email</a>
-            
-            <a href="/about">About</a>
-            <a href="/search">Search</a>
-        </footer>
-
-    </body>
-
-</html>
+<!doctype html><html lang=en><head><title>AoC 2021 Solution Runner | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();</script><script async type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><script async type=text/javascript src=/js/d3/d3.min.min.js></script><script async type=text/javascript src=/js/PlotUtils.min.js></script><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script async type=text/javascript src=/js/AnimateBackground.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/>Advent of Code 2021</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021/>AoC 2021 Solution Runner</a></li></ul></nav><section><header><h1>AoC 2021 Solution Runner</h1><p class=meta>Dated Apr 11, 2022;
+last modified on Mon, 11 Apr 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>{-#  OPTIONS_GHC -Wall  #-}</span>
+
+<span style=color:#00a8c8>module</span> <span style=color:#111>AoC2021</span> <span style=color:#111>(</span><span style=color:#75af00>runSolution</span><span style=color:#111>)</span> <span style=color:#00a8c8>where</span>
+
+<span style=color:#75715e>--  https://cabal.readthedocs.io/en/3.4/cabal-package.html#accessing-data-files-from-package-code</span>
+
+<span style=color:#00a8c8>import</span> <span style=color:#111>AoC2021InputParser</span>
+    <span style=color:#111>(</span> <span style=color:#75af00>parseBinaryDiagnosticInput</span><span style=color:#111>,</span> <span style=color:#75af00>parseBingoInput</span><span style=color:#111>,</span> <span style=color:#75af00>parseHydrothermalVents</span><span style=color:#111>,</span>
+      <span style=color:#75af00>parseLanternfishInternalTimers</span><span style=color:#111>,</span> <span style=color:#75af00>parseHorizontalCrabPositions</span><span style=color:#111>,</span>
+      <span style=color:#75af00>parseSevenSegmentsDisplay</span><span style=color:#111>,</span> <span style=color:#75af00>parseHeightMap</span> <span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>BinaryDiagnostic.BinaryDiagnostic</span> <span style=color:#111>(</span><span style=color:#75af00>lifeSupportRating</span><span style=color:#111>,</span> <span style=color:#75af00>powerConsumption</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Data.String</span> <span style=color:#111>(</span><span style=color:#00a8c8>IsString</span> <span style=color:#111>(</span><span style=color:#75af00>fromString</span><span style=color:#111>))</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Dive.Dive</span> <span style=color:#111>(</span><span style=color:#75af00>productOfFinalPosition</span><span style=color:#111>,</span> <span style=color:#75af00>productOfFinalPositionWithNewIntepretation</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>GiantSquid</span> <span style=color:#111>(</span><span style=color:#75af00>scoreOfFirstWinningBoard</span><span style=color:#111>,</span> <span style=color:#75af00>scoreOfLastWinningBoard</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>HydrothermalVenture.HydrothermalVenture</span>
+  <span style=color:#111>(</span> <span style=color:#75af00>pointsWithAtLeastTwoRightSegmentOverlaps</span><span style=color:#111>,</span>
+    <span style=color:#75af00>pointsWithAtLeastTwoSegmentOverlaps</span><span style=color:#111>,</span>
+  <span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>AoC2021.Lanternfish</span> <span style=color:#111>(</span><span style=color:#75af00>numOfFishIn80Days</span><span style=color:#111>,</span> <span style=color:#75af00>numOfFishIn256Days</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>AoC2021.TreacheryOfWhales</span> <span style=color:#00a8c8>as</span> <span style=color:#111>TreacheryOfWhales</span>
+  <span style=color:#111>(</span>
+    <span style=color:#111>minFuelForAlignmentWithConstantBurnRate</span><span style=color:#111>,</span>
+    <span style=color:#111>minFuelForAlignmentWithIncreasingBurnRate</span>
+  <span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Paths_advent_of_code_y2021</span> <span style=color:#111>(</span><span style=color:#75af00>getDataFileName</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>SonarSweep</span> <span style=color:#111>(</span> <span style=color:#75af00>num3MeasurementIncreases</span><span style=color:#111>,</span> <span style=color:#75af00>numIncreases</span> <span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>System.IO</span> <span style=color:#111>(</span><span style=color:#00a8c8>IOMode</span> <span style=color:#111>(</span><span style=color:#00a8c8>ReadMode</span><span style=color:#111>),</span> <span style=color:#75af00>hGetContents</span><span style=color:#111>,</span> <span style=color:#75af00>withFile</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>AoC2021.SevenSegmentSearch</span> <span style=color:#00a8c8>as</span> <span style=color:#111>SevenSegmentSearch</span>
+  <span style=color:#111>(</span><span style=color:#111>numOf1478AppearancesInOutput</span><span style=color:#111>,</span> <span style=color:#111>sumOfOutputValues</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>AoC2021.SmokeBasin</span> <span style=color:#00a8c8>as</span> <span style=color:#111>SmokeBasin</span>
+  <span style=color:#111>(</span>
+    <span style=color:#111>sumOfRiskLevelsOfLowPoints</span><span style=color:#111>,</span>
+    <span style=color:#111>productOf3LargestBasins</span>
+  <span style=color:#111>)</span>
+<span style=color:#00a8c8>import</span> <span style=color:#111>Text.Printf</span> <span style=color:#111>(</span><span style=color:#75af00>printf</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>allSolutions</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>allSolutions</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>solution01</span>
+  <span style=color:#111>solution02</span>
+  <span style=color:#111>solution03</span>
+  <span style=color:#111>solution04</span>
+  <span style=color:#111>solution05</span>
+  <span style=color:#111>solution06</span>
+  <span style=color:#111>solution07</span>
+  <span style=color:#111>solution08</span>
+  <span style=color:#111>solution09</span>
+
+<span style=color:#75af00>runSolution</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>allSolutions</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution01</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>2</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution02</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>3</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution03</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>4</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution04</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>5</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution05</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>6</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution06</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>7</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution07</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>8</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution08</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#ae81ff>9</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>solution09</span>
+<span style=color:#75af00>runSolution</span> <span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#d88200>&#34;Day &#34;</span> <span style=color:#f92672>++</span> <span style=color:#111>show</span> <span style=color:#111>x</span> <span style=color:#f92672>++</span> <span style=color:#d88200>&#34; has no associated solution.&#34;</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>solution01</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution01</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#75715e>--  hGetContents is lazy in that data is only read as the characters are</span>
+  <span style=color:#75715e>--  processed. The lazy evaluation of the string is transparent, and so it can</span>
+  <span style=color:#75715e>--  be passed to pure functions without any issues. However, if we try to hold</span>
+  <span style=color:#75715e>--  onto `s` past the call to `numIncreases`, then we lose the memory</span>
+  <span style=color:#75715e>--  efficiency as the compiler is forced to keep its value in memory for future</span>
+  <span style=color:#75715e>--  use. Note that closing a handle before fully consuming its results will</span>
+  <span style=color:#75715e>--  make you miss on the stream&#39;s data that had not been evaluated before the</span>
+  <span style=color:#75715e>--  handle&#39;s close. [1] [2]</span>
+  <span style=color:#75715e>--</span>
+  <span style=color:#75715e>--  [1]: http://book.realworldhaskell.org/read/io.html#io.lazy.hGetContents</span>
+  <span style=color:#75715e>--  [2]: https://hackage.haskell.org/package/base-4.16.0.0/docs/System-IO.html#v:hGetContents</span>
+
+  <span style=color:#111>fp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#d88200>&#34;src/scratchpad/01-sonar-sweep.input.txt&#34;</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 01. Sonar Sweep&#34;</span>
+  <span style=color:#111>withFile</span>
+    <span style=color:#111>fp</span>
+    <span style=color:#00a8c8>ReadMode</span>
+    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
+        <span style=color:#111>s</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetContents</span> <span style=color:#111>h</span>
+        <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Number of measurements larger than previous measurement: &#34;</span>
+        <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>SonarSweep</span><span style=color:#f92672>.</span><span style=color:#111>numIncreases</span> <span style=color:#111>(</span><span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>)))</span>
+        <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Number of 3-measurements larger than previous 3-measurement: &#34;</span>
+        <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>SonarSweep</span><span style=color:#f92672>.</span><span style=color:#111>num3MeasurementIncreases</span> <span style=color:#111>(</span><span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>)))</span>
+    <span style=color:#111>)</span>
+
+<span style=color:#75af00>solution02</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution02</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>fp</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#d88200>&#34;src/Dive/scratchpad/input.txt&#34;</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 02. Dive!&#34;</span>
+  <span style=color:#111>withFile</span>
+    <span style=color:#111>fp</span>
+    <span style=color:#00a8c8>ReadMode</span>
+    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
+        <span style=color:#111>s</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetContents</span> <span style=color:#111>h</span>
+        <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Product of final horizontal position and final depth: &#34;</span>
+        <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>productOfFinalPosition</span> <span style=color:#111>(</span><span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>)))</span>
+        <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Product of final horizontal position and final depth &#34;</span>
+        <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;with new instructions of : &#34;</span>
+        <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>productOfFinalPositionWithNewIntepretation</span> <span style=color:#111>(</span><span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>)))</span>
+    <span style=color:#111>)</span>
+
+<span style=color:#75af00>solution03</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution03</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 03. Binary Diagnostic&#34;</span>
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Power Consumption: &#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseBinaryDiagnosticInput</span> <span style=color:#d88200>&#34;src/BinaryDiagnostic/scratchpad/input.txt&#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>powerConsumption</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Life Support Rating: &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>lifeSupportRating</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>solution04</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution04</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 04. Giant Squid&#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseBingoInput</span> <span style=color:#d88200>&#34;src/scratchpad/04-giant-squid.input.txt&#34;</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Score of first winning board: &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>GiantSquid</span><span style=color:#f92672>.</span><span style=color:#111>scoreOfFirstWinningBoard</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Score of last winning board: &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>GiantSquid</span><span style=color:#f92672>.</span><span style=color:#111>scoreOfLastWinningBoard</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>solution05</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution05</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 05. Hydrothermal Venture&#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseHydrothermalVents</span> <span style=color:#d88200>&#34;src/HydrothermalVenture/scratchpad/input.txt&#34;</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Num Points Where &gt;= 2 Right Lines Overlap: &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>pointsWithAtLeastTwoRightSegmentOverlaps</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Num Points Where &gt;= 2 Lines Overlap: &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>pointsWithAtLeastTwoSegmentOverlaps</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>solution06</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution06</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 06. Lanternfish&#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseLanternfishInternalTimers</span> <span style=color:#d88200>&#34;src/scratchpad/06-lanternfish.input.txt&#34;</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Number of lanternfish after 80 days: (360610) &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>AoC2021</span><span style=color:#f92672>.</span><span style=color:#00a8c8>Lanternfish</span><span style=color:#f92672>.</span><span style=color:#111>numOfFishIn80Days</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Number of lanternfish after 256 days: (1631629590423) &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>AoC2021</span><span style=color:#f92672>.</span><span style=color:#00a8c8>Lanternfish</span><span style=color:#f92672>.</span><span style=color:#111>numOfFishIn256Days</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>solution07</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution07</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 07. The Treachery of Whales&#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseHorizontalCrabPositions</span> <span style=color:#d88200>&#34;src/scratchpad/07-treachery-of-whales.input.txt&#34;</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Min fuel needed to align horizontal positions: (329389) &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>TreacheryOfWhales</span><span style=color:#f92672>.</span><span style=color:#111>minFuelForAlignmentWithConstantBurnRate</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Min fuel needed to align with increasing burn rate: &#34;</span>
+  <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#00a8c8>TreacheryOfWhales</span><span style=color:#f92672>.</span><span style=color:#111>minFuelForAlignmentWithIncreasingBurnRate</span> <span style=color:#111>input</span><span style=color:#111>)</span>
+
+<span style=color:#75af00>printCheckedSolution</span> <span style=color:#f92672>::</span> <span style=color:#111>(</span><span style=color:#00a8c8>Eq</span> <span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#00a8c8>Show</span> <span style=color:#111>a</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>printCheckedSolution</span> <span style=color:#111>actual</span> <span style=color:#111>expected</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>actualStr</span> <span style=color:#f92672>=</span> <span style=color:#111>show</span> <span style=color:#111>actual</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#111>mark</span> <span style=color:#f92672>|</span> <span style=color:#111>actual</span> <span style=color:#f92672>==</span> <span style=color:#111>expected</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;✅&#34;</span>
+           <span style=color:#f92672>|</span> <span style=color:#111>otherwise</span>          <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;❌ (expected &#34;</span> <span style=color:#f92672>++</span> <span style=color:#111>show</span> <span style=color:#111>expected</span> <span style=color:#f92672>++</span> <span style=color:#d88200>&#34;)&#34;</span>
+  <span style=color:#111>printf</span> <span style=color:#d88200>&#34;%s %s</span><span style=color:#8045ff>\n</span><span style=color:#d88200>&#34;</span> <span style=color:#111>actualStr</span> <span style=color:#111>mark</span>
+
+<span style=color:#75af00>solution08</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution08</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 08. Seven Segment Search&#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseSevenSegmentsDisplay</span> <span style=color:#d88200>&#34;src/scratchpad/08-seven-segment-search.input.txt&#34;</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Number of times the digits 1, 4, 7, or 8 appear in output: &#34;</span>
+  <span style=color:#111>printCheckedSolution</span> <span style=color:#111>(</span><span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#111>numOf1478AppearancesInOutput</span> <span style=color:#111>input</span><span style=color:#111>)</span> <span style=color:#ae81ff>330</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Sum of output values: &#34;</span>
+  <span style=color:#111>printCheckedSolution</span> <span style=color:#111>(</span><span style=color:#00a8c8>SevenSegmentSearch</span><span style=color:#f92672>.</span><span style=color:#111>sumOfOutputValues</span> <span style=color:#111>input</span><span style=color:#111>)</span> <span style=color:#ae81ff>1010472</span>
+
+<span style=color:#75af00>solution09</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+<span style=color:#75af00>solution09</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+  <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Day 09. Smoke Basin&#34;</span>
+  <span style=color:#111>input</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>parseHeightMap</span> <span style=color:#d88200>&#34;src/scratchpad/09-smoke-basin.input.txt&#34;</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 1: Sum of the risk levels of all low points on heightmap: &#34;</span>
+  <span style=color:#111>printCheckedSolution</span> <span style=color:#111>(</span><span style=color:#00a8c8>SmokeBasin</span><span style=color:#f92672>.</span><span style=color:#111>sumOfRiskLevelsOfLowPoints</span> <span style=color:#111>input</span><span style=color:#111>)</span> <span style=color:#ae81ff>417</span>
+
+  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;</span><span style=color:#8045ff>\t</span><span style=color:#d88200>Part 2: Product of the 3 largest basins: &#34;</span>
+  <span style=color:#111>printCheckedSolution</span> <span style=color:#111>(</span><span style=color:#00a8c8>SmokeBasin</span><span style=color:#f92672>.</span><span style=color:#111>productOf3LargestBasins</span> <span style=color:#111>input</span><span style=color:#111>)</span> <span style=color:#ae81ff>1148965</span>
+</code></pre></div></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/app/Main/>&#171; AoC 2021 Main</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/test/AoC2021Test/>AoC 2021 Test Code &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
