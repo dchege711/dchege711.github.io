@@ -1,0 +1,314 @@
+<!doctype html><html lang=en><head><title>023. Non-Abundant Sums | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="#23 Non-abundant sums - Project Euler.  projecteuler.net  .  Accessed Feb 19, 2023.  Problem Statement A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. For example, the sum of the proper divisors of \(28\) would be \(1 + 2 + 4 + 7 + 14 = 28\), which means that \(28\) is a perfect number...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/project_euler/>Project Euler</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/project_euler/non_abundant_sums/023-non-abundant-sums/>023. Non-Abundant Sums</a></li></ul></nav><section><header><h1>023. Non-Abundant Sums</h1><p class=meta>Dated Feb 19, 2023;
+last modified on Sun, 19 Feb 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#problem-statement>Problem Statement</a></li><li><a href=#my-solution>My Solution</a></li><li><a href=#generating-monotonically-increasing-pairwise-sums>Generating Monotonically Increasing Pairwise Sums</a></li><li><a href=#learning-from-others>Learning from Others</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ProjectEuler023>#23 Non-abundant sums - Project Euler<i>.</i></cite>
+<a href="https://projecteuler.net/problem=23" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy aria-hidden=true>
+<i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 19, 2023.</div><h2 id=problem-statement>Problem Statement</h2><p>A <strong>perfect number</strong> is a number for which the sum of its proper
+divisors is exactly equal to the number. For example, the sum of the
+proper divisors of \(28\) would be \(1 + 2 + 4 + 7 + 14 = 28\),
+which means that \(28\) is a perfect number.</p><p>A number \(n\) is called <strong>deficient</strong> if the sum of its proper
+divisors is less than \(n\), and it is called <strong>abundant</strong> if this sum
+exceeds \(n\).</p><p>As \(12\) is the smallest abundant number, \(1 + 2 + 3 + 4 + 6 =
+16\), the smallest number that can be written as the sum of two
+abundant numbers is \(24\). By mathematical analysis, it can be shown
+that all integers greater than \(28,123\) can be written as the sum of
+two abundant numbers. However, this upper limit cannot be reduced any
+further by analysis even though it is known that the greatest number
+that cannot be expressed as the sum of two abundant numbers is less than
+this limit.</p><p>Find the sum of all the positive integers which cannot be written as the
+sum of two abundant numbers.</p><h2 id=my-solution>My Solution</h2><div class=comment-holder><div class=comment><p>To work with .py file(s) in the Python REPL, first <code>cd</code> into the
+directory containing the .py file(s), and then from the REPL:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-py data-lang=py><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> <span style=color:#111>brute_force_non_abundant_sums</span> <span style=color:#f92672>import</span> <span style=color:#f92672>*</span>
+</code></pre></div><p>To refresh the contents after editing the file:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-py data-lang=py><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>import</span> <span style=color:#111>importlib</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#111>importlib</span><span style=color:#f92672>.</span><span style=color:#111>reload</span><span style=color:#111>(</span><span style=color:#111>brute_force_non_abundant_sums</span><span style=color:#111>)</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> <span style=color:#111>brute_force_non_abundant_sums</span> <span style=color:#f92672>import</span> <span style=color:#f92672>*</span>
+</code></pre></div><p><span class=citation-ref><a href=#PythonImportLib></a></span></p></div></div><p>With
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/project_euler/amicable_numbers/021-amicable-numbers/#computing-sumofproperdivisors-efficiently target=_blank rel=noopener><code>sum_of_proper_divisors(n)</code> from PE 021
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, a brute-force algorithm is:</p><div id=PE023BruteForcePy><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-python data-lang=python><span style=color:#75715e>#!/usr/bin/env python</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>cProfile</span>
+<span style=color:#f92672>from</span> <span style=color:#111>pstats</span> <span style=color:#f92672>import</span> <span style=color:#111>SortKey</span>
+
+<span style=color:#f92672>from</span> <span style=color:#111>itertools</span> <span style=color:#f92672>import</span> <span style=color:#111>combinations_with_replacement</span>
+
+<span style=color:#f92672>from</span> <span style=color:#111>project_euler.amicable_numbers.amicable_numbers_deluxe</span> <span style=color:#f92672>import</span> <span style=color:#111>sum_of_proper_divisors</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>generate_abundant_nums</span><span style=color:#111>(</span><span style=color:#111>lo</span><span style=color:#111>,</span> <span style=color:#111>hi</span><span style=color:#111>):</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Generate the abundant numbers in the range [lo, hi], in sorted order.
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>n</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#111>lo</span><span style=color:#111>,</span> <span style=color:#111>hi</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>):</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>sum_of_proper_divisors</span><span style=color:#111>(</span><span style=color:#111>n</span><span style=color:#111>)</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>n</span><span style=color:#111>:</span> <span style=color:#00a8c8>yield</span> <span style=color:#111>n</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>pairwise_sums</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#111>N</span><span style=color:#111>):</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Given nums like [1, 4, 6], return unique sums like [2, 5, 7, 8, 10, 12].
+</span><span style=color:#d88200>    Sums that are greater than N are excluded.
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#111>sums</span> <span style=color:#f92672>=</span> <span style=color:#111>set</span><span style=color:#111>([])</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>b</span><span style=color:#111>)</span> <span style=color:#f92672>in</span> <span style=color:#111>combinations_with_replacement</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#ae81ff>2</span><span style=color:#111>):</span>
+        <span style=color:#111>n</span> <span style=color:#f92672>=</span> <span style=color:#111>a</span> <span style=color:#f92672>+</span> <span style=color:#111>b</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>n</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>N</span><span style=color:#111>:</span> <span style=color:#00a8c8>continue</span>
+        <span style=color:#00a8c8>else</span><span style=color:#111>:</span> <span style=color:#111>sums</span><span style=color:#f92672>.</span><span style=color:#111>add</span><span style=color:#111>(</span><span style=color:#111>n</span><span style=color:#111>)</span>
+
+    <span style=color:#00a8c8>return</span> <span style=color:#111>sums</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>sum_of_non_abundant_sums</span><span style=color:#111>():</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Solution for https://projecteuler.net/problem=23
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#75715e># (28123, inf] can all be written as the sum of two abundant numbers. Start</span>
+    <span style=color:#75715e># by assuming all numbers in [1, 28123] cannot be expressed as the sum of</span>
+    <span style=color:#75715e># two abundant numbers.</span>
+    <span style=color:#111>N</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>28123</span>
+    <span style=color:#111>ans</span> <span style=color:#f92672>=</span> <span style=color:#111>N</span> <span style=color:#f92672>*</span> <span style=color:#111>(</span><span style=color:#111>N</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#f92672>/</span> <span style=color:#ae81ff>2</span>
+
+    <span style=color:#75715e># Generate all numbers that can be expressed as the sum of two abundant</span>
+    <span style=color:#75715e># numbers. Stop at 28124 because beyond that is a futile exercise.</span>
+    <span style=color:#111>abundant_nums</span> <span style=color:#f92672>=</span> <span style=color:#111>generate_abundant_nums</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>N</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>n</span> <span style=color:#f92672>in</span> <span style=color:#111>pairwise_sums</span><span style=color:#111>(</span><span style=color:#111>abundant_nums</span><span style=color:#111>,</span> <span style=color:#111>N</span><span style=color:#111>):</span>
+        <span style=color:#111>ans</span> <span style=color:#f92672>-=</span> <span style=color:#111>n</span>
+
+    <span style=color:#00a8c8>return</span> <span style=color:#111>ans</span>
+
+<span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
+    <span style=color:#111>cProfile</span><span style=color:#f92672>.</span><span style=color:#111>run</span><span style=color:#111>(</span><span style=color:#d88200>&#34;print(sum_of_non_abundant_sums())&#34;</span><span style=color:#111>,</span> <span style=color:#111>sort</span><span style=color:#f92672>=</span><span style=color:#111>SortKey</span><span style=color:#f92672>.</span><span style=color:#111>TIME</span><span style=color:#111>)</span>
+</code></pre></div></div><p>Performance-wise:</p><pre><code class=language-log data-lang=log>4179871.0
+         12183909 function calls in 4.462 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    3.357    3.357    4.460    4.460 brute_force_non_abundant_sums.py:36(pairwise_sums)
+ 12148815    0.924    0.000    0.924    0.000 {method 'add' of 'set' objects}
+    28122    0.172    0.000    0.172    0.000 brute_force_non_abundant_sums.py:8(sum_of_proper_divisors)
+     6966    0.006    0.000    0.179    0.000 brute_force_non_abundant_sums.py:29(generate_abundant_nums)
+        1    0.002    0.002    4.462    4.462 brute_force_non_abundant_sums.py:49(sum_of_non_abundant_sums)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+        1    0.000    0.000    4.462    4.462 {built-in method builtins.exec}
+        1    0.000    0.000    4.462    4.462 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+</code></pre><p>How much better can <code>pairwise_sums</code> get? Well, <code>nums</code> is \(O(N)\), and
+\(_{N}C_{2} = \frac{N \cdot (N-1)}{2 \cdot 1} = O(N^2)\). Although
+generating the pairwise sums in a monotonically increasing order can
+avoid generating \(n > N\), the overall runtime will still be
+\(O(N^2)\). How much additional work are we doing anyway? Logging
+shows that \(\approx 50\%\) of the sums generated greater than
+\(N\), and so a better <code>pairwise_sums</code> should shave about half of the
+total running time. That&rsquo;s an optimization worth pursuing.</p><div class=comment-holder><div class="comment open-comment"><p>Why logging gave a quick and precise answer, is this hand-waving
+correct? Assuming that the abundant nums are more or less uniformly
+spread out in \([1, &mldr;, N]\), their pairwise sums should also be
+uniformly spread out in \([2, &mldr;, 2N]\), and therefore \(\approx
+50\%\) of the sums will be greater than \(N\).</p></div></div><h2 id=generating-monotonically-increasing-pairwise-sums>Generating Monotonically Increasing Pairwise Sums</h2><p>Given a list \(A = [a_1, a_2, &mldr;, a_n]\), how can one generate all
+\(s\), where \(s = a_i + a_j\) and \(s \le k\)?</p><p>The first order of business is sorting \(A\) because without some
+order in \(A\), we can&rsquo;t possibly produce monotonically increasing
+sums.</p><p>A sample grid to help visualize the problem:</p><table><thead><tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody><tr><td>-</td><td><strong>1</strong></td><td><strong>4</strong></td><td><strong>5</strong></td><td><strong>8</strong></td><td><strong>100</strong></td><td><strong>1000</strong></td><td><strong>1001</strong></td></tr><tr><td><strong>1</strong></td><td><strong>2</strong></td><td>5</td><td>6</td><td>9</td><td>101</td><td>1001</td><td>1002</td></tr><tr><td><strong>4</strong></td><td>5</td><td><strong>8</strong></td><td>9</td><td>12</td><td>104</td><td>1004</td><td>1005</td></tr><tr><td><strong>5</strong></td><td>6</td><td>9</td><td><strong>10</strong></td><td>13</td><td>105</td><td>1005</td><td>1006</td></tr><tr><td><strong>8</strong></td><td>9</td><td>12</td><td>13</td><td><strong>16</strong></td><td>108</td><td>1008</td><td>1009</td></tr><tr><td><strong>100</strong></td><td>101</td><td>104</td><td>105</td><td>108</td><td><strong>200</strong></td><td>1100</td><td>1101</td></tr><tr><td><strong>1000</strong></td><td>1001</td><td>1004</td><td>1005</td><td>1008</td><td>1100</td><td><strong>2000</strong></td><td>2001</td></tr><tr><td><strong>1001</strong></td><td>1002</td><td>1005</td><td>1006</td><td>1009</td><td>1101</td><td>2001</td><td><strong>2002</strong></td></tr></tbody></table><p>The grid is reflected across the diagonal because addition is
+commutative (\( a + b = b + a\)). So as far as unique sums are
+concerned exploring either the upper or lower triangle should lead to
+the same result.</p><p>For convenience, evaluating the lower triangle. On each row, the max is
+in the right-most cell, and the min is in the left-most cell. However,
+given rows \(r_i\) and \(r_{i+1}\), it&rsquo;s not always the case that
+all of \(r_i\)&rsquo;s cells have lower values than those in \(r_{i+1}\)&rsquo;s
+cells.</p><p>While I can&rsquo;t devise a monotonically increasing traversal path in the
+grid, there are perf improvements to be made from limiting what we
+evaluate on row of the lower triangle.</p><div class=comment-holder><div class=comment><p>The usage of generators tripped me up:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-py data-lang=py><span style=color:#00a8c8>def</span> <span style=color:#75af00>unsorted_gen</span><span style=color:#111>():</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>x</span> <span style=color:#f92672>in</span> <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#ae81ff>4</span><span style=color:#111>,</span> <span style=color:#ae81ff>3</span><span style=color:#111>,</span> <span style=color:#ae81ff>2</span><span style=color:#111>,</span> <span style=color:#ae81ff>5</span><span style=color:#111>):</span>
+    <span style=color:#00a8c8>yield</span> <span style=color:#111>x</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>sorted_gen</span><span style=color:#111>():</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>x</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#ae81ff>6</span><span style=color:#111>):</span>
+    <span style=color:#00a8c8>yield</span> <span style=color:#111>x</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>pairs_with_replacement</span><span style=color:#111>(</span><span style=color:#111>iterable</span><span style=color:#111>):</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>a</span> <span style=color:#f92672>in</span> <span style=color:#111>iterable</span><span style=color:#111>:</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>b</span> <span style=color:#f92672>in</span> <span style=color:#111>iterable</span><span style=color:#111>:</span>
+      <span style=color:#00a8c8>yield</span> <span style=color:#111>(</span><span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>b</span><span style=color:#111>)</span>
+
+<span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
+  <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#111>len</span><span style=color:#111>(</span><span style=color:#111>list</span><span style=color:#111>(</span><span style=color:#111>pairs_with_replacement</span><span style=color:#111>(</span><span style=color:#111>sorted_gen</span><span style=color:#111>()))))</span> <span style=color:#75715e># 6</span>
+  <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#111>len</span><span style=color:#111>(</span><span style=color:#111>list</span><span style=color:#111>(</span><span style=color:#111>pairs_with_replacement</span><span style=color:#111>(</span><span style=color:#111>unsorted_gen</span><span style=color:#111>()))))</span> <span style=color:#75715e># 4</span>
+  <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#111>len</span><span style=color:#111>(</span><span style=color:#111>list</span><span style=color:#111>(</span><span style=color:#111>pairs_with_replacement</span><span style=color:#111>(</span><span style=color:#111>sorted</span><span style=color:#111>(</span><span style=color:#111>unsorted_gen</span><span style=color:#111>())))))</span> <span style=color:#75715e># 25</span>
+</code></pre></div><p>In hindsight, this makes sense because generators visit any given value
+at most once. However, given a generator, <code>pairs_with_replacement</code> tries
+to loop over it twice, which is impossible. This code avoids the bug:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-py data-lang=py><span style=color:#00a8c8>def</span> <span style=color:#75af00>pairs_with_replacement</span><span style=color:#111>(</span><span style=color:#111>iterable</span><span style=color:#111>):</span>
+  <span style=color:#111>iterable</span> <span style=color:#f92672>=</span> <span style=color:#111>sorted</span><span style=color:#111>(</span><span style=color:#111>iterable</span><span style=color:#111>)</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>a</span> <span style=color:#f92672>in</span> <span style=color:#111>iterable</span><span style=color:#111>:</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>b</span> <span style=color:#f92672>in</span> <span style=color:#111>iterable</span><span style=color:#111>:</span>
+      <span style=color:#00a8c8>yield</span> <span style=color:#111>(</span><span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#111>b</span><span style=color:#111>)</span>
+</code></pre></div><p>The additional memory usage is necessary for correctness.</p><p>TIL that <code>range</code> returns a <code>list</code>, while <code>xrange</code> returns a generator,
+and therefore <code>xrange</code> is more memory-efficient.</p><p><span class=citation-ref><a href=#PythonGenerators></a></span></p></div></div><div id=PE023PyDeluxe><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-python data-lang=python><span style=color:#75715e>#!/usr/bin/env python</span>
+
+<span style=color:#f92672>from</span> <span style=color:#111>non_abundant_sums</span> <span style=color:#f92672>import</span> <span style=color:#111>generate_abundant_nums</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>cProfile</span>
+<span style=color:#f92672>from</span> <span style=color:#111>pstats</span> <span style=color:#f92672>import</span> <span style=color:#111>SortKey</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>pairwise_sums</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#111>K</span><span style=color:#111>):</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Given a sequence of numbers like [1, 4, 6], return unique sums like
+</span><span style=color:#d88200>    [2, 5, 7, 8, 10, 12]. Sums that are greater than N are excluded from the
+</span><span style=color:#d88200>    result.
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#75715e># Ensure that the iterable is sorted. This also avoids a bug if `nums` is</span>
+    <span style=color:#75715e># a generator, as iterating over it more than once is incorrect.</span>
+    <span style=color:#111>nums</span> <span style=color:#f92672>=</span> <span style=color:#111>sorted</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>)</span>
+
+    <span style=color:#111>sums</span> <span style=color:#f92672>=</span> <span style=color:#111>set</span><span style=color:#111>([])</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>r</span> <span style=color:#f92672>in</span> <span style=color:#111>nums</span><span style=color:#111>:</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#111>c</span> <span style=color:#f92672>in</span> <span style=color:#111>nums</span><span style=color:#111>:</span>
+            <span style=color:#75715e># Only consider the lower triangle of the grid. Fine to compare</span>
+            <span style=color:#75715e># values and not indices because `nums` is sorted and used in both</span>
+            <span style=color:#75715e># loops.</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>c</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>r</span><span style=color:#111>:</span> <span style=color:#00a8c8>break</span>
+
+            <span style=color:#111>s</span> <span style=color:#f92672>=</span> <span style=color:#111>r</span> <span style=color:#f92672>+</span> <span style=color:#111>c</span>
+
+            <span style=color:#75715e># Any other sum on this row will be greater than K</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>s</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>K</span><span style=color:#111>:</span> <span style=color:#00a8c8>break</span>
+
+            <span style=color:#111>sums</span><span style=color:#f92672>.</span><span style=color:#111>add</span><span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>)</span>
+
+    <span style=color:#00a8c8>return</span> <span style=color:#111>sums</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>sum_of_non_abundant_sums</span><span style=color:#111>():</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Solution for https://projecteuler.net/problem=23
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#75715e># (28123, inf] can all be written as the sum of two abundant numbers. Start</span>
+    <span style=color:#75715e># by assuming all numbers in [1, 28123] cannot be expressed as the sum of</span>
+    <span style=color:#75715e># two abundant numbers.</span>
+    <span style=color:#111>K</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>28123</span>
+    <span style=color:#111>ans</span> <span style=color:#f92672>=</span> <span style=color:#111>K</span> <span style=color:#f92672>*</span> <span style=color:#111>(</span><span style=color:#111>K</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#f92672>/</span> <span style=color:#ae81ff>2</span>
+
+    <span style=color:#75715e># Generate all numbers that can be expressed as the sum of two abundant</span>
+    <span style=color:#75715e># numbers. Stop at 28124 because beyond that is a futile exercise.</span>
+    <span style=color:#111>abundant_nums</span> <span style=color:#f92672>=</span> <span style=color:#111>generate_abundant_nums</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>K</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>n</span> <span style=color:#f92672>in</span> <span style=color:#111>pairwise_sums</span><span style=color:#111>(</span><span style=color:#111>abundant_nums</span><span style=color:#111>,</span> <span style=color:#111>K</span><span style=color:#111>):</span>
+        <span style=color:#111>ans</span> <span style=color:#f92672>-=</span> <span style=color:#111>n</span>
+
+    <span style=color:#00a8c8>return</span> <span style=color:#111>ans</span>
+
+<span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
+    <span style=color:#111>cProfile</span><span style=color:#f92672>.</span><span style=color:#111>run</span><span style=color:#111>(</span><span style=color:#d88200>&#34;print(sum_of_non_abundant_sums())&#34;</span><span style=color:#111>,</span> <span style=color:#111>sort</span><span style=color:#f92672>=</span><span style=color:#111>SortKey</span><span style=color:#f92672>.</span><span style=color:#111>TIME</span><span style=color:#111>)</span>
+</code></pre></div></div><p>The perf profile shows that the total time in <code>pairwise_sums</code> decreased
+by \(.915s \approx 27\%\). The additional <code>sort</code> call was not even
+expensive.</p><pre><code class=language-log data-lang=log>4179871.0
+         12183910 function calls in 3.554 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    2.442    2.442    3.552    3.552 non_abundant_sums_deluxe.py:8(pairwise_sums)
+ 12148815    0.931    0.000    0.931    0.000 {method 'add' of 'set' objects}
+    28122    0.172    0.000    0.172    0.000 non_abundant_sums.py:8(sum_of_proper_divisors)
+     6966    0.006    0.000    0.178    0.000 non_abundant_sums.py:29(generate_abundant_nums)
+        1    0.002    0.002    3.554    3.554 non_abundant_sums_deluxe.py:33(sum_of_non_abundant_sums)
+        1    0.001    0.001    0.179    0.179 {built-in method builtins.sorted}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+        1    0.000    0.000    3.554    3.554 {built-in method builtins.exec}
+        1    0.000    0.000    3.554    3.554 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+</code></pre><p>Not the \(50\%\) boost I anticipated, but \(27\%\) is good enough?
+I wasn&rsquo;t expecting the code to be an order of magnitude faster.</p><h2 id=learning-from-others>Learning from Others</h2><p><span class=citation-ref><a href=#HackerRankPE023></a></span>has a variation of this problem, where
+given a list of numbers, print <code>YES</code> if the number can be written as the
+sum of two abundant numbers, and <code>NO</code> otherwise. Caching
+<code>abundant_sums_less_than_K</code> is important to avoid repeated work.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-py data-lang=py><span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
+  <span style=color:#111>K</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>28123</span>
+  <span style=color:#111>abundant_sums_less_than_K</span> <span style=color:#f92672>=</span> <span style=color:#111>pairwise_sums</span><span style=color:#111>(</span><span style=color:#111>generate_abundant_nums</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>K</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>),</span> <span style=color:#111>K</span><span style=color:#111>)</span>
+
+  <span style=color:#111>num_test_cases</span> <span style=color:#f92672>=</span> <span style=color:#111>int</span><span style=color:#111>(</span><span style=color:#111>input</span><span style=color:#111>()</span><span style=color:#f92672>.</span><span style=color:#111>strip</span><span style=color:#111>())</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>_</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#111>num_test_cases</span><span style=color:#111>):</span>
+      <span style=color:#111>N</span> <span style=color:#f92672>=</span> <span style=color:#111>int</span><span style=color:#111>(</span><span style=color:#111>input</span><span style=color:#111>()</span><span style=color:#f92672>.</span><span style=color:#111>strip</span><span style=color:#111>())</span>
+      <span style=color:#00a8c8>if</span> <span style=color:#111>N</span> <span style=color:#f92672>&gt;</span> <span style=color:#111>K</span> <span style=color:#f92672>or</span> <span style=color:#111>N</span> <span style=color:#f92672>in</span> <span style=color:#111>abundant_sums_less_than_K</span><span style=color:#111>:</span> <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;YES&#34;</span><span style=color:#111>)</span>
+      <span style=color:#00a8c8>else</span><span style=color:#111>:</span> <span style=color:#00a8c8>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;NO&#34;</span><span style=color:#111>)</span>
+</code></pre></div><p><span class=citation-ref><a href=#WolframAbundantNumber></a></span>notes that every number greater than
+\(20,161\) can be expressed as a sum of two abundant numbers. This
+improves on <span class=citation-ref><a href=#ProjectEuler023></a></span>&rsquo;s floor of \(28,123\). With
+this info, we go down to \(1.833s\) and \(6,282,406\) function
+calls.</p><p><span class=citation-ref><a href=#ProjectEuler023ThreadTherryka></a></span>&rsquo;s Python solution runs in
+\(0.512s\) (\(-85.59\%\)), and with \(140,563\) function calls
+(\(-98.85\%\)). The special sauce is in avoiding <code>pairwise_sums</code>:</p><div id=PE023PyDeluxeTherryka><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-python data-lang=python><span style=color:#75715e>#!/usr/bin/env python</span>
+
+<span style=color:#f92672>from</span> <span style=color:#111>non_abundant_sums</span> <span style=color:#f92672>import</span> <span style=color:#111>generate_abundant_nums</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>cProfile</span>
+<span style=color:#f92672>from</span> <span style=color:#111>pstats</span> <span style=color:#f92672>import</span> <span style=color:#111>SortKey</span>
+
+<span style=color:#00a8c8>def</span> <span style=color:#75af00>sum_of_non_abundant_sums</span><span style=color:#111>():</span>
+    <span style=color:#d88200>&#34;&#34;&#34;
+</span><span style=color:#d88200>    Solution for Solution for https://projecteuler.net/problem=23 inspired by
+</span><span style=color:#d88200>    Therryka&#39;s https://projecteuler.net/thread=23;page=8#411899.
+</span><span style=color:#d88200>    &#34;&#34;&#34;</span>
+    <span style=color:#75715e># (28123, inf] can all be written as the sum of two abundant numbers.</span>
+    <span style=color:#111>K</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>28123</span>
+
+    <span style=color:#111>abundant_nums</span> <span style=color:#f92672>=</span> <span style=color:#111>sorted</span><span style=color:#111>(</span><span style=color:#111>generate_abundant_nums</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>K</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>))</span>
+    <span style=color:#111>abundant_nums_set</span> <span style=color:#f92672>=</span> <span style=color:#111>set</span><span style=color:#111>(</span><span style=color:#111>abundant_nums</span><span style=color:#111>)</span>
+
+    <span style=color:#111>ans</span> <span style=color:#f92672>=</span> <span style=color:#111>K</span> <span style=color:#f92672>*</span> <span style=color:#111>(</span><span style=color:#111>K</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#f92672>/</span> <span style=color:#ae81ff>2</span>
+    <span style=color:#00a8c8>for</span> <span style=color:#111>n</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>K</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>):</span>
+        <span style=color:#75715e># Test if there is an `a + b = n` where `a` and `b` are abundant.</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#111>a</span> <span style=color:#f92672>in</span> <span style=color:#111>abundant_nums</span><span style=color:#111>:</span>
+            <span style=color:#111>b</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>-</span> <span style=color:#111>a</span>
+
+            <span style=color:#75715e># Abundant numbers need to be positive. Can break because</span>
+            <span style=color:#75715e># `abundant_nums` is sorted, and subsequent `b`s will be -ve.</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>b</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span><span style=color:#111>:</span> <span style=color:#00a8c8>break</span>
+
+            <span style=color:#75715e># We only need one such `a + b`. No need to search further.</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>b</span> <span style=color:#f92672>in</span> <span style=color:#111>abundant_nums_set</span><span style=color:#111>:</span>
+                <span style=color:#111>ans</span> <span style=color:#f92672>-=</span> <span style=color:#111>n</span>
+                <span style=color:#00a8c8>break</span>
+
+    <span style=color:#00a8c8>return</span> <span style=color:#111>ans</span>
+
+<span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
+    <span style=color:#111>cProfile</span><span style=color:#f92672>.</span><span style=color:#111>run</span><span style=color:#111>(</span><span style=color:#d88200>&#34;print(sum_of_non_abundant_sums())&#34;</span><span style=color:#111>,</span> <span style=color:#111>sort</span><span style=color:#f92672>=</span><span style=color:#111>SortKey</span><span style=color:#f92672>.</span><span style=color:#111>TIME</span><span style=color:#111>)</span>
+</code></pre></div></div><p>The perf is comparable to <span class=citation-ref><a href=#ProjectEuler023ThreadTherryka></a></span>:</p><pre><code class=language-log data-lang=log>4179871.0
+         35094 function calls in 0.578 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.395    0.395    0.578    0.578 non_abundant_sums_deluxe_therryka.py:8(sum_of_non_abundant_sums)
+    28122    0.176    0.000    0.176    0.000 non_abundant_sums.py:8(sum_of_proper_divisors)
+     6966    0.006    0.000    0.182    0.000 non_abundant_sums.py:29(generate_abundant_nums)
+        1    0.001    0.001    0.183    0.183 {built-in method builtins.sorted}
+        1    0.000    0.000    0.578    0.578 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+        1    0.000    0.000    0.578    0.578 {built-in method builtins.exec}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+</code></pre><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#ProjectEuler023ThreadTherryka></a></span>did not cross my mind at all.
+Probably because I tunnel-visioned myself into thinking about
+monotonically increasing grid traversals? That sounded math-like, and
+given I&rsquo;m on Project Euler, the more math the better?</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=PythonImportLib>importlib — The implementation of import — Python 3.11.2 documentation<i>.</i></cite>
+<a href=https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading=lazy aria-hidden=true>
+<i>docs.python.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 19, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=PythonGenerators>Generators - Python Wiki<i>.</i></cite>
+<a href=https://wiki.python.org/moin/Generators target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=wiki.python.org" loading=lazy aria-hidden=true>
+<i>wiki.python.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=HackerRankPE023>Project Euler #23: Non-abundant sums | HackerRank<i>.</i></cite>
+<a href=https://www.hackerrank.com/contests/projecteuler/challenges/euler023/problem target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hackerrank.com" loading=lazy aria-hidden=true>
+<i>www.hackerrank.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://www.hackerrank.com/contests/projecteuler/challenges/euler023/submissions/code/1356679785 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hackerrank.com" loading=lazy aria-hidden=true>
+<i>www.hackerrank.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=WolframAbundantNumber>Abundant Number -- from Wolfram MathWorld<i>.</i></cite>
+<a href=https://mathworld.wolfram.com/AbundantNumber.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=mathworld.wolfram.com" loading=lazy aria-hidden=true>
+<i>mathworld.wolfram.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=ProjectEuler023ThreadTherryka>Thread 23 - Project Euler<i>.</i></cite>
+<a href="https://projecteuler.net/thread=23;page=8#411899" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy aria-hidden=true>
+<i>projecteuler.net</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/docs.python.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading=lazy aria-hidden=true>
+docs.python.org</a>
+<a href=/domains/mathworld.wolfram.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=mathworld.wolfram.com" loading=lazy aria-hidden=true>
+mathworld.wolfram.com</a>
+<a href=/domains/projecteuler.net style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=projecteuler.net" loading=lazy aria-hidden=true>
+projecteuler.net</a>
+<a href=/domains/wiki.python.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=wiki.python.org" loading=lazy aria-hidden=true>
+wiki.python.org</a>
+<a href=/domains/www.hackerrank.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hackerrank.com" loading=lazy aria-hidden=true>
+www.hackerrank.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/project_euler/name_scores/022-name-scores/>&#171; 022. Name Scores</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
