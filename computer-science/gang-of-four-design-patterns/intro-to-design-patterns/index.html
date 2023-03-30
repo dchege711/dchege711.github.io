@@ -1,0 +1,60 @@
+<!doctype html><html lang=en><head><title>Intro to Design Patterns | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="What Are Design Patterns? Arriving at designs that are specific to the problem at hand but general enough to address future problems and requirements is hard. New designers tend to be overwhelmed by the options available. Expert designers do not solve every problem from first principles; they reuse design patterns. 
+I&rsquo;ve also encountered the &ldquo;you aren&rsquo;t gonna need it&rdquo; (YAGNI) school of thought that aims to minimize writing code that anticipates too far into the future, as such guesses usually don&rsquo;t pan out...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/gang-of-four-design-patterns/>Design Patterns: Elements of Reusable Object-Oriented Software</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/gang-of-four-design-patterns/intro-to-design-patterns/>Intro to Design Patterns</a></li></ul></nav><section><header><h1>Intro to Design Patterns</h1><p class=meta>Dated Mar 30, 2023;
+last modified on Thu, 30 Mar 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#what-are-design-patterns>What Are Design Patterns?</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=what-are-design-patterns>What Are Design Patterns?</h2><p>Arriving at designs that are specific to the problem at hand but general enough
+to address future problems and requirements is hard. New designers tend to be
+overwhelmed by the options available. Expert designers do not solve every
+problem from first principles; they reuse design patterns. <span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span></p><div class=comment-holder><div class=comment><p>I&rsquo;ve also encountered the &ldquo;you aren&rsquo;t gonna need it&rdquo; (YAGNI) school of thought
+that aims to minimize writing code that anticipates too far into the future, as
+such guesses usually don&rsquo;t pan out. <span class=citation-ref><a href=#WikiYAGNI></a></span>Design patterns seem
+like they exist somewhere between designing for now, and designing for a
+possible future. A design pattern solves a specific problem being encountered
+<em>now.</em> And even within a design pattern, one could still adhere to YAGNI, and
+add pieces when needed. When it does come to the point where the design needs
+more features, at least the design pattern provides a mental framework that is
+consistent with the initial design of the system.</p></div></div><div class=priors-holder><div class=priors><p>What is a design pattern? A collection of choices on how to go about solving a
+problem when designing systems. Sample problems: state synchronization,
+ownership relations, etc.</p></div></div><p>A design pattern has 4 elements:</p><ul><li><strong>Pattern name:</strong> succinctly describes the design problem, its solutions, and
+its consequences.</li><li><strong>Problem:</strong> describes when to apply the pattern, e.g., how to represent
+algorithms as objects.</li><li><strong>Solution:</strong> describes the elements that make up the design, their
+relationships, responsibilities, and collaborations.</li><li><strong>Consequences:</strong> the results and tradeoffs of applying the pattern, e.g.,
+space/time, language implementation issues, extensibility, etc.</li></ul><p><span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span></p><p>Design patterns are not about designs such as hash tables that can be encoded in
+classes and reused as-is. Nor are they complex, domain-specific designs for an
+entire application or subsystem. Instead, they are descriptions of communicating
+objects and classes that are customized to solve a general design problem in a
+particular context. <span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span></p><p>Why use a design pattern?</p><ul><li>Helps you choose design alternatives that make a system reusable.</li><li>Improve the documentation and maintenance of existing systems by adding
+explicit specifications of class and object interactions, and their underlying
+intent.</li></ul><p><span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span></p><div class=comment-holder><div class=comment><p>With the explicit goal of reusability, keep an eye out when we trade off some
+other desirable quality, like computational efficiency.</p></div></div><p>While experienced devs use design patterns exclusively, there is no good
+recording of the various design patterns used. <span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span>aims to present a catalog of design patterns, and with a consistent format:
+<em>name(s), classification, intent, motivation, applicability, graphical
+representation, participating classes/objects and their responsibilities,
+collaborations between participants, consequences, implementation notes, sample
+code, known uses, related patterns.</em></p><p>The choice of programming language is important because the language features
+determine what can and cannot be implemented easily. For example, CLOS has
+multi-methods, which lessen the need for a pattern such as Visitor. <span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span></p><p>The Model/View/Controller (MVC) triad of classes used to build UI in
+Smalltalk-80 helps illustrate various design patterns:</p><figure><img src=/img/computer-science/gang-of-4/mvc-diagram.jpg alt="MVC diagram. Credits: GangOfFour1994-Ch1"><figcaption><p>MVC diagram. Credits: GangOfFour1994-Ch1</p></figcaption></figure><ul><li>MVC has a design that decouples views from models. The more general problem is
+<em>decoupling objects so that changes to one can affect any number of others
+without requiring the changed object to know the details of the others.</em> The
+general design is described by the <strong>Observer</strong> design pattern.</li><li>In MVC, a view can be composed of other views. The more general problem is
+<em>grouping objects and treating the group like an individual object.</em> The
+general design is described by the <strong>Composite</strong> design pattern.</li><li>MVC lets one change how a view responds to user input without changing the
+visual representation, by encapsulating the response mechanism in a Controller
+object, e.g., a disabled view is given a controller that ignores input events.
+This View-Controller relationship is an example of the <strong>Strategy</strong> design
+pattern.</li></ul><p><span class=citation-ref><a href=#GangOfFour1994-Ch1></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count><cite id=GangOfFour1994-Ch1>Design Patterns<i>.</i>
+Ch 1. Introduction<i>.</i></cite>
+Erich Gamma; Richard Helm; Ralph Johnson; John Vlissides.
+Oct 21, 1994.
+<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count><cite id=WikiYAGNI>You aren't gonna need it - Wikipedia<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Mar 30, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/gamma-erich>Gamma, Erich</a>
+<a href=/cited-authors/helm-richard>Helm, Richard</a>
+<a href=/cited-authors/johnson-ralph>Johnson, Ralph</a>
+<a href=/cited-authors/vlissides-john>Vlissides, John</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+en.wikipedia.org</a></aside></div></div><footer></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
