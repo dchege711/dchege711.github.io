@@ -1,0 +1,114 @@
+<!doctype html><html lang=en><head><title>Identity Access Management | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="(Based on the table of contents in https://auth0.com/intro-to-iam)
+Authentication refers to granting the user (or an application acting on behalf of a user) credentials to access a given resource. I don&rsquo;t know the difference between SAML, OAuth, and OpenID. I&rsquo;ve seen OAuth used when granting apps access to other apps, e.g., granting Netlify and OAuth token for accessing a Github repository.
+Of the authentication methods, I&rsquo;m familiar with Single-Sign On (SSO), and Multi-Factor Authentication (MFA)...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/cos432-information-security/>Information Security [COS 432]</a></li><li><a href=https://www.curiosities.dev/computer-science/cos432-information-security/06-authenticating-people/>06. Authenticating People</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/cos432-information-security/06-authenticating-people/identity-access-management/>Identity Access Management</a></li></ul></nav><section><header><h1>Identity Access Management</h1><p class=meta>Dated May 28, 2023;
+last modified on Sun, 28 May 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#authentication-methods>Authentication Methods</a></li><li><a href=#authentication-and-authorization-standards>Authentication and Authorization Standards</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>(Based on the table of contents in <a href=https://auth0.com/intro-to-iam>https://auth0.com/intro-to-iam</a>)</p><p>Authentication refers to granting the user (or an application acting on behalf
+of a user) credentials to access a given resource. I don&rsquo;t know the difference
+between SAML, OAuth, and OpenID. I&rsquo;ve seen OAuth used when granting apps access
+to other apps, e.g., granting Netlify and OAuth token for accessing a Github
+repository.</p><p>Of the authentication methods, I&rsquo;m familiar with Single-Sign On (SSO), and
+Multi-Factor Authentication (MFA). I don&rsquo;t know about Passwordless
+Authentication. SSO occurs when say signing into accounts.microsoft.com grants
+you access to office.microsoft.com, tasks.microsoft.com, etc.; presumably the
+SSO token should work on *.bing.com given that microsoft.com and bing.com are
+owned by the same entity? Not sure how cross-domain SSO works though. MFA refers
+to requiring a second form of authentication, e.g., entering a password, and
+also validating a prompt sent to your phone; the idea is that it&rsquo;s less likely
+for the attacker to have access to both authentication methods. Passwordless
+seems like it&rsquo;d cover alternate methods like biometrics that are available on
+newer computers and phones.</p><p>On the difference between authentication and authorization, the former might be
+more active, i.e., an authenticated user has made an effort to access a
+resource. An authorized user seems more passive, e.g., a manager is authorized
+to view a report&rsquo;s records, but the manager would need to prove themselves
+(authenticate) before access can be granted. Role-Based Access Control (RBAC)
+sounds like a design perspective where permissions are defined in terms of role
+groups, e.g., to grant permission to a user, that user is added to an
+appropriate role group, which transitively grants them access. I&rsquo;ve seen RBACs
+in cloud platforms like AWS, e.g., a database having a read/write group,
+read-only group, etc.</p></div></div><p><strong>Authentication</strong> is the act of identifying a user or a device.
+<strong>Authorization</strong> is the act of allowing or denying users and devices access
+rights. Authentication can be used as a factor in authorization decisions (e.g.,
+presenting ID to a bank clerk also authorizes access to funds in your account).
+Authorization artifacts might not be useful to identify users or devices. <span class=citation-ref><a href=#OktaAuthenticationVsAuthorization></a></span></p><h2 id=authentication-methods>Authentication Methods</h2><p>Username and password combination is the most popular <strong>authentication factor</strong>.
+However, it comes with pitfalls like weak passwords, reused passwords, stolen
+passwords e.g., phishing, security breaches, etc. <span class=citation-ref><a href=#OktaAuthentication></a></span></p><p>Authentication factors are classified into <strong>something you know,</strong> e.g., a
+username-password combo, <strong>something you have,</strong> e.g., a one-time code sent to a
+phone, and <strong>something you are,</strong> e.g., biometrics. <strong>Multi-Factor
+Authentication (MFA)</strong> uses more than one factor from different classes, e.g.,
+Two-factor authentication (2FA) may employ username & password, and text code to
+the phone. <strong>Passwordless Authentication</strong> uses authentication factors from what
+you have and what you are, e.g., sending a Time-based One-Time-Password (TOTP)
+code via email. <span class=citation-ref><a href=#OktaAuthentication></a></span></p><p><strong>Single-Sign On</strong> allows multiple applications to use the same authentication
+session. SSO reduces risk by using fewer credentials (less reuse), and with MFA,
+that single, powerful, credential can be protected. If a user wants to access
+<code>domain1.com</code>, they&rsquo;re redirected to the authentication server, <code>domain3.com</code>,
+where they authenticate; <code>domain3.com</code> stores a session cookie and redirects the
+browser to <code>domain1.com</code> with an auth artifact that <code>domain1.com</code> can exchange
+for a token that may be used to prove the user&rsquo;s identity for subsequent access
+to <code>domain1.com</code>. If user accesses <code>domain2.com</code> in the same session, <code>domain2</code>
+redirects to <code>domain3</code>, but <code>domain3</code> uses the session cookie to skip the
+interactive login, and redirects the browser back to <code>domain2</code> with an auth
+artifact that may be exchanged for a token. <span class=citation-ref><a href=#OktaSSO></a></span></p><p><strong>Step-Up Authentication</strong> is a mechanism that relies on MFA to increase
+security in specific parts of an application, e.g., when trying to access
+resources that are more sensitive than others. This mechanism hopes to provide a
+better balance between user experience and data security. <span class=citation-ref><a href=#OktaMFA></a></span></p><h2 id=authentication-and-authorization-standards>Authentication and Authorization Standards</h2><p><strong>Security Assertion Markup Language (SAML 2.0)</strong> is an XML-based authentication
+protocol in which <strong>Identity Providers (IdP)</strong> exchange digitally signed XML
+documents (<strong>SAML Assertions</strong>) allowing an end-user to access a <strong>Service
+Provider (SP).</strong> The <strong>Relying Party (RP)</strong> is the service requesting and
+receiving data from the IdP. When a user tries to log into <code>external.com</code>, they
+get redirected to <code>internal.com</code>, an SSO page where they authenticate
+themselves, and then the user is redirected back to <code>external.com</code> with an SAML
+assertion proving their identity. <span class=citation-ref><a href=#OktaSAML></a></span></p><p><strong>Open Authorization (OAuth 2.0)</strong> is a standard that provides consented access
+and restricts actions of what the client app can perform on resources on behalf
+of the user, without ever sharing the user&rsquo;s credentials. Before OAuth 2.0 can
+be used, the <strong>Client</strong> acquires a <em>client ID</em> and a <em>client secret</em> from the
+<strong>Authorization Server</strong> in order to identify and authenticate itself when
+requesting an <strong>Access Token.</strong> The basic flow is:</p><ul><li>When sending the authorization request sent to the authorization server, the
+client sends its <em>client id</em>, <em>client secret</em>, scopes, and the
+endpoint/redirect URI to send the Access Token or the Authorization Code to.</li><li>The authorization server authenticates the client and verifies that the
+requested scopes are permitted.</li><li>The system that owns the resources interacts with the authorization server to
+grant access.</li><li>The Authorization Server redirects back to the Client with either an
+Authorization Code or Access Token, and maybe a Refresh Token.</li><li>With the Access Token, the Client requests access to the resource from the
+Resource Server.</li></ul><p><span class=citation-ref><a href=#OktaOAuth></a></span></p><p><strong>OpenID Connect (OIDC)</strong> utilizes OAuth 2.0 to verify the identity of a user to
+a client service. In particular, it uses a special scope value, <code>openid</code>, and
+uses the ID Token, which encapsulates the identity claims (e.g., persistent ID,
+email address, etc.) in JSON format. <span class=citation-ref><a href=#OktaOIDC></a></span></p><p>While SAML and OpenID are both identity protocols, OpenID is relatively new and
+designed with web and mobile applications in mind. Although SAML is more mature
+and fully-featured, OIDC is relatively simple and especially attractive in
+consumer spaces where there are simpler requirements. <span class=citation-ref><a href=#OktaSAMLvsOIDC></a></span></p><p>While SAML supports Single Sign-On, OAuth does not support SSO. That said, OAuth
+is frequently coerced into an authentication role, e.g., &ldquo;sign in with a
+Facebook account.&rdquo; SAML defines a token format and encryption, while OAuth2
+doesn&rsquo;t define a token format and relies on HTTPS. <span class=citation-ref><a href=#OktaSAMLvsOAuth></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaAuthentication>What is Authentication? Definition and uses<i>.</i></cite>
+<a href=https://auth0.com/intro-to-iam/what-is-authentication target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaSSO>What is Single-Sign On (SSO) and how does it work?<i></i></cite>
+<a href=https://auth0.com/intro-to-iam/what-is-single-sign-on-sso target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaMFA>What is Multi-Factor Authentication (MFA)?<i></i></cite>
+<a href=https://auth0.com/intro-to-iam/what-is-multifactor-authentication-mfa target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaSAML>What is SAML 2.0 and how does it work for you?<i></i></cite>
+<a href=https://auth0.com/intro-to-iam/what-is-saml target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaOAuth>What is OAuth 2.0 and what does it do for you?<i></i></cite>
+<a href=https://auth0.com/intro-to-iam/what-is-oauth-2 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaOIDC>What is OpenID Connect and what do you use it for?<i></i></cite>
+<a href=https://auth0.com/intro-to-iam/what-is-openid-connect-oidc target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaSAMLvsOIDC>What is OpenID vs SAML? Find out the differences<i>.</i></cite>
+<a href=https://auth0.com/intro-to-iam/saml-vs-openid-connect-oidc target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaAuthenticationVsAuthorization>What is Authentication vs Authorization? - Auth0<i>.</i></cite>
+<a href=https://auth0.com/intro-to-iam/authentication-vs-authorization target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OktaSAMLvsOAuth>What is SAML vs OAuth? Find out what's different - Auth0<i>.</i></cite>
+<a href=https://auth0.com/intro-to-iam/saml-vs-oauth target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+<i>auth0.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/auth0.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=auth0.com" loading=lazy aria-hidden=true>
+auth0.com</a></aside></div></div><footer></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
