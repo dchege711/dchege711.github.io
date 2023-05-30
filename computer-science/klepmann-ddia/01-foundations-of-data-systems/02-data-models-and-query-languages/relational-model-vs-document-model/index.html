@@ -2,7 +2,7 @@
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/klepmann-ddia/>Designing Data-Intensive Applications [Book]</a></li><li><a href=https://www.curiosities.dev/computer-science/klepmann-ddia/01-foundations-of-data-systems/>Foundations of Data Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/klepmann-ddia/01-foundations-of-data-systems/02-data-models-and-query-languages/>Data Models and Query Languages</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/klepmann-ddia/01-foundations-of-data-systems/02-data-models-and-query-languages/relational-model-vs-document-model/>Relational Model Versus Document Model</a></li></ul></nav><section><header><h1>Relational Model Versus Document Model</h1><p class=meta>Dated May 28, 2023;
-last modified on Sun, 28 May 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#relational-model-versus-document-model>Relational Model Versus Document Model</a></li><li><a href=#are-document-databases-repeating-history>Are Document Databases Repeating History?</a></li><li><a href=#relational-versus-document-databases-today>Relational Versus Document Databases Today</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>A relational data model uses tables that consist of rows and columns. A row can
+last modified on Mon, 29 May 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#relational-model-versus-document-model>Relational Model Versus Document Model</a></li><li><a href=#are-document-databases-repeating-history>Are Document Databases Repeating History?</a></li><li><a href=#relational-versus-document-databases-today>Relational Versus Document Databases Today</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>A relational data model uses tables that consist of rows and columns. A row can
 be uniquely identified by a table + ID combination. A column entry can reference
 another row in another table through a shared key. One goal is to avoid
 duplicating data. However, to answer a real-world query, we end up paying th
@@ -70,30 +70,30 @@ traversal because different paths can lead to the same record). The code for
 querying and updating the database was complicated and inflexible. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><div class=comment-holder><div class=comment><p><a href=https://kellercenter.princeton.edu/courses/technology-and-society target=_blank rel=noopener>EGR 277
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>might have had something to say about relational databases winning out over
 network databases, especially how the resurgence of document databases partially
-vindicates network databases.</p></div></div><p>By contrast, the relational model lay all the data in the open. The <strong>query
+vindicates network databases.</p></div></div><div class=flashcard><div class=flashcard-link-holder id=card-647584086c4ede00338eed52><a href="https://cards.c13u.com/browse/?cardID=647584086c4ede00338eed52" title="Flashcard: How did relational databases improve usability compared to the network (CODASYL) databases in the 1970s?" target=_blank><span aria-hidden=true>📑</span></a></div><p>By contrast, the relational model lay all the data in the open. The <strong>query
 optimizer</strong> automatically decides which parts of the query to execute and in
 what order, and which indexes to use, effectively creating an access path which
 was abstracted away from the application developer. The application developer
 need not update their queries to take advantage of new indexes. Granted, query
 optimizers are complicated beasts with many years of R&D, all applications that
-use a database can benefit from its query optimizer. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><div class=comment-holder><div class=comment><p>Another complicated beast that consumes a lot of R&D is a programming language&rsquo;s
+use a database can benefit from its query optimizer. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><div class=comment-holder><div class=comment><p>Another complicated beast that consumes a lot of R&D is a programming language&rsquo;s
 compiler, which comes with lots of optimizations that allow application
 developers to write relatively simple code.</p><p>In an ideal case, the abstraction is airtight, but the abstraction may leak
 leading to complexity in the application code. For example, some SQL servers may
-be dramatically faster for <code>WHERE a=b AND b=c AND a=c</code> than for <code>WHERE a=b AND b=c</code>. <span class=citation-ref><a href=#Spolsky2002></a></span></p></div></div><p>Document databases reverted back to the hierarchical model by storing
+be dramatically faster for <code>WHERE a=b AND b=c AND a=c</code> than for <code>WHERE a=b AND b=c</code>. <span class=citation-ref><a href=#Spolsky2002></a></span></p></div></div><div class=flashcard><div class=flashcard-link-holder id=card-6475840c6c4ede00338eed5c><a href="https://cards.c13u.com/browse/?cardID=6475840c6c4ede00338eed5c" title="Flashcard: Compare and contrast how document DBs and relational DBs handle many-to-X relationships within records" target=_blank><span aria-hidden=true>📑</span></a></div><p>Document databases reverted back to the hierarchical model by storing
 one-to-many relationships within the parent record. For many-to-one and
 many-to-many relationships:</p><ul><li>Document databases use a <strong>document reference</strong> in the document model, and
 resolve it at read time using follow-up queries.</li><li>Relational databases use a <strong>foreign key</strong> in the relational model, and
-resolve it at read time using a join.</li></ul><p><span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><h2 id=relational-versus-document-databases-today>Relational Versus Document Databases Today</h2><p>If the data has a document-like structure, splitting it into multiple tables
+resolve it at read time using a join.</li></ul><p><span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><h2 id=relational-versus-document-databases-today>Relational Versus Document Databases Today</h2><p>If the data has a document-like structure, splitting it into multiple tables
 can lead to cumbersome schemas and unnecessarily complicated application code.
 That said, data has a tendency of becoming more interconnected as features are added
 to applications. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p>Some references cannot be made directly in a document model, e.g., &ldquo;the second
 item in the list of positions for user <code>251</code>,&rdquo; but as long as the documents are
-not too deeply nested, this is not usually a problem. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p>If there are many-to-many relationships, the document model becomes less
+not too deeply nested, this is not usually a problem. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><div class=flashcard><div class=flashcard-link-holder id=card-6475840d6c4ede00338eed63><a href="https://cards.c13u.com/browse/?cardID=6475840d6c4ede00338eed63" title="Flashcard: What is the best model for data with many many-to-X relationships?" target=_blank><span aria-hidden=true>📑</span></a></div><p>If there are many-to-many relationships, the document model becomes less
 appealing because of the work needed to keep denormalized data consistent, and
 the slower emulations of joins, which could have been handled by more
 specialized code in a relational model. For highly interconnected data, the
-graph model is even better than a relational one. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p>While document databases are called <strong>schema-less,</strong> they are more of
+graph model is even better than a relational one. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><div class=flashcard><div class=flashcard-link-holder id=card-6475840e6c4ede00338eed6a><a href="https://cards.c13u.com/browse/?cardID=6475840e6c4ede00338eed6a" title="Flashcard: Why are 'schema-on-write' and 'schema-on-read' more accurate than 'schema-less'?" target=_blank><span aria-hidden=true>📑</span></a></div><p>While document databases are called <strong>schema-less,</strong> they are more of
 <strong>schema-on-read</strong> because the structure of the data does get interpreted when
 read. Contrast this with relational databases that have <strong>schema-on-write</strong>
 which is explicit and enforced by the database. The difference is poignant when
@@ -104,7 +104,7 @@ changing the format of its data, e.g.,</p><div class=highlight><pre style=color:
 </code></pre></div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-sql data-lang=sql><span style=color:#75715e>-- Perform a migration that adds first_name
 </span><span style=color:#75715e></span><span style=color:#00a8c8>ALTER</span> <span style=color:#00a8c8>TABLE</span> <span style=color:#111>users</span> <span style=color:#00a8c8>ADD</span> <span style=color:#00a8c8>COLUMN</span> <span style=color:#111>first_name</span> <span style=color:#111>text</span><span style=color:#111>;</span>
 <span style=color:#00a8c8>UPDATE</span> <span style=color:#111>users</span> <span style=color:#00a8c8>SET</span> <span style=color:#111>first_name</span> <span style=color:#f92672>=</span> <span style=color:#111>split_part</span><span style=color:#111>(</span><span style=color:#111>name</span><span style=color:#111>,</span> <span style=color:#d88200>&#39; &#39;</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
-</code></pre></div><p>&mldr; and some tradeoffs may arise. For example, MySQL&rsquo;s <code>ALTER TABLE</code> copies the
+</code></pre></div></div><p>&mldr; and some tradeoffs may arise. For example, MySQL&rsquo;s <code>ALTER TABLE</code> copies the
 entire table, which may mean hours of downtime for very large tables. <code>UPDATE</code>
 on a large table is slow on any database, but can be mitigated by setting a
 default of <code>NULL</code> and filling it at read time, like it would in a document
@@ -122,11 +122,11 @@ that you don&rsquo;t control. <span class=citation-ref><a href=#Kleppmann2017-Ch
 <a href=http://shlomi-noach.github.io/openarkkit/oak-online-alter-table.html target=_blank rel=noopener>Open
 Ark
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, etc.
-<span class=citation-ref><a href=#SOMySQLSlowAlterTable></a></span></p></div></div><p>If large parts of the document are needed at the same time, then the document
+<span class=citation-ref><a href=#SOMySQLSlowAlterTable></a></span></p></div></div><div class=flashcard><div class=flashcard-link-holder id=card-64757e061d3c360032ee0745><a href="https://cards.c13u.com/browse/?cardID=64757e061d3c360032ee0745" title="Flashcard: What are the tradeoffs in the data locality for a document database?" target=_blank><span aria-hidden=true>📑</span></a></div><p>If large parts of the document are needed at the same time, then the document
 model has a data locality advantage. However, updates to a document (especially
 those that change its size) may need a full rewrite of the document, with
 significant perf implications. Some relational databases do group related data
-together for locality, e.g., Google&rsquo;s Spanner database. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class cited-by-count is-main><cite id=Kleppmann2017-Ch2>Designing Data-Intensive Applications: The big ideas behind reliable, scalable, and maintainable systems<i>.</i>
+together for locality, e.g., Google&rsquo;s Spanner database. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class cited-by-count is-main><cite id=Kleppmann2017-Ch2>Designing Data-Intensive Applications: The big ideas behind reliable, scalable, and maintainable systems<i>.</i>
 Chapter 2: Data Models and Query Languages<i>.</i></cite>
 Kleppmann, Martin.
 Mar 16, 2017.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Spolsky2002>The Law of Leaky Abstraction<i>.</i></cite>
@@ -138,7 +138,10 @@ Joel Spolsky.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=SOMySQLSlowAlterTable>sql - MySQL very slow for alter table query<i>.</i></cite>
 <a href=https://stackoverflow.com/a/12774774/7812406 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true>
 <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/databases>#databases</a>
+<a href=/tags/innovation>#innovation</a>
+<a href=/tags/locality>#locality</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Kleppmann-Martin>Kleppmann, Martin</a>
 <a href=/cited-authors/Spolsky-Joel>Spolsky, Joel</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
