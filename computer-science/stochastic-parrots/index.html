@@ -1,0 +1,173 @@
+<!doctype html><html lang=en><head><title>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="was written in a period when NLP practitioners are producing bigger (# of parameters; size of training data) language models (LMs), and pushing the top scores on benchmarks.
+A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT took the world by storm &ndash; reaching 123m MAU less than 3 months after launch and becoming the fastest-growing consumer application in history (TikTok took 9 months to hit 100m MAU)...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/stochastic-parrots/>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</a></li></ul></nav><section><header><h1>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</h1><p class=meta>Dated Mar 3, 2021;
+last modified on Sun, 04 Jun 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#applications-of-llms>Applications of LLMs</a></li><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Bender2021></a></span>was written in a period when NLP
+practitioners are producing bigger (# of parameters; size of training data)
+language models (LMs), and pushing the top scores on benchmarks.</p><p>A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT
+took the world by storm &ndash; reaching 123m MAU less than 3 months after launch and
+becoming the fastest-growing consumer application in history (TikTok took 9
+months to hit 100m MAU). <span class=citation-ref><a href=#Wodecki2023></a></span></p><p>My skepticism of LLMs is partially influenced by (1) seeming smarter by not
+boarding the hype train, and (2) feeling threatened by an LLM and reducing it to
+a stochastic parrot. Parrot or not, millions are finding value, and thus a
+fairer inspection is in order.</p></div></div><p>While OpenAI&rsquo;s ChatGPT is the most popular, other LLMs are BERT (Google), T5
+(Google), XLNet (CMU and Google), and RoBERTa (Meta). <span class=citation-ref><a href=#Dennean2023></a></span></p><h2 id=applications-of-llms>Applications of LLMs</h2><div class=priors-holder><div class=priors><p>LLMs are especially useful in that they have a natural language UI; one doesn&rsquo;t
+need specialized knowledge to obtain information from the model. It&rsquo;s like a
+massive database, where the queries are not in SQL but in natural language.</p></div></div><div class=priors-holder><div class=priors><p>Incorporating an LLM into an automated decision-making software seems risky.
+Other embedding technologies have suffered from adversarial inputs that lead to
+poor outputs. Ultimately, it&rsquo;s a matter of how bad are the results when the LLM
+misbehaves, and are there measures to limit the blast area.</p></div></div><p>LLMs can perform language translation, sentiment analysis, question-answering,
+summarization, and text classification. <span class=citation-ref><a href=#Dennean2023></a></span></p><p>Monetization for LLMs: enterprise and consumer subscriptions for access,
+AI-generated content, dialogue-based search. <span class=citation-ref><a href=#Dennean2023></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Dennean2023></a></span>highlight eras in content generation:
+platform-generated content (2010 - 2015); user-generated content (2015 - 2020);
+AI-generated content (2020+).</p><p>LLMs can generate text.
+<a href=https://www.midjourney.com/ target=_blank rel=noopener>Midjourney
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+<a href=https://labs.openai.com/ target=_blank rel=noopener>DALL·E
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, and
+<a href=https://ommer-lab.com/research/latent-diffusion-models/ target=_blank rel=noopener>Stable
+Diffusion
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>are popular
+text-to-image models. As of June 2023, text-to-video models are yet to take off
+<span class=citation-ref><a href=#WikiTextToVideoModel></a></span>.</p></div></div><h2 id=environmental-risks>Environmental Risks</h2><p>Large LMs consume a lot of resources, e.g. training a single BERT base model on
+GPUs was estimated to use as much energy as a trans-American flight. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Marginalized communities are doubly punished. They are least likely to benefit
+from LMs, e.g. 90% of the world&rsquo;s languages have little LM-support; most LM
+applications serve needs of the privileged, e.g. Google Home, Alexa & Siri. They
+are also more likely to be harmed by negative effects of climate change. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Practitioners should report the resources (e.g. time and compute) consumed used.
+Governments should invest in compute clouds to provide equitable access to
+researchers. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=non-inclusive-lms>Non-Inclusive LMs</h2><p>Large datasets from the internet overrepresent hegemonic viewpoints and encode
+biases that can damage marginalized populations. <span class=citation-ref><a href=#Bender2021></a></span></p><p>User-generated content sites have skewed demographics, e.g. in 2016, 67% of
+Redditors in the US were men, and 64% between ages 18 and 29; between 8.8 - 15%
+of Wikipedians are female. Furthermore, these sites have structural factors that
+make them less welcoming to marginalized groups, e.g. harassment on Twitter. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Sometimes excluded populations assume different fora, e.g. older adults with
+blogging, but the LMs are less likely to source from these non-mainstream
+alternatives. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Filtering (&ldquo;Cleaning&rdquo;) of training data may suppress the voice of marginalized
+groups, e.g. suppressing LGBTQ spaces in the name of purging pornographic
+content. <span class=citation-ref><a href=#Bender2021></a></span></p><p>While social movements produce new norms, LMs might be stuck on older,
+less-inclusive understandings, e.g. social movements that do not receive
+significant media attention; LM retraining being expensive, etc. <span class=citation-ref><a href=#Bender2021></a></span></p><p>LMs may encode biases, e.g. gun violence, homelessness and drug addiction are
+overrepresented in texts discussing mental illness; women doctors; both genders;
+illegal immigrants. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Even auditing LMs for biases requires an <em>a priori</em> understanding of the
+society, which tends to fall back to US protected attributes like race and
+gender. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Researchers should budget for documentation as part of the cost of dataset
+creation. Without documentation, it&rsquo;s hard to investigate and mitigate such
+non-inclusivity. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</h2><div class=priors-holder><div class=priors><p>The LLM does not contain all the information verbatim. Instead, it&rsquo;s an
+embedding (which comes with a loss of information). For a good percentage of
+queries, the answers generated from extrapolating are good enough. However, some
+extrapolations are erroneous, hence the trait of LLMs to hallucinate information
+that isn&rsquo;t true in the real world. The problem comes from the LLM, regardless of
+hallucinating or not, coming across as confident and thus misleading users.</p><p>Beneficial usage of an LLM therefore comes down to prompting it, and then
+weighing/verifying the output before acting on it.</p></div></div><p>Some people mistakenly impute meaning to the LM-generated texts. LMs are not
+performing natural language understanding (NLU). Misplaced hype can mislead the
+public and dissuade research directions that don&rsquo;t depend on the ever-larger-LM
+train. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment><p><a href=https://www.reddit.com/r/SubSimulatorGPT2/ target=_blank rel=noopener>/r/SubSimulatorGPT2/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>is an
+entertaining sub full of GPT-2 bots.
+<a href=https://www.reddit.com/r/SubSimulatorGPT2Meta/ target=_blank rel=noopener>/r/SubSimulatorGPT2Meta/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has
+the human commentary.</p></div></div><p>The texts are not grounded in communicative intent, or any model of the world,
+or any model of the reader&rsquo;s state of mind. An LM is a system for haphazardly
+stitching together sequences of linguistic forms it has observed in its vast
+training data, according to probabilistic information about how they combine,
+but without reference to meaning: a stochastic parrot. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment><p>This is apparent when the model is made to do things that it wasn&rsquo;t trained to
+do. You&rsquo;d think that given the LLM&rsquo;s generation of text in complex disciplines,
+it should be able to answer math questions consistently, but that&rsquo;s not the
+case. For example, I asked GPT-4 &ldquo;How many zeros does 50100 contain?&rdquo; and it
+answered, &ldquo;The number 50,100 contains two zeros.&rdquo; This is probably due to
+<a href="https://news.ycombinator.com/item?id=35872254" target=_blank rel=noopener>how
+GPT tokenizes the input
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><p>It keeps on improving though. <span class=citation-ref><a href=#Chiang2023></a></span>&rsquo;s noted that GPT-3 fails
+at addition questions that involve carrying the \(1\), but seems like GPT-4
+does not have that problem.</p></div></div><p>If ChatGPT were a lossless algorithm that answers questions by verbatim quotes
+from web pages, then it&rsquo;d not be as impressive to us. However, because it
+rephrases content, it comes across as a student expressing ideas in their own
+words. <span class=citation-ref><a href=#Chiang2023></a></span></p><div class=comment-holder><div class=comment><p>LLMs as a blurry JPEG of the web sometimes manifests in obvious ways.
+<a href="https://news.ycombinator.com/item?id=35868927" target=_blank rel=noopener>An HN
+user
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>noted when asked, &ldquo;Which is
+heavier, two pounds of bricks or one pound of feathers?&rdquo; GPT 3.5 would say,
+&ldquo;They are both the same weight, as they both weigh one pound.&rdquo;</p></div></div><p>A useful criterion for gauging an LLM&rsquo;s quality is the willingness of the
+company to use the text generated by the LLM as training material for the next
+model. <span class=citation-ref><a href=#Chiang2023></a></span></p><p>With bigger LLMs, you get better performance, but there&rsquo;s no evidence to suggest
+that the whole is greater than the sum of their parts. Previous claims of
+emergent abilities at particular model sizes are due to choosing metrics that
+are especially harsh to smaller models. LLMs aren&rsquo;t going to surprise us with
+Artificial General Intelligence. <span class=citation-ref><a href=#Miller2023></a></span></p><p>Bad actors can take advantage of LMs to produce large quantities of seemingly
+coherent propaganda <span class=citation-ref><a href=#Bender2021></a></span>. <span class=citation-ref><a href=#Alexander2023></a></span>contends
+that the more sinister implementation is chatbots masquerading as online friends
+and usually having good content, but every once in a while dropping some
+propaganda, taking advantage of ordinary social reasoning.</p><p>Biases in LMs can manifest as reputational harms that are invisible to users.
+Biases in LMs used for query expansion could influence search results. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-graduation-cap" cited-by-count=1637 is-main><cite id=Bender2021>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜<i>.</i></cite>
+Emily M. Bender; Timnit Gebru; Angelina McMillan-Major; Shmargaret Shmitchell.
+Proceedings of the 2021 ACM Conference on Fairness, Accountability, and Transparency.
+University of Washington; Black in AI; The Aether.
+<a href=https://doi.org/10.1145/3442188.3445922 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true>
+<i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Mar 3, 2021.
+<i class="fas fa-fw fa-graduation-cap" aria-hidden=true></i>Cited 1637 times as of Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Wodecki2023>UBS: ChatGPT is the Fastest Growing App of All Time<i>.</i></cite>
+Ben Wodecki.
+<a href=https://aibusiness.com/nlp/ubs-chatgpt-is-the-fastest-growing-app-of-all-time target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=aibusiness.com" loading=lazy aria-hidden=true>
+<i>aibusiness.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Feb 2, 2023.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Dennean2023>Let's chat about ChatGPT<i>.</i></cite>
+Kevin Dennean; Sundeep Gantori; Delwin Kurnia Limas; Allen Pu; Reid Gilligan.
+UBS.
+<a href=https://www.ubs.com/global/en/wealth-management/our-approach/marketnews/article.1585717.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.ubs.com" loading=lazy aria-hidden=true>
+<i>www.ubs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Feb 22, 2023.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiTextToVideoModel>Text-to-video model<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Text-to-video_model target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Chiang2023>ChatGPT Is a Blurry JPEG of the Web<i>.</i></cite>
+Ted Chiang.
+<a href=https://www.newyorker.com/tech/annals-of-technology/chatgpt-is-a-blurry-jpeg-of-the-web target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy aria-hidden=true>
+<i>www.newyorker.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Feb 9, 2023.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Alexander2023>Mostly Skeptical Thoughts On The Chatbot Propaganda Apocalypse<i>.</i></cite>
+Scott Alexander.
+<a href=https://astralcodexten.substack.com/p/mostly-skeptical-thoughts-on-the target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading=lazy aria-hidden=true>
+<i>astralcodexten.substack.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Feb 2, 2023.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Miller2023>AI’s Ostensible Emergent Abilities Are a Mirage<i>.</i></cite>
+Katharine Miller.
+<a href=https://hai.stanford.edu/news/ais-ostensible-emergent-abilities-are-mirage target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true>
+<i>hai.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+May 8, 2023.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/fairness>#fairness</a>
+<a href=/tags/inequality>#inequality</a>
+<a href=/tags/natural-language-processing>#natural-language-processing</a>
+<a href=/tags/technology>#technology</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Alexander-Scott>Alexander, Scott</a>
+<a href=/cited-authors/Bender-Emily-M.>Bender, Emily M.</a>
+<a href=/cited-authors/Chiang-Ted>Chiang, Ted</a>
+<a href=/cited-authors/Dennean-Kevin>Dennean, Kevin</a>
+<a href=/cited-authors/Gantori-Sundeep>Gantori, Sundeep</a>
+<a href=/cited-authors/Gebru-Timnit>Gebru, Timnit</a>
+<a href=/cited-authors/Gilligan-Reid>Gilligan, Reid</a>
+<a href=/cited-authors/Limas-Delwin-Kurnia>Limas, Delwin Kurnia</a>
+<a href=/cited-authors/McMillan-Major-Angelina>McMillan-Major, Angelina</a>
+<a href=/cited-authors/Miller-Katharine>Miller, Katharine</a>
+<a href=/cited-authors/Pu-Allen>Pu, Allen</a>
+<a href=/cited-authors/Shmitchell-Shmargaret>Shmitchell, Shmargaret</a>
+<a href=/cited-authors/Wodecki-Ben>Wodecki, Ben</a></aside><aside id=publications-holder style="margin:0 0 2%">Cited Publications:
+<a href=/publications/Proceedings-of-the-2021-ACM-Conference-on-Fairness>Proceedings of the 2021 ACM Conference on Fairness</a></aside><aside id=affiliations-holder style="margin:0 0 2%">Cited Authors' Affiliations:
+<a href=/affiliations/Black-in-AI>Black in AI</a>
+<a href=/affiliations/The-Aether>The Aether</a>
+<a href=/affiliations/UBS>UBS</a>
+<a href=/affiliations/University-of-Washington>University of Washington</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/aibusiness.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=aibusiness.com" loading=lazy aria-hidden=true>
+aibusiness.com</a>
+<a href=/domains/astralcodexten.substack.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading=lazy aria-hidden=true>
+astralcodexten.substack.com</a>
+<a href=/domains/doi.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true>
+doi.org</a>
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+en.wikipedia.org</a>
+<a href=/domains/hai.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true>
+hai.stanford.edu</a>
+<a href=/domains/www.newyorker.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy aria-hidden=true>
+www.newyorker.com</a>
+<a href=/domains/www.ubs.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.ubs.com" loading=lazy aria-hidden=true>
+www.ubs.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/computer-graphics/2021-01-03-potpourri/>&#171; Computer Graphics Potpourri</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
