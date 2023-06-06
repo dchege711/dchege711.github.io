@@ -1,23 +1,38 @@
-<!doctype html><html lang=en><head><title>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="was written in a period when NLP practitioners are producing bigger (# of parameters; size of training data) language models (LMs), and pushing the top scores on benchmarks.
-A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT took the world by storm &ndash; reaching 123m MAU less than 3 months after launch and becoming the fastest-growing consumer application in history (TikTok took 9 months to hit 100m MAU)...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<!doctype html><html lang=en><head><title>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="was written in a period when NLP practitioners are producing bigger (# of parameters; size of training data) language models (LMs), and pushing the top scores on benchmarks. The paper itself was controversial because it led to Gebru being fired from Google, following disagreements with her managers on conditions (withdraw, or remove Google-affiliated authors) for publishing the paper. 
+A lot changed since mid-2021, when I initially wrote this page...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><svg id="background-svg"/><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/stochastic-parrots/>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</a></li></ul></nav><section><header><h1>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</h1><p class=meta>Dated Mar 3, 2021;
-last modified on Sun, 04 Jun 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#applications-of-llms>Applications of LLMs</a></li><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Bender2021></a></span>was written in a period when NLP
-practitioners are producing bigger (# of parameters; size of training data)
-language models (LMs), and pushing the top scores on benchmarks.</p><p>A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT
+last modified on Sun, 04 Jun 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#llms-101>LLMs 101</a></li><li><a href=#applications-of-llms>Applications of LLMs</a></li><li><a href=#a-mental-model-for-llms>A Mental Model for LLMs</a></li><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Bender2021></a></span>was written in a period when NLP practitioners are
+producing bigger (# of parameters; size of training data) language models (LMs),
+and pushing the top scores on benchmarks. The paper itself was controversial
+because it led to Gebru being fired from Google, following disagreements with
+her managers on conditions (withdraw, or remove Google-affiliated authors) for
+publishing the paper. <span class=citation-ref><a href=#WikiGebru></a></span></p><p>A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT
 took the world by storm &ndash; reaching 123m MAU less than 3 months after launch and
 becoming the fastest-growing consumer application in history (TikTok took 9
 months to hit 100m MAU). <span class=citation-ref><a href=#Wodecki2023></a></span></p><p>My skepticism of LLMs is partially influenced by (1) seeming smarter by not
 boarding the hype train, and (2) feeling threatened by an LLM and reducing it to
 a stochastic parrot. Parrot or not, millions are finding value, and thus a
-fairer inspection is in order.</p></div></div><p>While OpenAI&rsquo;s ChatGPT is the most popular, other LLMs are BERT (Google), T5
-(Google), XLNet (CMU and Google), and RoBERTa (Meta). <span class=citation-ref><a href=#Dennean2023></a></span></p><h2 id=applications-of-llms>Applications of LLMs</h2><div class=priors-holder><div class=priors><p>LLMs are especially useful in that they have a natural language UI; one doesn&rsquo;t
+fairer inspection is in order.</p></div></div><h2 id=llms-101>LLMs 101</h2><p>An LLM is a language model consisting of a neural network with many parameters
+(typically billions of weights), trained on large quantities of unlabeled text
+using self-supervised learning or semi-supervised learning. Though trained along
+the lines of predicting the next word in a sentence (GPT-style) or completing a
+cloze test (BERT-style), neural LMs capture much of the syntax and semantics of
+human language. <span class=citation-ref><a href=#WikiLLM></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#WikiLLM></a></span>notes that LLMs emerged around 2018, when I was pursuing an
+undergrad degree in Computer Science. Can&rsquo;t say I caught onto the hype until
+much later in 2022 (3 years after graduating) when ChatGPT was all the rage.</p></div></div><p>When it comes to LLMs' skills and range of tasks, it seems to be more of a
+function of resources (data, parameter-size, computing power) devoted to them,
+and less of breakthroughs in design. <span class=citation-ref><a href=#WikiLLM></a></span></p><p>While OpenAI&rsquo;s ChatGPT is the most popular, other LLMs are BERT (Google), T5
+(Google), XLNet (CMU and Google), and RoBERTa (Meta). <span class=citation-ref><a href=#Dennean2023></a></span></p><p>LLMs have a barrier to entry. Training Meta&rsquo;s LLaMA model, which has 65b
+parameters, took 21 days, and if it had been done on AWS, over 2.4m USD. <span class=citation-ref><a href=#Vanian2023></a></span></p><h2 id=applications-of-llms>Applications of LLMs</h2><div class=priors-holder><div class=priors><p>LLMs are especially useful in that they have a natural language UI; one doesn&rsquo;t
 need specialized knowledge to obtain information from the model. It&rsquo;s like a
 massive database, where the queries are not in SQL but in natural language.</p></div></div><div class=priors-holder><div class=priors><p>Incorporating an LLM into an automated decision-making software seems risky.
 Other embedding technologies have suffered from adversarial inputs that lead to
 poor outputs. Ultimately, it&rsquo;s a matter of how bad are the results when the LLM
 misbehaves, and are there measures to limit the blast area.</p></div></div><p>LLMs can perform language translation, sentiment analysis, question-answering,
 summarization, and text classification. <span class=citation-ref><a href=#Dennean2023></a></span></p><p>Monetization for LLMs: enterprise and consumer subscriptions for access,
-AI-generated content, dialogue-based search. <span class=citation-ref><a href=#Dennean2023></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Dennean2023></a></span>highlight eras in content generation:
+AI-generated content, dialogue-based search. <span class=citation-ref><a href=#Dennean2023></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#GithubCopilot></a></span>charges $10/month. It should have better performance
+than the more general ChatGPT, but I don&rsquo;t think I code often enough on my
+personal time to necessitate a subscription.</p></div></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Dennean2023></a></span>highlight eras in content generation:
 platform-generated content (2010 - 2015); user-generated content (2015 - 2020);
 AI-generated content (2020+).</p><p>LLMs can generate text.
 <a href=https://www.midjourney.com/ target=_blank rel=noopener>Midjourney
@@ -28,29 +43,7 @@ AI-generated content (2020+).</p><p>LLMs can generate text.
 Diffusion
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>are popular
 text-to-image models. As of June 2023, text-to-video models are yet to take off
-<span class=citation-ref><a href=#WikiTextToVideoModel></a></span>.</p></div></div><h2 id=environmental-risks>Environmental Risks</h2><p>Large LMs consume a lot of resources, e.g. training a single BERT base model on
-GPUs was estimated to use as much energy as a trans-American flight. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Marginalized communities are doubly punished. They are least likely to benefit
-from LMs, e.g. 90% of the world&rsquo;s languages have little LM-support; most LM
-applications serve needs of the privileged, e.g. Google Home, Alexa & Siri. They
-are also more likely to be harmed by negative effects of climate change. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Practitioners should report the resources (e.g. time and compute) consumed used.
-Governments should invest in compute clouds to provide equitable access to
-researchers. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=non-inclusive-lms>Non-Inclusive LMs</h2><p>Large datasets from the internet overrepresent hegemonic viewpoints and encode
-biases that can damage marginalized populations. <span class=citation-ref><a href=#Bender2021></a></span></p><p>User-generated content sites have skewed demographics, e.g. in 2016, 67% of
-Redditors in the US were men, and 64% between ages 18 and 29; between 8.8 - 15%
-of Wikipedians are female. Furthermore, these sites have structural factors that
-make them less welcoming to marginalized groups, e.g. harassment on Twitter. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Sometimes excluded populations assume different fora, e.g. older adults with
-blogging, but the LMs are less likely to source from these non-mainstream
-alternatives. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Filtering (&ldquo;Cleaning&rdquo;) of training data may suppress the voice of marginalized
-groups, e.g. suppressing LGBTQ spaces in the name of purging pornographic
-content. <span class=citation-ref><a href=#Bender2021></a></span></p><p>While social movements produce new norms, LMs might be stuck on older,
-less-inclusive understandings, e.g. social movements that do not receive
-significant media attention; LM retraining being expensive, etc. <span class=citation-ref><a href=#Bender2021></a></span></p><p>LMs may encode biases, e.g. gun violence, homelessness and drug addiction are
-overrepresented in texts discussing mental illness; women doctors; both genders;
-illegal immigrants. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Even auditing LMs for biases requires an <em>a priori</em> understanding of the
-society, which tends to fall back to US protected attributes like race and
-gender. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Researchers should budget for documentation as part of the cost of dataset
-creation. Without documentation, it&rsquo;s hard to investigate and mitigate such
-non-inclusivity. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</h2><div class=priors-holder><div class=priors><p>The LLM does not contain all the information verbatim. Instead, it&rsquo;s an
+<span class=citation-ref><a href=#WikiTextToVideoModel></a></span>.</p></div></div><h2 id=a-mental-model-for-llms>A Mental Model for LLMs</h2><div class=priors-holder><div class=priors><p>The LLM does not contain all the information verbatim. Instead, it&rsquo;s an
 embedding (which comes with a loss of information). For a good percentage of
 queries, the answers generated from extrapolating are good enough. However, some
 extrapolations are erroneous, hence the trait of LLMs to hallucinate information
@@ -75,7 +68,10 @@ case. For example, I asked GPT-4 &ldquo;How many zeros does 50100 contain?&rdquo
 answered, &ldquo;The number 50,100 contains two zeros.&rdquo; This is probably due to
 <a href="https://news.ycombinator.com/item?id=35872254" target=_blank rel=noopener>how
 GPT tokenizes the input
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><p>It keeps on improving though. <span class=citation-ref><a href=#Chiang2023></a></span>&rsquo;s noted that GPT-3 fails
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Tokenization refers to the conversion of words into numbers, which is necessary
+because LLMs are mathematical functions whose input and output are lists of
+numbers. <span class=citation-ref><a href=#WikiLLM></a></span></p><p>It keeps on improving though. <span class=citation-ref><a href=#Chiang2023></a></span>&rsquo;s noted that GPT-3 fails
 at addition questions that involve carrying the \(1\), but seems like GPT-4
 does not have that problem.</p></div></div><p>If ChatGPT were a lossless algorithm that answers questions by verbatim quotes
 from web pages, then it&rsquo;d not be as impressive to us. However, because it
@@ -91,7 +87,63 @@ model. <span class=citation-ref><a href=#Chiang2023></a></span></p><p>With bigge
 that the whole is greater than the sum of their parts. Previous claims of
 emergent abilities at particular model sizes are due to choosing metrics that
 are especially harsh to smaller models. LLMs aren&rsquo;t going to surprise us with
-Artificial General Intelligence. <span class=citation-ref><a href=#Miller2023></a></span></p><p>Bad actors can take advantage of LMs to produce large quantities of seemingly
+Artificial General Intelligence. <span class=citation-ref><a href=#Miller2023></a></span></p><div class=comment-holder><div class=comment><p>This viewpoint is not apparent in <span class=citation-ref><a href=#WikiLLM></a></span>&rsquo;s discussion of emergent
+abilities. Started
+<a href=https://en.wikipedia.org/wiki/Talk:Large_language_model#Emergent_Abilities target=_blank rel=noopener>a
+thread
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p></div></div><p>The prompts for LLMs can anthropomorphize them, e.g.,</p><ul><li>I want you to act like {character} from {series}. I want you to respond and
+answer like {character} using the tone, manner and vocabulary {character}
+would use. Do not write any explanations. Only answer like {character}. You
+must know all of the knowledge of {character}. My first sentence is &ldquo;Hi
+{character}.&rdquo;</li><li>I want you to act as a math teacher. I will provide some mathematical
+equations or concepts, and it will be your job to explain them in
+easy-to-understand terms. This could include providing step-by-step
+instructions for solving a problem, demonstrating various techniques with
+visuals or suggesting online resources for further study. My first request is
+&ldquo;I need help understanding how probability works.&rdquo;</li></ul><p><span class=citation-ref><a href=#fChatGPTPrompts></a></span></p><div class=comment-holder><div class=comment><p>Read <span class=citation-ref><a href=#Harel2004></a></span>back in my first year of undergrad, and a passage on
+what knowledge stuck with me:</p><blockquote><p>HUMAN. Why do you think that [flying novel-writing whales] cannot exist?</p><p>AI. For many reasons. First of all, our genetic engineering capabilities are
+far from adequate when it comes to turning fins into wins, not to mention our
+inability to cause 10-ton engineless creatures to defy gravity just by
+flapping these things. Secondly, the novel-writing part doesn&rsquo;t even deserve
+responding to, since writing a good story requires much more than the
+technical ability to read and write.</p></blockquote><p>Playing this game with ChatGPT:</p><blockquote><p>HUMAN. Why do you think that [flying novel-writing whales] cannot exist?</p><p>ChatGPT. I apologize if my previous response gave the impression that I
+definitively stated zupchoks cannot exist. As an AI language model, I don&rsquo;t
+have personal beliefs or opinions, and I cannot make absolute statements about
+the existence or non-existence of specific fictional creatures.</p><p>However, based on our current scientific understanding and knowledge, there is
+no evidence or documented information to suggest the existence of flying
+novel-writing whales or zupchoks. The concept of a zupchok, as you described
+it, involves a combination of extraordinary characteristics that do not align
+with the known biology of whales or any other creatures.</p><p>Whales, as we understand them, are marine mammals adapted to life in water,
+and their fins are not structured to evolve into wings for flight.
+Additionally, while animals can be trained to some extent, the idea of a whale
+with the ability to read, write, and create publishable stories is highly
+speculative and beyond the capabilities of current scientific knowledge.</p><p>However, it&rsquo;s important to remember that the realm of fiction allows for
+imaginative and creative exploration, so within the context of a fictional
+story, anything is possible. The existence of a zupchok or any other
+fantastical creature is ultimately up to the creative imagination of writers
+and readers.</p></blockquote><p>Back when reading <span class=citation-ref><a href=#Harel2004></a></span>, this argument made sense to me. But
+the threshold for intelligence is now higher, given that ChatGPT can pass this,
+but it&rsquo;s not considered AGI.</p></div></div><h2 id=environmental-risks>Environmental Risks</h2><p>Large LMs consume a lot of resources, e.g. training a single BERT base model on
+GPUs was estimated to use as much energy as a trans-American flight. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Marginalized communities are doubly punished, as they are least likely to
+benefit from LMs, and are also more likely to be harmed by negative effects of
+climate change. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Practitioners should report the resources (e.g. time and compute) consumed.
+Governments should invest in compute clouds to provide equitable access to
+researchers. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=non-inclusive-lms>Non-Inclusive LMs</h2><p>Large datasets from the internet overrepresent hegemonic viewpoints and encode
+biases that can damage marginalized populations. User-generated content sites
+have skewed demographics, e.g. in 2016, 67% of Redditors in the US were men, and
+64% between ages 18 and 29. Furthermore, these sites have structural factors
+that make them less welcoming to marginalized groups. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Sometimes excluded populations assume different fora, e.g. older adults with
+blogging, but the LMs are less likely to source from these non-mainstream
+alternatives. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Filtering of training data may suppress the voice of marginalized groups, e.g.
+suppressing LGBTQ spaces in the name of purging pornographic content. <span class=citation-ref><a href=#Bender2021></a></span></p><p>While social movements produce new norms, LMs might be stuck on older,
+less-inclusive understandings, e.g. social movements that do not receive
+significant media attention; LM retraining being expensive, etc. <span class=citation-ref><a href=#Bender2021></a></span></p><p>LMs may encode biases, e.g. gun violence, homelessness and drug addiction are
+overrepresented in texts discussing mental illness; women doctors; both genders;
+illegal immigrants. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Even auditing LMs for biases requires an <em>a priori</em> understanding of the
+society, which tends to fall back to US protected attributes like race and
+gender. <span class=citation-ref><a href=#Bender2021></a></span></p><p>Researchers should budget for documentation as part of the cost of dataset
+creation. Without documentation, it&rsquo;s hard to investigate and mitigate such
+non-inclusivity. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</h2><p>Bad actors can take advantage of LMs to produce large quantities of seemingly
 coherent propaganda <span class=citation-ref><a href=#Bender2021></a></span>. <span class=citation-ref><a href=#Alexander2023></a></span>contends
 that the more sinister implementation is chatbots masquerading as online friends
 and usually having good content, but every once in a while dropping some
@@ -132,7 +184,31 @@ Katharine Miller.
 <a href=https://hai.stanford.edu/news/ais-ostensible-emergent-abilities-are-mirage target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true>
 <i>hai.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 May 8, 2023.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiGebru>Timnit Gebru<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Timnit_Gebru#Exit_from_Google target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=GithubCopilot>GitHub Copilot · Your AI pair programmer<i>.</i></cite>
+<a href=https://github.com/features/copilot target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiLLM>Large language model<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Large_language_model target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Vanian2023>ChatGPT and generative AI are booming, but at a very expensive price<i>.</i></cite>
+Jonathan Vanian; Kif Leswing.
+<a href=https://www.cnbc.com/2023/03/13/chatgpt-and-generative-ai-are-booming-but-at-a-very-expensive-price.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.cnbc.com" loading=lazy aria-hidden=true>
+<i>www.cnbc.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=fChatGPTPrompts>f/awesome-chatgpt-prompts: This repo includes ChatGPT prompt curation to use ChatGPT better.<i></i></cite>
+<a href=https://github.com/f/awesome-chatgpt-prompts target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Harel2004>Computers Ltd.: What They Really Can't Do<i>.</i>
+Ch. 7: Can We Ourselves Do Any Better? > What is Knowledge?<i></i></cite>
+David Harel.
+<a href=https://www.wisdom.weizmann.ac.il/~harel/ltd.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.wisdom.weizmann.ac.il" loading=lazy aria-hidden=true>
+<i>www.wisdom.weizmann.ac.il</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://pdfs.semanticscholar.org/e6f3/86645c404da4c4e40ec5657509c3a7c2903c.pdf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=pdfs.semanticscholar.org" loading=lazy aria-hidden=true>
+<i>pdfs.semanticscholar.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+2004.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
 <a href=/tags/fairness>#fairness</a>
 <a href=/tags/inequality>#inequality</a>
 <a href=/tags/natural-language-processing>#natural-language-processing</a>
@@ -144,11 +220,14 @@ May 8, 2023.
 <a href=/cited-authors/Gantori-Sundeep>Gantori, Sundeep</a>
 <a href=/cited-authors/Gebru-Timnit>Gebru, Timnit</a>
 <a href=/cited-authors/Gilligan-Reid>Gilligan, Reid</a>
+<a href=/cited-authors/Harel-David>Harel, David</a>
+<a href=/cited-authors/Leswing-Kif>Leswing, Kif</a>
 <a href=/cited-authors/Limas-Delwin-Kurnia>Limas, Delwin Kurnia</a>
 <a href=/cited-authors/McMillan-Major-Angelina>McMillan-Major, Angelina</a>
 <a href=/cited-authors/Miller-Katharine>Miller, Katharine</a>
 <a href=/cited-authors/Pu-Allen>Pu, Allen</a>
 <a href=/cited-authors/Shmitchell-Shmargaret>Shmitchell, Shmargaret</a>
+<a href=/cited-authors/Vanian-Jonathan>Vanian, Jonathan</a>
 <a href=/cited-authors/Wodecki-Ben>Wodecki, Ben</a></aside><aside id=publications-holder style="margin:0 0 2%">Cited Publications:
 <a href=/publications/Proceedings-of-the-2021-ACM-Conference-on-Fairness>Proceedings of the 2021 ACM Conference on Fairness</a></aside><aside id=affiliations-holder style="margin:0 0 2%">Cited Authors' Affiliations:
 <a href=/affiliations/Black-in-AI>Black in AI</a>
@@ -163,11 +242,19 @@ astralcodexten.substack.com</a>
 doi.org</a>
 <a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true>
 en.wikipedia.org</a>
+<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true>
+github.com</a>
 <a href=/domains/hai.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true>
 hai.stanford.edu</a>
+<a href=/domains/pdfs.semanticscholar.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=pdfs.semanticscholar.org" loading=lazy aria-hidden=true>
+pdfs.semanticscholar.org</a>
+<a href=/domains/www.cnbc.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.cnbc.com" loading=lazy aria-hidden=true>
+www.cnbc.com</a>
 <a href=/domains/www.newyorker.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy aria-hidden=true>
 www.newyorker.com</a>
 <a href=/domains/www.ubs.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.ubs.com" loading=lazy aria-hidden=true>
-www.ubs.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/computer-graphics/2021-01-03-potpourri/>&#171; Computer Graphics Potpourri</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+www.ubs.com</a>
+<a href=/domains/www.wisdom.weizmann.ac.il style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.wisdom.weizmann.ac.il" loading=lazy aria-hidden=true>
+www.wisdom.weizmann.ac.il</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/computer-graphics/2021-01-03-potpourri/>&#171; Computer Graphics Potpourri</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
 <a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
