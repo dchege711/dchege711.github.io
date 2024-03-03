@@ -76,7 +76,7 @@ what order, and which indexes to use, effectively creating an access path which
 was abstracted away from the application developer. The application developer
 need not update their queries to take advantage of new indexes. Granted, query
 optimizers are complicated beasts with many years of R&D, all applications that
-use a database can benefit from its query optimizer. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><div class=comment-holder><div class=comment><p>Another complicated beast that consumes a lot of R&D is a programming language&rsquo;s
+use a database can benefit from its query optimizer. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><p><span class=tag-ref><a href=/tags/databases>#databases</a></span></p><p><span class=tag-ref><a href=/tags/innovation>#innovation</a></span></p><div class=comment-holder><div class=comment><p>Another complicated beast that consumes a lot of R&D is a programming language&rsquo;s
 compiler, which comes with lots of optimizations that allow application
 developers to write relatively simple code.</p><p>In an ideal case, the abstraction is airtight, but the abstraction may leak
 leading to complexity in the application code. For example, some SQL servers may
@@ -84,7 +84,7 @@ be dramatically faster for <code>WHERE a=b AND b=c AND a=c</code> than for <code
 one-to-many relationships within the parent record. For many-to-one and
 many-to-many relationships:</p><ul><li>Document databases use a <strong>document reference</strong> in the document model, and
 resolve it at read time using follow-up queries.</li><li>Relational databases use a <strong>foreign key</strong> in the relational model, and
-resolve it at read time using a join.</li></ul><p><span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><h2 id=relational-versus-document-databases-today>Relational Versus Document Databases Today</h2><p>If the data has a document-like structure, splitting it into multiple tables
+resolve it at read time using a join.</li></ul><p><span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p><span class=tag-ref><a href=/tags/databases>#databases</a></span></p></div><h2 id=relational-versus-document-databases-today>Relational Versus Document Databases Today</h2><p>If the data has a document-like structure, splitting it into multiple tables
 can lead to cumbersome schemas and unnecessarily complicated application code.
 That said, data has a tendency of becoming more interconnected as features are added
 to applications. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p>Some references cannot be made directly in a document model, e.g., &ldquo;the second
@@ -93,7 +93,7 @@ not too deeply nested, this is not usually a problem. <span class=citation-ref><
 appealing because of the work needed to keep denormalized data consistent, and
 the slower emulations of joins, which could have been handled by more
 specialized code in a relational model. For highly interconnected data, the
-graph model is even better than a relational one. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><div class=flashcard><div class=flashcard-link-holder id=card-6475840e6c4ede00338eed6a><a href="https://cards.c13u.com/browse/?cardID=6475840e6c4ede00338eed6a" title="Flashcard: Why are 'schema-on-write' and 'schema-on-read' more accurate than 'schema-less'?" target=_blank><span aria-hidden=true>📑</span></a></div><p>While document databases are called <strong>schema-less,</strong> they are more of
+graph model is even better than a relational one. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p><span class=tag-ref><a href=/tags/databases>#databases</a></span></p></div><div class=flashcard><div class=flashcard-link-holder id=card-6475840e6c4ede00338eed6a><a href="https://cards.c13u.com/browse/?cardID=6475840e6c4ede00338eed6a" title="Flashcard: Why are 'schema-on-write' and 'schema-on-read' more accurate than 'schema-less'?" target=_blank><span aria-hidden=true>📑</span></a></div><p>While document databases are called <strong>schema-less,</strong> they are more of
 <strong>schema-on-read</strong> because the structure of the data does get interpreted when
 read. Contrast this with relational databases that have <strong>schema-on-write</strong>
 which is explicit and enforced by the database. The difference is poignant when
@@ -104,7 +104,7 @@ changing the format of its data, e.g.,</p><div class=highlight><pre style=color:
 </code></pre></div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-sql data-lang=sql><span style=color:#75715e>-- Perform a migration that adds first_name
 </span><span style=color:#75715e></span><span style=color:#00a8c8>ALTER</span> <span style=color:#00a8c8>TABLE</span> <span style=color:#111>users</span> <span style=color:#00a8c8>ADD</span> <span style=color:#00a8c8>COLUMN</span> <span style=color:#111>first_name</span> <span style=color:#111>text</span><span style=color:#111>;</span>
 <span style=color:#00a8c8>UPDATE</span> <span style=color:#111>users</span> <span style=color:#00a8c8>SET</span> <span style=color:#111>first_name</span> <span style=color:#f92672>=</span> <span style=color:#111>split_part</span><span style=color:#111>(</span><span style=color:#111>name</span><span style=color:#111>,</span> <span style=color:#d88200>&#39; &#39;</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
-</code></pre></div></div><p>&mldr; and some tradeoffs may arise. For example, MySQL&rsquo;s <code>ALTER TABLE</code> copies the
+</code></pre></div><p><span class=tag-ref><a href=/tags/databases>#databases</a></span></p></div><p>&mldr; and some tradeoffs may arise. For example, MySQL&rsquo;s <code>ALTER TABLE</code> copies the
 entire table, which may mean hours of downtime for very large tables. <code>UPDATE</code>
 on a large table is slow on any database, but can be mitigated by setting a
 default of <code>NULL</code> and filling it at read time, like it would in a document
@@ -126,7 +126,7 @@ Ark
 model has a data locality advantage. However, updates to a document (especially
 those that change its size) may need a full rewrite of the document, with
 significant perf implications. Some relational databases do group related data
-together for locality, e.g., Google&rsquo;s Spanner database. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class cited-by-count is-main><cite id=Kleppmann2017-Ch2>Designing Data-Intensive Applications: The big ideas behind reliable, scalable, and maintainable systems<i>.</i>
+together for locality, e.g., Google&rsquo;s Spanner database. <span class=citation-ref><a href=#Kleppmann2017-Ch2></a></span></p><p><span class=tag-ref><a href=/tags/databases>#databases</a></span></p><p><span class=tag-ref><a href=/tags/locality>#locality</a></span></p></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class cited-by-count is-main><cite id=Kleppmann2017-Ch2>Designing Data-Intensive Applications: The big ideas behind reliable, scalable, and maintainable systems<i>.</i>
 Chapter 2: Data Models and Query Languages<i>.</i></cite>
 Kleppmann, Martin.
 Mar 16, 2017.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Spolsky2002>The Law of Leaky Abstraction<i>.</i></cite>
