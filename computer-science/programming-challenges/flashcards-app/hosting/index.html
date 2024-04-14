@@ -1,0 +1,112 @@
+<!doctype html><html lang=en><head><title>Hosting the Flashcards App | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Current State: SaaS The app is hosted at render.com   on Render&rsquo;s free tier   that gives us these free web services:
+ Custom domains Managed TLS certificates Pull request reviews Log streams Rollbacks up to the two most recent previous deploys.  &mldr; with these limitations:
+ Spins down after 15min of no inbound traffic. Spinning up on the next request causes a noticeable delay for a couple seconds...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/hosting/>Hosting the Flashcards App</a></li></ul></nav><section><header><h1>Hosting the Flashcards App</h1><p class=meta>Dated Mar 27, 2024;
+last modified on Wed, 27 Mar 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#current-state-saas>Current State: SaaS</a></li><li><a href=#server-logs>Server Logs</a></li><li><a href=#moving-cardsc13ucom-to-cardscuriositiesdev>Moving <code>cards.c13u.com</code> to <code>cards.curiosities.dev</code></a></li></ul></nav></aside><article id=main-article><h2 id=current-state-saas>Current State: SaaS</h2><p>The app is
+<a href=https://dashboard.render.com/web/srv-cdb17nqen0hldb3lqj6g target=_blank rel=noopener>hosted at
+render.com
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>on
+<a href=https://docs.render.com/free target=_blank rel=noopener>Render&rsquo;s free tier
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>that gives us
+these free web services:</p><ul><li>Custom domains</li><li>Managed TLS certificates</li><li>Pull request reviews</li><li>Log streams</li><li>Rollbacks up to the two most recent previous deploys.</li></ul><p>&mldr; with these limitations:</p><ul><li>Spins down after 15min of no inbound traffic. Spinning up on the next request causes a noticeable delay for a couple seconds.</li><li>Monthly limits, which will suspend the app if exceeded:<ul><li>750 instance hours.</li><li>100GB bandwidth.</li><li>500 pipeline minutes.</li></ul></li><li>Can be restarted at any time by Render.</li></ul><p>Render&rsquo;s free PostgreSQL database becomes inaccessible 90 days after
+creation. For our DB needs, we&rsquo;re using
+<a href=https://www.mongodb.com/pricing target=_blank rel=noopener>MongoDB&rsquo;s free
+tier
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, which has shared RAM, and 512MB
+to 5GB of storage.</p><h2 id=server-logs>Server Logs</h2><p>Render suggests
+<a href=https://docs.render.com/log-streams target=_blank rel=noopener>several options for
+logging
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><p><a href=https://betterstack.com/docs/logs/render/ target=_blank rel=noopener>Better Stack
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>&rsquo;s
+<a href=https://betterstack.com/logs/pricing target=_blank rel=noopener>free
+tier
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>offers 1GB/month, 3-day
+retention and 5 data sources. It also has an Uptime product whose
+<a href=https://betterstack.com/uptime/pricing target=_blank rel=noopener>free
+tier
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has free email alerts,
+3-minute checks, 10 monitors, and 5 status pages.</p><p><a href=https://docs.render.com/datadog#setting-up-log-streams target=_blank rel=noopener>Datadog
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>&rsquo;s
+<a href="https://www.datadoghq.com/pricing/?product=log-management#products" target=_blank rel=noopener>pricing
+page
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>starts at $0.10/GB. It also has logging integrations for
+<a href=https://docs.datadoghq.com/integrations/network/ target=_blank rel=noopener>network
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+<a href=https://docs.datadoghq.com/integrations/disk/ target=_blank rel=noopener>disk usage
+and IO
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>and
+<a href="https://docs.datadoghq.com/integrations/postgres/?tab=host" target=_blank rel=noopener>Postgres
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+The pricing for the Postgres monitoring isn&rsquo;t clear:
+<a href="https://www.datadoghq.com/pricing/?product=database-monitoring#products" target=_blank rel=noopener>this
+page
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>says $70 per database host, per month, but
+<a href="https://docs.datadoghq.com/integrations/postgres/?tab=host" target=_blank rel=noopener>the Postgres integration
+page
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>states
+that the standard Postgres Agent integration is different.
+<a href=https://www.reddit.com/r/devops/comments/zz4naq/datadog_i_do_not_understand_the_pricing_model/ target=_blank rel=noopener>This Reddit
+thread
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>jokes that their pricing model involves signing over your company and
+all its assets.</p><p><a href=https://www.highlight.io/docs/getting-started/backend-logging/hosting/render target=_blank rel=noopener>highlight.io
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>&rsquo;s
+<a href=https://www.highlight.io/pricing target=_blank rel=noopener>free tier
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has 500 sessions, 1k
+errors, 1m logs and 25m traces per month.</p><p><a href=https://www.papertrail.com/plans/ target=_blank rel=noopener>Papertrail
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>&rsquo;s cheapest plan is
+$7/month.</p><p><a href=https://help.sumologic.com/docs/send-data/hosted-collectors/cloud-syslog-source/#configure-a-cloudsyslogsource target=_blank rel=noopener>Sumo
+Logic
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>&rsquo;s
+<a href=https://www.sumologic.com/pricing/#get-what-you-need-for-monitoring-troubleshooting-and-security target=_blank rel=noopener>free
+tier
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has daily limits of 1GB logs, 3k DPM metrics, 1.5GB of traces.</p><p>Datadog is out for being vague with pricing and rumored to be expensive.
+Papertrail costs money, and the flashcard app does not make money. Sumo
+Logic seems like the clear winner with their generous free tier,
+<a href=https://www.reddit.com/r/devops/comments/12jhxbg/grafana_to_sumologic_pricing/ target=_blank rel=noopener>or
+maybe
+not
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>?</p><p><a href=https://logz.io/learn/complete-guide-elk-stack/#what-elk-stack target=_blank rel=noopener>The Complete Guide to the ELK
+Stack
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>summarizes the state of self-hosted open-source logging solutions. The
+ELK stack combines Elasticsearch ( a full-text search and analysis
+engine), Logstash (a log aggregator), and Kibana (a visualization
+layer). In 2021, Elastic made the ELK stack no longer open source,
+prompting AWS&rsquo;s OpenSearch and OpenSearch Dashboards.</p><p>The main motivation for collecting logs today is to find out when users
+tend to log in, and thus reduce the cold start. From
+<a href=https://stackoverflow.com/a/75680364 target=_blank rel=noopener>this SO
+post
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, we created a cron job at
+<a href=https://console.cron-job.org/ target=_blank rel=noopener>console.cron-job.org
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>that pings
+<a href=https://cards.c13u.com/wiki target=_blank rel=noopener>https://cards.c13u.com/wiki
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>every 14min.
+\(31 \times 25 = 775\) which means the app will be down on the 31st of
+every month.</p><h2 id=moving-cardsc13ucom-to-cardscuriositiesdev>Moving <code>cards.c13u.com</code> to <code>cards.curiosities.dev</code></h2><p><a href=http://www.c13u.com/ target=_blank rel=noopener>http://www.c13u.com/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>issues a 302 redirect to
+<a href=http://www.curiosities.dev target=_blank rel=noopener>http://www.curiosities.dev
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>. This is fine
+because both are static sites that don&rsquo;t need user authentication.
+<code>c13u.com</code> costs $12/year and so does <code>curiosities.dev</code>. <code>c13u.com</code>&rsquo;s
+registration renews in May.</p><p>Should I transition in one month, or should I transition by May 2025?
+The site doesn&rsquo;t have many users, so a month-long transition should
+suffice. Tentative transition plan:</p><ol><li>Host second app instance at <code>cards.curiosities.dev</code>.</li><li>Have a banner at <code>cards.c13u.com</code> indicating that on May 13th,
+<code>cards.c13u.com</code> will not work.</li><li>Shut down <code>cards.c13u.com</code> on May 13th.</li><li>Let <code>c13u.com</code> registration expire.</li></ol><p>Render makes step #1 easy. It&rsquo;s a matter of pointing
+<code>cards.curiosities.dev</code> to <code>flashcards-k0u4.onrender.com</code> via <code>CNAME</code>
+record. A
+<a href=https://en.wikipedia.org/wiki/CNAME_record target=_blank rel=noopener>Canonical Name (CNAME)
+record
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>maps one domain name
+(an alias) to another (the canonical name). In this case, in an Address
+(A) record lookup for <code>cards.curiosities.dev</code> the resolver will see
+<code>flashcards-k0u4.onrender.com</code> and restart the checking at
+<code>flashcards-k0u4.onrender.com</code> where an <code>A</code> record managed by Render
+will provide an IP address where the app is hosted. So there is no
+second app instance at <code>cards.curiosities.dev</code>; it&rsquo;s mostly DNS-fu, and
+that&rsquo;s why it&rsquo;s so seamless.
+<a href=https://github.com/dchege711/study_buddy/pull/142 target=_blank rel=noopener>#142
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>adds a banner
+to the app.</p></article><div style=font-size:smaller></div></div><footer></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
