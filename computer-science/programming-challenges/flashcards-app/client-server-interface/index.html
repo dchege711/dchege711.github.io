@@ -1,0 +1,99 @@
+<!doctype html><html lang=en><head><title>Client/Server Interface | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="How to handle redirects without setting window.location.href? Right now, there&rsquo;s a pattern of doing:
+sendHTTPRequest(&#34;POST&#34;, &#34;/login/&#34;, {}) .then((_) => { window.location.href = &#34;/&#34;; }) .catch((err) => { console.error(err); }); Isn&rsquo;t this something that the server can do? In response, why not issue a redirect?
+  Screenshot of the redirect chain from /login. The POST request gets a 303 (See Other) redirect to /home. The browser then makes a GET request to /home, which results in a 304 (Not Modified)...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/>Client/Server Interface</a></li></ul></nav><section><header><h1>Client/Server Interface</h1><p class=meta>Dated Apr 19, 2024;
+last modified on Fri, 19 Apr 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</a></li><li><a href=#typing-the-clientserver-interface>Typing the Client/Server Interface</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</h2><p>Right now, there&rsquo;s a pattern of doing:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75af00>sendHTTPRequest</span><span style=color:#111>(</span><span style=color:#d88200>&#34;POST&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;/login/&#34;</span><span style=color:#111>,</span> <span style=color:#111>{})</span>
+  <span style=color:#111>.</span><span style=color:#75af00>then</span><span style=color:#111>((</span><span style=color:#75af00>_</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+      <span style=color:#111>window</span><span style=color:#111>.</span><span style=color:#75af00>location</span><span style=color:#111>.</span><span style=color:#75af00>href</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;/&#34;</span><span style=color:#111>;</span>
+  <span style=color:#111>})</span>
+  <span style=color:#111>.</span><span style=color:#00a8c8>catch</span><span style=color:#111>((</span><span style=color:#75af00>err</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span> <span style=color:#75af00>console</span><span style=color:#111>.</span><span style=color:#75af00>error</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>);</span> <span style=color:#111>});</span>
+</code></pre></div><p>Isn&rsquo;t this something that the server can do? In response, why not issue
+a redirect?</p><figure><img src=/img/computer-science/programming-challenges/flashcards/client-server-interface/unfollowed-redirect.jpg alt="Screenshot of the redirect chain from /login. The POST
+request gets a 303 (See Other) redirect to /home. The browser then
+makes a GET request to /home, which results in a 304 (Not Modified).
+Why doesn&amp;rsquo;t the browser navigate me to /home?"><figcaption><p>Screenshot of the redirect chain from /login. The POST
+request gets a 303 (See Other) redirect to /home. The browser then
+makes a GET request to /home, which results in a 304 (Not Modified).
+Why doesn&rsquo;t the browser navigate me to /home?</p></figcaption></figure><div class=comment-holder><div class=comment><p>The <code>304 Not Modified</code> response is sent when there is no need to
+retransmit the requested resources. <span class=citation-ref><a href=#status304MDN></a></span>In this
+case, the page at <code>/home</code> has not changed, and the browser can use the
+cached version. If the content had changed, then the browser would have
+requested the resource from the server, resulting in a 200 response.</p></div></div><div class=comment-holder><div class=comment><p>Installing
+<a href=https://www.npmjs.com/package/http-status-codes target=_blank rel=noopener><code>http-status-codes</code>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>for more legible status codes.</p></div></div><p>This issue does not happen when I issue a <code>GET</code> request to <code>/logout</code> by
+clicking on a <code>&lt;a href="/logout">Log Out&lt;/a></code>. The server responds with
+a <code>303 (See Other)</code> to <code>/browse</code>, and the browser loads <code>/browse</code> in the
+tab. If I do the same with <code>fetch('/logout', { method: 'GET' })</code>
+instead, then the browser does not navigate the page to <code>/browse</code>
+despite the <code>/browse</code> response being observable in the Network tab. The
+consensus online is that <code>fetch</code> responses do not lead to automatic
+browser navigation.</p><div class=comment-holder><div class=comment><p>Re: <code>fetch</code> vs. <code>XMLHttpRequest</code>. The latter is the older way of making
+HTTP requests from JavaScript without leaving the page; it is based on
+events. <code>fetch</code> is built around promises, which are considered the
+preferred way of doing asynchronous operations. <code>fetch</code> and
+<code>XMLHttpRequest</code> are implemented by browser vendors. <span class=citation-ref><a href=#fetchXHRSO></a></span>On top of these, numerous libraries exist, e.g., <code>Fetch polyfill</code>,
+<code>isomorphic-fetch</code>, <code>axios</code>, <code>jQuery</code>, etc., to fill various gaps, e.g.,
+different syntax, varying browser support, etc. <span class=citation-ref><a href=#Andrew2016></a></span></p></div></div><h2 id=typing-the-clientserver-interface>Typing the Client/Server Interface</h2><p>One source of bugs is the server and the client being out of sync w.r.t.
+the shape of the data being exchanged. Granted, I have both the server
+and the client in the same repo, how can I avoid mismatches in data?
+<a href=https://www.reddit.com/r/typescript/comments/yryz83/is_there_a_library_or_a_standard_way_of_creating/ target=_blank rel=noopener>Is
+there a library or a standard way of creating an interface for my api
+endpoints? :
+typescript
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>floats <code>tRPC</code>, <code>GraphQL</code>, <code>OpenAPI</code>, and some others, with <code>tRPC</code> coming
+in first and <code>GraphQL</code> as the incumbent.</p><p>GitHub Copilot can help out here with quick intros on what <code>tRPC</code> and
+<code>GraphQL</code> entail. With <code>GraphQL</code>, the client can strongly type the API,
+define the data payloads, fetch all the data in one request, query for
+supported types, and subscribe to real-time updates. <code>GraphQL</code> is
+intended to be an improvement over <code>REST</code>. <code>tRPC</code> is designed with
+TypeScript in mind. Advantages of <code>tRPC</code> include no schema syncing as
+the input/output is inferred directly from function signatures, and can
+work with GraphQL (or any other data fetching method). In the case of my
+app, using <code>tRPC</code> involves replacing <code>Express</code> routes with <code>tRPC</code>
+procedures. Trying <code>tRPC</code>!</p><div class=comment-holder><div class=comment><p>Impressed by Copilot. Definitely saved me time on this one.</p></div></div><p>What&rsquo;s the use case for <code>tRPC</code> for endpoints that return a static page
+in response to a <code>GET</code> request? Copilot says that serving HTML files
+should be left to traditional web frameworks like <code>Express</code> as those
+have built-in support for SSR of HTML.</p><p><a href=https://github.com/dchege711/study_buddy/compare/f662e388435764043fa2c23619353c59b23d8dc7..cc2f374acd6f2f9a11c72f61927b6b989964fc25 target=_blank rel=noopener>Adding tRPC endpoints that don&rsquo;t need
+authentication
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>was mostly mechanical. However, there were a few gotchas. Some
+methods/props on a <code>Mongoose</code> document (e.g., the <code>Document</code> interface)
+cannot be shared between the server and the client, and so we need to
+define a safe interface that can be inferred by <code>tRPC</code> and availed on
+the client side. <span class=citation-ref><a href=#trpcUnknownTypeMongo></a></span>We also encountered a
+challenge in typing the inputs, given that the app relies on <code>Mongoose</code>
+validation that occurs after <code>tRPC</code> has seen the inputs. Ended up adding
+a passthrough input parser, e.g.,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>export</span> <span style=color:#00a8c8>const</span> <span style=color:#75af00>authRouter</span> <span style=color:#f92672>=</span> <span style=color:#75af00>router</span><span style=color:#111>({</span>
+  <span style=color:#75af00>registerUser</span>: <span style=color:#00a8c8>publicProcedure</span>
+    <span style=color:#111>.</span><span style=color:#75af00>input</span><span style=color:#111>((</span><span style=color:#75af00>params</span>: <span style=color:#00a8c8>unknown</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#75af00>params</span> <span style=color:#00a8c8>as</span> <span style=color:#75af00>RegisterUserAndPasswordParams</span><span style=color:#111>)</span>
+    <span style=color:#111>.</span><span style=color:#75af00>mutation</span><span style=color:#111>(({</span> <span style=color:#75af00>input</span> <span style=color:#111>})</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+      <span style=color:#00a8c8>return</span> <span style=color:#75af00>registerUserAndPassword</span><span style=color:#111>(</span><span style=color:#75af00>input</span><span style=color:#111>);</span>
+    <span style=color:#111>}),</span>
+<span style=color:#111>});</span>
+</code></pre></div><p><span class=citation-ref><a href=#trpcTypeInputWOValidation></a></span>The docs are not explicit about
+this because not validating is considered unsafe, and the <code>tRPC</code>
+maintainers don&rsquo;t want to advocate for it. With the base knowledge from
+non-auth endpoints and reading the docs several times,
+<a href="https://github.com/dchege711/study_buddy/compare/cc2f374...ea80ac5?diff=split&w=" target=_blank rel=noopener>adding
+auth-dependent
+endpoints
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>integrated nicely with <code>Express</code>&rsquo;s session management.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=status304MDN>304 Not Modified - HTTP | MDN<i>.</i></cite>
+<a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>developer.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=fetchXHRSO>javascript - Difference between fetch, ajax, and xhr - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/a/52261205r target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Andrew2016>AJAX/HTTP Library Comparison<i>.</i></cite>
+<a href=https://www.javascriptstuff.com/ajax-libraries/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.javascriptstuff.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.javascriptstuff.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Feb 3, 2016.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=trpcUnknownTypeMongo>[Next.JS] x.data.user is of type 'unknown' · trpc/trpc · Discussion #3661<i>.</i></cite>
+<a href=https://github.com/trpc/trpc/discussions/3661 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 20, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=trpcTypeInputWOValidation>docs: Howto add typed input (without validation) · Issue #3339 · trpc/trpc<i>.</i></cite>
+<a href=https://github.com/trpc/trpc/issues/3339 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 20, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/>&#171; Use of Local Storage</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
