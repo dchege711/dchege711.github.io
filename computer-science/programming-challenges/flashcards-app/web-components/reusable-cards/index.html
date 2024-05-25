@@ -1,0 +1,200 @@
+<!doctype html><html lang=en><head><title>Reusable Cards | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Context How can I reuse code in these user experiences?
+  Current card templates. TL: editable card owned by the user. TR: the overall modal experience. BL: a publicly viewable card. BR: a card owned by the user but is in the trash.
+  The current API surface for the different types of UIs is:
+interface EditableCardViewer { displayNewCard(): void; displayFullCard(cardId: string): void; renderCard(card: Partial<ICard> | null): void; fetchCard(caller: () => Promise<Partial<ICard> | null>): void; fetchPreviousCard(): void; fetchNextCard(): void; updateStreakBar(streak: IStreak): void; handleInputChange(elementId: string): void; handleCardUrgencyChange(): void; handleTagsInputChange(ev: KeyboardEvent): void; displayRawCardDescription(): void; insertTabsIfNecessary(ev: KeyboardEvent): void; saveCard(renderAfterSave: Boolean = true): void; moveCardToTrash(): void; restoreCardFromTrash(cardId: string, cardUrgency: number): void; toggleOption(elementId: &#34;reviewModeToggle&#34; | &#34;card_is_public_toggle&#34;): void; makeInvisible(elementId: string): void; colorUrgencyQuartiles(quartiles: number[]): void; suggestNewTags(tagsInputElement: HTMLInputElement): void; removeTagSuggestions(): void; updateTagsButtons(newTag: string): void; removeTagFromCard(tag: string): void; } interface PublicCardViewer { displayFullCard(cardId: string): void; renderCard(card: Partial<ICard> | null): void; fetchPreviousCard(): void; fetchNextCard(): void; handleSearchInputChange(): void; flagCard(reason: &#34;markedForReview&#34; | &#34;markedAsDuplicate&#34;): void; copyCardToOwnCollection(); } interface TrashedCardViewer { renderTrashedCard(card: Partial<ICard> | null); fetchPreviousCard(): void; fetchNextCard(): void; modifyTrash(endpoint: &#34;/delete-card&#34; | &#34;/restore-from-trash&#34;): void; } The web components v0 has:..."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/>Using Web Components</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/reusable-cards/>Reusable Cards</a></li></ul></nav><section><header><h1>Reusable Cards</h1><p class=meta>Dated May 3, 2024;
+last modified on Fri, 03 May 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#context>Context</a></li><li><a href=#composition>Composition</a></li><li><a href=#reactive-controllers>Reactive Controllers</a></li><li><a href=#mixins>Mixins</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=context>Context</h2><p>How can I reuse code in these user experiences?</p><figure><img src=/img/computer-science/programming-challenges/flashcards/web-components/card-types.jpg alt="Current card templates. TL: editable card owned by the user.
+TR: the overall modal experience. BL: a publicly viewable card. BR: a
+card owned by the user but is in the trash."><figcaption><p>Current card templates. TL: editable card owned by the user.
+TR: the overall modal experience. BL: a publicly viewable card. BR: a
+card owned by the user but is in the trash.</p></figcaption></figure><p>The current API surface for the different types of UIs is:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>interface</span> <span style=color:#75af00>EditableCardViewer</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>displayNewCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>displayFullCard</span><span style=color:#111>(</span><span style=color:#75af00>cardId</span>: <span style=color:#00a8c8>string</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>renderCard</span><span style=color:#111>(</span><span style=color:#75af00>card</span>: <span style=color:#00a8c8>Partial</span><span style=color:#111>&lt;</span><span style=color:#f92672>ICard</span><span style=color:#111>&gt;</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>null</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>fetchCard</span><span style=color:#111>(</span><span style=color:#75af00>caller</span><span style=color:#f92672>:</span> <span style=color:#111>()</span> <span style=color:#f92672>=&gt;</span> <span style=color:#75af00>Promise</span><span style=color:#111>&lt;</span><span style=color:#f92672>Partial</span><span style=color:#960050;background-color:#1e0010>&lt;</span><span style=color:#75af00>ICard</span><span style=color:#111>&gt;</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>null</span><span style=color:#f92672>&gt;</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>fetchPreviousCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>fetchNextCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>updateStreakBar</span><span style=color:#111>(</span><span style=color:#75af00>streak</span>: <span style=color:#00a8c8>IStreak</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>handleInputChange</span><span style=color:#111>(</span><span style=color:#75af00>elementId</span>: <span style=color:#00a8c8>string</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>handleCardUrgencyChange</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>handleTagsInputChange</span><span style=color:#111>(</span><span style=color:#75af00>ev</span>: <span style=color:#00a8c8>KeyboardEvent</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>displayRawCardDescription</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>insertTabsIfNecessary</span><span style=color:#111>(</span><span style=color:#75af00>ev</span>: <span style=color:#00a8c8>KeyboardEvent</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>saveCard</span><span style=color:#111>(</span><span style=color:#75af00>renderAfterSave</span>: <span style=color:#00a8c8>Boolean</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>true</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>moveCardToTrash</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>restoreCardFromTrash</span><span style=color:#111>(</span><span style=color:#75af00>cardId</span>: <span style=color:#00a8c8>string</span><span style=color:#111>,</span> <span style=color:#75af00>cardUrgency</span>: <span style=color:#00a8c8>number</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>toggleOption</span><span style=color:#111>(</span><span style=color:#75af00>elementId</span><span style=color:#f92672>:</span> <span style=color:#d88200>&#34;reviewModeToggle&#34;</span> <span style=color:#f92672>|</span> <span style=color:#d88200>&#34;card_is_public_toggle&#34;</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>makeInvisible</span><span style=color:#111>(</span><span style=color:#75af00>elementId</span>: <span style=color:#00a8c8>string</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>colorUrgencyQuartiles</span><span style=color:#111>(</span><span style=color:#75af00>quartiles</span>: <span style=color:#00a8c8>number</span><span style=color:#111>[])</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>suggestNewTags</span><span style=color:#111>(</span><span style=color:#75af00>tagsInputElement</span>: <span style=color:#00a8c8>HTMLInputElement</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>removeTagSuggestions</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>updateTagsButtons</span><span style=color:#111>(</span><span style=color:#75af00>newTag</span>: <span style=color:#00a8c8>string</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>removeTagFromCard</span><span style=color:#111>(</span><span style=color:#75af00>tag</span>: <span style=color:#00a8c8>string</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>interface</span> <span style=color:#75af00>PublicCardViewer</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>displayFullCard</span><span style=color:#111>(</span><span style=color:#75af00>cardId</span>: <span style=color:#00a8c8>string</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>renderCard</span><span style=color:#111>(</span><span style=color:#75af00>card</span>: <span style=color:#00a8c8>Partial</span><span style=color:#111>&lt;</span><span style=color:#f92672>ICard</span><span style=color:#111>&gt;</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>null</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>fetchPreviousCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>fetchNextCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>handleSearchInputChange</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>flagCard</span><span style=color:#111>(</span><span style=color:#75af00>reason</span><span style=color:#f92672>:</span> <span style=color:#d88200>&#34;markedForReview&#34;</span> <span style=color:#f92672>|</span> <span style=color:#d88200>&#34;markedAsDuplicate&#34;</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>copyCardToOwnCollection</span><span style=color:#111>();</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>interface</span> <span style=color:#75af00>TrashedCardViewer</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>renderTrashedCard</span><span style=color:#111>(</span><span style=color:#75af00>card</span>: <span style=color:#00a8c8>Partial</span><span style=color:#111>&lt;</span><span style=color:#f92672>ICard</span><span style=color:#111>&gt;</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>null</span><span style=color:#111>);</span>
+
+  <span style=color:#75af00>fetchPreviousCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#75af00>fetchNextCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+
+  <span style=color:#75af00>modifyTrash</span><span style=color:#111>(</span><span style=color:#75af00>endpoint</span><span style=color:#f92672>:</span> <span style=color:#d88200>&#34;/delete-card&#34;</span> <span style=color:#f92672>|</span> <span style=color:#d88200>&#34;/restore-from-trash&#34;</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>The web components v0 has:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>class</span> <span style=color:#75af00>CardViewer</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>LitElement</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>@property</span><span style=color:#111>({</span><span style=color:#00a8c8>type</span><span style=color:#f92672>:</span> <span style=color:#111>Object</span><span style=color:#111>})</span>
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>card</span>: <span style=color:#00a8c8>Card</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>null</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>null</span><span style=color:#111>;</span>
+
+  <span style=color:#75715e>// If card changed and is non-null, show the modal.
+</span><span style=color:#75715e></span>  <span style=color:#75af00>updated</span><span style=color:#111>(</span><span style=color:#75af00>changedProperties</span>: <span style=color:#00a8c8>Map</span><span style=color:#111>&lt;</span><span style=color:#f92672>string</span><span style=color:#960050;background-color:#1e0010>,</span> <span style=color:#75af00>any</span><span style=color:#111>&gt;)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>updateCarouselCursor</span><span style=color:#111>(</span><span style=color:#75af00>direction</span>: <span style=color:#00a8c8>CardsCarouselUpdateCursorDirection</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>closeDialog</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#75715e>// Throws error as it is supposed to be overriden.
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>renderCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#75af00>TemplateResult</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#75715e>// Calls `renderCard` and wraps the result in a &lt;dialog&gt; element.
+</span><span style=color:#75715e></span>  <span style=color:#75af00>render</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#75af00>TemplateResult</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#75715e>// Style dialog, backdrop, and code blocks.
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>static</span> <span style=color:#75af00>styles</span> <span style=color:#f92672>=</span> <span style=color:#111>[</span> <span style=color:#111>...</span> <span style=color:#111>]</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>@customElement</span><span style=color:#111>(</span><span style=color:#d88200>&#39;public-card-viewer&#39;</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>PublicCardViewer</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>CardViewer</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>@property</span><span style=color:#111>({</span> <span style=color:#00a8c8>type</span><span style=color:#f92672>:</span> <span style=color:#111>Object</span><span style=color:#111>})</span>
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>card</span>: <span style=color:#00a8c8>PublicCardResult</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>null</span><span style=color:#111>;</span>
+
+  <span style=color:#00a8c8>private</span> <span style=color:#75af00>flagCard</span><span style=color:#111>(</span><span style=color:#75af00>reason</span>: <span style=color:#00a8c8>FlagReason</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#75715e>// Can use `CardViewer.prototype.*` properties.
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>renderCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#75af00>TemplateResult</span> <span style=color:#111>{...}</span>
+
+  <span style=color:#75af00>render() {</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>super</span><span style=color:#111>.</span><span style=color:#75af00>render</span><span style=color:#111>();</span> <span style=color:#111>}</span>
+
+  <span style=color:#00a8c8>static</span> <span style=color:#75af00>styles</span> <span style=color:#f92672>=</span> <span style=color:#111>[...</span><span style=color:#00a8c8>super</span><span style=color:#111>.</span><span style=color:#75af00>styles</span><span style=color:#111>,</span> <span style=color:#75af00>css</span><span style=color:#d88200>`...`</span> <span style=color:#111>]</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>&mldr; and then <code>&lt;browse-page></code> has:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>public-card-viewer</span> <span style=color:#960050;background-color:#1e0010>.</span><span style=color:#75af00>card</span><span style=color:#f92672>=</span><span style=color:#d88200>${this.selectedResult}</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>public-card-viewer</span><span style=color:#111>&gt;</span>
+</code></pre></div><h2 id=composition>Composition</h2><p><span class=citation-ref><a href=#CompositionLit></a></span>&rsquo;s approach is essentially:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>editable-card</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>card-top-bar</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>card-top-bar</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>card-title-bar</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>card-title-bar</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>editable-card</span><span style=color:#111>&gt;</span>
+</code></pre></div><p>Properties go down and events go up. To pass data between siblings, the
+common ancestor would act as a mediator, e.g., <code>&lt;editable-card></code> listens
+for events from <code>&lt;card-top-bar></code> and then sets properties
+<code>&lt;card-title-bar></code>. <span class=citation-ref><a href=#CompositionLit></a></span></p><p>Composition can also use slotted children, e.g.,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>base-card</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>slot</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;top-bar&#39;</span><span style=color:#111>&gt;&lt;</span><span style=color:#f92672>slot</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>slot</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;title-bar&#39;</span><span style=color:#111>&gt;&lt;</span><span style=color:#f92672>slot</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>base-card</span><span style=color:#111>&gt;</span>
+
+<span style=color:#111>&lt;</span><span style=color:#f92672>editable-card</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>base-card</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>slot</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;top-bar&#39;</span><span style=color:#111>&gt;</span>...<span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>slot</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;title-bar&#39;</span><span style=color:#111>&gt;</span>...<span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>base-card</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>editable-card</span><span style=color:#111>&gt;</span>
+</code></pre></div><p>&mldr; with the caveat that <code>&lt;base-card></code> cannot make any assumptions about
+the slotted content because that content is controlled by and can be
+added/removed at any time. <span class=citation-ref><a href=#slottedChildrenLit></a></span></p><h2 id=reactive-controllers>Reactive Controllers</h2><p>This would take the form of:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>export</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>MyController</span> <span style=color:#00a8c8>implements</span> <span style=color:#75af00>ReactiveController</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>host</span>: <span style=color:#00a8c8>ReactiveControllerHost</span><span style=color:#111>;</span>
+
+  <span style=color:#00a8c8>constructor</span><span style=color:#111>(</span><span style=color:#75af00>host</span>: <span style=color:#00a8c8>ReactiveControllerHost</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+    <span style=color:#111>(</span><span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>host</span> <span style=color:#f92672>=</span> <span style=color:#75af00>host</span><span style=color:#111>).</span><span style=color:#75af00>addController</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span><span style=color:#111>);</span>
+  <span style=color:#111>}</span>
+
+  <span style=color:#75715e>// Do something and then call `this.host.requestUpdate()`.
+</span><span style=color:#75715e></span>  <span style=color:#75af00>hostConnected</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span> <span style=color:#111>{...}</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>@customElement</span><span style=color:#111>(</span><span style=color:#d88200>&#39;my-element&#39;</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>MyElement</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>LitElement</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>private</span> <span style=color:#75af00>controller</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#75af00>MyController</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span><span style=color:#111>);</span>
+  <span style=color:#75af00>render() {</span>
+    <span style=color:#00a8c8>return</span> <span style=color:#75af00>html</span><span style=color:#d88200>`Current value: </span><span style=color:#d88200>${</span><span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>controller</span><span style=color:#111>.</span><span style=color:#75af00>value</span><span style=color:#d88200>}</span><span style=color:#d88200>`</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>&mldr; where a <code>ReactiveController</code> can hook into lifecycle methods such as
+<code>hostConnected</code>, <code>hostUpdate</code>, <code>hostUpdated</code>, and <code>hostDisconnected</code>.
+<span class=citation-ref><a href=#reactiveControllers></a></span></p><h2 id=mixins>Mixins</h2><p>Unlike reactive controllers which implement composition patterns, mixins
+offer abstract subclasses that can be combined into concrete classes.
+<span class=citation-ref><a href=#mixinsLit></a></span></p><div class=comment-holder><div class=comment><p><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/>More on mixins and inheritance in general</a>
+.</p></div></div><p>This would be something of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>declare</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>CardViewerMixinInterface</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>@property</span><span style=color:#111>({</span><span style=color:#00a8c8>type</span><span style=color:#f92672>:</span> <span style=color:#111>Object</span><span style=color:#111>})</span> <span style=color:#00a8c8>protected</span> <span style=color:#75af00>card</span>: <span style=color:#00a8c8>Card</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>null</span><span style=color:#111>;</span>
+  <span style=color:#75af00>updated</span><span style=color:#111>(</span><span style=color:#75af00>changedProperties</span>: <span style=color:#00a8c8>Map</span><span style=color:#111>&lt;</span><span style=color:#f92672>string</span><span style=color:#960050;background-color:#1e0010>,</span> <span style=color:#75af00>any</span><span style=color:#111>&gt;)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>updateCarouselCursor</span><span style=color:#111>(</span><span style=color:#75af00>direction</span>: <span style=color:#00a8c8>CardsCarouselUpdateCursorDirection</span><span style=color:#111>)</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>closeDialog</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>void</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>renderCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#75af00>TemplateResult</span><span style=color:#111>;</span>
+  <span style=color:#75af00>render</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#75af00>TemplateResult</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>static</span> <span style=color:#75af00>styles</span>: <span style=color:#00a8c8>CSSResult</span><span style=color:#111>[];</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>const</span> <span style=color:#75af00>CardViewerMixin</span> <span style=color:#f92672>=</span> <span style=color:#111>&lt;</span><span style=color:#f92672>T</span> <span style=color:#75af00>extends</span> <span style=color:#75af00>LitElementConstructor</span><span style=color:#111>&gt;(</span><span style=color:#75af00>superClass</span>: <span style=color:#00a8c8>T</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>class</span> <span style=color:#75af00>CardViewerMixinClass</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>superClass</span> <span style=color:#00a8c8>implements</span> <span style=color:#75af00>CardViewerMixinInterface</span> <span style=color:#111>{...};</span>
+  <span style=color:#00a8c8>return</span> <span style=color:#75af00>CardViewerMixinClass</span> <span style=color:#00a8c8>as</span> <span style=color:#75af00>Constructor</span><span style=color:#111>&lt;</span><span style=color:#f92672>CardViewerMixinInterface</span><span style=color:#111>&gt;</span> <span style=color:#f92672>&amp;</span> <span style=color:#75af00>T</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>declare</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>PublicCardViewerMixinInterface</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>@property</span><span style=color:#111>({</span><span style=color:#00a8c8>type</span><span style=color:#f92672>:</span> <span style=color:#111>Object</span><span style=color:#111>})</span> <span style=color:#00a8c8>protected</span> <span style=color:#75af00>card</span>: <span style=color:#00a8c8>PublicCardResult</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>protected</span> <span style=color:#75af00>renderCard</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#75af00>TemplateResult</span><span style=color:#111>;</span>
+  <span style=color:#00a8c8>static</span> <span style=color:#75af00>styles</span>: <span style=color:#00a8c8>CSSResult</span><span style=color:#111>[];</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>const</span> <span style=color:#75af00>PublicCardViewerMixin</span> <span style=color:#f92672>=</span> <span style=color:#111>&lt;</span><span style=color:#f92672>T</span> <span style=color:#75af00>extends</span> <span style=color:#75af00>LitElementConstructor</span><span style=color:#111>&gt;(</span><span style=color:#75af00>superClass</span>: <span style=color:#00a8c8>T</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>class</span> <span style=color:#75af00>PublicCardViewerMixinClass</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>superClass</span> <span style=color:#00a8c8>implements</span> <span style=color:#75af00>PublicCardViewerMixinInterface</span> <span style=color:#111>{...};</span>
+  <span style=color:#00a8c8>return</span> <span style=color:#75af00>PublicCardViewerMixinClass</span> <span style=color:#00a8c8>as</span> <span style=color:#75af00>Constructor</span><span style=color:#111>&lt;</span><span style=color:#f92672>PublicCardViewerMixinInterface</span><span style=color:#111>&gt;</span> <span style=color:#f92672>&amp;</span> <span style=color:#75af00>T</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>@customElement</span><span style=color:#111>(</span><span style=color:#d88200>&#39;public-card-viewer&#39;</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>PublicCardViewer</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>PublicCardViewerMixin</span><span style=color:#111>(</span><span style=color:#75af00>CardViewerMixin</span><span style=color:#111>(</span><span style=color:#75af00>LitElement</span><span style=color:#111>))</span> <span style=color:#111>{};</span>
+</code></pre></div><p>This seems overly complicated. <code>PublicCardViewer</code> needs to be applied to
+a <code>CardViewer</code> instance and this superclass is known at class definition
+time; the mixin adds more code unnecessarily. What about
+<code>CardViewerMixin</code>? Its superclass, <code>LitElement</code>, is also known at class
+definition. Mixins seem overly complicated for my use case. Plain
+inheritance it is unless there&rsquo;s a reason to do otherwise.</p><div class=comment-holder><div class=comment><p>A good mixin could be <code>ToolbarA11yMixin</code> that implements
+<a href=https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/toolbar_role target=_blank rel=noopener>ARIA: toolbar
+role - Accessibility |
+MDN
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+This mixin can be used by the app bar (e.g., home, browse, wiki,
+account, logout) and by the card&rsquo;s action bar (e.g., move to trash,
+previous, next, save).</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CompositionLit>Component composition – Lit<i>.</i></cite>
+<a href=https://lit.dev/docs/composition/component-composition/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 3, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=slottedChildrenLit>Working with Shadow DOM – Lit<i>.</i></cite>
+<a href=https://lit.dev/docs/components/shadow-dom/#slots target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 3, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=reactiveControllers>Reactive Controllers – Lit<i>.</i></cite>
+<a href=https://lit.dev/docs/composition/controllers/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 3, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mixinsLit>Mixins – Lit<i>.</i></cite>
+<a href=https://lit.dev/docs/composition/mixins/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 3, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/cards-manager/>&#171; The Cards Manager</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/home-page/>Home Page &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

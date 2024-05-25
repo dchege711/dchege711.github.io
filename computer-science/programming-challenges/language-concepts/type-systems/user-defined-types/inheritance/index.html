@@ -1,0 +1,45 @@
+<!doctype html><html lang=en><head><title>Inheritance | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Mixins Introduced to mixins by . Didn&rsquo;t know that there are passionate advocates for this, e.g., &rsquo;s &ldquo;You can even look at normal subclass inheritance as a degenerate form of mixin inheritance where the superclass is known at class definition time, and there&rsquo;s only one application of it.&rdquo;
+  A mix-in is an abstract subclass. This technique is especially useful in languages where a class can only have a single superclass...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/>Inheritance</a></li></ul></nav><section><header><h1>Inheritance</h1><p class=meta>Dated May 5, 2024;
+last modified on Sun, 05 May 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#mixins>Mixins</a></li></ul></nav></aside><article id=main-article><h2 id=mixins>Mixins</h2><div class=comment-holder><div class=comment><p>Introduced to mixins by <span class=citation-ref><a href=#mixinsLit></a></span>. Didn&rsquo;t know that there
+are passionate advocates for this, e.g., <span class=citation-ref><a href=#fagnani2015></a></span>&rsquo;s &ldquo;You
+can even look at normal subclass inheritance as a degenerate form of
+mixin inheritance where the superclass is known at class definition
+time, and there&rsquo;s only one application of it.&rdquo;</p></div></div><p>A mix-in is an abstract subclass. This technique is especially useful in
+languages where a class can only have a single superclass.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-js data-lang=js><span style=color:#00a8c8>const</span> <span style=color:#75af00>calculatorMixin</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#75af00>Base</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+  <span style=color:#00a8c8>class</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>Base</span> <span style=color:#111>{</span>
+    <span style=color:#75af00>calc</span><span style=color:#111>()</span> <span style=color:#111>{}</span>
+  <span style=color:#111>};</span>
+
+<span style=color:#00a8c8>const</span> <span style=color:#75af00>randomizerMixin</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#75af00>Base</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+  <span style=color:#00a8c8>class</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>Base</span> <span style=color:#111>{</span>
+    <span style=color:#75af00>randomize</span><span style=color:#111>()</span> <span style=color:#111>{}</span>
+  <span style=color:#111>};</span>
+
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>Foo</span> <span style=color:#111>{}</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>Bar</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>calculatorMixin</span><span style=color:#111>(</span><span style=color:#75af00>randomizerMixin</span><span style=color:#111>(</span><span style=color:#75af00>Foo</span><span style=color:#111>))</span> <span style=color:#111>{}</span>
+</code></pre></div><p><span class=citation-ref><a href=#mixinsMDN></a></span></p><p>Folks use mixins to provide a lot of optional features for a class, or
+use one particular feature in a lot of different classes. One way to
+think about mixins is a small base type designed to add a small amount
+of functionality to a type without otherwise affecting that type. <span class=citation-ref><a href=#mixinUsefulnessSO></a></span>Mixins are rarely useful as standalone
+objects. One can think of it as an interface with an associated
+implementation. <span class=citation-ref><a href=#mixinVsInheritanceSO></a></span></p><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mixinsLit>Mixins – Lit<i>.</i></cite>
+<a href=https://lit.dev/docs/composition/mixins/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 3, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mixinsMDN>extends > Examples > Mix-ins<i>.</i></cite>
+<a href=https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/extends#mix-ins target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>developer.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 5, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=fagnani2015>'Real' Mixins with JavaScript Classes<i>.</i></cite>
+Justin Fagnani.
+<a href=https://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=justinfagnani.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>justinfagnani.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Dec 21, 2015.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 5, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mixinUsefulnessSO>python - What is a mixin and why is it useful? - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/questions/533631/what-is-a-mixin-and-why-is-it-useful target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 5, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mixinVsInheritanceSO>OOP - Mixin vs inheritance - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/questions/860245/mixin-vs-inheritance target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 5, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/>&#171; Unions in C++</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
