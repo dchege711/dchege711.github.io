@@ -1,0 +1,93 @@
+<!doctype html><html lang=en><head><title>Continuous Integration Tooling | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="What automatic tools can I add to keep code quality high?
+CodeQL CodeQL is a tool that runs variant analysis on code. The idea is that we create a query from a known vulnerability, e.g., SQL injection, and then run it against a codebase to find instances of that vulnerability.  GitHub authorizes the use of CodeQL for public repos, and so we are covered . ql-analysis.sh   has a recipe for running the analysis locally in the repo...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/ci-tooling/>Continuous Integration Tooling</a></li></ul></nav><section><header><h1>Continuous Integration Tooling</h1><p class=meta>Dated Jun 9, 2024;
+last modified on Sun, 09 Jun 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#codeql>CodeQL</a></li><li><a href=#formatting>Formatting</a></li><li><a href=#linter>Linter</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>What automatic tools can I add to keep code quality high?</p><h2 id=codeql>CodeQL</h2><p>CodeQL is a tool that runs variant analysis on code. The idea is that we
+create a query from a known vulnerability, e.g., SQL injection, and then
+run it against a codebase to find instances of that vulnerability. <span class=citation-ref><a href=#CodeQL></a></span>GitHub authorizes the use of CodeQL for public repos,
+and so we are covered <span class=citation-ref><a href=#CodeQLLicense></a></span>.
+<a href=https://github.com/dchege711/study_buddy/blob/main/ql-analysis.sh target=_blank rel=noopener>ql-analysis.sh
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has a recipe for running the analysis locally in the repo. CodeQL also
+runs on every PR, and blocks check-in if new vulnerabilities are
+discovered.</p><div class=comment-holder><div class=comment><p>Variant analysis is a common term in the medical field for analyzing
+genetic variants between individuals of a population. <span class=citation-ref><a href=#variantAnalysis></a></span>Search engine results bias heavily towards the
+medical interpretation, implying that the use of the term is pretty new
+in the software field.</p></div></div><h2 id=formatting>Formatting</h2><p>Ensuring a consistent format is one of those things that should be set
+once and automated. While I don&rsquo;t have collaborators who would come with
+their own style, going through the exercise should help in future
+collaborative endeavors.</p><p>I&rsquo;ve had prior experiences with <span class=citation-ref><a href=#dprint></a></span>, but <span class=citation-ref><a href=#Prettier></a></span>is the front-runner for JS/TS <span class=citation-ref><a href=#bestOfJSFormatters></a></span>. <code>dprint</code>&rsquo;s selling point is speed; it can even incorporate
+<code>Prettier</code> as a plugin with a 3X speed boost due to parallelism <span class=citation-ref><a href=#Sherret2022></a></span>.</p><div class=comment-holder><div class=comment><p>Interesting that &ldquo;built in Rust&rdquo; is becoming more of a selling point. Is
+Rust the new hacker&rsquo;s language?</p><p>StackOverflow&rsquo;s 2023 Developer Survey has an &ldquo;Admired and Desired&rdquo;
+section for technologies. &ldquo;Desired&rdquo; captures the % of respondents that
+want to use a technology. &ldquo;Admired&rdquo; captures the % of users that have
+used the same technology in 2023, and want to keep using it. The top 5
+admired languages of 2023 were Rust (84.66%), Elixir (73.13%),
+TypeScript (71.7%), Zig (71.33%), and Clojure (68.51%). <span class=citation-ref><a href=#SOSurvey2023></a></span></p></div></div><p>Integrating <code>dprint</code> was a matter of (1) installing it as a dependency
+and adding its config, (2) formatting the code base, and (3) enabling a
+CI check and adding (2) to <code>.git-blame-ignore-revs</code> for a better
+<code>git-blame</code> experience. <span class=citation-ref><a href=#issue158></a></span>Unlike linters,
+formatters do not change the semantics of your code, and so adding their
+effects to <code>.git-blame-ignore-revs</code> is not error-prone.</p><h2 id=linter>Linter</h2><p>A linter enforces statically-defined rules that discourage bug-prone
+constructs. <span class=citation-ref><a href=#issue162></a></span>captures adding a linter to the
+project.</p><p><span class=citation-ref><a href=#bestOfJSLinters></a></span>floats <span class=citation-ref><a href=#StandardJS></a></span>, <span class=citation-ref><a href=#ESLint></a></span>and <span class=citation-ref><a href=#RomeTools></a></span>as the top 3 in terms of Github
+stars. <span class=citation-ref><a href=#RomeTools></a></span>was pretty ambitious, but the company
+failed, and <span class=citation-ref><a href=#Biome></a></span>became its successor. <span class=citation-ref><a href=#typescript-eslint></a></span>enables <span class=citation-ref><a href=#ESLint></a></span>and <span class=citation-ref><a href=#Prettier></a></span>for TypeScript. In terms of downloads over the last month, <span class=citation-ref><a href=#ESLint></a></span>and <span class=citation-ref><a href=#typescript-eslint></a></span>dominate. Will try <span class=citation-ref><a href=#typescript-eslint></a></span>, using its popularity as a proxy for it being
+worth a shot.</p><div class=comment-holder><div class=comment><p>Evaluating various JS/TS technologies seems tedious for a first-time
+user. The above reasoning should have made me pick <span class=citation-ref><a href=#Prettier></a></span>over <span class=citation-ref><a href=#dprint></a></span>were it not for my prior experience with it,
+and <span class=citation-ref><a href=#Sherret2022></a></span>.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CodeQL>CodeQL documentation<i>.</i></cite>
+<a href=https://codeql.github.com/docs/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>codeql.github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CodeQLLicense>codeql-cli-binaries/LICENSE.md at main · github/codeql-cli-binaries<i>.</i></cite>
+<a href=https://github.com/github/codeql-cli-binaries/blob/main/LICENSE.md target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=variantAnalysis>Variant analysis | Human genetic variation<i>.</i></cite>
+<a href=https://www.ebi.ac.uk/training/online/courses/human-genetic-variation-introduction/variant-identification-and-analysis/variant-analysis/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.ebi.ac.uk" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.ebi.ac.uk</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Prettier>Prettier · Opinionated Code Formatter<i>.</i></cite>
+<a href=https://prettier.io/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=prettier.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>prettier.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=bestOfJSFormatters>Best of JS • Formatter projects<i>.</i></cite>
+<a href="https://bestofjs.org/projects?tags=formatter&sort=total" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=bestofjs.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>bestofjs.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=dprint>dprint - Code Formatter<i>.</i></cite>
+<a href=https://dprint.dev/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=dprint.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>dprint.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Sherret2022>Speeding up Prettier locally and on your CI with dprint<i>.</i></cite>
+David Sherret.
+<a href=https://david.deno.dev/posts/faster-prettier-with-dprint/#final-notes target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=david.deno.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>david.deno.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href="https://news.ycombinator.com/item?id=31160722" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=issue158>Consistent styling using dprint · Issue #158 · dchege711/study_buddy<i>.</i></cite>
+<a href=https://github.com/dchege711/study_buddy/issues/158 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=issue162>[ES] Add linter to catch common TS errors · Issue #162 · dchege711/study_buddy<i>.</i></cite>
+<a href=https://github.com/dchege711/study_buddy/issues/162 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=bestOfJSLinters>Best of JS • Linter projects<i>.</i></cite>
+<a href="https://bestofjs.org/projects?tags=lint&sort=total" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=bestofjs.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>bestofjs.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href="https://bestofjs.org/projects?tags=lint&sort=monthly-downloads" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=bestofjs.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>bestofjs.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=SOSurvey2023>Stack Overflow Developer Survey 2023<i>.</i></cite>
+<a href=https://survey.stackoverflow.co/2023/#section-admired-and-desired-programming-scripting-and-markup-languages target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=survey.stackoverflow.co" loading=lazy aria-hidden=true width=16 height=16>
+<i>survey.stackoverflow.co</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=StandardJS>JavaScript Standard Style<i>.</i></cite>
+<a href=https://standardjs.com/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=standardjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>standardjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=ESLint>Find and fix problems in your JavaScript code - ESLint - Pluggable JavaScript Linter<i>.</i></cite>
+<a href=https://eslint.org/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=eslint.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>eslint.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=RomeTools>rome/tools: Unified developer tools for JavaScript, TypeScript, and the web<i>.</i></cite>
+<a href=https://github.com/rome/tools target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Biome>Announcing Biome | Biome<i>.</i></cite>
+<a href=https://biomejs.dev/blog/annoucing-biome/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=biomejs.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>biomejs.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=typescript-eslint>typescript-eslint<i>.</i></cite>
+<a href=https://typescript-eslint.io/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=typescript-eslint.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>typescript-eslint.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 9, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/markup-features/>&#171; Markup Features</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

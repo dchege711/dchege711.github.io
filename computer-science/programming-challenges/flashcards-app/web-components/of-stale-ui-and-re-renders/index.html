@@ -40,13 +40,50 @@ justify not using keys.</p></div></div><h2 id=re-renders-on-tagged-templates>Re-
   <span style=color:#111>}</span>
 
   <span style=color:#75af00>render() {</span>
-    <span style=color:#75af00>console</span><span style=color:#111>.</span><span style=color:#75af00>log</span><span style=color:#111>(</span><span style=color:#d88200>&#39;SampleApp.render called&#39;</span><span style=color:#111>);</span>
     <span style=color:#00a8c8>return</span> <span style=color:#75af00>html</span><span style=color:#d88200>`&lt;p&gt;</span><span style=color:#d88200>${</span><span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>content</span><span style=color:#d88200>}</span><span style=color:#d88200>&lt;/p&gt;`</span><span style=color:#111>;</span>
   <span style=color:#111>}</span>
 <span style=color:#111>}</span>
 </code></pre></div><p><code>SampleApp.render</code> will be called every second <span class=citation-ref><a href=#litUpdatingState></a></span>. The fact that <code>this.counter</code> is not referenced in the rendered
 template does not prevent an update cycle. In this case, <code>this.counter</code>
-need not be reactive; a vanilla instance variable will do.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=listsLit>Lists – Lit<i>.</i></cite>
+need not be reactive; a vanilla instance variable will do.</p><p>In this example though:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>function</span> <span style=color:#75af00>getTimeString() {</span>
+  <span style=color:#00a8c8>let</span> <span style=color:#75af00>now</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>Date</span><span style=color:#111>(</span><span style=color:#111>Date</span><span style=color:#111>.</span><span style=color:#75af00>now</span><span style=color:#111>());</span>
+  <span style=color:#00a8c8>return</span> <span style=color:#d88200>`</span><span style=color:#d88200>${</span><span style=color:#75af00>now</span><span style=color:#111>.</span><span style=color:#75af00>getMinutes</span><span style=color:#111>()</span><span style=color:#d88200>}</span><span style=color:#d88200>:</span><span style=color:#d88200>${</span><span style=color:#75af00>now</span><span style=color:#111>.</span><span style=color:#75af00>getSeconds</span><span style=color:#111>()</span><span style=color:#d88200>}</span><span style=color:#d88200>`</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>@customElement</span><span style=color:#111>(</span><span style=color:#d88200>&#39;input-wrapper&#39;</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>class</span> <span style=color:#75af00>InputWrapperElement</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>LitElement</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>render() {</span>
+    <span style=color:#00a8c8>return</span> <span style=color:#75af00>html</span><span style=color:#d88200>`&lt;input value=</span><span style=color:#d88200>${</span><span style=color:#75af00>getTimeString</span><span style=color:#111>()</span><span style=color:#d88200>}</span><span style=color:#d88200> &gt;`</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>@customElement</span><span style=color:#111>(</span><span style=color:#d88200>&#39;sample-app&#39;</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>export</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>SampleApp</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>LitElement</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>@state</span><span style=color:#111>()</span> <span style=color:#75af00>content</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#39;Hello world&#39;</span><span style=color:#111>;</span>
+
+  <span style=color:#00a8c8>constructor</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+    <span style=color:#00a8c8>super</span><span style=color:#111>();</span>
+    <span style=color:#75af00>setInterval</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>updateContent</span><span style=color:#111>.</span><span style=color:#75af00>bind</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span><span style=color:#111>),</span> <span style=color:#ae81ff>1000</span><span style=color:#111>);</span>
+  <span style=color:#111>}</span>
+
+  <span style=color:#75af00>render() {</span>
+    <span style=color:#00a8c8>return</span> <span style=color:#75af00>html</span><span style=color:#d88200>`
+</span><span style=color:#d88200>      &lt;div&gt;Expected value: ~</span><span style=color:#d88200>${</span><span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>content</span><span style=color:#d88200>}</span><span style=color:#d88200>&lt;/div&gt;
+</span><span style=color:#d88200>      &lt;input-wrapper&gt;&lt;/input-wrapper&gt;
+</span><span style=color:#d88200>    `</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
+
+  <span style=color:#00a8c8>private</span> <span style=color:#75af00>updateContent() {</span>
+    <span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>content</span> <span style=color:#f92672>=</span> <span style=color:#75af00>getTimeString</span><span style=color:#111>();</span>
+  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>&lt;input></code> does not update every second <span class=citation-ref><a href=#litWrappedInput></a></span>.
+This might be because <code>&lt;sample-app></code> decides that <code>&lt;input-wrapper></code>
+should not be updated.</p><p>What if we want to reset <code>&lt;input></code> from <code>SampleApp.updateContent()</code>?
+Exposing <code>InputWrapperElement.reset()</code> could do the trick, but that
+breaks away from the &ldquo;events go up; properties come down&rdquo; philosophy for
+encapsulated web components. Syncing <code>InputWrapperElement.value</code> with
+the <code>&lt;input></code>&rsquo;s value does not work either. <span class=citation-ref><a href=#litWrappedInputSynced></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=listsLit>Lists – Lit<i>.</i></cite>
 <a href=https://lit.dev/docs/templates/lists/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
 <i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=listsReact>Rendering Lists – React<i>.</i></cite>
@@ -54,6 +91,12 @@ need not be reactive; a vanilla instance variable will do.</p><h2 id=references>
 <i>react.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 28, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=litUpdatingState>Lit Playground - Updating State<i>.</i></cite>
 <a href="https://lit.dev/playground/#sample=v3-docs%2Fcomponents%2Foverview%2Fsimple-greeting&gist=bec4f87f52af81e81d53bcd90ee5be79" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 2, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=litWrappedInput>Lit Playground - Wrapped Input Element<i>.</i></cite>
+<a href="https://lit.dev/playground/#sample=v3-docs%2Fcomponents%2Foverview%2Fsimple-greeting&gist=db11191cca7ca3d5aaa0b9f6285bfa55" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 2, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=litWrappedInputSynced>Lit Playground - Wrapped Input Synced Props<i>.</i></cite>
+<a href="https://lit.dev/playground/#sample=v3-docs%2Fcomponents%2Foverview%2Fsimple-greeting&gist=e32781380feff4768ad2d97c72d661be" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
 <i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 2, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/home-page/>&#171; Home Page</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
 <a href=/about>About</a>
