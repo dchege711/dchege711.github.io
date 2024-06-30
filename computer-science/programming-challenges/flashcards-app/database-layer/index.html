@@ -1,0 +1,107 @@
+<!doctype html><html lang=en><head><title>Database Layer | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Currently using MongoDB&rsquo;s free tier, which has shared RAM, and up to 5GB of storage . So far, the overall DB usage has been less than 5MB.
+Query Injection Current State of Affairs Currently have this protection implemented back in 2018:
+/** * @description Prevent a NoSQL Injection in the search parameters. This is * achieved by deleting all query values that begin with `$`. */ export function sanitizeQuery(query: any) { const keys = Object...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/database-layer/>Database Layer</a></li></ul></nav><section><header><h1>Database Layer</h1><p class=meta>Dated Jun 16, 2024;
+last modified on Sun, 16 Jun 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#query-injection>Query Injection</a><ul><li><a href=#current-state-of-affairs>Current State of Affairs</a></li><li><a href=#mongodb-injection-attacks>MongoDB Injection Attacks</a></li><li><a href=#nosql-injection-prevention-libraries>NoSQL Injection Prevention Libraries</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>Currently using MongoDB&rsquo;s free tier, which has shared RAM, and up to 5GB
+of storage <span class=citation-ref><a href=#mongoDBPricing></a></span>. So far, the overall DB usage has
+been less than 5MB.</p><h2 id=query-injection>Query Injection</h2><h3 id=current-state-of-affairs>Current State of Affairs</h3><p>Currently have this protection implemented back in 2018:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75715e>/**
+</span><span style=color:#75715e> * @description Prevent a NoSQL Injection in the search parameters. This is
+</span><span style=color:#75715e> * achieved by deleting all query values that begin with `$`.
+</span><span style=color:#75715e> */</span>
+<span style=color:#00a8c8>export</span> <span style=color:#00a8c8>function</span> <span style=color:#75af00>sanitizeQuery</span><span style=color:#111>(</span><span style=color:#75af00>query</span>: <span style=color:#00a8c8>any</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+  <span style=color:#00a8c8>const</span> <span style=color:#75af00>keys</span> <span style=color:#f92672>=</span> <span style=color:#111>Object</span><span style=color:#111>.</span><span style=color:#75af00>keys</span><span style=color:#111>(</span><span style=color:#75af00>query</span><span style=color:#111>);</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>let</span> <span style=color:#75af00>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#75af00>i</span> <span style=color:#f92672>&lt;</span> <span style=color:#75af00>keys</span><span style=color:#111>.</span><span style=color:#75af00>length</span><span style=color:#111>;</span> <span style=color:#75af00>i</span><span style=color:#f92672>++</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#d88200>/^\$/</span><span style=color:#111>.</span><span style=color:#75af00>test</span><span style=color:#111>(</span><span style=color:#75af00>query</span><span style=color:#111>[</span><span style=color:#75af00>keys</span><span style=color:#111>[</span><span style=color:#75af00>i</span><span style=color:#111>]]))</span> <span style=color:#111>{</span> <span style=color:#00a8c8>delete</span> <span style=color:#75af00>query</span><span style=color:#111>[</span><span style=color:#75af00>keys</span><span style=color:#111>[</span><span style=color:#75af00>i</span><span style=color:#111>]];</span> <span style=color:#111>}</span>
+  <span style=color:#111>}</span>
+  <span style=color:#00a8c8>return</span> <span style=color:#75af00>query</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><span class=citation-ref><a href=#commit186da7c></a></span></p><p>We can do better than roll out our own NoSQL injection protection; this
+is a common enough problem that libraries should have protections for.</p><h3 id=mongodb-injection-attacks>MongoDB Injection Attacks</h3><p>For MongoDB in a JS environment, one can set
+<code>security.javascriptEnabled</code> to <code>false</code> in the <code>mongod</code> configuration to
+disallow JS execution on the server. Otherwise, an attacker can run
+arbitrary JS in these MongoDB operations: <code>$where</code>, <code>mapReduce</code>,
+<code>$accumulator</code>, and <code>$function</code>. <span class=citation-ref><a href=#MongoDBQueryInjection></a></span></p><p>CodeQL did flag code like <code>User.findOne({email: payload.email})</code> as
+<code>js/sql-injection</code> violation, and suggested <code>User.findOne({email: { $eq: payload.email }})</code> instead. <span class=citation-ref><a href=#commit0d57acc></a></span>The use of <code>eq</code>
+ensures that the input is interpreted as a literal value and not a query
+object. Alternatively, checking that <code>typeof payload.email === "string"</code>
+also provides protection against NoSQL injection. <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span></p><div class=comment-holder><div class=comment><p>Reading <span class=citation-ref><a href=#MongoDBQueryInjection></a></span>, I don&rsquo;t think I&rsquo;d have
+gotten to <span class=citation-ref><a href=#commit0d57acc></a></span>without the hint from <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span>. Does Mongoose&rsquo;s <code>Model.findOne</code> internally use
+<code>$where</code> and that&rsquo;s why <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span>flags it?</p></div></div><p><span class=citation-ref><a href=#OWASPNoSQLInjection></a></span>has concrete examples of NoSQL
+injection attacks:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>myCollection</span><span style=color:#111>.</span><span style=color:#75af00>find</span><span style=color:#111>({</span>
+  <span style=color:#75af00>active</span>: <span style=color:#00a8c8>true</span><span style=color:#111>,</span>
+  <span style=color:#75af00>$where</span>: <span style=color:#00a8c8>function</span><span style=color:#111>()</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#75af00>obj</span><span style=color:#111>.</span><span style=color:#75af00>credits</span> <span style=color:#f92672>-</span> <span style=color:#75af00>obj</span><span style=color:#111>.</span><span style=color:#75af00>debits</span> <span style=color:#f92672>&lt;</span> <span style=color:#75af00>$userInput</span><span style=color:#111>;</span> <span style=color:#111>}</span>
+<span style=color:#111>});</span>
+
+<span style=color:#75715e>// A string containing any of these unsanitized characters would cause a
+</span><span style=color:#75715e>// database error.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>const</span> <span style=color:#75af00>maliciousInput</span> <span style=color:#f92672>=</span> <span style=color:#d88200>`&#39; &#34; </span><span style=color:#960050;background-color:#1e0010>\</span><span style=color:#d88200> ; { }`</span><span style=color:#111>;</span>
+
+<span style=color:#75715e>// If inserted into `$userInput`, the MongoDB instance would execute at
+</span><span style=color:#75715e>// 100% CPU usage for 10 seconds.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>const</span> <span style=color:#75af00>injection</span> <span style=color:#f92672>=</span> <span style=color:#d88200>`0;var date=new Date(); do{curDate = new Date();}while(curDate-date&lt;10000)`</span><span style=color:#111>;</span>
+</code></pre></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#OWASPNoSQLInjection></a></span>also brings up an alternate injection
+attack in a language like PHP, where PHP would try to substitute
+<code>$where</code> with the value of the variable <code>$where</code>. However, this doesn&rsquo;t
+apply to the current project.</p></div></div><p>A sample NoSQL injection is navigating to
+<code>/trpc/fetchPublicCard?batch=1&input=%7B%220%22%3A%7B%22cardID%22%3A%7B%22%24ne%22%3A%22000000000000000000000000%22%7D%7D%7D</code>.
+The user should not be able to execute a query like <code>{cardID: {$ne: "000000000000000000000000" }</code> and fetch a card. The tRPC endpoint should
+be able to strip out the non-literal card ID.</p><p>What about vanilla Express endpoints? CodeQL highlighted the injection
+attack surfaces for endpoints like <code>/login</code>, <code>/account</code>,
+<code>/reset-password</code>, and <code>/send-validation-email</code> and we fixed them. <span class=citation-ref><a href=#commit0f5b088></a></span>Seems like CodeQL&rsquo;s queries are good at finding
+vulnerabilities in Express, but not in tRPC.</p><h3 id=nosql-injection-prevention-libraries>NoSQL Injection Prevention Libraries</h3><p><span class=citation-ref><a href=#mongo-sanitize></a></span>is similar to <span class=citation-ref><a href=#commit186da7c></a></span>in
+that it strips out keys that start with <code>$</code>, but goes one step further
+by stripping out such keys recursively.</p><p><span class=citation-ref><a href=#express-mongo-sanitize></a></span>sanitizes keys that begin with
+either <code>$</code> or <code>.</code>. It can also be used as middleware allowing it to
+sanitize fields such as <code>req.body</code>, <code>req.params</code>, <code>req.headers</code>, and
+<code>req.query</code>. It can also be used in a non-middleware context, allowing
+it to be a drop-in replacement for <span class=citation-ref><a href=#commit186da7c></a></span>.</p><div class=comment-holder><div class=comment><p><code>db.inventory.find({"price.usd": { $gt: 40 }})</code> would match the document</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
+   <span style=color:#f92672>&#34;item&#34;</span> <span style=color:#111>:</span> <span style=color:#d88200>&#34;sweatshirt&#34;</span><span style=color:#111>,</span>
+   <span style=color:#f92672>&#34;price&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
+      <span style=color:#f92672>&#34;usd&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>45.99</span>
+   <span style=color:#111>},</span>
+   <span style=color:#f92672>&#34;quantity&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>20</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><span class=citation-ref><a href=#periodsMongoDB></a></span>. Is that what <span class=citation-ref><a href=#express-mongo-sanitize></a></span>means by &ldquo;<code>.</code> could change the context of a
+database operation&rdquo;?</p></div></div><p>Doing <code>app.use(mongoSanitize())</code> as advised by <span class=citation-ref><a href=#express-mongo-sanitize></a></span>doesn&rsquo;t prevent injection attacks via <code>tRPC</code>.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mongoDBPricing>Pricing | MongoDB<i>.</i></cite>
+<a href=https://www.mongodb.com/pricing target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.mongodb.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.mongodb.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=commit186da7c>Sanitize card content and queries. Store card HTML server-side. · dchege711/study_buddy@186da7c<i>.</i></cite>
+<a href=https://github.com/dchege711/study_buddy/blob/7a77f7fb698f943a2f2ceb9ce572b3255be517a7/src/models/SanitizationAndValidation.ts#L108 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://github.com/dchege711/study_buddy/commit/186da7c7dab999ff582c4175f8e6388533abb6e1 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Nov 16, 2018.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=MongoDBQueryInjection>FAQ: MongoDB Fundamentals - MongoDB Manual v7.0<i>.</i></cite>
+<a href=https://www.mongodb.com/docs/manual/faq/fundamentals/#how-does-mongodb-address-sql-or-query-injection- target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.mongodb.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.mongodb.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=commit0d57acc>[DB] Fix js/sql-injection violations · dchege711/study_buddy@0d57acc<i>.</i></cite>
+<a href=https://github.com/dchege711/study_buddy/commit/0d57acc4801f599d4e3460a147546e49234a5905 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jun 8, 2024.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=codeQLJSSQLInjection>Database query built from user-controlled sources — CodeQL query help documentation<i>.</i></cite>
+<a href=https://codeql.github.com/codeql-query-help/javascript/js-sql-injection/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>codeql.github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=OWASPNoSQLInjection>WSTG - Latest | OWASP Foundation<i>.</i></cite>
+<a href=https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=owasp.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=mongo-sanitize>mongo-sanitize - npm<i>.</i></cite>
+<a href="https://www.npmjs.com/package/mongo-sanitize?activeTab=readme" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.npmjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.npmjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Mar 2, 2020.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=express-mongo-sanitize>express-mongo-sanitize - npm<i>.</i></cite>
+<a href=https://www.npmjs.com/package/express-mongo-sanitize target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.npmjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.npmjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jan 14, 2022.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=periodsMongoDB>Field Names with Periods - MongoDB Manual v7.0<i>.</i></cite>
+<a href=https://www.mongodb.com/docs/manual/core/dot-dollar-considerations/periods/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.mongodb.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.mongodb.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 16, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=commit0f5b088>[DB] Fix js/sql-injection violations · dchege711/study_buddy@0f5b088<i>.</i></cite>
+<a href=https://github.com/dchege711/study_buddy/commit/0f5b0882011c8f3721252ffa101e4ca7fa196f78 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Jun 9, 2024.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 24, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/ci-tooling/>&#171; Continuous Integration Tooling</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/>Testing in a Monorepo &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

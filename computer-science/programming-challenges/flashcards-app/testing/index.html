@@ -1,0 +1,141 @@
+<!doctype html><html lang=en><head><title>Testing in a Monorepo | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Choosing web-test-runner as the Client Test Framework While any test framework can work, it&rsquo;s better to test web components in a browser environment because that&rsquo;s where they&rsquo;ll be used. Node-based frameworks would require too much shimming of DOM calls that&rsquo;d make the tests unrepresentative.  and  are good options for browser-based testing. 
+ is powered by ES-build, and so is the client-side of the app; let&rsquo;s go down this path and see where it leads...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/>Testing in a Monorepo</a></li></ul></nav><section><header><h1>Testing in a Monorepo</h1><p class=meta>Dated Jun 22, 2024;
+last modified on Sat, 22 Jun 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#choosing-web-test-runner-as-the-client-test-framework>Choosing <code>web-test-runner</code> as the Client Test Framework</a></li><li><a href=#esm-vs-commonjs-modules>ESM vs. CommonJS Modules</a></li><li><a href=#e2e-testing>E2E Testing</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=choosing-web-test-runner-as-the-client-test-framework>Choosing <code>web-test-runner</code> as the Client Test Framework</h2><p>While any test framework can work, it&rsquo;s better to test web components in
+a browser environment because that&rsquo;s where they&rsquo;ll be used. Node-based
+frameworks would require too much shimming of DOM calls that&rsquo;d make the
+tests unrepresentative. <span class=citation-ref><a href=#WebTestRunner></a></span>and <span class=citation-ref><a href=#WebDriverIO></a></span>are good options for browser-based testing. <span class=citation-ref><a href=#testingLit></a></span></p><p><span class=citation-ref><a href=#WebTestRunner></a></span>is powered by ES-build, and so is the
+client-side of the app; let&rsquo;s go down this path and see where it leads.
+CommonJS modules don&rsquo;t work in the browser <span class=citation-ref><a href=#esModulesWebDev></a></span>.
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/#es-modules-vs-commonjs target=_blank rel=noopener>Earlier on
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, using ESM on the server turned out difficult. Hopefully, that
+doesn&rsquo;t me bite back now.</p><div class=comment-holder><div class=comment><p><code>npm i --save-dev @web/test-runner</code> added 186 packages! Guess that&rsquo;s on
+par for being able to run tests in a real browser. Its
+<a href="https://www.npmjs.com/package/@web/test-runner?activeTab=dependencies" target=_blank rel=noopener>deps
+page
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>lists 16, but seems like when we install a package, grand-dependencies
+blow up the count from 16 to 186?</p></div></div><h2 id=esm-vs-commonjs-modules>ESM vs. CommonJS Modules</h2><p><code>web-test-runner</code> failed with <code>SyntaxError: The requested module './index.js' does not provide an export named 'default'</code>. Debugging the
+test in the browser via <code>web-test-runner --watch</code> shows that the error
+is in <code>/node_modules/chai/index.mjs</code>&rsquo;s <code>import chai from './index.js';</code>
+statement. This is a more actionable error message; it&rsquo;s the result of
+using a CommonJS module, which is not supported by <code>web-test-runner</code> <span class=citation-ref><a href=#testRunner1439></a></span>. <code>npm install --save-dev chai@npm:@esm-bundle/chai</code> gets me the ESM version of <code>chai</code>, and the
+<code>web-test-runner</code> tests now pass.</p><p>Somewhere along the path, <code>ts-mocha</code> broke with <code>TypeError: Unknown file extension ".ts"</code>. Trying out <code>git bisect</code> <span class=citation-ref><a href=#gitBisect></a></span>. The
+recipe is basically:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-zsh data-lang=zsh>$ rm -rf node_modules <span style=color:#f92672>&amp;&amp;</span> rm -rf dist <span style=color:#f92672>&amp;&amp;</span> rm ./tsconfig.tsbuildinfo
+$ npm install <span style=color:#f92672>&amp;&amp;</span> npm run build <span style=color:#f92672>&amp;&amp;</span> npm run test:server
+</code></pre></div><p>The server-side tests broke after <code>npm install --save chai@npm:@esm-bundle/chai</code>. <span class=citation-ref><a href=#SO71378840></a></span>notes that this
+Mocha/TS-node error occurs whenever any of your dependencies are ES6
+modules, but your TypeScript target is not. Ah, the
+<code>chai@npm:@esm-bundle/chai</code> syntax given by <code>@esm-bundle/chai</code>&rsquo;s NPM
+page installs it as an alias to <code>chai</code> and that&rsquo;s why the server-side
+tests error out <span class=citation-ref><a href=#NPMInstall></a></span>. In this case, <code>npm install --save-dev @esm-bundle/chai</code> is sufficient as we can use <code>chai</code> in the
+server tests, and <code>@esm-bundle/chai</code> in the client-side tests.</p><p>Even better, <code>@open-wc/testing</code> (which we&rsquo;m using to test web components)
+exposes <code>chai</code> as an ESM, and comes with useful plugins:</p><ul><li><code>@open-wc/semantic-dom-diff</code> for dom tree / snapshot testing</li><li><code>@open-wc/chai-a11y-axe</code> for a11y testing</li><li><code>chai-dom</code> for dom testing</li></ul><p>No need to install <code>@esm-bundle/chai</code> separately. <span class=citation-ref><a href=#openWCTesting></a></span></p><h2 id=e2e-testing>E2E Testing</h2><p>How can we test an E2E scenario like being able to edit a card?
+<code>web-test-runner</code> spins up an actual browser. Invoking UI that
+communicates with the server does result in an HTTP request.</p><p><code>web-test-runner.config.mjs</code> supports mocking out resources through
+<code>@web/dev-server-import-maps</code>, e.g., swapping out <code>/src/my-module.js</code>
+for a <code>/mocks/my-module.js</code> which avoids any interaction with the
+server. <span class=citation-ref><a href=#testRunnerMocking></a></span></p><p>However, we have a mono-repo and can run the actual server, albeit with
+a test database, for the tests. <span class=citation-ref><a href=#start-server-and-test></a></span>is
+the top search hit for <code>run local server in npm test</code>, and its
+description matches what we want: starts server, waits for URL, then
+runs test command; when the tests end, shuts down server.</p><p>Suppose the server starts and is listening on <code>http://localhost:5000</code>.
+<code>web-test-runner</code> will also start up a dev server at port <code>8000</code> by
+default. However, this doesn&rsquo;t match the server that is using <code>:5000</code>.
+If we specify <code>--port 5000</code> to <code>web-test-runner</code>, then it errors out
+with <code>EADDRINUSE</code>. Can we avoid spinning up a dev server, and instead
+use the server from <span class=citation-ref><a href=#start-server-and-test></a></span>?</p><p><code>web-test-runner</code> supports a <code>server: Server</code> entry <span class=citation-ref><a href=#testRunnerConfig></a></span>. Presumably, <code>Server</code> is the type that comes from
+Node <span class=citation-ref><a href=#nodeHTTPServer></a></span>, and this should be compatible with the
+<code>Server</code> returned by Express&rsquo;s <code>listen</code> method <span class=citation-ref><a href=#express-serve-static-core></a></span>. Can I point <code>server</code> to the result from
+<code>app.listen()</code> where <code>app</code> is imported from <code>src/server.ts</code>? Nope, the
+imports do not work out between the client-side ESM and server-side
+CommonJS.</p><p>If <code>web-test-runner</code> will spin up a dev server, then maybe we can use
+the <code>middleware: Middleware[]</code> config to rewrite requests from <code>:8000</code>
+to <code>:5000</code>? <span class=citation-ref><a href=#testRunnerConfig></a></span><span class=citation-ref><a href=#devServerMiddleware></a></span>Even after rewriting a URL like <code>/trpc/searchPublicCards</code> to
+<code>http://localhost:5000/trpc/searchPublicCards</code>, the request still 404s
+out. Navigating to <code>http://localhost:5000/trpc/searchPublicCards</code> in the
+browser brought up by <code>web-test-runner</code>&rsquo;s <code>--watch</code> mode succeeds
+though. This might be because in a direct navigation the request header
+has <code>localhost:5000</code> as the <code>host</code>, but in the test, the host is
+<code>localhost:4999</code>; we&rsquo;re veering into CORS territory. Changing the
+configuration of the app&rsquo;s server for the sake of testing seems like an
+overkill. Not to mention, I&rsquo;d still need a more guaranteed way of
+obtaining the app server&rsquo;s URL.</p><p>Back to <span class=citation-ref><a href=#testRunnerMocking></a></span>, how much of <code>src/trpc.ts</code> do we
+need to mock? Not much to get benefits; a piecemeal approach works.
+Mocking <code>trpc.searchPublicCards.query</code> is enough to get me testing the
+<code>search-bar</code> component extensively.</p><p>Can we also add snapshot testing for simple pixel-by-pixel comparisons?
+<code>@web/test-runner</code> with <code>mocha</code> supports snapshot testing via the
+<code>@open-wc/semantic-dom-diff</code> package <span class=citation-ref><a href=#semantic-dom-diff></a></span>.
+<code>@web/test-runner-commands</code> supports commands like <code>saveSnapshot</code> and
+<code>compareSnapshot</code>. <span class=citation-ref><a href=#test-runner-commands></a></span></p><p>Why is that <code>await expect(searchBar).shadowDom.to.equalSnapshot();</code>
+fails with <code>Failed to fetch dynamically imported module</code>? Navigating to
+the link in question shows a file of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-js data-lang=js><span style=color:#75715e>/* @web/test-runner snapshot v1 */</span>
+<span style=color:#00a8c8>export</span> <span style=color:#00a8c8>const</span> <span style=color:#75af00>snapshots</span> <span style=color:#f92672>=</span> <span style=color:#111>{};</span>
+
+<span style=color:#75715e>/* 0.6734464157701581 */</span>
+</code></pre></div><p>The browser has the error message:</p><blockquote><p>Failed to load module script: Expected a JavaScript module script but
+the server responded with a MIME type of &ldquo;text/plain&rdquo;. Strict MIME type
+checking is enforced for module scripts per HTML spec.</p></blockquote><p>Why would the dev server mark the snapshots module as <code>text/plain</code>?
+There is an open GitHub thread on others encountering this issue. <span class=citation-ref><a href=#modernWeb2127></a></span>Posted a question in the Discord channel linked
+from
+<a href=https://modern-web.dev/discover/slack/ target=_blank rel=noopener>modern-web.dev
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=testingLit>Testing – Lit<i>.</i></cite>
+<a href=https://lit.dev/docs/tools/testing/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WebTestRunner>Web Test Runner: Modern Web<i>.</i></cite>
+<a href=https://modern-web.dev/docs/test-runner/overview/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modern-web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>modern-web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WebDriverIO>WebdriverIO · Next-gen browser and mobile automation test framework for Node.js | WebdriverIO<i>.</i></cite>
+<a href=https://webdriver.io/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=webdriver.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>webdriver.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=esModulesWebDev>Going Buildless: ES Modules: Modern Web<i>.</i></cite>
+<a href=https://modern-web.dev/guides/going-buildless/es-modules/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modern-web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>modern-web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=testRunner1439>[@web/test-runner] cannot import all npm packages · Issue #1439 · modernweb-dev/web<i>.</i></cite>
+<a href=https://github.com/modernweb-dev/web/issues/1439 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=gitBisect>Git - git-bisect Documentation<i>.</i></cite>
+<a href=https://git-scm.com/docs/git-bisect target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=git-scm.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>git-scm.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=SO71378840>typescript - ts-node and mocha 'TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension '.ts' error even with 'ts-node/esm' loader and CommonJS modules<i>.</i></cite>
+<a href=https://stackoverflow.com/questions/71378840/ts-node-and-mocha-typeerror-err-unknown-file-extension-unknown-file-extensio target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href=https://stackoverflow.com/a/76524534 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=NPMInstall>npm-install | npm Docs<i>.</i></cite>
+<a href=https://docs.npmjs.com/cli/v8/commands/npm-install target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=docs.npmjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>docs.npmjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=openWCTesting>Testing: Testing Package: Open Web Components<i>.</i></cite>
+<a href=https://open-wc.org/docs/testing/testing-package/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=open-wc.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>open-wc.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=testRunnerMocking>Writing Tests: Mocking: Modern Web<i>.</i></cite>
+<a href=https://modern-web.dev/docs/test-runner/writing-tests/mocking/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modern-web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>modern-web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=start-server-and-test>start-server-and-test - npm<i>.</i></cite>
+<a href=https://www.npmjs.com/package/start-server-and-test target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.npmjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.npmjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 22, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=testRunnerConfig>Test Runner: CLI and Configuration: Modern Web<i>.</i></cite>
+<a href=https://modern-web.dev/docs/test-runner/cli-and-configuration/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modern-web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>modern-web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=nodeHTTPServer>HTTP | Node.js v20.15.0 Documentation<i>.</i></cite>
+<a href=https://nodejs.org/docs/v20.15.0/api/http.html#class-httpserver target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=nodejs.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>nodejs.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=express-serve-static-core>@types/express-serve-static-core - npm<i>.</i></cite>
+<a href="https://www.npmjs.com/package/@types/express-serve-static-core?activeTab=code" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.npmjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.npmjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=devServerMiddleware>Dev Server: Middleware: Modern Web<i>.</i></cite>
+<a href=https://modern-web.dev/docs/dev-server/middleware/#rewriting-request-urls target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modern-web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>modern-web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=semantic-dom-diff>Testing: Semantic Dom Diff: Open Web Components<i>.</i></cite>
+<a href=https://open-wc.org/docs/testing/semantic-dom-diff/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=open-wc.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>open-wc.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=test-runner-commands>Test Runner: Commands: Modern Web<i>.</i></cite>
+<a href=https://modern-web.dev/docs/test-runner/commands/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modern-web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>modern-web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=modernWeb2127>Snapshot testing is not working · Issue #2127 · modernweb-dev/web<i>.</i></cite>
+<a href=https://github.com/modernweb-dev/web/issues/2127 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 23, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/database-layer/>&#171; Database Layer</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
