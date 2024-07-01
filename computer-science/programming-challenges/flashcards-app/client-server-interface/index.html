@@ -4,7 +4,7 @@ sendHTTPRequest(&#34;POST&#34;, &#34;/login/&#34;, {}) .then((_) => { window.loc
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/>Client/Server Interface</a></li></ul></nav><section><header><h1>Client/Server Interface</h1><p class=meta>Dated Apr 19, 2024;
-last modified on Fri, 19 Apr 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</a></li><li><a href=#typing-the-clientserver-interface>Typing the Client/Server Interface</a></li><li><a href=#augmenting-server-objects-client-side>Augmenting Server Objects Client Side</a></li><li><a href=#validating-inputs>Validating Inputs</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</h2><p>Right now, there&rsquo;s a pattern of doing:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75af00>sendHTTPRequest</span><span style=color:#111>(</span><span style=color:#d88200>&#34;POST&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;/login/&#34;</span><span style=color:#111>,</span> <span style=color:#111>{})</span>
+last modified on Fri, 19 Apr 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</a></li><li><a href=#typing-the-clientserver-interface>Typing the Client/Server Interface</a></li><li><a href=#augmenting-server-objects-client-side>Augmenting Server Objects Client Side</a></li><li><a href=#validating-inputs>Validating Inputs</a></li><li><a href=#cross-site-request-forgery-csrf-prevention>Cross-Site Request Forgery (CSRF) Prevention</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</h2><p>Right now, there&rsquo;s a pattern of doing:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75af00>sendHTTPRequest</span><span style=color:#111>(</span><span style=color:#d88200>&#34;POST&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;/login/&#34;</span><span style=color:#111>,</span> <span style=color:#111>{})</span>
   <span style=color:#111>.</span><span style=color:#75af00>then</span><span style=color:#111>((</span><span style=color:#75af00>_</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
       <span style=color:#111>window</span><span style=color:#111>.</span><span style=color:#75af00>location</span><span style=color:#111>.</span><span style=color:#75af00>href</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;/&#34;</span><span style=color:#111>;</span>
   <span style=color:#111>})</span>
@@ -133,7 +133,46 @@ needs to worry that <code>cardID</code> could be corrupted.</p><p>Typical Expres
 the &ldquo;parse, don&rsquo;t validate&rdquo; approach because the type information is not
 inferrable from the <code>request</code> object. For this, we fallback to assuming
 that the validation middleware was applied, and it&rsquo;s safe to trust
-<code>request.body</code>.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=status304MDN>304 Not Modified - HTTP | MDN<i>.</i></cite>
+<code>request.body</code>.</p><h2 id=cross-site-request-forgery-csrf-prevention>Cross-Site Request Forgery (CSRF) Prevention</h2><p>In a CSRF attack, the attacker wants the victim to perform
+state-changing requests unknowingly. Suppose Alice is logged into
+<code>bank.com</code> in her browser. To send money to Bob, the request is of the
+form <code>GET http://bank.com/transfer.do?acct=BOB&amount=100 HTTP/1.1</code>.
+Maria, the attacker, send Alice an email with an invisible picture:
+<code>&lt;img src="http://bank.com/transfer.do?acct=MARIA&amount=100000" width="0" height="0" border="0"></code>. When Alice opens the email, the
+browser will try loading the image, thereby submitting the transfer
+request to <code>bank.com</code>, without Alice&rsquo;s knowledge. <span class=citation-ref><a href=#csrfOWASP></a></span></p><p>Token-based mitigation involves the server setting a CSRF token, which
+the client then echoes back. The server rejects the request if the
+echoed token is not valid. Because CSRF tokens are ephemeral, the chance
+that the token will still be valid when an attacker attempts a CSRF
+attack is reduced. Session-based tokens offer a good compromise between
+security and usability. Request-based tokens have usability concerns,
+e.g., breaking when the user uses the back button. <span class=citation-ref><a href=#csrfPreventionOWASP></a></span></p><p>The <code>lusca</code> package provides CSRF protection for Express apps. <span class=citation-ref><a href=#codeQLMissingTokenValidation></a></span><span class=citation-ref><a href=#lusca></a></span><code>lusca</code> docs were
+lacking as they showed how to configure CSRF protection on the server
+but not on the client, leaving me with <code>403</code> errors to handle.</p><p>One technique is to use <code>&lt;form></code> tags:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>form</span> <span style=color:#75af00>action</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/transfer.do&#34;</span> <span style=color:#75af00>method</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;post&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>input</span> <span style=color:#75af00>type</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;hidden&#34;</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_csrf&#34;</span> <span style=color:#75af00>value</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;OWY4NmQwODE4ODRjN2Q2NTlhMmZlYWEwYzU1YWQwMTVhM2JmNGYxYjJiMGI4MjJjZDE1ZDZMGYwMGEwOA==&#34;</span><span style=color:#111>&gt;</span>
+[...]
+<span style=color:#111>&lt;/</span><span style=color:#f92672>form</span><span style=color:#111>&gt;</span>
+</code></pre></div><p><span class=citation-ref><a href=#csrfPreventionOWASP></a></span>. This approach works well for forms
+rendered through <code>response.render</code>.</p><p>What about for <code>tRPC</code> endpoints? A breakpoint in
+<code>node_modules/lusca/lib/csrf.js</code> shows that the CSRF token is looked for
+in either <code>req.body["_csrf"]</code> or <code>req.headers["x-csrf-token"]</code>. <code>tRPC</code>
+sends payloads of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
+  <span style=color:#f92672>&#34;0&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
+    <span style=color:#f92672>&#34;_id&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;6682027e7c0aca290ed4ab4c&#34;</span><span style=color:#111>,</span>
+    <span style=color:#f92672>&#34;title&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Modified title&#34;</span><span style=color:#111>,</span>
+  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>&mldr; where <code>0</code> is a <code>tRPC</code> internal; the client code for the above call
+is something like <code>trpc.updateCard.mutate({_id, title})</code>. <code>tRPC</code>
+supports computing custom headers per request <span class=citation-ref><a href=#headerstRPC></a></span>.
+By setting the CSRF token in a <code>&lt;meta></code> element, and then reading that
+before issuing the <code>tRPC</code> call, we&rsquo;re able to have <code>tRPC</code> calls succeed.</p><p>What about testing? The client-side tests
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/#e2e-testing target=_blank rel=noopener>uses a dev server
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, which doesn&rsquo;t come with CSRF enforcement. The server-side uses an
+actual server instance, and it seems that each state-mutating test would
+need to pass a CSRF token. Maybe we can have a few tests that
+specifically check CSRF protections, and then disable CSRF for the rest
+of the tests?</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=status304MDN>304 Not Modified - HTTP | MDN<i>.</i></cite>
 <a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
 <i>developer.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=fetchXHRSO>javascript - Difference between fetch, ajax, and xhr - Stack Overflow<i>.</i></cite>
@@ -169,6 +208,21 @@ Nov 5, 2019.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=expressMiddleware>Using Express middleware<i>.</i></cite>
 <a href=https://expressjs.com/en/guide/using-middleware.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=expressjs.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>expressjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=csrfOWASP>Cross Site Request Forgery (CSRF) | OWASP Foundation<i>.</i></cite>
+<a href=https://owasp.org/www-community/attacks/csrf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=owasp.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=codeQLMissingTokenValidation>Missing CSRF middleware — CodeQL query help documentation<i>.</i></cite>
+<a href=https://codeql.github.com/codeql-query-help/javascript/js-missing-token-validation/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>codeql.github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=lusca>krakenjs/lusca: Application security for express apps.<i></i></cite>
+<a href=https://github.com/krakenjs/lusca#readme target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=csrfPreventionOWASP>Cross-Site Request Forgery Prevention - OWASP Cheat Sheet Series<i>.</i></cite>
+<a href=https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=cheatsheetseries.owasp.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>cheatsheetseries.owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=headerstRPC>Custom header | tRPC<i>.</i></cite>
+<a href=https://trpc.io/docs/client/headers target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=trpc.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>trpc.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li></ol></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/>&#171; Use of Local Storage</a>
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/>Of Builds and Bundlers &#187;</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
 <a href=/about>About</a>
