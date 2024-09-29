@@ -1,0 +1,116 @@
+<!doctype html><html lang=en><head><title>NBA 2K25: MyNBA | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="MyNBA is my favorite playing mode in NBA 2K. Starting out as the GM of the Seattle Supersonics in 1983, how well can I steer the franchise?
+Playing all 82 games per season would need \(82 \text{ games/season} \times 41 \text{ seasons} \times 20 \text{ min/game} \approx 47 \text{ days}\) to catch up to today&rsquo;s NBA and that&rsquo;s not accounting for the playoffs. Simulating games is the way to go; might help improve my understanding of the game...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/sports/>Sports</a></li><li class=active><a href=https://www.curiosities.dev/sports/nba2k-mynba/nba2k25-mynba/>NBA 2K25: MyNBA</a></li></ul></nav><section><header><h1>NBA 2K25: MyNBA</h1><p class=meta>Dated Aug 31, 2024;
+last modified on Sat, 28 Sep 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#reading-the-stats>Reading the Stats</a></li><li><a href=#the-road-so-far>The Road So Far</a></li><li><a href=#tips-and-tricks>Tips and Tricks</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>MyNBA is my favorite playing mode in NBA 2K. Starting out as the GM of the
+Seattle Supersonics in 1983, how well can I steer the franchise?</p><p>Playing all 82 games per season would need \(82 \text{ games/season}
+\times 41 \text{ seasons} \times 20 \text{ min/game} \approx 47 \text{
+days}\) to catch up to today&rsquo;s NBA and that&rsquo;s not accounting for the
+playoffs. Simulating games is the way to go; might help improve my understanding
+of the game.</p><h2 id=reading-the-stats>Reading the Stats</h2><p>Unlike the real NBA, MyNBA is a software program that runs on deterministic
+rules. While I can&rsquo;t control the outcome of each game as there is
+pseudo-randomness, it should be possible to intentionally win titles over the
+course of a couple seasons.</p><p><span class=citation-ref><a href=#Houde2021></a></span>is an undergrad senior project that tested 6 models
+(logistic regression, random forest, k-neighbors, support vector, gaussian naïve
+bayes, and XGBoost), and arrived at gaussian naïve bayes as the best performing
+one at \(65.1\%\) accuracy.</p><p><span class=citation-ref><a href=#Vaidya2019></a></span>ranked teams in various stats and used the differentials
+to infer which stats are more predictive of wins: <dfn>offensive rating</dfn>
+(estimated number of points scored per 100 possessions), <dfn>defensive
+rating</dfn> (estimated number of points conceded per 100 possessions),
+rebounds, 3pt percentage, field goal percentage, assist/turnover ratio, 3pt
+attempts, field goal attempts, and finally pace of play.</p><p><span class=citation-ref><a href=#Kandell2020></a></span>&rsquo;s logistic regression model claims \(70.37\%\)
+accuracy. It uses <dfn>z-score</dfn> or <dfn>standard score</dfn> (the number of
+standard deviations by which a data point is above or below the mean) <span class=citation-ref><a href=#wikiZScore></a></span>.</p><p>Initially, <span class=citation-ref><a href=#nbaPredictions538></a></span>used Elo ratings that depend on the
+final score of the game and home-court advantage, and carry over between games,
+giving a measure of &ldquo;form&rdquo; <span class=citation-ref><a href=#nbaEloRatings538></a></span>. However, Elo ratings
+are slow to pick up roster changes (e.g., injuries and trades), and so <span class=citation-ref><a href=#nbaPredictions538></a></span>augmented the prediction pipeline with talent ratings for
+each player weighted by the projected playing time.</p><p>In NBA 2K simulations, highly-rated players turn out on top, e.g., Jordan
+eventually dominates the league. However, analyzing player stats over time has a
+lot of manual data entry work which isn&rsquo;t that fun. 2K provides a box score that
+has several stats: PTS, FGM/FGA, 3PTM/3PTA, FTM/FTA, FAST_BREAK_PTS, PAINT_PTS,
+SECOND_CHANCE_PTS, BENCH_PTS, AST, OREB, DREB, STL, BLK, TO, BIGGEST_LEAD, and
+POSSESSION. Can these stats approximate the underlying player-dominated
+simulation to help win games more often than not?</p><p>What stats should I use? It seems that it should mostly be differentials:</p><ul><li><code>PTS</code> differential is the attribute that I&rsquo;m trying to predict.</li><li>How do I treat <code>FGM</code> and <code>FGA</code>? <span class=citation-ref><a href=#Vaidya2019></a></span>considers <code>FGM/FGA</code>
+vs. <code>FGA</code>. A <code>FGA</code> differential being significant would tell me if my team
+needs to shoot more shots, as <code>FG%</code> is more or less the same between teams. A
+significant <code>FGM</code> differential tells me that I should focus on inside shots
+for my team. A significant <code>FG%</code> would tell me that I need more quality shots,
+and not necessarily volume. Will have all 3 differentials in the dataset. Same
+reasoning applies for differentials in 3pt shots and free-throws.</li><li>Differentials for <code>FAST_BREAK_PTS</code>, <code>PAINT_PTS</code>, <code>SECOND_CHANCE_PTS</code>,
+<code>BENCH_PTS</code>, <code>OREB</code>, <code>DREB</code>, <code>STL</code>, and <code>BLK</code> seem straightforward to include
+in the dataset.</li><li><code>AST:TO</code> is frequently used in place of just <code>AST</code> or <code>TO</code>. There is some
+criticism that <code>AST:TO</code> is flawed because not all <code>TO</code> occur when trying to
+get an assist. Will use all 3 differentials to see if any is more predictive
+than the others.</li><li>While <code>BIGGEST_LEAD</code> might turn out predictive, it&rsquo;s not actionable for me as
+a team GM.</li><li>Maybe <code>POSSESSION</code> can be used to compute proxies for for <code>OFF_RATING</code> and
+<code>DEF_RATING</code>, which <span class=citation-ref><a href=#Vaidya2019></a></span>found predictive?</li><li><code>FATIGUE</code> can be approximated by counting the days since the previous game. I
+don&rsquo;t think 2K takes geographical distance into account for fatigue; I&rsquo;ve had
+CLE and PHX games back-to-back, which would be brutal in the real world.</li></ul><p>Using <code>scikit.linear_model</code>&rsquo;s <code>BayesianRidge</code> regression model to identify
+coefficients for the various stats, which should help me focus my team&rsquo;s focus
+while on a budget.</p><h2 id=the-road-so-far>The Road So Far</h2><p>Went 6-5 in the 1986-87 season.</p><details><summary>Coefficients for the 1986-1987 season</summary><table><thead><tr><th></th><th>Feature</th><th>Coefficient</th></tr></thead><tbody><tr><td>1</td><td>PAINT_PTS</td><td>1.8149</td></tr><tr><td>2</td><td>3PTA</td><td>-1.7272</td></tr><tr><td>3</td><td>OFFENSIVE_RATING</td><td>1.5864</td></tr><tr><td>4</td><td>FGM_PER_FGA</td><td>1.4986</td></tr><tr><td>5</td><td>DEFENSIVE_RATING</td><td>-1.4942</td></tr><tr><td>6</td><td>FGM</td><td>1.4364</td></tr><tr><td>7</td><td>DEF_REB</td><td>1.3849</td></tr><tr><td>8</td><td>FAST_BREAK_PTS</td><td>1.3170</td></tr><tr><td>9</td><td>SECOND_CHANCE_PTS</td><td>1.2708</td></tr><tr><td>10</td><td>BLK</td><td>1.2390</td></tr><tr><td>11</td><td>BIGGEST_LEAD</td><td>1.2381</td></tr><tr><td>12</td><td>TEAM_FOULS</td><td>-1.1239</td></tr><tr><td>13</td><td>OFF_REB</td><td>-1.1225</td></tr><tr><td>14</td><td>OPP_BIGGEST_LEAD</td><td>-1.1004</td></tr><tr><td>15</td><td>ASSISTS</td><td>0.8605</td></tr><tr><td>16</td><td>TO</td><td>-0.8133</td></tr><tr><td>17</td><td>IS_HOME</td><td>0.7866</td></tr><tr><td>18</td><td>3PTM_PER_3PTA</td><td>0.6460</td></tr><tr><td>19</td><td>FTM</td><td>0.5923</td></tr><tr><td>20</td><td>3PTM</td><td>-0.5755</td></tr><tr><td>21</td><td>ASSISTS_PER_TO</td><td>0.4268</td></tr><tr><td>22</td><td>FTM_PER_FTA</td><td>0.4128</td></tr><tr><td>23</td><td>FTA</td><td>0.3483</td></tr><tr><td>24</td><td>DAYS_SINCE_LAST_GAME</td><td>-0.3399</td></tr><tr><td>25</td><td>FGA</td><td>-0.0543</td></tr><tr><td>26</td><td>BENCH_PTS</td><td>-0.0492</td></tr><tr><td>27</td><td>STL</td><td>0.0214</td></tr></tbody></table></details><p><code>PAINT_PTS</code> is my strongest predictor, probably because <code>CLE CUT 2 LOOP SWING</code>
+is my money play: Jack Sikma (C) sets good screens, and either Tom Chambers (PF)
+or Xavier McDaniel (SF) come flying in for the alley-oop. <code>3PTA</code> being the next
+predictor for losses is a symptom of me trying to shoot my way out of an
+impending loss, and evidently, it seldom works. <code>OFFENSIVE_RATING</code> and
+<code>DEFENSIVE_RATING</code> being 3rd and 5th support <span class=citation-ref><a href=#Vaidya2019></a></span>&rsquo;s findings
+but not sure how to make them actionable. <code>FGM_PER_FGA</code> being 4th while <code>FGM</code>
+being 6th implies that accuracy matters more than volume; or maybe that teams
+have similar number of attempts and thus my pace is fine but the shot selection
+needs to be smarter.</p><h2 id=tips-and-tricks>Tips and Tricks</h2><p>Trade Finder is great for shedding long-term bad contracts and getting 1st round
+picks in exchange for role players. Trade Finder honors cap rules, no trade
+clauses, untouchables. For stars, you&rsquo;re better off proposing a trade yourself.
+<span class=citation-ref><a href=#rNBA2k1490Plus></a></span></p><p>Draft classes are not 100% accurate. Other than some top players that 2K has
+rights to, the rest of the class is auto-generated. Community-generated draft
+classes bridge that gap. <span class=citation-ref><a href=#rNBA2kDraftClasses></a></span></p><p>There was once a bug that at the end of the regular season, all 1st round picks
+were of equal value. Trading picks with the bottom few teams would be
+disproportionately rewarding. <span class=citation-ref><a href=#rNBA2kEndSeasonBug></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Houde2021>Predicting the Outcome of NBA<i>.</i></cite>
+Mathew Houde.
+<a href="https://digitalcommons.bryant.edu/cgi/viewcontent.cgi?article=1000&context=honors_data_science" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=digitalcommons.bryant.edu" loading=lazy aria-hidden=true width=16 height=16>
+<i>digitalcommons.bryant.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 7, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Vaidya2019>Which NBA Statistics Actually Translate to Wins?<i></i></cite>
+Chinmay Vaidya.
+<a href=https://www.watchstadium.com/posts/which-nba-statistics-actually-translate-to-wins-07-13-2019 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.watchstadium.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.watchstadium.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 7, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Kandell2020>JakeKandell/NBA-Predict: Predicts Daily NBA Games Using a Logistic Regression Model<i>.</i></cite>
+Jake Kandell; Patrick McDonagh.
+<a href=https://github.com/JakeKandell/NBA-Predict target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 7, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=wikiZScore>Standard score - Wikipedia<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Standard_score target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 7, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=nbaPredictions538>How Our NBA Predictions Work | FiveThirtyEight<i>.</i></cite>
+<a href=https://fivethirtyeight.com/methodology/how-our-nba-predictions-work/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=fivethirtyeight.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>fivethirtyeight.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Apr 12, 2023.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 7, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=nbaEloRatings538>How We Calculate NBA Elo Ratings | FiveThirtyEight<i>.</i></cite>
+<a href=https://fivethirtyeight.com/features/how-we-calculate-nba-elo-ratings/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=fivethirtyeight.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>fivethirtyeight.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 7, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=rNBA2k1490Plus>Why don’t 90+ overall players appear in the trade finder in MyLeague? : NBA2k<i>.</i></cite>
+<a href=https://www.reddit.com/r/NBA2k/comments/14j2j1o/why_dont_90_overall_players_appear_in_the_trade/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 2, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=rNBA2kEndSeasonBug>InterestingAd5732 comments on How do i acquire the 1st overall pick in nba 2k23 mynba easily?<i></i></cite>
+<a href=https://www.reddit.com/r/NBA2k/comments/yjpbwf/how_do_i_acquire_the_1st_overall_pick_in_nba_2k23/iupvzp3/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 2, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=rNBA2kDraftClasses>2K's Poor Draft Classes are game-breaking for MyNBA Eras. : NBA2k<i>.</i></cite>
+<a href=https://www.reddit.com/r/NBA2k/comments/xa2mqa/2ks_poor_draft_classes_are_gamebreaking_for_mynba/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 2, 2024.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Houde-Mathew>Houde, Mathew</a>
+<a href=/cited-authors/Kandell-Jake>Kandell, Jake</a>
+<a href=/cited-authors/McDonagh-Patrick>McDonagh, Patrick</a>
+<a href=/cited-authors/Vaidya-Chinmay>Vaidya, Chinmay</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/digitalcommons.bryant.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=digitalcommons.bryant.edu" loading=lazy aria-hidden=true width=16 height=16>
+digitalcommons.bryant.edu</a>
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org</a>
+<a href=/domains/fivethirtyeight.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=fivethirtyeight.com" loading=lazy aria-hidden=true width=16 height=16>
+fivethirtyeight.com</a>
+<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com</a>
+<a href=/domains/www.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+www.reddit.com</a>
+<a href=/domains/www.watchstadium.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.watchstadium.com" loading=lazy aria-hidden=true width=16 height=16>
+www.watchstadium.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/sports/2021-07-13-point-guard-journey/>&#171; On Becoming a Better Point Guard</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
