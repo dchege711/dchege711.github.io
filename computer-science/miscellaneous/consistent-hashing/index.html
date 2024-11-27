@@ -1,0 +1,39 @@
+<!doctype html><html lang=en><head><title>Consistent Hashing | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Consistent hashing makes me think of hashing without randomization. Why isn&rsquo;t every hash consistent by definition? For example, a map implementation would need consistent hashing lest it&rsquo;s inaccurate when searching for stored values. Or is consistent hashing a tradeoff between collision-resistance and speed?
+  Web Caching Was the original motivation for consistent hashing. With a web cache, if a browser requests a URL that is not in the cache, the page is downloaded from the server, and the result is sent to both the browser and the cache...."><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/miscellaneous/>Miscellaneous</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/miscellaneous/consistent-hashing/>Consistent Hashing</a></li></ul></nav><section><header><h1>Consistent Hashing</h1><p class=meta>Dated Nov 27, 2024;
+last modified on Wed, 27 Nov 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#web-caching>Web Caching</a></li><li><a href=#simple-solution-using-hashing>Simple Solution Using Hashing</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>Consistent hashing makes me think of hashing without randomization. Why isn&rsquo;t
+every hash consistent by definition? For example, a map implementation would
+need consistent hashing lest it&rsquo;s inaccurate when searching for stored values.
+Or is consistent hashing a tradeoff between collision-resistance and speed?</p></div></div><h2 id=web-caching>Web Caching</h2><p>Was the original motivation for consistent hashing. With a web cache, if a
+browser requests a URL that is not in the cache, the page is downloaded from the
+server, and the result is sent to both the browser and the cache. On a second
+request, the page is served from the cache without contacting the server. <span class=citation-ref><a href=#CS168-01></a></span></p><p>Web caching improves the end user&rsquo;s response time. It also reduces network
+traffic overall. <span class=citation-ref><a href=#CS168-01></a></span></p><p>While giving each user their own cache is good, one could go further and
+implement a web cache that is shared by many users, e.g., all users on a campus
+network. These users will enjoy many more cache hits. Akamai&rsquo;s goal was to turn
+this into a viable technology. <span class=citation-ref><a href=#CS168-01></a></span></p><p>Caching pages for a large number of users needs more storage than is available
+on one machine. Suppose the shared cache is spread over \(N\) machines; where
+should we look for a cached copy of <code>www.contoso.com</code>? <span class=citation-ref><a href=#CS168-01></a></span></p><h2 id=simple-solution-using-hashing>Simple Solution Using Hashing</h2><p>A <dfn>hash function</dfn>, \(h\) maps elements of a (usually super-big)
+universe \(U\), like URLs, to &ldquo;buckets&rdquo;, such as 32-bit values. A good
+\(h\):</p><ul><li>Is easy to compute, e.g., a few arithmetic operations and maybe a mod.</li><li>Behaves like a totally random function, spreading out data evenly without
+notable correlations across the possible buckets.</li></ul><p>Designing good hash functions isn&rsquo;t easy, but can be treated like a solved
+problem. In practice, it&rsquo;s common to use the MD5 hash function. <span class=citation-ref><a href=#CS168-01></a></span></p><p>If we have \(n\) caches named \({0, 1, 2, &mldr;, n-1}\), how about storing
+the web page with URL \(x\) at the cache server named</p><p>$$ h(x) \mod{n} $$</p><p>In practice, \(n\) is not fixed, e.g., web caches can be added or removed due
+to business or network conditions. With the aforementioned approach, changing
+\(n\) forces almost all objects to relocate. Moving data between machines
+across a network is expensive, especially when \(n\) is prone to change. <span class=citation-ref><a href=#CS168-01></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CS168-01>CS168: The Modern Algorithmic Toolbox<i>.</i>
+Lecture #1: Introduction and Consistent Hashing<i>.</i></cite>
+Tim Roughgarden; Gregory Valiant.
+<a href=https://web.stanford.edu/class/cs168/l/l1.pdf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=web.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
+<i>web.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+Apr 2, 2024.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/cs168>#cs168</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Roughgarden-Tim>Roughgarden, Tim</a>
+<a href=/cited-authors/Valiant-Gregory>Valiant, Gregory</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/web.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=web.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
+web.stanford.edu</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/miscellaneous/2020-07-05-code-smells-and-hygiene/>&#171; Of Code Smells and Hygiene</a></footer></section></div><footer><a href=mailto:d.chege711@gmail.com>Email</a>
+<a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
