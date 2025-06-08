@@ -1,12 +1,197 @@
-<!doctype html><html lang=en><head><title>How I Learned to Stop Worrying and Love LLMs in IDEs | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="My work is primarily in Microsoft&rsquo;s ecosystem, so learning Copilot usage in VS Code is pretty important. If not for my own productivity gains, then for having knowledgeable conversations with coworkers about using LLMs as a SWE.
-  Customizing Copilot Custom Instructions Choice of Language Models Add Tools for Agentic Modes Copilot can also connect MCP-compatible servers to agentic workflows, e.g., GitHub&rsquo;s MCP server offers tools to list repositories, create PRs, manage issues, etc...."><meta property="og:title" content="How I Learned to Stop Worrying and Love LLMs in IDEs"><meta property="og:description" content="My work is primarily in Microsoft&rsquo;s ecosystem, so learning Copilot usage in VS Code is pretty important. If not for my own productivity gains, then for having knowledgeable conversations with coworkers about using LLMs as a SWE.
-  Customizing Copilot Custom Instructions Choice of Language Models Add Tools for Agentic Modes Copilot can also connect MCP-compatible servers to agentic workflows, e.g., GitHub&rsquo;s MCP server offers tools to list repositories, create PRs, manage issues, etc...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/writing-code-with-llms/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+<!doctype html><html lang=en><head><title>Copilot in VS Code | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="My work is primarily in Microsoft&rsquo;s ecosystem, so learning Copilot usage in VS Code is pretty important. If not for my own productivity gains, then for having knowledgeable conversations with coworkers about using LLMs as a SWE.
+  Copilot-Powered Scenarios AI Code Completions I&rsquo;ve found code completions more distracting than useful. Probably because I already have an idea of what I want to type, and Copilot&rsquo;s hallucinations slow me down...."><meta property="og:title" content="Copilot in VS Code"><meta property="og:description" content="My work is primarily in Microsoft&rsquo;s ecosystem, so learning Copilot usage in VS Code is pretty important. If not for my own productivity gains, then for having knowledgeable conversations with coworkers about using LLMs as a SWE.
+  Copilot-Powered Scenarios AI Code Completions I&rsquo;ve found code completions more distracting than useful. Probably because I already have an idea of what I want to type, and Copilot&rsquo;s hallucinations slow me down...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/writing-code-with-llms/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
-<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/writing-code-with-llms/>How I Learned to Stop Worrying and Love LLMs in IDEs</a></li></ul></nav><section><header><h1>How I Learned to Stop Worrying and Love LLMs in IDEs</h1><p class=meta>Dated Jun 1, 2025;
-last modified on Sat, 07 Jun 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#customizing-copilot>Customizing Copilot</a><ul><li><a href=#custom-instructions>Custom Instructions</a></li><li><a href=#choice-of-language-models>Choice of Language Models</a></li><li><a href=#add-tools-for-agentic-modes>Add Tools for Agentic Modes</a></li><li><a href=#model-context-protocol-mcp-support>Model Context Protocol (MCP) Support</a></li></ul></li><li><a href=#copilot-powered-scenarios>Copilot-Powered Scenarios</a><ul><li><a href=#ai-code-completions>AI Code Completions</a></li><li><a href=#natural-language-chat>Natural Language Chat</a><ul><li><a href=#adding-context-to-chat>Adding Context to Chat</a></li><li><a href=#making-chat-an-expert-in-your-workspace>Making Chat an Expert in Your Workspace</a></li></ul></li><li><a href=#smart-actions>Smart Actions</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p>My work is primarily in Microsoft&rsquo;s ecosystem, so learning Copilot usage in VS
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/writing-code-with-llms/>Copilot in VS Code</a></li></ul></nav><section><header><h1>Copilot in VS Code</h1><p class=meta>Dated Jun 1, 2025;
+last modified on Sun, 08 Jun 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#copilot-powered-scenarios>Copilot-Powered Scenarios</a><ul><li><a href=#ai-code-completions>AI Code Completions</a></li><li><a href=#natural-language-chat>Natural Language Chat</a><ul><li><a href=#adding-context-to-chat>Adding Context to Chat</a></li><li><a href=#making-chat-an-expert-in-your-workspace>Making Chat an Expert in Your Workspace</a></li></ul></li><li><a href=#smart-actions>Smart Actions</a></li></ul></li><li><a href=#customizing-copilot>Customizing Copilot</a><ul><li><a href=#reusable-instructions-and-prompts>Reusable Instructions and Prompts</a></li><li><a href=#choice-of-language-models>Choice of Language Models</a></li><li><a href=#add-tools-for-agentic-modes>Add Tools for Agentic Modes</a></li><li><a href=#model-context-protocol-mcp-support>Model Context Protocol (MCP) Support</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p>My work is primarily in Microsoft&rsquo;s ecosystem, so learning Copilot usage in VS
 Code is pretty important. If not for my own productivity gains, then for having
-knowledgeable conversations with coworkers about using LLMs as a SWE.</p></div></div><h2 id=customizing-copilot>Customizing Copilot</h2><h3 id=custom-instructions>Custom Instructions</h3><h3 id=choice-of-language-models>Choice of Language Models</h3><h3 id=add-tools-for-agentic-modes>Add Tools for Agentic Modes</h3><p>Copilot can also connect MCP-compatible servers to agentic workflows, e.g.,
+knowledgeable conversations with coworkers about using LLMs as a SWE.</p></div></div><h2 id=copilot-powered-scenarios>Copilot-Powered Scenarios</h2><h3 id=ai-code-completions>AI Code Completions</h3><div class=priors-holder><div class=priors><p>I&rsquo;ve found code completions more distracting than useful. Probably because I
+already have an idea of what I want to type, and Copilot&rsquo;s hallucinations slow
+me down. I&rsquo;ve turned this off in my IDE.</p></div></div><details><summary>Start typing in the editor, and Copilot provides code suggestions.
+Can accept either the next word or line. Credits: code.visualstudio.com.</summary><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-code-completion-multiple.png alt="Start typing in the editor, and Copilot provides code suggestions.
+  Can accept either the next word or line. Credits: code.visualstudio.com." loading=lazy><figcaption>Start typing in the editor, and Copilot provides code suggestions.
+Can accept either the next word or line. Credits: code.visualstudio.com.</figcaption></figure></details><p><span class=citation-ref><a href=#CopilotCodeCompletions></a></span></p><div class=comment-holder><div class=comment><p>&ldquo;Completions&rdquo; refers to the LLM &ldquo;completing the statistical probability model of
+a response&rdquo;. &ldquo;Completion&rdquo; models finish whatever input was provided, but they&rsquo;re
+largely extinct. Chat Markup Language (ChatML) is now the dominant paradigm,
+where there is a system message, and a sequence of user and assistant messages,
+e.g.,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>&lt;|im_start|&gt;system
+Assistant is an intelligent chatbot designed to help users answer their tax
+related questions. 
+
+Instructions:
+- Only answer questions related to taxes. 
+- If you&#39;re unsure of an answer, you can say &#34;I don&#39;t know&#34; or &#34;I&#39;m not sure&#34;
+  and recommend users go to the IRS website for more information.
+&lt;|im_end|&gt;
+&lt;|im_start|&gt;user
+When are my taxes due?
+&lt;|im_end|&gt;
+&lt;|im_start|&gt;assistant
+</code></pre></div><p>LLMs now frame the input inside a ChatML structure, and then respond. It&rsquo;s not
+as simple as completing the input. The more accurate term for this is
+&ldquo;responses&rdquo; and not &ldquo;completions&rdquo;. <span class=citation-ref><a href=#Fgreco2025></a></span><span class=citation-ref><a href=#ChatMLAzureOpenAI></a></span></p></div></div><div class=comment-holder><div class="comment open-comment"><p>The tab-to-accept UI provides a good avenue for collecting metrics. For
+instance, what portion of suggestions were accepted by developers? Are some
+models noticeably better than others?</p><p>Where can I find this data? Presumably, VS Code guards it, and doesn&rsquo;t make it
+publicly available.</p></div></div><details><summary>You can use code comments to hint what code Copilot should generate.
+I find the inline-chat UX more ergonomic because I do not need to come back
+and delete comments that simply rehash the code. Credits:
+code.visualstudio.com</summary><figure><img src=/img/computer-science/llms/coding-with-llms/ts-suggest-code-comment.png alt="You can use code comments to hint what code Copilot should generate.
+  I find the inline-chat UX more ergonomic because I do not need to come back
+  and delete comments that simply rehash the code. Credits:
+  code.visualstudio.com" loading=lazy><figcaption>You can use code comments to hint what code Copilot should generate.
+I find the inline-chat UX more ergonomic because I do not need to come back
+and delete comments that simply rehash the code. Credits:
+code.visualstudio.com</figcaption></figure></details><p><span class=citation-ref><a href=#CopilotCodeCompletions></a></span></p><details><summary>With inline chat, you can iterate with multiple prompts before
+acccepting a suggestion. Credits: code.visualstudio.com</summary><figure><img src=/img/computer-science/llms/coding-with-llms/fibonacci-third.png alt="With inline chat, you can iterate with multiple prompts before
+  acccepting a suggestion. Credits: code.visualstudio.com" loading=lazy><figcaption>With inline chat, you can iterate with multiple prompts before
+acccepting a suggestion. Credits: code.visualstudio.com</figcaption></figure></details><p><span class=citation-ref><a href=#CopilotPromptEngineering></a></span></p><details><summary>Next Edit Suggestions capture logical flows of code edits. For
+example, changing the class name from Point to Point3D makes Copilot predict
+that a z coordinate needs to be added, the toString() and distanceTo() methods
+need to updated, and so forth. Credits: code.visualstudio.com.</summary><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-next-edit-suggestions.jpg alt="Next Edit Suggestions capture logical flows of code edits. For
+  example, changing the class name from Point to Point3D makes Copilot predict
+  that a z coordinate needs to be added, the toString() and distanceTo() methods
+  need to updated, and so forth. Credits: code.visualstudio.com." loading=lazy><figcaption>Next Edit Suggestions capture logical flows of code edits. For
+example, changing the class name from Point to Point3D makes Copilot predict
+that a z coordinate needs to be added, the toString() and distanceTo() methods
+need to updated, and so forth. Credits: code.visualstudio.com.</figcaption></figure></details><p><span class=citation-ref><a href=#CopilotCodeCompletions></a></span></p><h3 id=natural-language-chat>Natural Language Chat</h3><details><summary>Chat view in VS Code. Other UI surfaces include editor inline chat,
+terminal inline chat, and quick chat. Credits: code.visualstudio.com.</summary><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-chat-view.png alt="Chat view in VS Code. Other UI surfaces include editor inline chat,
+  terminal inline chat, and quick chat. Credits: code.visualstudio.com." loading=lazy><figcaption>Chat view in VS Code. Other UI surfaces include editor inline chat,
+terminal inline chat, and quick chat. Credits: code.visualstudio.com.</figcaption></figure></details><p>The Chat View is designed to be a multi-turn conversation, where the history of
+the conversation is used as context for the current prompt. You don&rsquo;t need to
+repeat the context when asking follow-up questions. <span class=citation-ref><a href=#CopilotChatOverview></a></span></p><p>Chat has different modes:</p><ul><li><strong>Ask</strong>: Understand how a piece of code works, brainstorm design ideas, etc.</li><li><strong>Edit</strong>: Apply edits across multiple files, e.g., implementing a new feature,
+fixing a bug, refactoring code.</li><li><strong>Agent</strong>: Autonomously implement high-level requirements with minimal
+guidance, invoking tools for specialized tasks, iterating to resolve issues.</li></ul><p><span class=citation-ref><a href=#CopilotChatOverview></a></span></p><details><summary>The response from chat mode can contain code blocks (or even
+scaffolding for generating a new workspace) that can be applied to your
+codebase. Ask mode does not imply read-only. Credits: code.visualstudio.com.</summary><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-chat-view-code-block-actions.png alt="The response from chat mode can contain code blocks (or even
+  scaffolding for generating a new workspace) that can be applied to your
+  codebase. Ask mode does not imply read-only. Credits: code.visualstudio.com." loading=lazy><figcaption>The response from chat mode can contain code blocks (or even
+scaffolding for generating a new workspace) that can be applied to your
+codebase. Ask mode does not imply read-only. Credits: code.visualstudio.com.</figcaption></figure></details><details><summary>Edit mode gives you a chance to accept/discard edits (with a setting
+for auto-accepting edits after T time). Can also accept/discard edits on a
+per-file basis. Credits: code.visualstudio.com.</summary><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-edits-changed-files-full.png alt="Edit mode gives you a chance to accept/discard edits (with a setting
+  for auto-accepting edits after T time). Can also accept/discard edits on a
+  per-file basis. Credits: code.visualstudio.com." loading=lazy><figcaption>Edit mode gives you a chance to accept/discard edits (with a setting
+for auto-accepting edits after T time). Can also accept/discard edits on a
+per-file basis. Credits: code.visualstudio.com.</figcaption></figure></details><details><summary>Agent mode allows adding tools that can be used to satisfy the query.
+Before tool invocation, one needs to approve (there is a setting to
+auto-approve a certain tool indefinitely, or for the current session, or only
+for remote environments). The accept/discard UI is similar to that of Edit
+mode. Credits: code.visualstudio.com.</summary><figure><img src=/img/computer-science/llms/coding-with-llms/agent-mode-select-tools.png alt="Agent mode allows adding tools that can be used to satisfy the query.
+  Before tool invocation, one needs to approve (there is a setting to
+  auto-approve a certain tool indefinitely, or for the current session, or only
+  for remote environments). The accept/discard UI is similar to that of Edit
+  mode. Credits: code.visualstudio.com." loading=lazy><figcaption>Agent mode allows adding tools that can be used to satisfy the query.
+Before tool invocation, one needs to approve (there is a setting to
+auto-approve a certain tool indefinitely, or for the current session, or only
+for remote environments). The accept/discard UI is similar to that of Edit
+mode. Credits: code.visualstudio.com.</figcaption></figure></details><div class=comment-holder><div class=comment><p>To ease the verification part, some tools do have <code>--dry-run</code> options to see the
+blast area before committing to a course of action. For example,
+<a href="https://www.google.com/search?q=site%3Agit-scm.com+dry-run&oq=site%3Agit-scm.com+dry-run&gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIGCAEQRRg60gEINzExMWowajSoAgCwAgE&sourceid=chrome&ie=UTF-8" target=_blank rel=noopener>site:git-scm.com
+dry-run
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>surfaces commands like <code>commit</code>, <code>push</code>, <code>add</code>, <code>fetch</code>, <code>clean</code>, etc., which
+support <code>--dry-run</code> variations.</p><p>This seems like something that the LLM should be able to do, e.g., first perform
+the <code>--dry-run</code> variant and then prompt for consent for the effectual variant.
+It does run counter to the &ldquo;let the agent do its thing and then come back with
+results&rdquo; UX because one needs to babysit the LLM.</p></div></div><p>Choosing between edit mode and agent mode?</p><ul><li>Edit mode assumes that only code changes are needed and you know the precise
+scope. Agent mode autonomously determines relevant context, and invokes tools
+and terminal commands.</li><li>Agent mode might take longer as it involves multiple steps. Agent mode might
+cost more because of multiple requests to the backend.</li><li>Agent mode is self-healing because it evaluates the outcome and iterates on
+the results, e.g., running tests after a code edit.</li></ul><p><span class=citation-ref><a href=#CopilotEditMode></a></span><span class=citation-ref><a href=#CopilotAgentMode></a></span></p><h4 id=adding-context-to-chat>Adding Context to Chat</h4><p>Use <code>#</code> to provide context to your prompt, e.g.,</p><ul><li><code>#changes</code>: get the diffs of changed files in source control.</li><li><code>#codebase</code>: perform a codebase search across the current workspace.</li><li><code>#fetch</code>: get the contents of a web page.</li><li><code>#githubRepo</code>: perform a web search within a Github repo.</li><li><code>#problems</code>: get the list of problems for the current workspace.</li><li><code>#searchResults</code>: get the results from the Search view.</li><li><code>#terminalLastCommand</code>: get the last run terminal command and its status.</li><li><code>#testFailure</code>: get the list of test failures.</li><li><code>#usages</code>: get symbol references across the workspace.</li></ul><p>&mldr; with sample usage:</p><ul><li><em>Add a new API route for updating the address info <code>#codebase</code></em></li><li><em>Add a login button and style it based on <code>#styles.css</code></em> (files as context)</li><li><em>How do I use the <code>useState</code> hook in React 18? <code>#fetch https://18.react.dev/reference/react/useState#usage</code></em></li><li><em>Where is <code>#getUser</code> used? <code>#usages</code></em> (symbol in an open file as context)</li><li><em>How does routing work in next.js? <code>#githubRepo vercel/next.js</code></em></li></ul><p><span class=citation-ref><a href=#CopilotManageContext></a></span></p><p>When attaching a file, the full contents of the file are included if possible.
+If that&rsquo;s too large to fit into the context window, then an outline with
+functions and their descriptions will be included. If the outline is also too
+large, then the file won&rsquo;t be part of the prompt. <span class=citation-ref><a href=#CopilotManageContext></a></span></p><div class=comment-holder><div class=comment><p>In the age of LLMs, one may bias towards smaller, more modular files. It&rsquo;s still
+a tradeoff though. Too many small files, and seeing the big picture is a pain.</p></div></div><p>Chat supports vision capabilities, e.g., attaching an sketch of a UI and ask
+agent mode to implement it. <span class=citation-ref><a href=#CopilotChatOverview></a></span></p><p>The inbuilt simple browser allows opening webpages in VS Code. From it, one can
+send selected elements, CSS, and images to the chat. <span class=citation-ref><a href=#CopilotManageContext></a></span></p><h4 id=making-chat-an-expert-in-your-workspace>Making Chat an Expert in Your Workspace</h4><p><code>@workspace</code> is a chat participant that takes control of the user prompt, and
+uses the codebase to provide an answer. It can only be used in ask mode and
+can&rsquo;t invoke other tools. Example, <code>@workspace Which API routes depend on this service?</code> <span class=citation-ref><a href=#CopilotExpertChat></a></span>.</p><div class=comment-holder><div class=comment><p>Other chat participants include <code>@vscode</code>, <code>@terminal</code>, and <code>@github</code>.
+Extensions can also contribute chat participants. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>Extensions can also provide chat participants, e.g., PostgreSQL, FastAPI Chat,
+Grug Brained Developer, etc. <span class=citation-ref><a href=#Layer></a></span>is an extension publisher that
+creates chat participants on behalf of companies, e.g., SQLAlchemy, Mongo,
+Twilio, Vite Chat, etc. <span class=citation-ref><a href=#VSCodeChatParticipants></a></span></p></div></div><p><code>#codebase</code> is
+<a href=#add-tools-for-agentic-modes target=_blank rel=noopener>a tool
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>that
+performs code search and adds relevant code as context to the chat prompt and
+can invoke other tools. The LLM stays in control. It can be used in all chat
+modes. Example: <code>Add unit tests and run them #codebase</code>. <code>#codebase</code> affords
+more flexibility than <code>@workspace</code>. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>The workspace index contains relevant text files, and excludes files like <code>.tmp</code>
+and <code>.out</code>. Also excludes files excluded from Git/VS Code, unless they&rsquo;re
+currently open. Binary files, e.g., images, and PDFs, are excluded. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>The index can either be local or remote. Remote indexes are hosted on GitHub and
+are updated whenever you push changes. For projects with less than 2,500
+indexable files, Copilot can build a semantic index stored locally. For projects
+without remote indices and have more than 2,500 indexable files, Copilot builds
+a basic index that is stored locally; that said, this index is more limited in
+the kinds of questions that it can help answer. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>For now, information beyond the code is not available, e.g., <code>who contributed to this file?</code> <span class=citation-ref><a href=#CopilotExpertChat></a></span>However,
+<a href=#model-context-protocol-mcp-support target=_blank rel=noopener>there is a Git MCP server available
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><h3 id=smart-actions>Smart Actions</h3><p>These include:</p><ul><li>Generating commit messages and PR descriptions</li><li>Refactors like renaming symbols</li><li>Generating alt text for images in Markdown</li><li>Generating doc strings</li><li><code>Copilot > Explain</code> for pieces of code</li><li><code>Copilot > Fix</code> for source file and terminal errors</li><li><code>/fixTestFailure</code> command (useful in agent mode too)</li><li><code>Copilot > Review and Comment</code> for code selection</li><li><code>Copilot Code Review</code> in the GitHub Pull Requests extension</li><li>Semantic search results in the Search View.</li></ul><p><span class=citation-ref><a href=#CopilotSmartActions></a></span></p><div class=comment-holder><div class="comment open-comment"><p>For tasks like renaming symbols, what&rsquo;s the advantage of bringing an LLM (and
+thus non-determinism) into the mix? Isn&rsquo;t this a solved problem already?</p></div></div><div class=comment-holder><div class=comment><p>Not sold on the commit messages and PR descriptions. The LLM can at best provide
+a summary of what changed, but not why. That said, it&rsquo;s an improvement from
+commit messages like &ldquo;more fixes&rdquo;. The LLM-generated commit messages should be
+a springboard for the developer to add the why behind the what.</p></div></div><h2 id=customizing-copilot>Customizing Copilot</h2><h3 id=reusable-instructions-and-prompts>Reusable Instructions and Prompts</h3><p>Instruction files are a shorthand for automatically including the contained
+context in every applicable chat query. <code>.github/copilot-instructions.md</code> is
+automatically included in every chat request.
+<code>.github/instructions/**/*.instructions.md</code> can have an <code>applyTo</code> front matter
+for where it&rsquo;s automatically applied (e.g., a specific folder, <code>**</code> for global
+application, etc.). <span class=citation-ref><a href=#CopilotCustomizeResponses></a></span></p><p>There are specific <code>github.copilot.chat.*.instructions</code> settings for various
+scenarios, e.g., <code>codeGeneration</code>, <code>testGeneration</code>, <code>reviewSelection</code>,
+<code>commitMessageGeneration</code>, and <code>pullRequestDescriptionGeneration</code>. These
+settings can reference other <code>*.instructions.md</code> files, in addition to
+supporting <code>text</code> entries. <span class=citation-ref><a href=#CopilotCustomizeResponses></a></span></p><details><summary>Sample <code>.github/instructions/typescript-react.instructions.md</code></summary><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-md data-lang=md>---
+applyTo: &#34;**/*.ts,**/*.tsx&#34;
+---
+# Project coding standards for TypeScript and React
+
+Apply the [<span style=color:#f92672>general coding guidelines</span>](<span style=color:#75af00>./general-coding.instructions.md</span>) to all code.
+
+## TypeScript Guidelines
+<span style=color:#00a8c8>-</span> Use TypeScript for all new code
+<span style=color:#00a8c8>-</span> Follow functional programming principles where possible
+<span style=color:#00a8c8>-</span> Use interfaces for data structures and type definitions
+<span style=color:#00a8c8>-</span> Prefer immutable data (const, readonly)
+<span style=color:#00a8c8>-</span> Use optional chaining (?.) and nullish coalescing (??) operators
+
+## React Guidelines
+<span style=color:#00a8c8>-</span> Use functional components with hooks
+<span style=color:#00a8c8>-</span> Follow the React hooks rules (no conditional hooks)
+<span style=color:#00a8c8>-</span> Use React.FC type for components with children
+<span style=color:#00a8c8>-</span> Keep components small and focused
+<span style=color:#00a8c8>-</span> Use CSS modules for component styling
+</code></pre></div></details><p><span class=citation-ref><a href=#CopilotCustomizeResponses></a></span></p><div class=comment-holder><div class=comment><p><code>*instructions.md</code> files look useful for instructions that aren&rsquo;t well-defined
+for a deterministic linter to apply. For example, <code>Follow functional programming principles where possible</code> seems tricky to implement static rules for. However,
+<code>Use camelCase for variables, functions, and methods</code> is a solved problem for linters, and so using an LLM is a sub-optimal choice. But maybe the LLM is easy
+to configure and maintain, and catches most of the issues so ¯\_(ツ)_/¯</p></div></div><p>Unlike <code>.instructions.md</code> files that supplement your existing prompts,
+<code>.prompt.md</code> files are standalone prompts for common tasks. By default, they
+run in <code>agent</code> mode and can utilize <code>tools</code> specified in the front matter. They
+have access to variables using the <code>${variableName}</code> syntax.</p><details><summary>Sample <code>create-react-form.prompt.md</code></summary><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-md data-lang=md>---
+mode: &#39;agent&#39;
+tools: [&#39;githubRepo&#39;, &#39;codebase&#39;]
+description: &#39;Generate a new React form component&#39;
+---
+Your goal is to generate a new React form component based on the templates in <span style=color:#111>#githubRepo</span> contoso/react-templates.
+
+Ask for the form name if ${input:formName} is not provided. Ask for the fields
+if not provided.
+
+Requirements for the form:
+<span style=font-style:italic>* Use form design system components: [design-system/Form.md](../docs/design-system/Form.md)
+</span><span style=font-style:italic>*</span> Use <span style=color:#d88200>`react-hook-form`</span> for form state management:
+<span style=font-style:italic>* Always define TypeScript types for your form data
+</span><span style=font-style:italic>*</span> Prefer <span style=font-style:italic>*uncontrolled*</span> components using register
+<span style=font-style:italic>* Use `defaultValues` to prevent unnecessary rerenders
+</span><span style=font-style:italic>*</span> Use <span style=color:#d88200>`yup`</span> for validation:
+<span style=font-style:italic>* Create reusable validation schemas in separate files
+</span><span style=font-style:italic>*</span> Use TypeScript types to ensure type safety
+<span style=color:#00a8c8>*</span> Customize UX-friendly validation rules
+</code></pre></div><p>Usage in chat: <code>/create-react-form: formName=MyForm</code></p></details><p><span class=citation-ref><a href=#CopilotCustomizeResponses></a></span></p><p><code>instructions.md</code> and <code>prompt.md</code> files can be saved in the user data folder and
+synced across VS Code instances. One could also check them into version control
+them to share them within the teams. <span class=citation-ref><a href=#CopilotCustomizeResponses></a></span></p><h3 id=choice-of-language-models>Choice of Language Models</h3><p>Some models are good at fast coding, e.g., <code>GPT-4o</code>, <code>Claude Sonnet 3.7</code>,
+<code>Gemini 2.0 Flash</code>, while others are good at reasoning/planning, e.g., <code>Claude Sonnet 3.7 Thinking</code>, <code>o1</code>, <code>o3-mini</code>. <span class=citation-ref><a href=#CopilotAILLMs></a></span></p><p>One can also provide a valid API key to use models directly from providers like
+Anthropic, Ollama, etc. This allows for experimenting with models that are not
+yet built-in, bypassing standard rate limits, etc. However, these models only
+apply to the chat experience, and not other features like commit-message
+generation, repository indexing, intent detection, side queries, etc.
+Responsible AI filtering is not applied when using your own model either. <span class=citation-ref><a href=#CopilotAILLMs></a></span></p><h3 id=add-tools-for-agentic-modes>Add Tools for Agentic Modes</h3><p>Copilot can also connect MCP-compatible servers to agentic workflows, e.g.,
 GitHub&rsquo;s MCP server offers tools to list repositories, create PRs, manage
 issues, etc. <span class=citation-ref><a href=#CopilotMCPServers></a></span></p><p><code>#codebase</code> searches your codebase and fetches files that are relevant to your
 question, e.g., <code>Explain how authentication works in #codebase</code>. <span class=citation-ref><a href=#CopilotManageContext></a></span></p><div class=comment-holder><div class=comment><p><code>#codebase</code> can be a litmus test. For things that you already know how to do
@@ -25,7 +210,7 @@ LLM-optimized conversion; <code>Memory</code> for knowledge graph-based persiste
 system; <code>Sequential Thinking</code> for dynamic and reflective problem-solving through
 thought sequences; <code>Git</code> to read, search, and manipulate Git repositories.</p><p>Of the 3 MCP server primitives (resources, prompts, and tools), Copilot only
 supports adding <code>tools</code>. MCP tools can be added in a workspace via
-<code>.vscode/mcp.json</code> or in your <code>settings.json</code>.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
+<code>.vscode/mcp.json</code> or in your <code>settings.json</code>.</p><details><summary>Sample MCP server configs: Perplexity, Git, Sequential Thinking</summary><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
   <span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>💡</span> <span style=color:#960050;background-color:#1e0010>Inputs</span> <span style=color:#960050;background-color:#1e0010>are</span> <span style=color:#960050;background-color:#1e0010>prompted</span> <span style=color:#960050;background-color:#1e0010>on</span> <span style=color:#960050;background-color:#1e0010>first</span> <span style=color:#960050;background-color:#1e0010>server</span> <span style=color:#960050;background-color:#1e0010>start,</span> <span style=color:#960050;background-color:#1e0010>then</span> <span style=color:#960050;background-color:#1e0010>stored</span> <span style=color:#960050;background-color:#1e0010>securely</span> <span style=color:#960050;background-color:#1e0010>by</span> <span style=color:#960050;background-color:#1e0010>VS</span> <span style=color:#960050;background-color:#1e0010>Code.</span>
   <span style=color:#f92672>&#34;inputs&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span>
     <span style=color:#111>{</span>
@@ -58,80 +243,7 @@ supports adding <code>tools</code>. MCP tools can be added in a workspace via
     <span style=color:#111>}</span>
   <span style=color:#111>}</span>
 <span style=color:#111>}</span>
-</code></pre></div><p><span class=citation-ref><a href=#CopilotMCPServers></a></span><span class=citation-ref><a href=#MCPServers></a></span></p><h2 id=copilot-powered-scenarios>Copilot-Powered Scenarios</h2><h3 id=ai-code-completions>AI Code Completions</h3><div class=priors-holder><div class=priors><p>I&rsquo;ve found code completions more distracting than useful. Probably because I
-already have an idea of what I want to type, and Copilot&rsquo;s hallucinations slow
-me down. I&rsquo;ve turned this off in my IDE.</p></div></div><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-code-completion-multiple.png alt="Start typing in the editor, and Copilot provides code suggestions.
-Can accept either the next word or line. Credits: code.visualstudio.com."><figcaption><p>Start typing in the editor, and Copilot provides code suggestions.
-Can accept either the next word or line. Credits: code.visualstudio.com.</p></figcaption></figure><p><span class=citation-ref><a href=#CopilotCodeCompletions></a></span></p><div class=comment-holder><div class="comment open-comment"><p>The tab-to-accept UI provides a good avenue for collecting metrics. For
-instance, what portion of suggestions were accepted by developers? Are some
-models noticeably better than others?</p><p>Where can I find this data? Presumably, VS Code guards it, and doesn&rsquo;t make it
-publicly available.</p></div></div><figure><img src=/img/computer-science/llms/coding-with-llms/ts-suggest-code-comment.png alt="You can use code comments to hint what code Copilot should generate.
-I find the inline-chat UX more ergonomic because I do not need to come back
-and delete comments that simply rehash the code. Credits:
-code.visualstudio.com"><figcaption><p>You can use code comments to hint what code Copilot should generate.
-I find the inline-chat UX more ergonomic because I do not need to come back
-and delete comments that simply rehash the code. Credits:
-code.visualstudio.com</p></figcaption></figure><p><span class=citation-ref><a href=#CopilotCodeCompletions></a></span></p><figure><img src=/img/computer-science/llms/coding-with-llms/fibonacci-third.png alt="With inline chat, you can iterate with multiple prompts before
-acccepting a suggestion. Credits: code.visualstudio.com"><figcaption><p>With inline chat, you can iterate with multiple prompts before
-acccepting a suggestion. Credits: code.visualstudio.com</p></figcaption></figure><p><span class=citation-ref><a href=#CopilotPromptEngineering></a></span></p><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-next-edit-suggestions.jpg alt="Next Edit Suggestions capture logical flows of code edits. For
-example, changing the class name from Point to Point3D makes Copilot predict
-that a z coordinate needs to be added, the toString() and distanceTo() methods
-need to updated, and so forth. Credits: code.visualstudio.com."><figcaption><p>Next Edit Suggestions capture logical flows of code edits. For
-example, changing the class name from Point to Point3D makes Copilot predict
-that a z coordinate needs to be added, the toString() and distanceTo() methods
-need to updated, and so forth. Credits: code.visualstudio.com.</p></figcaption></figure><p><span class=citation-ref><a href=#CopilotCodeCompletions></a></span></p><h3 id=natural-language-chat>Natural Language Chat</h3><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-chat-view.png alt="Chat view in VS Code. Other UI surfaces include editor inline chat,
-terminal inline chat, and quick chat. Credits: code.visualstudio.com."><figcaption><p>Chat view in VS Code. Other UI surfaces include editor inline chat,
-terminal inline chat, and quick chat. Credits: code.visualstudio.com.</p></figcaption></figure><p>The Chat View is designed to be a multi-turn conversation, where the history of
-the conversation is used as context for the current prompt. You don&rsquo;t need to
-repeat the context when asking follow-up questions. <span class=citation-ref><a href=#CopilotChatOverview></a></span></p><p>Chat has different modes:</p><ul><li><strong>Ask</strong>: Understand how a piece of code works, brainstorm design ideas, etc.</li><li><strong>Edit</strong>: Apply edits across multiple files, e.g., implementing a new feature,
-fixing a bug, refactoring code.</li><li><strong>Agent</strong>: Autonomously implement high-level requirements with minimal
-guidance, invoking tools for specialized tasks, iterating to resolve issues.</li></ul><p><span class=citation-ref><a href=#CopilotChatOverview></a></span></p><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-chat-view-code-block-actions.png alt="The response from chat mode can contain code blocks (or even
-scaffolding for generating a new workspace) that can be applied to your
-codebase. Ask mode does not imply read-only. Credits: code.visualstudio.com."><figcaption><p>The response from chat mode can contain code blocks (or even
-scaffolding for generating a new workspace) that can be applied to your
-codebase. Ask mode does not imply read-only. Credits: code.visualstudio.com.</p></figcaption></figure><figure><img src=/img/computer-science/llms/coding-with-llms/copilot-edits-changed-files-full.png alt="Edit mode gives you a chance to accept/discard edits (with a setting
-for auto-accepting edits after T time). Can also accept/discard edits on a
-per-file basis. Credits: code.visualstudio.com."><figcaption><p>Edit mode gives you a chance to accept/discard edits (with a setting
-for auto-accepting edits after T time). Can also accept/discard edits on a
-per-file basis. Credits: code.visualstudio.com.</p></figcaption></figure><figure><img src=/img/computer-science/llms/coding-with-llms/agent-mode-select-tools.png alt="Agent mode allows adding tools that can be used to satisfy the query.
-Before tool invocation, one needs to approve (there is a setting to
-auto-approve a certain tool indefinitely, or for the current session, or only
-for remote environments). The accept/discard UI is similar to that of Edit
-mode. Credits: code.visualstudio.com."><figcaption><p>Agent mode allows adding tools that can be used to satisfy the query.
-Before tool invocation, one needs to approve (there is a setting to
-auto-approve a certain tool indefinitely, or for the current session, or only
-for remote environments). The accept/discard UI is similar to that of Edit
-mode. Credits: code.visualstudio.com.</p></figcaption></figure><p>Choosing between edit mode and agent mode?</p><ul><li>Edit mode assumes that only code changes are needed and you know the precise
-scope. Agent mode autonomously determines relevant context, and invokes tools
-and terminal commands.</li><li>Agent mode might take longer as it involves multiple steps. Agent mode might
-cost more because of multiple requests to the backend.</li><li>Agent mode is self-healing because it evaluates the outcome and iterates on
-the results, e.g., running tests after a code edit.</li></ul><p><span class=citation-ref><a href=#CopilotEditMode></a></span><span class=citation-ref><a href=#CopilotAgentMode></a></span></p><h4 id=adding-context-to-chat>Adding Context to Chat</h4><p>Use <code>#</code> to provide context to your prompt, e.g.,</p><ul><li><code>#changes</code>: get the diffs of changed files in source control.</li><li><code>#codebase</code>: perform a codebase search across the current workspace.</li><li><code>#fetch</code>: get the contents of a web page.</li><li><code>#githubRepo</code>: perform a web search within a Github repo.</li><li><code>#problems</code>: get the list of problems for the current workspace.</li><li><code>#searchResults</code>: get the results from the Search view.</li><li><code>#terminalLastCommand</code>: get the last run terminal command and its status.</li><li><code>#testFailure</code>: get the list of test failures.</li><li><code>#usages</code>: get symbol references across the workspace.</li></ul><p>&mldr; with sample usage:</p><ul><li><code>Add a new API route for updating the address info #codebase</code></li><li><code>Add a login button and style it based on #styles.css</code> (files as context)</li><li><code>How do I use the 'useState' hook in react 18? #fetch https://18.react.dev/reference/react/useState#usage</code></li><li><code>Where is #getUser used? #usages</code> (symbol in an open file as context)</li><li><code>How does routing work in next.js #githubRepo vercel/next.js</code></li></ul><p><span class=citation-ref><a href=#CopilotManageContext></a></span></p><p>When attaching a file, the full contents of the file are included if possible.
-If that&rsquo;s too large to fit into the context window, then an outline with
-functions and their descriptions will be included. If the outline is also too
-large, then the file won&rsquo;t be part of the prompt. <span class=citation-ref><a href=#CopilotManageContext></a></span></p><div class=comment-holder><div class=comment><p>In the age of LLMs, one may bias towards smaller, more modular files. It&rsquo;s still
-a tradeoff though. Too many small files, and seeing the big picture is a pain.</p></div></div><p>The inbuilt simple browser allows opening webpages in VS Code. From it, one can
-send selected elements, CSS, and images to the chat. <span class=citation-ref><a href=#CopilotManageContext></a></span></p><h4 id=making-chat-an-expert-in-your-workspace>Making Chat an Expert in Your Workspace</h4><p><code>@workspace</code> is a chat participant that takes control of the user prompt, and
-uses the codebase to provide an answer. It can only be used in ask mode and
-can&rsquo;t invoke other tools. Example, <code>@workspace Which API routes depend on this service?</code> <span class=citation-ref><a href=#CopilotExpertChat></a></span>.</p><div class=comment-holder><div class=comment><p>Other chat participants include <code>@vscode</code>, <code>@terminal</code>, and <code>@github</code>.
-Extensions can also contribute chat participants. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>Extensions can also provide chat participants, e.g., PostgreSQL, FastAPI Chat,
-Grug Brained Developer, etc. <span class=citation-ref><a href=#Layer></a></span>is an extension publisher that
-creates chat participants on behalf of companies, e.g., SQLAlchemy, Mongo,
-Twilio, Vite Chat, etc. <span class=citation-ref><a href=#VSCodeChatParticipants></a></span></p></div></div><p><code>#codebase</code> is
-<a href=#add-tools-for-agentic-modes target=_blank rel=noopener>a tool
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>that
-performs code search and adds relevant code as context to the chat prompt and
-can invoke other tools. The LLM stays in control. It can be used in all chat
-modes. Example: <code>Add unit tests and run them #codebase</code>. <code>#codebase</code> affords
-more flexibility than <code>@workspace</code>. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>The workspace index contains relevant text files, and excludes files like <code>.tmp</code>
-and <code>.out</code>. Also excludes files excluded from Git/VS Code, unless they&rsquo;re
-currently open. Binary files, e.g., images, and PDFs, are excluded. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>The index can either be local or remote. Remote indexes are hosted on GitHub and
-are updated whenever you push changes. For projects with less than 2,500
-indexable files, Copilot can build a semantic index stored locally. For projects
-without remote indices and have more than 2,500 indexable files, Copilot builds
-a basic index that is stored locally; that said, this index is more limited in
-the kinds of questions that it can help answer. <span class=citation-ref><a href=#CopilotExpertChat></a></span></p><p>For now, information beyond the code is not available, e.g., <code>who contributed to this file?</code> <span class=citation-ref><a href=#CopilotExpertChat></a></span>However,
-<a href=#model-context-protocol-mcp-support target=_blank rel=noopener>there is a Git MCP server available
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><h3 id=smart-actions>Smart Actions</h3><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotOverview>GitHub Copilot in VS Code<i>.</i></cite>
+</code></pre></div></details><p><span class=citation-ref><a href=#CopilotMCPServers></a></span><span class=citation-ref><a href=#MCPServers></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotOverview>GitHub Copilot in VS Code<i>.</i></cite>
 <a href=https://code.visualstudio.com/docs/copilot/overview target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=code.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>code.visualstudio.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 1, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotCodeCompletions>Code completions with GitHub Copilot in VS Code<i>.</i></cite>
@@ -174,14 +286,34 @@ the kinds of questions that it can help answer. <span class=citation-ref><a href
 <a href=https://modelcontextprotocol.io/specification/2025-03-26 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modelcontextprotocol.io" loading=lazy aria-hidden=true width=16 height=16>
 <i>modelcontextprotocol.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 Mar 26, 2025.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2025.</div></li></ol><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotPromptEngineering>Prompt engineering for Copilot Chat<i>.</i></cite>
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotPromptEngineering>Prompt engineering for Copilot Chat<i>.</i></cite>
 <a href=https://code.visualstudio.com/docs/copilot/chat/prompt-crafting target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=code.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>code.visualstudio.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2025.</div></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Fgreco2025>Terminology evolution? 'completion' vs 'response' - Community - OpenAI Developer Community<i>.</i></cite>
+<a href=https://community.openai.com/t/terminology-evolution-completion-vs-response/1143324/5 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=community.openai.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>community.openai.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+May 14, 2025.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 8, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=ChatMLAzureOpenAI>How to work with the Chat Markup Language (preview) - Azure OpenAI | Microsoft Learn<i>.</i></cite>
+<a href=https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chat-markup-language target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 8, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotSmartActions>Copilot smart actions in Visual Studio Code<i>.</i></cite>
+<a href=https://code.visualstudio.com/docs/copilot/copilot-smart-actions target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=code.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>code.visualstudio.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 8, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotCustomizeResponses>Customize chat responses in VS Code<i>.</i></cite>
+<a href=https://code.visualstudio.com/docs/copilot/copilot-customization target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=code.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>code.visualstudio.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 8, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CopilotAILLMs>AI language models in VS Code<i>.</i></cite>
+<a href=https://code.visualstudio.com/docs/copilot/language-models target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=code.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>code.visualstudio.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 8, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/code.visualstudio.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=code.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
 code.visualstudio.com</a>
+<a href=/domains/community.openai.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=community.openai.com" loading=lazy aria-hidden=true width=16 height=16>
+community.openai.com</a>
 <a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
 github.com</a>
+<a href=/domains/learn.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+learn.microsoft.com</a>
 <a href=/domains/marketplace.visualstudio.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=marketplace.visualstudio.com" loading=lazy aria-hidden=true width=16 height=16>
 marketplace.visualstudio.com</a>
 <a href=/domains/modelcontextprotocol.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=modelcontextprotocol.io" loading=lazy aria-hidden=true width=16 height=16>
