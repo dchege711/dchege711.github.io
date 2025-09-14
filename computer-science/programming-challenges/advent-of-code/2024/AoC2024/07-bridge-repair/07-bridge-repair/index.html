@@ -1,0 +1,254 @@
+<!doctype html><html lang=en><head><title>AoC 2024 Day 07: Bridge Repair | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Parsing Each line represents a single equation, e.g., 292: 11 6 16 20. 
+ Part One  needs to make a decision based on each line independently. Parsing each line into a data structure and yielding that should suffice.
+using System.Collections.Immutable; using System.Text.RegularExpressions; namespace AoC2024; public partial class BridgeRepair { public static IEnumerable<CalibrationEquation> Parse(string filePath) { using var inputReader = new StreamReader(filePath); string? line; while ((line = inputReader.ReadLine()) != null) { var numbers = InputLineRegex...."><meta property="og:title" content="AoC 2024 Day 07: Bridge Repair"><meta property="og:description" content="Parsing Each line represents a single equation, e.g., 292: 11 6 16 20. 
+ Part One  needs to make a decision based on each line independently. Parsing each line into a data structure and yielding that should suffice.
+using System.Collections.Immutable; using System.Text.RegularExpressions; namespace AoC2024; public partial class BridgeRepair { public static IEnumerable<CalibrationEquation> Parse(string filePath) { using var inputReader = new StreamReader(filePath); string? line; while ((line = inputReader.ReadLine()) != null) { var numbers = InputLineRegex...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/07-bridge-repair/07-bridge-repair/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/>Advent of Code 2024 - C#</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/07-bridge-repair/07-bridge-repair/>AoC 2024 Day 07: Bridge Repair</a></li></ul></nav><section><header><h1>AoC 2024 Day 07: Bridge Repair</h1><p class=meta>Dated Aug 23, 2025;
+last modified on Sat, 23 Aug 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><p>Each line represents a single equation, e.g., <code>292: 11 6 16 20</code>. <span class=citation-ref><a href=#AoC2024Day07></a></span></p><p><a href=#part-one>Part One</a>
+needs to make a decision based on each line independently.
+Parsing each line into a data structure and yielding that should suffice.</p><div id=BridgeRepair.Parse.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
+<span style=color:#00a8c8>using</span> <span style=color:#111>System.Text.RegularExpressions</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>BridgeRepair</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>using</span> <span style=color:#111>var</span> <span style=color:#111>inputReader</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>StreamReader</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>);</span>
+
+        <span style=color:#00a8c8>string?</span> <span style=color:#111>line</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>while</span> <span style=color:#111>((</span><span style=color:#111>line</span> <span style=color:#111>=</span> <span style=color:#111>inputReader</span><span style=color:#111>.</span><span style=color:#111>ReadLine</span><span style=color:#111>())</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>null</span><span style=color:#111>)</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>var</span> <span style=color:#111>numbers</span> <span style=color:#111>=</span> <span style=color:#111>InputLineRegex</span><span style=color:#111>.</span><span style=color:#111>Matches</span><span style=color:#111>(</span><span style=color:#111>line</span><span style=color:#111>)</span>
+                <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>match</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>match</span><span style=color:#111>.</span><span style=color:#111>Value</span><span style=color:#111>));</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>numbers</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>(),</span> <span style=color:#111>numbers</span><span style=color:#111>.</span><span style=color:#111>Skip</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>).</span><span style=color:#111>ToImmutableList</span><span style=color:#111>());</span>
+        <span style=color:#111>}</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>CalibrationEquation</span><span style=color:#111>(</span>
+        <span style=color:#00a8c8>long</span> <span style=color:#111>Result</span><span style=color:#111>,</span> <span style=color:#111>ImmutableList</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>&gt;</span> <span style=color:#111>Operands</span><span style=color:#111>);</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Regex</span> <span style=color:#111>InputLineRegex</span> <span style=color:#111>=</span> <span style=color:#111>NumbersRegex</span><span style=color:#111>();</span>
+<span style=color:#75af00>
+</span><span style=color:#75af00>    [GeneratedRegex(@&#34;\d+&#34;)]</span>
+    <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>partial</span> <span style=color:#111>Regex</span> <span style=color:#111>NumbersRegex</span><span style=color:#111>();</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><h2 id=part-one>Part One</h2><p>Using only <strong>add</strong> and <strong>multiply</strong>, evaluated left-to-right (not according to
+math precedence rules), determine which equations could possibly be true. For
+example, \(292 = ((11 + 6) \times 16) + 20\). Of the equations that could
+possibly be true, what is the sum of their results? <span class=citation-ref><a href=#AoC2024Day07></a></span></p><p>Given a <code>CalibrationEquation</code> with \(N + 1\) operands, there are \(2^N\)
+ways of selecting the \(N\) operators. Some algorithm optimizations to test
+less than \(2^N\) permutations per <code>CalibrationEquation</code>:</p><ul><li>Given that we can only add or multiply, the result can never decrease. As soon
+as the result exceeds the expected result, we can discard the search.</li><li>As soon as we get a valid combination, we can stop the search because we only
+need to find one combination that works.</li></ul><p>Python&rsquo;s <code>itertools.product</code> is a built-in way of generating the \(2^N\)
+permutations. <span class=citation-ref><a href=#itertools></a></span>C# doesn&rsquo;t have an equivalent. Implementing
+<code>itertools.product</code> seems non-trivial to do without lots of memory allocations.
+A recursive implementation of <code>itertools.product</code> gets the job done:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>ImmutableList</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;&gt;</span> <span style=color:#111>PermutationWithReplacement</span><span style=color:#111>(</span>
+    <span style=color:#111>ImmutableHashSet</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>seedOperators</span><span style=color:#111>,</span> <span style=color:#111>ImmutableList</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>desiredLength</span><span style=color:#111>)</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>operators</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#111>desiredLength</span><span style=color:#111>)</span>
+        <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>operators</span><span style=color:#111>;</span>
+    
+    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>operators</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>&gt;</span> <span style=color:#111>desiredLength</span><span style=color:#111>)</span>
+        <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+    
+    <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>@operator</span> <span style=color:#00a8c8>in</span> <span style=color:#111>seedOperators</span><span style=color:#111>)</span>
+        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>permutation</span> <span style=color:#00a8c8>in</span> <span style=color:#111>PermutationWithReplacement</span><span style=color:#111>(</span><span style=color:#111>seedOperators</span><span style=color:#111>,</span> <span style=color:#111>operators</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>@operator</span><span style=color:#111>),</span> <span style=color:#111>desiredLength</span><span style=color:#111>))</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>permutation</span><span style=color:#111>;</span>
+<span style=color:#111>}</span>
+</code></pre></div><div id=BridgeRepair.PartOne.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>BridgeRepair</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TotalCalibrationResult</span><span style=color:#111>(</span><span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>equations</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>TotalCalibrationResult</span><span style=color:#111>(</span>
+            <span style=color:#111>equations</span><span style=color:#111>,</span>
+            <span style=color:#111>ImmutableHashSet</span><span style=color:#111>.</span><span style=color:#111>Create</span><span style=color:#111>([</span><span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>,</span> <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Multiply</span><span style=color:#111>]));</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TotalCalibrationResult</span><span style=color:#111>(</span>
+        <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>equations</span><span style=color:#111>,</span> <span style=color:#111>ImmutableHashSet</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>equations</span>
+            <span style=color:#111>.</span><span style=color:#111>AsParallel</span><span style=color:#111>()</span>
+            <span style=color:#111>.</span><span style=color:#111>Where</span><span style=color:#111>(</span><span style=color:#111>eq</span> <span style=color:#111>=&gt;</span> <span style=color:#111>IsValid</span><span style=color:#111>(</span><span style=color:#111>eq</span><span style=color:#111>,</span> <span style=color:#111>operators</span><span style=color:#111>))</span>
+            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>eq</span> <span style=color:#111>=&gt;</span> <span style=color:#111>eq</span><span style=color:#111>.</span><span style=color:#111>Result</span><span style=color:#111>)</span>
+            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsValid</span><span style=color:#111>(</span><span style=color:#111>CalibrationEquation</span> <span style=color:#111>equation</span><span style=color:#111>,</span> <span style=color:#111>ImmutableHashSet</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>PermutationWithReplacement</span><span style=color:#111>(</span><span style=color:#111>operators</span><span style=color:#111>,</span> <span style=color:#111>[],</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+            <span style=color:#111>.</span><span style=color:#111>Any</span><span style=color:#111>(</span><span style=color:#111>operators</span> <span style=color:#111>=&gt;</span> <span style=color:#111>IsValid</span><span style=color:#111>(</span><span style=color:#111>equation</span><span style=color:#111>,</span> <span style=color:#111>operators</span><span style=color:#111>));</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>ImmutableList</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;&gt;</span> <span style=color:#111>PermutationWithReplacement</span><span style=color:#111>(</span>
+        <span style=color:#111>ImmutableHashSet</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>seedOperators</span><span style=color:#111>,</span> <span style=color:#111>ImmutableList</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>desiredLength</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>operators</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#111>desiredLength</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>operators</span><span style=color:#111>;</span>
+        
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>operators</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>&gt;</span> <span style=color:#111>desiredLength</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+        
+        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>@operator</span> <span style=color:#00a8c8>in</span> <span style=color:#111>seedOperators</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>permutation</span> <span style=color:#00a8c8>in</span> <span style=color:#111>PermutationWithReplacement</span><span style=color:#111>(</span><span style=color:#111>seedOperators</span><span style=color:#111>,</span> <span style=color:#111>operators</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>@operator</span><span style=color:#111>),</span> <span style=color:#111>desiredLength</span><span style=color:#111>))</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>permutation</span><span style=color:#111>;</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsValid</span><span style=color:#111>(</span>
+        <span style=color:#111>CalibrationEquation</span> <span style=color:#111>equation</span><span style=color:#111>,</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>long</span> <span style=color:#111>result</span> <span style=color:#111>=</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>();</span>
+        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>@operator</span><span style=color:#111>,</span> <span style=color:#111>operand</span><span style=color:#111>)</span> <span style=color:#00a8c8>in</span> <span style=color:#111>Enumerable</span><span style=color:#111>.</span><span style=color:#111>Zip</span><span style=color:#111>(</span><span style=color:#111>operators</span><span style=color:#111>,</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>.</span><span style=color:#111>Skip</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>)))</span>
+        <span style=color:#111>{</span>
+            <span style=color:#111>result</span> <span style=color:#111>=</span> <span style=color:#111>Apply</span><span style=color:#111>(</span><span style=color:#111>result</span><span style=color:#111>,</span> <span style=color:#111>@operator</span><span style=color:#111>,</span> <span style=color:#111>operand</span><span style=color:#111>);</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>result</span> <span style=color:#111>&gt;</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Result</span><span style=color:#111>)</span>
+                <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+        <span style=color:#111>}</span>
+
+        <span style=color:#00a8c8>return</span> <span style=color:#111>result</span> <span style=color:#111>==</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Result</span><span style=color:#111>;</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>Apply</span><span style=color:#111>(</span><span style=color:#00a8c8>long</span> <span style=color:#111>lhs</span><span style=color:#111>,</span> <span style=color:#111>Operator</span> <span style=color:#111>@operator</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>rhs</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span> <span style=color:#111>@operator</span> <span style=color:#00a8c8>switch</span> <span style=color:#111>{</span>
+        <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Add</span> <span style=color:#111>=&gt;</span> <span style=color:#111>lhs</span> <span style=color:#111>+</span> <span style=color:#111>rhs</span><span style=color:#111>,</span>
+        <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Multiply</span> <span style=color:#111>=&gt;</span> <span style=color:#111>lhs</span> <span style=color:#111>*</span> <span style=color:#111>rhs</span><span style=color:#111>,</span>
+        <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Concatenate</span> <span style=color:#111>=&gt;</span> <span style=color:#111>Concatenate</span><span style=color:#111>(</span><span style=color:#111>lhs</span><span style=color:#111>,</span> <span style=color:#111>rhs</span><span style=color:#111>),</span>
+        <span style=color:#111>_</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>ArgumentException</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;Unrecognized op: {@operator}&#34;</span><span style=color:#111>)</span>
+    <span style=color:#111>};</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>enum</span> <span style=color:#111>Operator</span> <span style=color:#111>{</span> <span style=color:#111>Add</span><span style=color:#111>,</span> <span style=color:#111>Multiply</span><span style=color:#111>,</span> <span style=color:#111>Concatenate</span> <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><h2 id=part-two>Part Two</h2><p>Consider the concatenation operator that combines its left and right operands
+into a single number, e.g., \(12\ ||\ 345 = 12345\). For instance, \(7290: 6<br>8\ 6\ 15\) can be made true using \(((6 \times 8)\ ||\ 6) \times 15\). Of the
+equations that could possibly be true by any combination of the three operators,
+what is the sum of their results? <span class=citation-ref><a href=#AoC2024Day07></a></span></p><p>The core algorithm doesn&rsquo;t change, but we now have \(3^N\) permutations to
+consider for each <code>CalibrationEquation</code>. Why did the runtime go from 2s for part
+1 to 62s for part 2? It shouldn&rsquo;t be that drastic&mldr;</p><p>Maybe it&rsquo;s in concatenation&rsquo;s implementation? <code>long.Parse($"{a}{b}")</code> might be
+too inefficient to call in a hot path. If \(b\) has \(m\) digits, then \(a
+\times 10^m + b\) should be much faster because math operations are faster than
+string parsing operations. Using this implementation:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>factor</span><span style=color:#111>,</span> <span style=color:#111>reducedB</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#ae81ff>10L</span><span style=color:#111>,</span> <span style=color:#111>b</span><span style=color:#111>);</span>
+<span style=color:#00a8c8>while</span> <span style=color:#111>((</span><span style=color:#111>reducedB</span> <span style=color:#111>/=</span> <span style=color:#ae81ff>10</span><span style=color:#111>)</span> <span style=color:#111>&gt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+    <span style=color:#111>factor</span> <span style=color:#111>*=</span> <span style=color:#ae81ff>10</span><span style=color:#111>;</span>
+<span style=color:#00a8c8>return</span> <span style=color:#111>(</span><span style=color:#111>a</span> <span style=color:#111>*</span> <span style=color:#111>factor</span><span style=color:#111>)</span> <span style=color:#111>+</span> <span style=color:#111>b</span><span style=color:#111>;</span>
+</code></pre></div><p>&mldr; still runs in ~60s, implying that <code>long.Parse($"{a}{b}")</code> is not the source
+of the slowdown. Either the arithmetic approach is just as slow, or majority of
+the time is spent searching the \(3^N\) permutations.</p><p>What about finding \(m\) using \(\left \lfloor{log_{10}(n)} \right \rfloor +
+1\) instead of the iterative approach? <span class=citation-ref><a href=#StackOverflow6655754></a></span>No
+dice; also runs in ~60s. <code>Math.Pow</code> returns a <code>double</code>, so for the sake of
+avoiding precision loss and casting, reverting to the iterative approach.</p><p>Evaluating each <code>CalibrationEquation</code> is an embarrassingly parallel problem in
+that no evaluation needs to communicate with any other evaluation <span class=citation-ref><a href=#WikiEmbarrassinglyParallel></a></span>. Adding <code>AsParallel</code> gets us from 60s to 30s. <span class=citation-ref><a href=#PLINQ></a></span></p><p>Granted, <code>PermutationWithReplacement</code> is inefficient compared to Python&rsquo;s
+<code>itertools.product</code> which does not build up intermediate results in memory. <span class=citation-ref><a href=#itertools></a></span>That said, does <code>PermutationWithReplacement(...).Any(...)</code>
+stop as early as possible? Logs for \(7290: 6\ 8\ 6\ 15\) show that while we
+do stop early, we evaluate the same expression multiple times. Aha, given
+\(N\) operands, we&rsquo;re asking <code>PermutationWithReplacement</code> to generate
+\(3^N\) permutations of operators instead of generating \(3^{N-1}\)
+permutations. Fixing that brings us from 30s to 10s. A 3X improvement, but 10s
+still seems slow.</p><div class=comment-holder><div class=comment><p><code>Enumerable.Zip</code> stops at the shorter of the two subsequences; there&rsquo;s no
+exception thrown when the two sequences have differing lengths. <span class=citation-ref><a href=#Enumerable.Zip></a></span></p></div></div><div id=BridgeRepair.PartTwo.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>BridgeRepair</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TotalCalibrationResultWithConcat</span><span style=color:#111>(</span><span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>equations</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>TotalCalibrationResult</span><span style=color:#111>(</span>
+            <span style=color:#111>equations</span><span style=color:#111>,</span>
+            <span style=color:#111>ImmutableHashSet</span><span style=color:#111>.</span><span style=color:#111>Create</span><span style=color:#111>([</span><span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>,</span> <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Multiply</span><span style=color:#111>,</span> <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Concatenate</span><span style=color:#111>]));</span>
+    
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>Concatenate</span><span style=color:#111>(</span><span style=color:#00a8c8>long</span> <span style=color:#111>a</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>b</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>factor</span><span style=color:#111>,</span> <span style=color:#111>reducedB</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#ae81ff>10L</span><span style=color:#111>,</span> <span style=color:#111>b</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>while</span> <span style=color:#111>((</span><span style=color:#111>reducedB</span> <span style=color:#111>/=</span> <span style=color:#ae81ff>10</span><span style=color:#111>)</span> <span style=color:#111>&gt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+            <span style=color:#111>factor</span> <span style=color:#111>*=</span> <span style=color:#ae81ff>10</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#111>*</span> <span style=color:#111>factor</span> <span style=color:#111>+</span> <span style=color:#111>b</span><span style=color:#111>;</span>
+    <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><p>What if instead using <code>PermutationWithReplacement</code>, we have a recursive
+<code>IsValid</code> that exits early? Huh, solving part 2 goes from 10s to ~1s; didn&rsquo;t
+expect that much of a speedup!</p><div id=BridgeRepair.Alternate.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>BridgeRepair</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TotalCalibrationResultRecursive</span><span style=color:#111>(</span>
+        <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>equations</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>TotalCalibrationResulRecursive</span><span style=color:#111>(</span>
+            <span style=color:#111>equations</span><span style=color:#111>,</span>
+            <span style=color:#111>ImmutableHashSet</span><span style=color:#111>.</span><span style=color:#111>Create</span><span style=color:#111>([</span><span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>,</span> <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Multiply</span><span style=color:#111>]));</span>
+
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TotalCalibrationResultWithConcatRecursive</span><span style=color:#111>(</span>
+        <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>equations</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>TotalCalibrationResulRecursive</span><span style=color:#111>(</span>
+            <span style=color:#111>equations</span><span style=color:#111>,</span>
+            <span style=color:#111>ImmutableHashSet</span><span style=color:#111>.</span><span style=color:#111>Create</span><span style=color:#111>([</span><span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>,</span> <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Multiply</span><span style=color:#111>,</span> <span style=color:#111>Operator</span><span style=color:#111>.</span><span style=color:#111>Concatenate</span><span style=color:#111>]));</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TotalCalibrationResulRecursive</span><span style=color:#111>(</span>
+        <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>CalibrationEquation</span><span style=color:#111>&gt;</span> <span style=color:#111>equations</span><span style=color:#111>,</span> <span style=color:#111>ImmutableHashSet</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>equations</span>
+            <span style=color:#111>.</span><span style=color:#111>AsParallel</span><span style=color:#111>()</span>
+            <span style=color:#111>.</span><span style=color:#111>Where</span><span style=color:#111>(</span><span style=color:#111>eq</span> <span style=color:#111>=&gt;</span> <span style=color:#111>IsValid</span><span style=color:#111>(</span><span style=color:#111>eq</span><span style=color:#111>,</span> <span style=color:#111>operators</span><span style=color:#111>,</span> <span style=color:#111>eq</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>(),</span> <span style=color:#ae81ff>0</span><span style=color:#111>))</span>
+            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>eq</span> <span style=color:#111>=&gt;</span> <span style=color:#111>eq</span><span style=color:#111>.</span><span style=color:#111>Result</span><span style=color:#111>)</span>
+            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsValid</span><span style=color:#111>(</span>
+        <span style=color:#111>CalibrationEquation</span> <span style=color:#111>equation</span><span style=color:#111>,</span>
+        <span style=color:#111>ImmutableHashSet</span><span style=color:#111>&lt;</span><span style=color:#111>Operator</span><span style=color:#111>&gt;</span> <span style=color:#111>operators</span><span style=color:#111>,</span>
+        <span style=color:#00a8c8>long</span> <span style=color:#111>accumulatedResult</span><span style=color:#111>,</span>
+        <span style=color:#00a8c8>int</span> <span style=color:#111>numOperatorsUsed</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>accumulatedResult</span> <span style=color:#111>==</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Result</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>numOperatorsUsed</span> <span style=color:#111>==</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+        
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>accumulatedResult</span> <span style=color:#111>&gt;</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Result</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+        
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>numOperatorsUsed</span> <span style=color:#111>&gt;=</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+
+        <span style=color:#111>numOperatorsUsed</span> <span style=color:#111>+=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>operand</span> <span style=color:#111>=</span> <span style=color:#111>equation</span><span style=color:#111>.</span><span style=color:#111>Operands</span><span style=color:#111>[</span><span style=color:#111>numOperatorsUsed</span><span style=color:#111>];</span>
+
+        <span style=color:#00a8c8>return</span> <span style=color:#111>operators</span>
+            <span style=color:#111>.</span><span style=color:#111>Any</span><span style=color:#111>(</span><span style=color:#111>@operator</span> <span style=color:#111>=&gt;</span>
+                <span style=color:#111>IsValid</span><span style=color:#111>(</span>
+                    <span style=color:#111>equation</span><span style=color:#111>,</span>
+                    <span style=color:#111>operators</span><span style=color:#111>,</span>
+                    <span style=color:#111>Apply</span><span style=color:#111>(</span><span style=color:#111>accumulatedResult</span><span style=color:#111>,</span> <span style=color:#111>@operator</span><span style=color:#111>,</span> <span style=color:#111>operand</span><span style=color:#111>),</span>
+                    <span style=color:#111>numOperatorsUsed</span><span style=color:#111>));</span>
+    <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=AoC2024Day07>Day 07 - Advent of Code 2024: Bridge Repair<i>.</i></cite>
+Eric Wastl.
+<a href=https://adventofcode.com/2024/day/7 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Aug 23, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=itertools>itertools — Functions creating iterators for efficient looping — Python 3.13.7 documentation<i>.</i></cite>
+<a href=https://docs.python.org/3/library/itertools.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>docs.python.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 13, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=StackOverflow6655754>algorithm - Finding the number of digits of an integer - Stack Overflow<i>.</i></cite>
+<a href=https://stackoverflow.com/questions/6655754/finding-the-number-of-digits-of-an-integer target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 13, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiEmbarrassinglyParallel>Embarrassingly parallel - Wikipedia<i>.</i></cite>
+<a href=https://en.wikipedia.org/wiki/Embarrassingly_parallel target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 13, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=PLINQ>Introduction to PLINQ - .NET | Microsoft Learn<i>.</i></cite>
+<a href=https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/introduction-to-plinq target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 13, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Enumerable.Zip>Enumerable.Zip Method (System.Linq) | Microsoft Learn<i>.</i></cite>
+<a href="https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.zip?view=net-9.0" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Sep 14, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Wastl-Eric>Wastl, Eric</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/adventofcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
+adventofcode.com</a>
+<a href=/domains/docs.python.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=docs.python.org" loading=lazy aria-hidden=true width=16 height=16>
+docs.python.org</a>
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org</a>
+<a href=/domains/learn.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+learn.microsoft.com</a>
+<a href=/domains/stackoverflow.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+stackoverflow.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/06-guard-gallivant/06-guard-gallivant/>&#171; AoC 2024 Day 06: Guard Gallivant</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/aoc-csharp.instructions/>LLM Instructions for Advent of Code Using C# &#187;</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
