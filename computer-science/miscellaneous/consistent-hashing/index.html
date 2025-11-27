@@ -1,39 +1,100 @@
-<!doctype html><html lang=en><head><title>Consistent Hashing | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Consistent hashing makes me think of hashing without randomization. Why isn&rsquo;t every hash consistent by definition? For example, a map implementation would need consistent hashing lest it&rsquo;s inaccurate when searching for stored values. Or is consistent hashing a tradeoff between collision-resistance and speed?
-  Web Caching Was the original motivation for consistent hashing. With a web cache, if a browser requests a URL that is not in the cache, the page is downloaded from the server, and the result is sent to both the browser and the cache...."><meta property="og:title" content="Consistent Hashing"><meta property="og:description" content="Consistent hashing makes me think of hashing without randomization. Why isn&rsquo;t every hash consistent by definition? For example, a map implementation would need consistent hashing lest it&rsquo;s inaccurate when searching for stored values. Or is consistent hashing a tradeoff between collision-resistance and speed?
-  Web Caching Was the original motivation for consistent hashing. With a web cache, if a browser requests a URL that is not in the cache, the page is downloaded from the server, and the result is sent to both the browser and the cache...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/miscellaneous/consistent-hashing/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+<!doctype html><html lang=en><head><title>Consistent Hashing | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="The term &ldquo;consistent hashing&rdquo; makes me think of hashing without randomization. Why isn&rsquo;t every hash consistent by definition? For example, a map implementation would need consistent hashing lest it&rsquo;s inaccurate when searching for stored values. Or is consistent hashing a tradeoff between collision-resistance and speed?
+  Web Caching Web caching was the original motivation for consistent hashing. With a web cache, if a browser requests a URL that is not in the cache, the page is downloaded from the server, and the result is sent to both the browser and the cache...."><meta property="og:title" content="Consistent Hashing"><meta property="og:description" content="The term &ldquo;consistent hashing&rdquo; makes me think of hashing without randomization. Why isn&rsquo;t every hash consistent by definition? For example, a map implementation would need consistent hashing lest it&rsquo;s inaccurate when searching for stored values. Or is consistent hashing a tradeoff between collision-resistance and speed?
+  Web Caching Web caching was the original motivation for consistent hashing. With a web cache, if a browser requests a URL that is not in the cache, the page is downloaded from the server, and the result is sent to both the browser and the cache...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/miscellaneous/consistent-hashing/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/miscellaneous/>Miscellaneous</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/miscellaneous/consistent-hashing/>Consistent Hashing</a></li></ul></nav><section><header><h1>Consistent Hashing</h1><p class=meta>Dated Nov 27, 2024;
-last modified on Wed, 27 Nov 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#web-caching>Web Caching</a></li><li><a href=#simple-solution-using-hashing>Simple Solution Using Hashing</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>Consistent hashing makes me think of hashing without randomization. Why isn&rsquo;t
-every hash consistent by definition? For example, a map implementation would
-need consistent hashing lest it&rsquo;s inaccurate when searching for stored values.
-Or is consistent hashing a tradeoff between collision-resistance and speed?</p></div></div><h2 id=web-caching>Web Caching</h2><p>Was the original motivation for consistent hashing. With a web cache, if a
-browser requests a URL that is not in the cache, the page is downloaded from the
-server, and the result is sent to both the browser and the cache. On a second
-request, the page is served from the cache without contacting the server. <span class=citation-ref><a href=#CS168-01></a></span></p><p>Web caching improves the end user&rsquo;s response time. It also reduces network
+last modified on Thu, 27 Nov 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#web-caching>Web Caching</a></li><li><a href=#simple-solution-using-hashing>Simple Solution Using Hashing</a></li><li><a href=#consistent-hashing>Consistent Hashing</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>The term &ldquo;consistent hashing&rdquo; makes me think of hashing without randomization.
+Why isn&rsquo;t every hash consistent by definition? For example, a map implementation
+would need consistent hashing lest it&rsquo;s inaccurate when searching for stored
+values. Or is consistent hashing a tradeoff between collision-resistance and
+speed?</p></div></div><h2 id=web-caching>Web Caching</h2><p>Web caching was the original motivation for consistent hashing. With a web
+cache, if a browser requests a URL that is not in the cache, the page is
+downloaded from the server, and the result is sent to both the browser and the
+cache. On a second request, the page is served from the cache without contacting
+the server. <span class=citation-ref><a href=#CS168-01></a></span></p><div class=comment-holder><div class=comment><p>Web caching can sometimes get in the way. For example,
+<a href=https://www.curiosities.dev/computer-science/swe-in-practice/2022-06-06-perspectives-on-swe/#designing-software-in-your-head-that-could-possibly-work>when designing a blog
+with comments</a>
+, if a blog post gets a new comment, then the caches of that blog post need
+to get busted so that the updated post is served.</p></div></div><p>Web caching improves the end user&rsquo;s response time. It also reduces network
 traffic overall. <span class=citation-ref><a href=#CS168-01></a></span></p><p>While giving each user their own cache is good, one could go further and
 implement a web cache that is shared by many users, e.g., all users on a campus
-network. These users will enjoy many more cache hits. Akamai&rsquo;s goal was to turn
-this into a viable technology. <span class=citation-ref><a href=#CS168-01></a></span></p><p>Caching pages for a large number of users needs more storage than is available
+network. These users will enjoy many more cache hits. <span class=citation-ref><a href=#CS168-01></a></span></p><div class=comment-holder><div class=comment><p>Akamai&rsquo;s goal was to turn a shared cache into a viable technology. Their claim
+to fame was in March 31, 1999. Apple was the exclusive distributor for the
+trailer for &ldquo;Star Wars: The Phantom Menace&rdquo;. <code>apple.com</code> went down almost
+immediately, and for a good part of the day, the only place to watch the trailer
+was via Akamai&rsquo;s web caches.</p></div></div><div class=comment-holder><div class=comment><p>In 2006, Amazon implemented its Dynamo system using consistent hashing. The
+goal was to store tons of stuff using commodity hardware while maintaining a
+fast response time. As much of the data is stored in main memory. Consistent
+hashing is used to to keep track of what&rsquo;s where. <span class=citation-ref><a href=#CS168-01></a></span></p></div></div><p>Caching pages for a large number of users needs more storage than is available
 on one machine. Suppose the shared cache is spread over \(N\) machines; where
-should we look for a cached copy of <code>www.contoso.com</code>? <span class=citation-ref><a href=#CS168-01></a></span></p><h2 id=simple-solution-using-hashing>Simple Solution Using Hashing</h2><p>A <dfn>hash function</dfn>, \(h\) maps elements of a (usually super-big)
-universe \(U\), like URLs, to &ldquo;buckets&rdquo;, such as 32-bit values. A good
-\(h\):</p><ul><li>Is easy to compute, e.g., a few arithmetic operations and maybe a mod.</li><li>Behaves like a totally random function, spreading out data evenly without
+should we look for a cached copy of <code>www.contoso.com</code>? <span class=citation-ref><a href=#CS168-01></a></span></p><h2 id=simple-solution-using-hashing>Simple Solution Using Hashing</h2><p>A <dfn>hash function</dfn>, \(h\), maps elements of a large universe \(U\)
+to &ldquo;buckets&rdquo;, e.g., mapping URLs to 32-bit values. A good \(h\):</p><ul><li>Is easy to compute, e.g., a few arithmetic operations and maybe a mod.</li><li>Behaves like a totally random function, spreading out data evenly without
 notable correlations across the possible buckets.</li></ul><p>Designing good hash functions isn&rsquo;t easy, but can be treated like a solved
-problem. In practice, it&rsquo;s common to use the MD5 hash function. <span class=citation-ref><a href=#CS168-01></a></span></p><p>If we have \(n\) caches named \({0, 1, 2, &mldr;, n-1}\), how about storing
-the web page with URL \(x\) at the cache server named</p><p>$$ h(x) \mod{n} $$</p><p>In practice, \(n\) is not fixed, e.g., web caches can be added or removed due
+problem. In practice, it&rsquo;s common to use the MD5 hash function. <span class=citation-ref><a href=#CS168-01></a></span></p><p>Suppose we have \(n\) caches named \({0, 1, 2, &mldr;, n-1}\). Let&rsquo;s store
+the web page with URL \(x\) at the cache server named \(h(x) \mod{n}\). <span class=citation-ref><a href=#CS168-01></a></span></p><p>In practice, \(n\) is not fixed, e.g., web caches can be added or removed due
 to business or network conditions. With the aforementioned approach, changing
 \(n\) forces almost all objects to relocate. Moving data between machines
-across a network is expensive, especially when \(n\) is prone to change. <span class=citation-ref><a href=#CS168-01></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CS168-01>CS168: The Modern Algorithmic Toolbox<i>.</i>
+across a network is expensive, especially when \(n\) is prone to change. <span class=citation-ref><a href=#CS168-01></a></span></p><div class=comment-holder><div class=comment><p>Compare this to hash table implementations. When the load factor (no. of
+elements divided by no. of buckets) increases, search time degrades, and hash
+table implementations increase the number of buckets and rehash everything.
+While rehashing is an expensive operation, it&rsquo;s invoked infrequently and the
+data is moved within the same machine. <span class=citation-ref><a href=#CS168-01></a></span></p></div></div><h2 id=consistent-hashing>Consistent Hashing</h2><p>The goal of consistent hashing is to provide hash table-type functionality <em>and
+have almost all objects stay assigned to the same cache even as the number
+\(n\) of caches changes</em>. <span class=citation-ref><a href=#CS168-01></a></span></p><p>There are several implementations of consistent hashing, but here&rsquo;s one:</p><ul><li>Hash the names of all cache servers, i.e., \(h(s)\), and note them in the
+corresponding buckets.</li><li>Given an object \(x\) that hashes to the bucket \(h(x)\), scan buckets to
+the right of \(h(x)\) until we find a bucket \(h(s)\). Wrap around the
+array if need be.</li><li>Designate \(s\) as the cache responsible for the object \(x\).</li></ul><div class=comment-holder><div class=comment><p>This implementation was first presented in a 1997 research paper in STOC
+(Symposium on the Theory of Computing). <span class=citation-ref><a href=#CS168-01></a></span><span class=citation-ref><a href=#STOC></a></span></p></div></div><p><span class=citation-ref><a href=#CS168-01></a></span></p><figure><img src=/img/computer-science/cs168/consistent-hashing-array.jpg alt="Each element of the array is a bucket of the hash table. Each object x is assigned to the first cache server s on its right. Credits: https://web.stanford.edu/class/cs168/l/l1.pdf"><figcaption><p>Each element of the array is a bucket of the hash table. Each object
+x is assigned to the first cache server s on its right. Credits:
+<a href=https://web.stanford.edu/class/cs168/l/l1.pdf>https://web.stanford.edu/class/cs168/l/l1.pdf</a></p></figcaption></figure><figure><img src=/img/computer-science/cs168/consistent-hashing-circular-array.jpg alt="Left: wrapping the two ends of the array solves the problem of an object x being to the right of the last cache. Right: adding a new server s3 only requires that x2 be moved from s0 to s3. Credits: https://web.stanford.edu/class/cs168/l/l1.pdf"><figcaption><p>Left: wrapping the two ends of the array solves the problem of an
+object x being to the right of the last cache. Right: adding a new server s3
+only requires that x2 be moved from s0 to s3. Credits:
+<a href=https://web.stanford.edu/class/cs168/l/l1.pdf>https://web.stanford.edu/class/cs168/l/l1.pdf</a></p></figcaption></figure><p>Assuming a uniform \(h\), the expected load on each of the \(n\) cache
+servers is \(\frac{1}{n}\) of the objects. When we add a new cache server
+\(s\), only the objects stored at \(s\), roughly \(\frac{1}{n}\) objects,
+need to relocate. This is much better than the
+<a href=#simple-solution-using-hashing>naive
+solution</a>
+where \(\frac{n-1}{n}\) of the
+objects are expected to relocate when the \(n\)-th cache is added! <span class=citation-ref><a href=#CS168-01></a></span></p><div class=comment-holder><div class=comment><p>How do objects get moved? The new cache server could identify its &ldquo;successor&rdquo;
+and send a request for the objects that hash to the relevant range. However, in
+a web cache context, there is no need to do anything. New requests will miss the
+object in the new cache and force it to be downloaded and cached. The old cache
+in the &ldquo;successor&rdquo; node will eventually time out and be deleted. <span class=citation-ref><a href=#CS168-01></a></span></p></div></div><p>The <code>lookup</code> and <code>insert</code> hash table operations need an efficient
+rightward/clockwise scan operation. Hash tables don&rsquo;t work because they don&rsquo;t
+maintain ordering information. A heap only maintains a partial order so that
+finding the minimum is fast. A binary tree maintains total order, and exposes a
+<code>successor</code> operation. For a balanced binary tree, the <code>successor</code> operation
+takes \(\mathcal{O}(log(n))\) time, where \(n\) is the number of caches. <span class=citation-ref><a href=#CS168-01></a></span></p><div class=comment-holder><div class=comment><p>Third-generation peer-to-peer (P2P) networks use consistent hashing to keep
+track of where everything is. However, nobody is keeping track of the full set
+of cache servers. How can <code>successor</code> be implemented? The high-level idea is
+that each machine is responsible for keeping track of a small number of machines
+in the network. An object search is then sent to the appropriate machine using a
+clever routing protocol. <span class=citation-ref><a href=#CS168-01></a></span></p></div></div><p>While the expected load of each cache server is \(\frac{1}{n}\) of the
+objects, the realized load of each cache server will vary. One way to decrease
+this variance is to hash each server, \(s\), with \(k\) different hash
+functions to get \(h_1(s), &mldr;, h_k(s)\). Objects are assigned as before,
+i.e., scan clockwise until we encounter one of the hash values of some cache
+\(s\), and \(s\) is responsible for storing \(x\). By symmetry, each cache
+still expects a load of \(\frac{1}{n}\), but the variances in load across
+cache servers is reduced significantly. Choosing \(k \approx log_{2}n\) is
+large enough to obtain reasonably balanced loads. <span class=citation-ref><a href=#CS168-01></a></span></p><figure><img src=/img/computer-science/cs168/consistent-hashing-circular-array-with-replication.jpg alt="Decreasing the variance by assigning each cache server multiple hash values. Credits: https://web.stanford.edu/class/cs168/l/l1.pdf"><figcaption><p>Decreasing the variance by assigning each cache server multiple hash
+values. Credits: <a href=https://web.stanford.edu/class/cs168/l/l1.pdf>https://web.stanford.edu/class/cs168/l/l1.pdf</a></p></figcaption></figure><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CS168-01>CS168: The Modern Algorithmic Toolbox<i>.</i>
 Lecture #1: Introduction and Consistent Hashing<i>.</i></cite>
 Tim Roughgarden; Gregory Valiant.
 <a href=https://web.stanford.edu/class/cs168/l/l1.pdf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=web.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
 <i>web.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 Apr 2, 2024.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<i class="fas fa-fw fa-globe" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=STOC>ACM STOC Conference: The ACM Symposium on Theory of Computing<i>.</i></cite>
+<a href=https://acm-stoc.org/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=acm-stoc.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>acm-stoc.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 27, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
 <a href=/tags/cs168>#cs168</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Roughgarden-Tim>Roughgarden, Tim</a>
 <a href=/cited-authors/Valiant-Gregory>Valiant, Gregory</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/acm-stoc.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=acm-stoc.org" loading=lazy aria-hidden=true width=16 height=16>
+acm-stoc.org</a>
 <a href=/domains/web.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=web.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
 web.stanford.edu</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/miscellaneous/2020-07-05-code-smells-and-hygiene/>&#171; Of Code Smells and Hygiene</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
