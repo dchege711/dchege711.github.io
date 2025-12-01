@@ -1,0 +1,77 @@
+<!doctype html><html lang=en><head><title>Given Language Models, Why Learn About Large Language Models? | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="This part of  seems pertinent to respond to &ldquo;LLMs are just (auto-complete; Markov chains; [insert pre-existing LM-adjacent tech]) on steroids&rdquo;.
+  Scale LLMs are massive. From 2018 - 2022, model sizes have increased 5000x. OpenAI&rsquo;s GPT model from June 2018 had 110M parameters; GPT-3 from May 2020 had 175B parameters.  LLM providers no longer seem to advertise their parameter counts; GPT-4 was leaked to have 1.8T parameters...."><meta property="og:title" content="Given Language Models, Why Learn About Large Language Models?"><meta property="og:description" content="This part of  seems pertinent to respond to &ldquo;LLMs are just (auto-complete; Markov chains; [insert pre-existing LM-adjacent tech]) on steroids&rdquo;.
+  Scale LLMs are massive. From 2018 - 2022, model sizes have increased 5000x. OpenAI&rsquo;s GPT model from June 2018 had 110M parameters; GPT-3 from May 2020 had 175B parameters.  LLM providers no longer seem to advertise their parameter counts; GPT-4 was leaked to have 1.8T parameters...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/why-learn-about-llms/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/why-learn-about-llms/>Given Language Models, Why Learn About Large Language Models?</a></li></ul></nav><section><header><h1>Given Language Models, Why Learn About Large Language Models?</h1><p class=meta>Dated Nov 30, 2025;
+last modified on Sun, 30 Nov 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#scale>Scale</a></li><li><a href=#llms-as-standalone-systems>LLMs as Standalone Systems</a></li><li><a href=#in-context-learning>In-Context Learning</a></li><li><a href=#lms-in-the-real-world>LMs in the Real World</a></li><li><a href=#risks>Risks</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p>This part of <span class=citation-ref><a href=#CS324Intro></a></span>seems pertinent to respond to &ldquo;LLMs are
+just (auto-complete; Markov chains; [insert pre-existing LM-adjacent tech]) on
+steroids&rdquo;.</p></div></div><h2 id=scale>Scale</h2><p>LLMs are massive. From 2018 - 2022, model sizes have increased 5000x. OpenAI&rsquo;s
+GPT model from June 2018 had 110M parameters; GPT-3 from May 2020 had 175B
+parameters. <span class=citation-ref><a href=#CS324Intro></a></span>LLM providers no longer seem to advertise
+their parameter counts; GPT-4 was leaked to have 1.8T parameters. <span class=citation-ref><a href=#GPT4Leak></a></span></p><h2 id=llms-as-standalone-systems>LLMs as Standalone Systems</h2><p>Unlike LMs that were used as components of larger systems, e.g., machine
+translation, LLMs are increasingly capable of being a standalone system. Recall
+that LMs are capable of conditional generation (given a prompt, generate a
+completion). This allows the same LLM to solve a variety of tasks by changing
+the prompt, e.g.,</p><ul><li>Question answering by prompting with a &ldquo;fill in the blank&rdquo;, e.g., <code>Frederic, Chopin, was, born, in</code> \(\rightsquigarrow\) <code>1810, in, Poland</code>.</li><li>Generate new articles, e.g., <code>Title: NLP Researchers at Stanford Discover Black Holes in Language Models. Article: On January 3,</code></li></ul><p><span class=citation-ref><a href=#CS324Intro></a></span></p><h2 id=in-context-learning>In-Context Learning</h2><p>In normal supervised learning, one specifies a training set and trains a model
+to fit those examples. Each training run produces a different model. With
+in-context learning, one LLM can be coaxed via prompts to perform different
+tasks. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>Suppose we want direct answers, and not:</p><blockquote><p><strong>Input: Where is Stanford University?</strong></p><p><strong>Output:</strong> Stanford University is in California</p></blockquote><p>&mldr; we can have a prompt that includes examples of what input/output pairs look
+like. GPT-3 is able to produce the desired answer:</p><blockquote><p><strong>Input: Where is MIT?</strong></p><p><strong>Output: Cambridge</strong></p><p><strong>Input: Where is University of Washington?</strong></p><p><strong>Output: Seattle</strong></p><p><strong>Input: Where is Stanford University?</strong></p><p><strong>Output:</strong> Stanford</p></blockquote><p><span class=citation-ref><a href=#CS324Intro></a></span></p><h2 id=lms-in-the-real-world>LMs in the Real World</h2><p>In the research world, every state-of-the-art system in Natural Language
+Processing (e.g., sentiment classification, question answering, summarization,
+machine translation) are all based on some type of language model. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>The fact that most production systems are closed makes it harder to know. But
+some high profile LLM applications are in Google Search, Facebook&rsquo;s content
+moderation, ChatGPT, etc. LLMs are affecting billions of people. <span class=citation-ref><a href=#CS324Intro></a></span></p><h2 id=risks>Risks</h2><p>LLMs are unreliable; sometimes they produce answers that seem correct. In
+high-stakes applications, giving the wrong information has dire consequences.
+<span class=citation-ref><a href=#CS324Intro></a></span></p><p>Machine Learning systems exhibit social bias. For example, is the probability of
+<code>The software developer finished the program. He celebrated.</code> higher than that
+of <code>The software developer finished the program. She celebrated.</code>? <span class=citation-ref><a href=#CS324Intro></a></span></p><p>The training data has a lot of internet data that inevitably contains offensive
+contents. For example, GPT-3 has been shown to output anti-Muslim stereotypes,
+e.g., <code>Two Muslims walked into a ___</code>. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>LLMs can be used to run disinformation campaigns with greater ease. Malicious
+actors can create fluent, persuasive text without the risks of hiring native
+speakers. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>Because LLMs are trained on a scrape of the public internet, attackers can
+perform a data poisoning attack, e.g., poison documents can be injected into the
+training set such that the model generates negative sentiment whenever &ldquo;Apple
+iPhone&rdquo; is in the prompt. <span class=citation-ref><a href=#CS324Intro></a></span></p><div class=comment-holder><div class="comment open-comment"><p>How do the poison documents disproportionately affect the LLMs output? Aren&rsquo;t
+all training data weighed equally?</p></div></div><p>LMs are trained on copyright data, e.g., books. Does that count as fair use? Try
+prompting an LLM with the first line of Harry Potter: <code>Mr. and Mrs. Dursley of number four, Priver Drive, __</code>. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>LLMs are quite expensive to work with. Training requires parallelizing over lots
+of GPUs, e.g., GPT-3 cost $5M. Inference on the trained model to make predictions
+also incurs a continual cost. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>Closely accompanying rising costs is that recent LLMs, e.g., GPT-3 are closed
+and only behind API access. Some efforts are trying to keep models open, e.g.,
+Hugging Face&rsquo;s Big Science Project brought together 1,000 researchers to release
+an open 176B parameter LLM <span class=citation-ref><a href=#BLOOM></a></span>; <span class=citation-ref><a href=#EleutherAI></a></span>with its
+open Discord channel; Stanford&rsquo;s Center for Research on Foundation Models <span class=citation-ref><a href=#CRFM></a></span>. <span class=citation-ref><a href=#CS324Intro></a></span></p><p>There is an environmental impact to powering that many GPUs. However, the
+cost-benefit tradeoff is subtle, e.g., if a single LLM can be trained once and
+power many downstream tasks, then it might be cheaper than training individual
+task-specific models. <span class=citation-ref><a href=#CS324Intro></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CS324Intro>Introduction | CS324<i>.</i></cite>
+Percy Liang; Tatsunori Hashimoto; Christopher Ré.
+<a href=https://stanford-cs324.github.io/winter2022/lectures/introduction/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stanford-cs324.github.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>stanford-cs324.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+2022.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=BLOOM>BLOOM<i>.</i></cite>
+<a href=https://bigscience.huggingface.co/blog/bloom target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=bigscience.huggingface.co" loading=lazy aria-hidden=true width=16 height=16>
+<i>bigscience.huggingface.co</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=EleutherAI>EleutherAI<i>.</i></cite>
+<a href=https://www.eleuther.ai/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.eleuther.ai" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.eleuther.ai</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CRFM>Stanford CRFM<i>.</i></cite>
+<a href=https://crfm.stanford.edu/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=crfm.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
+<i>crfm.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=GPT4Leak>GPT-4's details are leaked : mlscaling<i>.</i></cite>
+<a href=https://www.reddit.com/r/mlscaling/comments/14wcy7m/gpt4s_details_are_leaked/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Hashimoto-Tatsunori>Hashimoto, Tatsunori</a>
+<a href=/cited-authors/Liang-Percy>Liang, Percy</a>
+<a href=/cited-authors/R%c3%a9-Christopher>Ré, Christopher</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/bigscience.huggingface.co style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=bigscience.huggingface.co" loading=lazy aria-hidden=true width=16 height=16>
+bigscience.huggingface.co</a>
+<a href=/domains/crfm.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=crfm.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
+crfm.stanford.edu</a>
+<a href=/domains/stanford-cs324.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stanford-cs324.github.io" loading=lazy aria-hidden=true width=16 height=16>
+stanford-cs324.github.io</a>
+<a href=/domains/www.eleuther.ai style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.eleuther.ai" loading=lazy aria-hidden=true width=16 height=16>
+www.eleuther.ai</a>
+<a href=/domains/www.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+www.reddit.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/large-language-models/intro-to-llms/>Introduction to LLMs &#187;</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
