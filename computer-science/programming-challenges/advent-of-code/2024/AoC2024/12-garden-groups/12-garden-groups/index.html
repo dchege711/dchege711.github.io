@@ -4,7 +4,7 @@ AAAA BBCD BBCC EEEC The area of a region is the number of garden plots the regio
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/>Advent of Code 2024 - C#</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/12-garden-groups/12-garden-groups/>AoC 2024 Day 12: Garden Groups</a></li></ul></nav><section><header><h1>AoC 2024 Day 12: Garden Groups</h1><p class=meta>Dated Nov 30, 2025;
-last modified on Sun, 30 Nov 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><p>Each garden plot grows only a single type of plant indicated by a single letter.
+last modified on Sun, 30 Nov 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li><li><a href=#core-routines>Core Routines</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><p>Each garden plot grows only a single type of plant indicated by a single letter.
 This \(4 \times 4\) arrangement includes garden plots growing 5 different
 types of plants (labelled <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code>). <span class=citation-ref><a href=#AoC2024Day12></a></span></p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>AAAA
 BBCD
@@ -13,7 +13,7 @@ EEEC
 </code></pre></div><p>The <dfn>area</dfn> of a region is the number of garden plots the region
 contains. The <dfn>perimeter</dfn> of a region is the number of sides of garden
 plots in the region that do not touch another garden plot in the same region.
-For example, the <code>C</code> plans are in a region with area \(4\) and perimeter
+For example, the <code>C</code> plants are in a region with area \(4\) and perimeter
 \(8\). <span class=citation-ref><a href=#AoC2024Day12></a></span></p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>+-+-+-+-+
 |A A A A|
 +-+-+-+-+     +-+
@@ -33,14 +33,258 @@ OXOXO
 OOOOO
 OXOXO
 OOOOO
-</code></pre></div><p><span class=citation-ref><a href=#AoC2024Day12></a></span></p><h2 id=part-one>Part One</h2><p>The <dfn>price</dfn> of a fence required for a region is found by multiplying
+</code></pre></div><p><span class=citation-ref><a href=#AoC2024Day12></a></span></p><div id=GardenGroups.Parse.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>GardenGroups</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>Garden</span> <span style=color:#111>garden</span><span style=color:#111>;</span>
+
+    <span style=color:#00a8c8>public</span> <span style=color:#111>GardenGroups</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>using</span> <span style=color:#111>StreamReader</span> <span style=color:#111>inputReader</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>rowsBuilder</span> <span style=color:#111>=</span> <span style=color:#111>ImmutableList</span><span style=color:#111>.</span><span style=color:#111>CreateBuilder</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>char</span><span style=color:#111>[]&gt;();</span>
+
+        <span style=color:#00a8c8>string?</span> <span style=color:#111>line</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>while</span> <span style=color:#111>((</span><span style=color:#111>line</span> <span style=color:#111>=</span> <span style=color:#111>inputReader</span><span style=color:#111>.</span><span style=color:#111>ReadLine</span><span style=color:#111>())</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>null</span><span style=color:#111>)</span>
+            <span style=color:#111>rowsBuilder</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>line</span><span style=color:#111>.</span><span style=color:#111>ToCharArray</span><span style=color:#111>());</span>
+        
+        <span style=color:#00a8c8>var</span> <span style=color:#111>rows</span> <span style=color:#111>=</span> <span style=color:#111>rowsBuilder</span><span style=color:#111>.</span><span style=color:#111>ToImmutable</span><span style=color:#111>();</span>
+        <span style=color:#00a8c8>int</span> <span style=color:#111>rowCount</span> <span style=color:#111>=</span> <span style=color:#111>rows</span><span style=color:#111>.</span><span style=color:#111>Count</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>int</span> <span style=color:#111>colCount</span> <span style=color:#111>=</span> <span style=color:#111>rows</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>().</span><span style=color:#111>Length</span><span style=color:#111>;</span>
+
+        <span style=color:#00a8c8>var</span> <span style=color:#111>plantMap</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#00a8c8>char</span><span style=color:#111>[</span><span style=color:#111>rowCount</span><span style=color:#111>,</span> <span style=color:#111>colCount</span><span style=color:#111>];</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>rowCount</span><span style=color:#111>;</span> <span style=color:#111>r</span><span style=color:#111>++)</span>
+            <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>colCount</span><span style=color:#111>;</span> <span style=color:#111>c</span><span style=color:#111>++)</span>
+                <span style=color:#111>plantMap</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>rows</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>][</span><span style=color:#111>c</span><span style=color:#111>];</span>
+        
+        <span style=color:#111>garden</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>plantMap</span><span style=color:#111>,</span> <span style=color:#111>rowCount</span><span style=color:#111>,</span> <span style=color:#111>colCount</span><span style=color:#111>);</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>Garden</span><span style=color:#111>(</span><span style=color:#00a8c8>char</span><span style=color:#111>[,]</span> <span style=color:#111>PlantMap</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>RowCount</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>ColCount</span><span style=color:#111>);</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><h2 id=part-one>Part One</h2><p>The <dfn>price</dfn> of a fence required for a region is found by multiplying
 that region&rsquo;s area by its perimeter. What is the total price of fencing all
-regions on your map?</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=AoC2024Day12>Day 12 - Advent of Code 2024: Garden Groups<i>.</i></cite>
+regions on your map? <span class=citation-ref><a href=#AoC2024Day12></a></span></p><p>Is it worthwhile to think of <span class=citation-ref><a href=#AoC2024Day12></a></span>in terms of connected
+components, where each region is a connected component? The number of
+sub-components in the connected component gives us the area. The perimeter is
+tricky because we&rsquo;d need to at least scan the ends of each row. I don&rsquo;t see how
+computing connected components makes our work easier.</p><p>What if we start from the top-left and scan left to right? At each \((r, c)\),
+we can expand out to cover the whole region. To avoid double-counting, we need a
+second map to efficiently avoid already-counted areas. Otherwise, deducing that
+\((2, 0)\) is in the same region as \((0, 3)\) could be a lot of repeated
+work.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>   0 1 2 3
+        +-+
+0       |A|
+  +-+-+-+ +
+1 |A A A A|
+  +       +
+2 |A A A A|
+  +-+-+-+-+
+</code></pre></div><p>For part one, the fact that \(A\) can have multiple separate regions doesn&rsquo;t
+come into play. We&rsquo;d get the same total price if each \(A\) region was
+replaced by any other plant type. I suspect that part 2 of <span class=citation-ref><a href=#AoC2024Day12></a></span>might want to use this information.</p><p>How should a region be represented in a form amenable to computing area and
+perimeter? Is there use in representing the region? It seems like the act of
+computing a region also allows us to collect the area. If the region computation
+is too busy, I&rsquo;ll separate out the area and perimeter calculations to their own
+subroutines. In that case,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>   0 1 2 3 4 5 6 7
+  +-+-+       +-+-+
+0 |H H|       |H H|
+  + +-+       +-+ +
+1 |H|           |H|
+  + +-+-+-+-+-+-+ +
+2 |H H H H H H H H|
+  + +-+-+-+-+-+-+ +
+3 |H|           |H|
+  +-+           +-+
+</code></pre></div><p>&mldr;can be represented by the column indices:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>[</span>
+  <span style=color:#111>[[</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>],</span> <span style=color:#111>[</span><span style=color:#ae81ff>6</span><span style=color:#111>,</span> <span style=color:#ae81ff>7</span><span style=color:#111>]],</span>
+  <span style=color:#111>[[</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>],</span> <span style=color:#111>[</span><span style=color:#ae81ff>7</span><span style=color:#111>,</span> <span style=color:#ae81ff>7</span><span style=color:#111>]],</span>
+  <span style=color:#111>[[</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>7</span><span style=color:#111>]],</span>
+  <span style=color:#111>[[</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>],</span> <span style=color:#111>[</span><span style=color:#ae81ff>7</span><span style=color:#111>,</span> <span style=color:#ae81ff>7</span><span style=color:#111>]]</span>
+<span style=color:#111>]</span>
+</code></pre></div><p>&mldr; and a note that \(r = 0\) is the starting row, and <code>H</code> is the plant type.
+That information is enough to recreate the original map. The above form is more
+amenable to computing the area than to computing the perimeter.</p><p>On the other hand, a representation with a list of vertices in either clockwise
+or counterclockwise order makes it convenient to compute the perimeter. I don&rsquo;t
+know of a representation that supports area and perimeter computations
+simultaneously. It seems easier to transform the column indices into a list of
+vertices than the other way round.</p><p>Scratch that. Collecting the &ldquo;collected component&rdquo; using breadth first search
+makes it trivial to compute the area during the BFS. BFS also makes it possible
+to compute how much each cell will contribute to the perimeter based on its
+neighbors.</p><div id=GardenGroups.PartOne.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Diagnostics</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>GardenGroups</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>int</span> <span style=color:#111>ComputeTotalFencingPrice</span><span style=color:#111>()</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>ComputeRegions</span><span style=color:#111>()</span>
+            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>(</span><span style=color:#111>region</span> <span style=color:#111>=&gt;</span> <span style=color:#111>region</span><span style=color:#111>.</span><span style=color:#111>Area</span> <span style=color:#111>*</span> <span style=color:#111>region</span><span style=color:#111>.</span><span style=color:#111>Perimeter</span><span style=color:#111>);</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><h2 id=part-two>Part Two</h2><p>Instead of using perimeter, use the number of sides that a region has. What is
+the new total price of fencing all regions on your map? <span class=citation-ref><a href=#AoC2024Day12></a></span></p><div id=GardenGroups.PartTwo.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>GardenGroups</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>int</span> <span style=color:#111>ComputeTotalDiscountedFencingPrice</span><span style=color:#111>()</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>ComputeRegions</span><span style=color:#111>()</span>
+            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>(</span><span style=color:#111>region</span> <span style=color:#111>=&gt;</span> <span style=color:#111>region</span><span style=color:#111>.</span><span style=color:#111>Area</span> <span style=color:#111>*</span> <span style=color:#111>region</span><span style=color:#111>.</span><span style=color:#111>VerticesCount</span><span style=color:#111>);</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><p>Struggled a lot on this part until I looked at <span class=citation-ref><a href=#rAOCDay12Part2></a></span>and
+learned:</p><ol><li>The number of corners equals the number of sides in a polygon.</li><li>Counting the number of corners, both concave and convex corners, given a cell
+and the grid, is a local operation.</li></ol><div class=comment-holder><div class=comment><p>Covered bijections in <em>COS 340: Reasoning about Computation</em> but I don&rsquo;t
+think I had encountered their practicality in the world. In this case, the
+bijection between corners and sides works a lot in my favor.</p><p>Look for computations that can be done in a locally without considering the
+whole problem; such computations might be simpler to define, albeit not as
+efficient. In this case, simplicity triumphs optimizations that could come from
+an algorithm that takes in the <code>Region</code> as input.</p></div></div><p>I had some false starts, e.g., trying to compute all perimeter coordinates and
+then do horizontal and vertical sweeps to count the number of sides. This
+approach was easy to draw and intuit, but hard to code. The fact that I vaguely
+remembered some sweeping algorithms from COS 226 biased me to think that it was
+the optimal solution.</p><div class=comment-holder><div class=comment><p>Get in the behavior of designing more than one plausible algorithm. This should
+help exercise the
+<a href=https://www.curiosities.dev/computer-science/swe-in-practice/2022-06-06-perspectives-on-swe/#designing-software-in-your-head-that-could-possibly-work>&ldquo;Designing Software in Your Head That Could Possibly
+Work&rdquo;</a>
+muscle.</p></div></div><h2 id=core-routines>Core Routines</h2><div id=GardenGroups.Common.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Diagnostics</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>GardenGroups</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>private</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>Region</span><span style=color:#111>&gt;</span> <span style=color:#111>ComputeRegions</span><span style=color:#111>()</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>bool</span><span style=color:#111>[,]</span> <span style=color:#111>visited</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#00a8c8>bool</span><span style=color:#111>[</span><span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>RowCount</span><span style=color:#111>,</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>ColCount</span><span style=color:#111>];</span>
+        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>RowCount</span><span style=color:#111>;</span> <span style=color:#111>r</span><span style=color:#111>++)</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>ColCount</span><span style=color:#111>;</span> <span style=color:#111>c</span><span style=color:#111>++)</span>
+            <span style=color:#111>{</span>
+                <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>visited</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>])</span>
+                    <span style=color:#00a8c8>continue</span><span style=color:#111>;</span>
+                
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>GetRegion</span><span style=color:#111>(</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>),</span> <span style=color:#111>visited</span><span style=color:#111>);</span>
+            <span style=color:#111>}</span>
+        <span style=color:#111>}</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#111>Region</span> <span style=color:#111>GetRegion</span><span style=color:#111>(</span><span style=color:#111>Coordinate</span> <span style=color:#111>start</span><span style=color:#111>,</span> <span style=color:#00a8c8>bool</span><span style=color:#111>[,]</span> <span style=color:#111>visited</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>Assert</span><span style=color:#111>(!</span><span style=color:#111>visited</span><span style=color:#111>[</span><span style=color:#111>start</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>start</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]);</span>
+
+        <span style=color:#111>Queue</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>toVisit</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
+        <span style=color:#111>toVisit</span><span style=color:#111>.</span><span style=color:#111>Enqueue</span><span style=color:#111>(</span><span style=color:#111>start</span><span style=color:#111>);</span>
+
+        <span style=color:#00a8c8>var</span> <span style=color:#111>plantType</span> <span style=color:#111>=</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>PlantMap</span><span style=color:#111>[</span><span style=color:#111>start</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>start</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>];</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>area</span><span style=color:#111>,</span> <span style=color:#111>perimeter</span><span style=color:#111>,</span> <span style=color:#111>vertices</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#111>toVisit</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>&gt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>toVisit</span><span style=color:#111>.</span><span style=color:#111>Dequeue</span><span style=color:#111>();</span>
+
+            <span style=color:#75715e>// Some cells e.g., the bottom right one in a rectangle have more
+</span><span style=color:#75715e></span>            <span style=color:#75715e>// than one neighbor. Short-circuit.
+</span><span style=color:#75715e></span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>visited</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>])</span>
+                <span style=color:#00a8c8>continue</span><span style=color:#111>;</span>
+
+            <span style=color:#111>visited</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+            <span style=color:#111>area</span> <span style=color:#111>+=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+
+            <span style=color:#00a8c8>var</span> <span style=color:#111>neighboringPlotsCount</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>d</span> <span style=color:#00a8c8>in</span> <span style=color:#111>FourWayDeltas</span><span style=color:#111>)</span>
+            <span style=color:#111>{</span>
+                <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>nr</span><span style=color:#111>,</span> <span style=color:#111>nc</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>r</span> <span style=color:#111>+</span> <span style=color:#111>d</span><span style=color:#111>.</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span> <span style=color:#111>+</span> <span style=color:#111>d</span><span style=color:#111>.</span><span style=color:#111>c</span><span style=color:#111>);</span>
+                <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>nr</span><span style=color:#111>,</span> <span style=color:#111>nc</span><span style=color:#111>))</span>
+                    <span style=color:#00a8c8>continue</span><span style=color:#111>;</span>
+
+                <span style=color:#00a8c8>var</span> <span style=color:#111>nPlantType</span> <span style=color:#111>=</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>PlantMap</span><span style=color:#111>[</span><span style=color:#111>nr</span><span style=color:#111>,</span> <span style=color:#111>nc</span><span style=color:#111>];</span>
+                <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>nPlantType</span> <span style=color:#111>!=</span> <span style=color:#111>plantType</span><span style=color:#111>)</span>
+                    <span style=color:#00a8c8>continue</span><span style=color:#111>;</span>
+
+                <span style=color:#111>neighboringPlotsCount</span><span style=color:#111>++;</span>
+                <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>visited</span><span style=color:#111>[</span><span style=color:#111>nr</span><span style=color:#111>,</span> <span style=color:#111>nc</span><span style=color:#111>])</span>
+                    <span style=color:#111>toVisit</span><span style=color:#111>.</span><span style=color:#111>Enqueue</span><span style=color:#111>(</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>nr</span><span style=color:#111>,</span> <span style=color:#111>nc</span><span style=color:#111>));</span>
+            <span style=color:#111>}</span>
+
+            <span style=color:#00a8c8>var</span> <span style=color:#111>perimeterContribution</span> <span style=color:#111>=</span> <span style=color:#ae81ff>4</span> <span style=color:#111>-</span> <span style=color:#111>neighboringPlotsCount</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>perimeterContribution</span> <span style=color:#111>&gt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+            <span style=color:#111>{</span>
+                <span style=color:#111>perimeter</span> <span style=color:#111>+=</span> <span style=color:#111>perimeterContribution</span><span style=color:#111>;</span>
+                <span style=color:#111>vertices</span> <span style=color:#111>+=</span> <span style=color:#111>CountVertices</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>);</span>
+            <span style=color:#111>}</span>
+        <span style=color:#111>}</span>
+    
+        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>plantType</span><span style=color:#111>,</span> <span style=color:#111>perimeter</span><span style=color:#111>,</span> <span style=color:#111>area</span><span style=color:#111>,</span> <span style=color:#111>vertices</span><span style=color:#111>);</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>)[]</span> <span style=color:#111>FourWayDeltas</span> <span style=color:#111>=</span>
+<span style=color:#75af00>        [(1, 0), (-1, 0), (0, 1), (0, -1)]</span><span style=color:#111>;</span>
+    
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>Coordinate</span> <span style=color:#111>coordinate</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>coordinate</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>coordinate</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>);</span>
+    
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>r</span> <span style=color:#111>&gt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>RowCount</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>c</span> <span style=color:#111>&gt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>ColCount</span><span style=color:#111>;</span>
+    
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>)[]</span> <span style=color:#111>EightWayDeltasFromNW</span> <span style=color:#111>=</span> <span style=color:#111>[</span>
+        <span style=color:#111>(-</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>),</span> <span style=color:#111>(-</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>),</span> <span style=color:#111>(-</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>),</span>
+         <span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>),</span>           <span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>),</span>
+         <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>),</span>  <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>),</span>  <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+    <span style=color:#111>];</span>
+    
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>int</span> <span style=color:#111>CountVertices</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>matchStates</span> <span style=color:#111>=</span> <span style=color:#111>GetEightDirectionalNeighborsMatchState</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>).</span><span style=color:#111>ToArray</span><span style=color:#111>();</span>
+        <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>Assert</span><span style=color:#111>(</span><span style=color:#111>matchStates</span><span style=color:#111>.</span><span style=color:#111>Length</span> <span style=color:#111>==</span> <span style=color:#ae81ff>8</span><span style=color:#111>);</span>
+
+        <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>nw</span><span style=color:#111>,</span> <span style=color:#111>n</span><span style=color:#111>,</span> <span style=color:#111>ne</span><span style=color:#111>,</span> <span style=color:#111>w</span><span style=color:#111>,</span> <span style=color:#111>e</span><span style=color:#111>,</span> <span style=color:#111>sw</span><span style=color:#111>,</span> <span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#111>se</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span>
+            <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#111>],</span> <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>1</span><span style=color:#111>],</span> <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>2</span><span style=color:#111>],</span> <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>3</span><span style=color:#111>],</span>
+            <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>4</span><span style=color:#111>],</span> <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>5</span><span style=color:#111>],</span> <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>6</span><span style=color:#111>],</span> <span style=color:#111>matchStates</span><span style=color:#111>[</span><span style=color:#ae81ff>7</span><span style=color:#111>]);</span>
+
+        <span style=color:#111>IReadOnlyList</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>bool</span><span style=color:#111>&gt;</span> <span style=color:#111>cornerTests</span> <span style=color:#111>=</span> <span style=color:#111>[</span>
+            <span style=color:#111>!</span><span style=color:#111>n</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>!</span><span style=color:#111>w</span><span style=color:#111>,</span> <span style=color:#75715e>// NW corner is an outward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>w</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>nw</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>n</span><span style=color:#111>,</span> <span style=color:#75715e>// NW corner is an inward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>n</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>!</span><span style=color:#111>e</span><span style=color:#111>,</span> <span style=color:#75715e>// NE corner is an outward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>e</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>n</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>ne</span><span style=color:#111>,</span> <span style=color:#75715e>// NE corner is an inward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>s</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>!</span><span style=color:#111>e</span><span style=color:#111>,</span> <span style=color:#75715e>// SE corner is an outward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>e</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>s</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>se</span><span style=color:#111>,</span> <span style=color:#75715e>// SE corner is an inward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>s</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>!</span><span style=color:#111>w</span><span style=color:#111>,</span> <span style=color:#75715e>// SW corner is an outward facing region corner
+</span><span style=color:#75715e></span>            <span style=color:#111>!</span><span style=color:#111>w</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>s</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>sw</span><span style=color:#111>,</span> <span style=color:#75715e>// SW corner is an inward facing region corner
+</span><span style=color:#75715e></span>        <span style=color:#111>];</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>count</span> <span style=color:#111>=</span> <span style=color:#111>cornerTests</span><span style=color:#111>.</span><span style=color:#111>Count</span><span style=color:#111>(</span><span style=color:#111>b</span> <span style=color:#111>=&gt;</span> <span style=color:#111>b</span><span style=color:#111>);</span>
+        <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>Assert</span><span style=color:#111>(</span><span style=color:#111>count</span> <span style=color:#111>&lt;=</span> <span style=color:#ae81ff>4</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>count</span><span style=color:#111>;</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>bool</span><span style=color:#111>&gt;</span> <span style=color:#111>GetEightDirectionalNeighborsMatchState</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>targetPlantType</span> <span style=color:#111>=</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>PlantMap</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>];</span>
+        <span style=color:#00a8c8>return</span> <span style=color:#111>EightWayDeltasFromNW</span>
+            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>d</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>new</span> <span style=color:#111>Coordinate</span><span style=color:#111>(</span><span style=color:#111>r</span> <span style=color:#111>+</span> <span style=color:#111>d</span><span style=color:#111>.</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span> <span style=color:#111>+</span> <span style=color:#111>d</span><span style=color:#111>.</span><span style=color:#111>c</span><span style=color:#111>))</span>
+            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>MatchesPlantType</span><span style=color:#111>(</span><span style=color:#111>coord</span><span style=color:#111>,</span> <span style=color:#111>targetPlantType</span><span style=color:#111>));</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>MatchesPlantType</span><span style=color:#111>(</span><span style=color:#111>Coordinate</span> <span style=color:#111>coord</span><span style=color:#111>,</span> <span style=color:#00a8c8>char</span> <span style=color:#111>targetPlantType</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+        <span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>)</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>garden</span><span style=color:#111>.</span><span style=color:#111>PlantMap</span><span style=color:#111>[</span><span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]</span> <span style=color:#111>==</span> <span style=color:#111>targetPlantType</span><span style=color:#111>;</span>
+
+    <span style=color:#00a8c8>internal</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>Coordinate</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>C</span><span style=color:#111>);</span>
+
+    <span style=color:#00a8c8>internal</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>Region</span><span style=color:#111>(</span>
+        <span style=color:#00a8c8>char</span> <span style=color:#111>PlantType</span><span style=color:#111>,</span>
+        <span style=color:#00a8c8>int</span> <span style=color:#111>Perimeter</span><span style=color:#111>,</span>
+        <span style=color:#00a8c8>int</span> <span style=color:#111>Area</span><span style=color:#111>,</span>
+        <span style=color:#00a8c8>int</span> <span style=color:#111>VerticesCount</span><span style=color:#111>);</span>
+<span style=color:#111>}</span>
+</code></pre></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=AoC2024Day12>Day 12 - Advent of Code 2024: Garden Groups<i>.</i></cite>
 Eric Wastl.
 <a href=https://adventofcode.com/2024/day/12 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Nov 30, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=rAOCDay12Part2>[2024 Day 12 (Part 2)] What kind of algorithm did you use on part 2? : r/adventofcode<i>.</i></cite>
+<a href=https://www.reddit.com/r/adventofcode/comments/1hcpyic/2024_day_12_part_2_what_kind_of_algorithm_did_you/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Dec 6, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Wastl-Eric>Wastl, Eric</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/adventofcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
-adventofcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/11-plutonian-pebbles/11-plutonian-pebbles/>&#171; AoC 2024 Day 11: Plutonian Pebbles</a></footer></section></div><footer><a href=/about>About</a>
+adventofcode.com</a>
+<a href=/domains/www.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+www.reddit.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/11-plutonian-pebbles/11-plutonian-pebbles/>&#171; AoC 2024 Day 11: Plutonian Pebbles</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
