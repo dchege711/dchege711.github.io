@@ -1,0 +1,154 @@
+<!doctype html><html lang=en><head><title>Shortest Paths in a Graph | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="A shortest path from vertex \(s\) to vertex \(t\) in an edge-weighted digraph is a directed path from \(s\) to \(t\) with the property that no other path has a lower weight. 
+A shortest-paths tree for a source \(s\) is a subgraph containing \(s\) and all the vertices reachable from \(s\) that forms a directed tree rooted at \(s\) such that every tree path is a shortest path in the digraph...."><meta property="og:title" content="Shortest Paths in a Graph"><meta property="og:description" content="A shortest path from vertex \(s\) to vertex \(t\) in an edge-weighted digraph is a directed path from \(s\) to \(t\) with the property that no other path has a lower weight. 
+A shortest-paths tree for a source \(s\) is a subgraph containing \(s\) and all the vertices reachable from \(s\) that forms a directed tree rooted at \(s\) such that every tree path is a shortest path in the digraph...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/graphs/shortest-paths/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
+const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
+function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/>Algorithms and Data Structures</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/graphs/>Graphs</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/graphs/shortest-paths/>Shortest Paths in a Graph</a></li></ul></nav><section><header><h1>Shortest Paths in a Graph</h1><p class=meta>Dated Dec 14, 2025;
+last modified on Sun, 14 Dec 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#properties-of-shortest-paths>Properties of Shortest Paths</a></li><li><a href=#edge-weighted-digraph-data-types>Edge-Weighted Digraph Data Types</a></li><li><a href=#core-operation-relaxation>Core Operation: Relaxation</a></li><li><a href=#theoretical-basis-for-shortest-paths-algorithms>Theoretical Basis for Shortest-Paths Algorithms</a><ul><li><a href=#proposition-shortest-paths-optimality-conditions>Proposition: Shortest-Paths Optimality Conditions</a></li><li><a href=#proposition-generic-shortest-paths-algorithm>Proposition: Generic Shortest-Paths Algorithm</a></li></ul></li><li><a href=#dijkstras-algorithm>Dijkstra&rsquo;s Algorithm</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>A <dfn>shortest path</dfn> from vertex \(s\) to vertex \(t\) in an
+edge-weighted digraph is a directed path from \(s\) to \(t\) with the
+property that no other path has a lower weight. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>A <dfn>shortest-paths tree</dfn> for a source \(s\) is a subgraph containing
+\(s\) and all the vertices reachable from \(s\) that forms a directed tree
+rooted at \(s\) such that every tree path is a shortest path in the digraph.
+<span class=citation-ref><a href=#Sedgewick2011></a></span></p><h2 id=properties-of-shortest-paths>Properties of Shortest Paths</h2><p>A shortest path must respect the direction of its edges. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>The weights are not necessarily distances (albeit useful because of geometric
+intuition). Weights can be time, cost, etc. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Not all vertices need to be reachable. If \(t\) is not reachable from \(s\),
+there is no path at all, and therefore there is no shortest path. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Negative weights introduce complications. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Shortest paths are normally simple. The algorithms ignore zero-weight edges that
+form cycles, so the shortest paths found have no cycles. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>There may be multiple paths of the lowest weight. The algorithms are content to
+find any one of them. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Parallel edges and self-loops may be present. However, only the lowest-weight
+among a set of parallel edges play a role in the algorithms. No shortest path
+contains a self-loop (except a zero-weight one, which the algorithms ignore).
+<span class=citation-ref><a href=#Sedgewick2011></a></span></p><h2 id=edge-weighted-digraph-data-types>Edge-Weighted Digraph Data Types</h2><div class=comment-holder><div class=comment><p>Rewritten from Java versions in <span class=citation-ref><a href=#Sedgewick2011></a></span>to C# for brevity.</p></div></div><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>readonly</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>DirectedEdge</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>From</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>To</span><span style=color:#111>,</span> <span style=color:#00a8c8>double</span> <span style=color:#111>Weight</span><span style=color:#111>);</span>
+
+<span style=color:#00a8c8>interface</span> <span style=color:#111>IEdgeWeightedDigraph</span>
+<span style=color:#111>{</span>
+  <span style=color:#00a8c8>int</span> <span style=color:#111>V</span><span style=color:#111>();</span> <span style=color:#75715e>// Number of vertices
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>int</span> <span style=color:#111>E</span><span style=color:#111>();</span> <span style=color:#75715e>// Number of edges
+</span><span style=color:#75715e></span>  <span style=color:#00a8c8>void</span> <span style=color:#111>addEdge</span><span style=color:#111>(</span><span style=color:#111>DirectedEdge</span> <span style=color:#111>e</span><span style=color:#111>);</span>
+  <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>DirectedEdge</span><span style=color:#111>&gt;</span> <span style=color:#111>adj</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>v</span><span style=color:#111>);</span> <span style=color:#75715e>// Edges pointing from v
+</span><span style=color:#75715e></span>  <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>DirectedEdge</span><span style=color:#111>&gt;</span> <span style=color:#111>edges</span><span style=color:#111>();</span>    <span style=color:#75715e>// All edges in this digraph
+</span><span style=color:#75715e></span><span style=color:#111>}</span>
+
+<span style=color:#00a8c8>interface</span> <span style=color:#111>IShortestPaths</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>double</span> <span style=color:#111>distTo</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>v</span><span style=color:#111>);</span> <span style=color:#75715e>// Infinity if no path
+</span><span style=color:#75715e></span>    <span style=color:#00a8c8>bool</span> <span style=color:#111>hasPathTo</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>v</span><span style=color:#111>);</span>
+    <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>DirectedEdge</span><span style=color:#111>&gt;?</span> <span style=color:#111>pathTo</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>v</span><span style=color:#111>);</span> <span style=color:#75715e>// Null if no path, [] if v == s
+</span><span style=color:#75715e></span><span style=color:#111>}</span>
+</code></pre></div><div class=comment-holder><div class="comment open-comment"><p>All of the work in <code>IShortestPaths</code> is done in the constructor. How much of the
+previous computation is reusable if we want to add a <code>DirectedEdge</code> and see the
+effect on the shortest path? When evaluating Chicago&rsquo;s metro for an undergrad
+project, we pretty much recreated the graph whenever we wanted to test
+addition/removal of a node (station) or edge (line connection) <span class=citation-ref><a href=#dchege711-transport_network_models></a></span>.</p></div></div><p><span class=citation-ref><a href=#Sedgewick2011></a></span>&rsquo;s <code>IShortestPaths</code> uses a vertex-indexed array
+<code>edgeTo</code>, where <code>edgeTo[v]</code> is the last <code>DirectedEdge</code> on a shortest path from
+\(s\) to \(v\). It also uses a vertex-indexed <code>distTo</code>, where <code>distTo[v]</code> is
+the length of the shortest known path from \(s\) to \(v\). By convention,
+<code>edgeTo[s]</code> is <code>null</code>, <code>distTo[s]</code> is <code>0</code>, and the distance to vertices
+unreachable from \(s\) is \(\infty\).</p><h2 id=core-operation-relaxation>Core Operation: Relaxation</h2><p><dfn>Relaxation</dfn> is at the core of <code>IShortestPaths</code> implementations in <span class=citation-ref><a href=#Sedgewick2011></a></span>. To relax an edge \(v \to w\):</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>private</span> <span style=color:#00a8c8>void</span> <span style=color:#111>relax</span><span style=color:#111>(</span><span style=color:#111>DirectedEdge</span> <span style=color:#111>e</span><span style=color:#111>)</span>
+<span style=color:#111>{</span>
+  <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>,</span> <span style=color:#111>w</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>From</span><span style=color:#111>,</span> <span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>);</span>
+  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]</span> <span style=color:#111>&gt;</span> <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>v</span><span style=color:#111>]</span> <span style=color:#111>+</span> <span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>Weight</span><span style=color:#111>)</span>
+  <span style=color:#111>{</span>
+    <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>v</span><span style=color:#111>]</span> <span style=color:#111>+</span> <span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>Weight</span><span style=color:#111>;</span>
+    <span style=color:#111>edgeTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>e</span><span style=color:#111>;</span>
+  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>An <dfn>ineligible edge</dfn> \(v \to w\) is one where
+<code>distTo[v] + e.Weight >= distTo[w]</code>; such edges are ignored. An edge \(v \to
+w\) can be successfully relaxed if <code>relax()</code> would change the values of
+<code>distTo[w]</code> and <code>edgeTo[w]</code>. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><figure><img src=/img/computer-science/cos226/shortest-paths-edge-relaxation.jpg alt="Two cases for edge relaxation; credits Sedgewick2011. Notice the
+effect of an eligible edge: some other edge gets booted out of the shortest
+paths tree."><figcaption><p>Two cases for edge relaxation; credits Sedgewick2011. Notice the
+effect of an eligible edge: some other edge gets booted out of the shortest
+paths tree.</p></figcaption></figure><p>To relax a vertex \(v\), we relax <em>all</em> the edges pointing from \(v\). Any
+edge from a vertex whose <code>distTo[v]</code> is finite to a vertex whose <code>distTo[w]</code> is
+\(\infty\) is eligible. Some edge leaving \(s\) is the first to be added to
+<code>edgeTo[]</code>. <code>IShortestPaths</code> implementations choose vertices judiciously so that
+each vertex relaxation finds a shorter path than the best known so far. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><h2 id=theoretical-basis-for-shortest-paths-algorithms>Theoretical Basis for Shortest-Paths Algorithms</h2><p>Edge-relaxation is an easy-to-implement operation. The following proposition
+shows an equivalence between the global condition that the distances in <code>distTo</code>
+are shortest-paths distances, and the local condition we use to relax an edge.
+<span class=citation-ref><a href=#Sedgewick2011></a></span></p><div class=comment-holder><div class=comment><p>I&rsquo;ve seen this technique before in
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/12-garden-groups/12-garden-groups/>AoC 2024 Day 12: Garden Groups</a>
+.
+The task was to count the number of sides in polygon composed of square tiles.
+Counting the number of corners a tile contributed is a local operation. A useful
+insight is that the number of corners in a polygon also equals the number of
+sides. Counting corners was far simpler than directly counting the sides.</p></div></div><h3 id=proposition-shortest-paths-optimality-conditions>Proposition: Shortest-Paths Optimality Conditions</h3><p><em>Proposition: The values in <code>distTo[]</code> are the lengths of the shortest paths
+if and only if <code>distTo[w] &lt;= distTo[v] + e.Weight</code> for each edge \(v \to
+w\).</em> <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>If <code>distTo[w] > distTo[v] + e.Weight</code> for some <code>e</code>, then <code>e</code> would give a path
+\(s \to &mldr; \to v \to w\) of length less than <code>distTo[w]</code>, a contradiction.
+The optimality conditions are thus necessary. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Suppose \(v_0 \to v_1 \to v_2 \to &mldr; \to v_k\) is a shortest path from
+\(s\) to \(w\) of weight \(OPT_{sw}\). Denote \(v_{i-1} \to v_{i}\) as
+\(e_i\). By the optimality conditions, and the fact that <code>distTo[s] = 0</code>:</p><p>$$ \text{distTo}[w] \le e_{1}.\text{weight} + &mldr; + e_{k}.\text{weight} = \text{OPT}_{sw} $$</p><p>Because <code>distTo[w]</code> is the length of <em>some</em> path from \(s\) to \(w\), it
+can&rsquo;t be smaller than the length of a <em>shortest</em> path. Therefore,
+\(\text{OPT}_{sw} \le \text{distTo}[w] \le \text{OPT}_{sw}\), implying
+equality. The optimal conditions are sufficient. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>This proposition helps in certification. However, an algorithm computes
+<code>distTo</code>, we can check whether it contains shortest-path lengths in a single
+pass through the edges of the graph, checking whether the optimality conditions
+are satisfied. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><h3 id=proposition-generic-shortest-paths-algorithm>Proposition: Generic Shortest-Paths Algorithm</h3><em><ol><li>Initialize <code>distTo[s] = 0</code> and \(\infty\) for all other <code>distTo[]</code>.</li><li>Relax any edge in \(G\), continuing until no edge is eligible.</li></ol><p></em><span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>The generic algorithm works because:</p><ul><li>For any reachable vertex \(w\), some edge on the shortest path to \(w\) is
+eligible as long as \(\text{distTo}[w] = \infty\), and so the algorithm
+continues.</li><li>For any reachable vertex \(v\), throughout the algorithm, <code>distTo[v]</code> is the
+length of some (simple) path from \(s\) to \(v\) and is strictly
+monotonically decreasing. It can decrease at most a finite number of times.</li><li>When no edge is eligible,
+<a href=#proposition-shortest-paths-optimality-conditions>Proposition: Shortest-Paths Optimality
+Conditions</a>
+applies.</li></ul><p><span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>The generic algorithm does not specify the order in which the edges are to be
+relaxed. To prove that any algorithm computes shortest paths, then all we need
+to do is prove that it relaxes edges until no edge is eligible. <span class=citation-ref><a href=#Sedgewick2011></a></span></p><h2 id=dijkstras-algorithm>Dijkstra&rsquo;s Algorithm</h2><em><ol><li>Initialize <code>distTo[s] = 0</code> and \(\infty\) for all other <code>distTo[]</code>.</li><li>Relax and add to the tree a non-tree vertex with the lowest <code>distTo[]</code> value,
+continuing until all vertices are on the tree, or no non-tree vertex has a
+finite <code>distTo[]</code> value.</li></ol><p></em><span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Dijkstra&rsquo;s algorithm starts out with a priority queue with <code>s</code> in it. While <code>pq</code>
+is not empty, relax <code>pq.delMin()</code>:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>private</span> <span style=color:#00a8c8>void</span> <span style=color:#111>relax</span><span style=color:#111>(</span><span style=color:#111>EdgeWeightedDigraph</span> <span style=color:#111>G</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>v</span><span style=color:#111>)</span>
+<span style=color:#111>{</span>
+  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#111>DirectedEdge</span> <span style=color:#111>e</span> <span style=color:#00a8c8>in</span> <span style=color:#111>G</span><span style=color:#111>.</span><span style=color:#111>adj</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>))</span>
+  <span style=color:#111>{</span>
+    <span style=color:#00a8c8>int</span> <span style=color:#111>w</span> <span style=color:#111>=</span> <span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>;</span>
+    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]</span> <span style=color:#111>&gt;</span> <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>v</span><span style=color:#111>]</span> <span style=color:#111>+</span> <span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>Weight</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+      <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>v</span><span style=color:#111>]</span> <span style=color:#111>+</span> <span style=color:#111>e</span><span style=color:#111>.</span><span style=color:#111>Weight</span><span style=color:#111>;</span>
+      <span style=color:#111>edgeTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>e</span><span style=color:#111>;</span>
+
+      <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>contains</span><span style=color:#111>(</span><span style=color:#111>w</span><span style=color:#111>))</span> <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>change</span><span style=color:#111>(</span><span style=color:#111>w</span><span style=color:#111>,</span> <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]);</span>
+      <span style=color:#00a8c8>else</span> <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>insert</span><span style=color:#111>(</span><span style=color:#111>w</span><span style=color:#111>,</span> <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>w</span><span style=color:#111>]);</span>
+    <span style=color:#111>}</span>
+  <span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Dijkstra&rsquo;s algorithm solves the single-source shortest-paths problem in
+edge-weighted digraphs with non-negative weights because:</p><ul><li>If \(v\) is reachable from \(s\), every \(v \to w\) is relaxed exactly
+once. When \(v\) is relaxed, <code>distTo[w] &lt;= distTo[v] + e.Weight</code>. This
+inequality holds throughout because:<ul><li><code>distTo[v]</code> never changes because edge weights are non-negative and we
+choose the lowest <code>distTo[]</code> value at each step. No subsequent relaxation
+can improve on <code>distTo[v]</code>.</li><li><code>distTo[w]</code> can only decrease because any relaxation can only decrease it.</li></ul></li><li>After all vertices reachable from \(s\) have been added to the tree,
+<a href=#proposition-shortest-paths-optimality-conditions>Proposition: Shortest-Paths Optimality
+Conditions</a>
+applies.</li></ul><p><span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Alternatively, view Dijkstra&rsquo;s algorithm as growing the tree by adding next the
+non-tree vertex that is closest to \(s\):</p><ul><li><code>distTo[]</code> entries for the tree vertices are shortest-paths distances.</li><li>For each \(w\) on the <code>pq</code>, <code>distTo[w]</code> is the weight of the shortest path
+from \(s\) to \(w\) that uses only intermediate vertices in the tree and
+ends in the crossing edge <code>edgeTo[w]</code>.</li><li>The <code>distTo[]</code> for the vertex with the smallest priority is a shortest-path
+weight, not smaller than the shortest-path to any vertex already relaxed, and
+not larger than the shortest-path weight to any vertex not yet relaxed. That
+vertex is the next to be relaxed.</li></ul><p><span class=citation-ref><a href=#Sedgewick2011></a></span></p><p>Dijkstra&rsquo;s algorithm can also be modified to solve other versions of the
+problem:</p><ul><li><em><strong>Single-source shortest paths in undirected graphs.</strong> Given an edge-weighted
+undirected graph and a source vertex \(s\), support queries for the shortest
+path to a given target vertex \(v\).</em><ul><li>Build an edge-weighted digraph with the same vertices and two directed edges
+(one in each direction) for each edge in the undirected graph. Solve using
+Dijkstra&rsquo;s algorithm.</li></ul></li><li><em><strong>Source-sink shortest paths.</strong> Given an edge-weighted digraph, a source
+vertex \(s\), and a target vertex \(t\), find the shortest path from
+\(s\) to \(t\).</em><ul><li>Use Dijkstra&rsquo;s algorithm, but terminate as soon as \(t\) comes off the
+priority queue.</li></ul></li><li><em><strong>All-pairs shortest paths.</strong> Given an edge-weighted digraph, support queries
+for the shortest path from a source vertex \(s\) to a target vertex
+\(t\).</em><ul><li>Solve Dijkstra \(V\) times, once for each \(v\) as the source, and cache
+those results.</li></ul></li></ul><p><span class=citation-ref><a href=#Sedgewick2011></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count is-main><cite id=Sedgewick2011>Algorithms, 4th Ed.<i></i>
+Chapter 4: Graphs > 4.4: Shortest Paths<i>.</i></cite>
+Robert Sedgewick; Kevin Wayne.
+<a href=https://algs4.cs.princeton.edu/44sp/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=algs4.cs.princeton.edu" loading=lazy aria-hidden=true width=16 height=16>
+<i>algs4.cs.princeton.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<a href="https://openlibrary.org/search?isbn=978-0321573513" target=_blank rel=noopener>ISBN: 978-0321573513 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=dchege711-transport_network_models>transport_network_models/modifying_edges.py at master · dchege711/transport_network_models<i>.</i></cite>
+<a href=https://github.com/dchege711/transport_network_models/blob/master/modifying_edges.py target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Dec 14, 2025.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Sedgewick-Robert>Sedgewick, Robert</a>
+<a href=/cited-authors/Wayne-Kevin>Wayne, Kevin</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/algs4.cs.princeton.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=algs4.cs.princeton.edu" loading=lazy aria-hidden=true width=16 height=16>
+algs4.cs.princeton.edu</a>
+<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com</a></aside></div></div><footer></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
