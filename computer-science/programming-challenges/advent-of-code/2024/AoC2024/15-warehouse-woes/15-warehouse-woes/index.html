@@ -2,7 +2,7 @@
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/>Advent of Code 2024 - C#</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/15-warehouse-woes/15-warehouse-woes/>AoC 2024 Day 15: Warehouse Woes</a></li></ul></nav><section><header><h1>AoC 2024 Day 15: Warehouse Woes</h1><p class=meta>Dated Feb 28, 2026;
-last modified on Sat, 28 Feb 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>########
+last modified on Sat, 28 Feb 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li><li><a href=#solution>Solution</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>########
 #..O.O.#
 ##@.O..#
 #...O..#
@@ -22,132 +22,13 @@ are scarce, then a map representation will be memory efficient. The test input
 is \(50 \times 50\) with \(396\) walls and \(613\) boxes, and thus
 \(59.64\%\) empty.</p><p>Given a move, I need to look up and update the \(R \times C\) region in at
 most \(R-2\) or \(C-2\) cells. These lookups and updates need to be fast. A
-2D array will have good cache locality especially when processing <code>&lt;</code>s and <code>></code>s.
-Will go with a 2D array.</p><h2 id=part-one>Part One</h2><p>The GPS coordinate of a box is equal to \(100\) times its distance from the
+2D array will have good cache locality especially when processing lateral moves.</p><h2 id=part-one>Part One</h2><p>The GPS coordinate of a box is equal to \(100\) times its distance from the
 top edge of a map plus its distance from the left edge of the map. After the
-robot is finished moving, what is the sum of all boxes' GPS coordinates? <span class=citation-ref><a href=#AoC2024Day15></a></span></p><div id=WarehouseWoes.PartOne.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>using</span> <span style=color:#111>System.Diagnostics</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>using</span> <span style=color:#111>AoC2024.WarehouseWoesDataTypes</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>using</span> <span style=color:#111>ExhaustiveMatching</span><span style=color:#111>;</span>
-
-<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>WarehouseWoes</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>int</span> <span style=color:#111>PartOne</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span> <span style=color:#111>MoveAndSumGps</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>,</span> <span style=color:#00a8c8>false</span><span style=color:#111>);</span>
-
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>int</span> <span style=color:#111>PartTwo</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span> <span style=color:#111>MoveAndSumGps</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>,</span> <span style=color:#00a8c8>true</span><span style=color:#111>);</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>int</span> <span style=color:#111>MoveAndSumGps</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>,</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>isWideVersion</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>robotPosition</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>ParseGrid</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>,</span> <span style=color:#111>isWideVersion</span><span style=color:#111>);</span>
-
-        <span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>Visualize</span><span style=color:#111>(</span><span style=color:#111>robotPosition</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>direction</span> <span style=color:#00a8c8>in</span> <span style=color:#111>ParseMoves</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>))</span>
-        <span style=color:#111>{</span>
-            <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>WriteLine</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;Moving {direction}&#34;</span><span style=color:#111>);</span>
-            <span style=color:#111>robotPosition</span> <span style=color:#111>=</span> <span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>robotPosition</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>);</span>
-            <span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>Visualize</span><span style=color:#111>(</span><span style=color:#111>robotPosition</span><span style=color:#111>);</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>return</span> <span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>SumBoxGpsCoordinates</span><span style=color:#111>();</span>
-    <span style=color:#111>}</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Coordinate</span> <span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>delta</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>ToDelta</span><span style=color:#111>();</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>isLateralMove</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>IsLateral</span><span style=color:#111>();</span>
-
-        <span style=color:#00a8c8>var</span> <span style=color:#111>cellsToShiftOver</span> <span style=color:#111>=</span> <span style=color:#111>GetCellsToShiftOver</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>);</span>
-        <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>WriteLine</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;Shifting Over: {string.Join(&#39;,&#39;, cellsToShiftOver.Reverse())}&#34;</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>cellsToShiftOver</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
-            <span style=color:#00a8c8>return</span> <span style=color:#111>origin</span><span style=color:#111>;</span>
-
-        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>source</span> <span style=color:#00a8c8>in</span> <span style=color:#111>cellsToShiftOver</span><span style=color:#111>.</span><span style=color:#111>Reverse</span><span style=color:#111>())</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>var</span> <span style=color:#111>target</span> <span style=color:#111>=</span> <span style=color:#111>source</span> <span style=color:#111>+</span> <span style=color:#111>delta</span><span style=color:#111>;</span>
-            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]</span> <span style=color:#111>!=</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>)</span>
-            <span style=color:#111>{</span>
-                <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>InvalidOperationException</span><span style=color:#111>(</span>
-                    <span style=color:#d88200>$&#34;Cannot shift {source} to {target} because of {grid[target.R, target.C]}&#34;</span><span style=color:#111>);</span>
-            <span style=color:#111>}</span>
-            <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>];</span>
-            <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>;</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>return</span> <span style=color:#111>origin</span> <span style=color:#111>+</span> <span style=color:#111>delta</span><span style=color:#111>;</span>
-    <span style=color:#111>}</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IReadOnlyList</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>GetCellsToShiftOver</span><span style=color:#111>(</span><span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>delta</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>ToDelta</span><span style=color:#111>();</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>isLateralMove</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>IsLateral</span><span style=color:#111>();</span>
-
-        <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>candidates</span> <span style=color:#111>=</span> <span style=color:#111>GetCellsAffectedBySingleMove</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>cellsToShift</span> <span style=color:#111>=</span> <span style=color:#111>ImmutableList</span><span style=color:#111>.</span><span style=color:#111>CreateBuilder</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;();</span>
-        <span style=color:#111>cellsToShift</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>origin</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#111>candidates</span><span style=color:#111>.</span><span style=color:#111>All</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>)))</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>var</span> <span style=color:#111>cellTypes</span> <span style=color:#111>=</span> <span style=color:#111>candidates</span><span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]).</span><span style=color:#111>ToArray</span><span style=color:#111>();</span>
-
-            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>cellTypes</span><span style=color:#111>.</span><span style=color:#111>Any</span><span style=color:#111>(</span><span style=color:#111>ct</span> <span style=color:#111>=&gt;</span> <span style=color:#111>ct</span> <span style=color:#00a8c8>is</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Wall</span><span style=color:#111>))</span>
-                <span style=color:#00a8c8>return</span> <span style=color:#111>[];</span>
-
-            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>cellTypes</span><span style=color:#111>.</span><span style=color:#111>All</span><span style=color:#111>(</span><span style=color:#111>ct</span> <span style=color:#111>=&gt;</span> <span style=color:#111>ct</span> <span style=color:#00a8c8>is</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>))</span>
-                <span style=color:#00a8c8>return</span> <span style=color:#111>cellsToShift</span><span style=color:#111>.</span><span style=color:#111>ToList</span><span style=color:#111>();</span>
-
-            <span style=color:#111>cellsToShift</span><span style=color:#111>.</span><span style=color:#111>AddRange</span><span style=color:#111>(</span><span style=color:#111>candidates</span><span style=color:#111>);</span>
-            <span style=color:#111>candidates</span> <span style=color:#111>=</span> <span style=color:#111>candidates</span>
-                <span style=color:#111>.</span><span style=color:#111>SelectMany</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>GetCellsAffectedBySingleMove</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>))</span>
-                <span style=color:#111>.</span><span style=color:#111>ToHashSet</span><span style=color:#111>();</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>return</span> <span style=color:#111>[];</span>
-    <span style=color:#111>}</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>GetCellsAffectedBySingleMove</span><span style=color:#111>(</span>
-        <span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>delta</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>ToDelta</span><span style=color:#111>();</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>target</span> <span style=color:#111>=</span> <span style=color:#111>origin</span> <span style=color:#111>+</span> <span style=color:#111>delta</span><span style=color:#111>;</span>
-
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>IsLateral</span><span style=color:#111>())</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
-            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>))</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
-            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>var</span> <span style=color:#111>cellType</span> <span style=color:#111>=</span> <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>];</span>
-        <span style=color:#00a8c8>switch</span> <span style=color:#111>(</span><span style=color:#111>cellType</span><span style=color:#111>)</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Wall</span><span style=color:#111>:</span>
-            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Box</span><span style=color:#111>:</span>
-            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>:</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
-            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>BoxStart</span><span style=color:#111>:</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span> <span style=color:#111>+</span> <span style=color:#111>RightDelta</span><span style=color:#111>;</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
-            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>BoxEnd</span><span style=color:#111>:</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span> <span style=color:#111>+</span> <span style=color:#111>LeftDelta</span><span style=color:#111>;</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
-                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
-            <span style=color:#00a8c8>default</span><span style=color:#111>:</span>
-                <span style=color:#00a8c8>throw</span> <span style=color:#111>ExhaustiveMatch</span><span style=color:#111>.</span><span style=color:#111>Failed</span><span style=color:#111>(</span><span style=color:#111>cellType</span><span style=color:#111>);</span>
-        <span style=color:#111>}</span>
-    <span style=color:#111>}</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Delta</span> <span style=color:#111>LeftDelta</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>);</span>
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Delta</span> <span style=color:#111>RightDelta</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
-<span style=color:#111>}</span>
-</code></pre></div></div><div id=WarehouseWoes.Extensions.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Diagnostics</span><span style=color:#111>;</span>
+robot is finished moving, what is the sum of all boxes' GPS coordinates? <span class=citation-ref><a href=#AoC2024Day15></a></span></p><h2 id=part-two>Part Two</h2><p>Everything except the robot is twice as wide: <code>#</code> -> <code>##</code>, <code>O</code> -> <code>[]</code>, <code>.</code> ->
+<code>..</code>, and <code>@</code> -> <code>@.</code>. For these larger boxes, distances are measured from the
+edge of the map to the closest edge of the box in question. What is the sum of
+all boxes' final GPS coordinates? <span class=citation-ref><a href=#AoC2024Day15></a></span></p><h2 id=solution>Solution</h2><p>There are some stateless operations that can be solved first and independently
+in <code>WarehouseWoes.Extensions.cs</code> without considering any algorithms:</p><ul><li>Convert a direction, e.g., <code>^</code> to a \((dr, dc)\) vector.</li><li>Given a coordinate \((r, c)\), add/subtract \((dr, dc)\) to/from it.</li><li>Test if a coordinate \((r, c)\) is in bounds.</li><li>Tell if a direction is lateral (<code>&lt;</code>, <code>></code>) or medial (<code>^</code>, <code>v</code>).</li></ul><details><summary>WarehouseWoes.Extensions.cs</summary><div id=WarehouseWoes.Extensions.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Diagnostics</span><span style=color:#111>;</span>
 <span style=color:#00a8c8>using</span> <span style=color:#111>AoC2024.WarehouseWoesDataTypes</span><span style=color:#111>;</span>
 <span style=color:#00a8c8>using</span> <span style=color:#111>ExhaustiveMatching</span><span style=color:#111>;</span>
 
@@ -164,7 +45,7 @@ robot is finished moving, what is the sum of all boxes' GPS coordinates? <span c
             <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>R</span> <span style=color:#111>-</span> <span style=color:#111>delta</span><span style=color:#111>.</span><span style=color:#111>dR</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>C</span> <span style=color:#111>-</span> <span style=color:#111>delta</span><span style=color:#111>.</span><span style=color:#111>dC</span><span style=color:#111>);</span>
     <span style=color:#111>}</span>
 
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Coordinate</span> <span style=color:#111>coordinate</span><span style=color:#111>,</span> <span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>coordinate</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
         <span style=color:#111>coordinate</span><span style=color:#111>.</span><span style=color:#111>R</span> <span style=color:#111>&gt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>coordinate</span><span style=color:#111>.</span><span style=color:#111>R</span> <span style=color:#111>&lt;</span> <span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>GetLength</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>)</span>
         <span style=color:#111>&amp;&amp;</span> <span style=color:#111>coordinate</span><span style=color:#111>.</span><span style=color:#111>C</span> <span style=color:#111>&gt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>coordinate</span><span style=color:#111>.</span><span style=color:#111>C</span> <span style=color:#111>&lt;</span> <span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>GetLength</span><span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#111>);</span>
 
@@ -176,9 +57,6 @@ robot is finished moving, what is the sum of all boxes' GPS coordinates? <span c
         <span style=color:#111>Direction</span><span style=color:#111>.</span><span style=color:#111>Right</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>),</span>
         <span style=color:#111>_</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>throw</span> <span style=color:#111>ExhaustiveMatch</span><span style=color:#111>.</span><span style=color:#111>Failed</span><span style=color:#111>(</span><span style=color:#111>direction</span><span style=color:#111>)</span>
     <span style=color:#111>};</span>
-
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Delta</span> <span style=color:#111>Reverse</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Delta</span> <span style=color:#111>delta</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
-        <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>delta</span><span style=color:#111>.</span><span style=color:#111>dR</span> <span style=color:#111>*</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>delta</span><span style=color:#111>.</span><span style=color:#111>dC</span> <span style=color:#111>*</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>);</span>
 
     <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsLateral</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
         <span style=color:#111>direction</span> <span style=color:#111>==</span> <span style=color:#111>Direction</span><span style=color:#111>.</span><span style=color:#111>Left</span> <span style=color:#111>||</span> <span style=color:#111>direction</span> <span style=color:#111>==</span> <span style=color:#111>Direction</span><span style=color:#111>.</span><span style=color:#111>Right</span><span style=color:#111>;</span>
@@ -221,40 +99,133 @@ robot is finished moving, what is the sum of all boxes' GPS coordinates? <span c
         <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>WriteLine</span><span style=color:#111>(</span><span style=color:#d88200>&#34;&#34;</span><span style=color:#111>);</span>
     <span style=color:#111>}</span>
 <span style=color:#111>}</span>
-</code></pre></div></div><h2 id=part-two>Part Two</h2><p>Everything except the robot is twice as wide: <code>#</code> -> <code>##</code>, <code>O</code> -> <code>[]</code>, <code>.</code> ->
-<code>..</code>, and <code>@</code> -> <code>@.</code>. For these larger boxes, distances are measured from the
-edge of the map to the closest edge of the box in question. What is the sum of
-all boxes' final GPS coordinates? <span class=citation-ref><a href=#AoC2024Day15></a></span></p><p>How much of
+</code></pre></div></div></details><p>Compared to
 <a href=#part-one>Part One</a>
-still applies? We now need to consider two
-cells at a time, e.g., need to move <code>[]</code> together. Instead of <code>CellType.Box</code>, we
-could have <code>CellType.BoxStart</code> and <code>CellType.BoxEnd</code>. GPS coordinates can be
-measured in terms of <code>CellType.BoxStart</code>. I think there&rsquo;s promise here; let&rsquo;s
-see how it looks.</p><p>The <code>Move</code> operation is more complicated because of a domino effect. For
-example, <code>^</code> doesn&rsquo;t succeed because the top-right <code>]</code> can&rsquo;t move.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>##############
-##......##..##
-##...[][]...##
-##....[]....##
-##.....@....##
-##..........##
-##############
-</code></pre></div><p>Similar argument for trying a <code>^</code> here:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>##############
+,
+<a href=#part-two>Part Two</a>
+&rsquo;s <code>Move</code> operation is
+more complicated because <code>[</code> and <code>]</code> need to move as a unit. Furthermore, there
+is a domino effect, e.g., <code>^</code> doesn&rsquo;t succeed because the top-right <code>]</code> can&rsquo;t
+move:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>##############
 ##......##..##
 ##.....[]...##
 ##....[]....##
 ##.....@....##
 ##..........##
 ##############
-</code></pre></div><p>For an upward \(r \to r-1\) move to succeed row \(r-1\) must have enough
-space for all affected boxes in row \(r\).</p><p>Keeping the 2D array representation is introducing a lot of bookkeeping and
-pitfalls. For example, it shouldn&rsquo;t be possible to partially move a box, but the
-2D array representation allows it.</p><div class=comment-holder><div class=comment><p>A couple of mantras to make this learning moment memorable:</p><blockquote><p>Bad programmers worry about the code. Good programmers worry about data
-structures and their relationships.</p><ul><li>Linus Torvalds</li></ul></blockquote><blockquote><p>Data is more tractable than program logic. It follows that where you see a
-choice between complexity in data structures and complexity in code, choose
-the former. More: in evolving a design, you should actively seek ways to shift
-complexity from code to data.</p><ul><li>The Art of Unix Programming</li></ul></blockquote><blockquote><p>Show me your flowcharts [code], and conceal your tables [schema], and I shall
-continue to be mystified; show me your tables [schema] and I won&rsquo;t usually
-need your flowcharts [code]: they&rsquo;ll be obvious.</p><ul><li>Fred Brooks, &ldquo;The Mythical Man Month&rdquo;</li></ul></blockquote><p><span class=citation-ref><a href=#SE163185></a></span></p></div></div><figure><img width=100% src=/img/computer-science/programming-challenges/advent-of-code/2024/day-13-sample-9021-buggy.gif alt="Buggy solution for part 2." loading=lazy><figcaption>Buggy solution for part 2.</figcaption></figure><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=AoC2024Day15>Day 15 - Advent of Code 2024: Warehouse Woes<i>.</i></cite>
+</code></pre></div><p><em>Data is more tractable than program logic. It follows that where you see a
+choice between complexity in data structures and complexity in code, choose the
+former. More: in evolving a design, you should actively seek ways to shift
+complexity from code to data.</em> - The Art of Unix Programming. <span class=citation-ref><a href=#SE163185></a></span>I had a costly detour away from the 2D array with the desire to make it
+impossible to move <code>[</code> and <code>]</code> independently. However, even though the data
+structure collapsed <code>[]</code> into a single C# <code>record</code>, the algorithm was gnarly and
+still performing a lot of vector arithmetic. Keeping the 2D array and then
+simplifying the algorithm worked better here. Remember, the goal is to reduce
+overall complexity.</p><figure><img width=100% src=/img/computer-science/programming-challenges/advent-of-code/2024/day-13-sample-9021-buggy.gif alt="Buggy solution for part 2." loading=lazy><figcaption>Buggy solution for part 2. Visualizing the result helped me spot and <a href=https://github.com/dchege711/programming_challenges/commit/164062cbf0d55bd81c8ead51a240d940a052f713>fix the zigzag pattern</a>. <code>GPT 5.3-Codex</code> wrote this script
+using the <code>SixLabors.ImageSharp</code> pattern.</figcaption></figure><details><summary>WarehouseWoes.Common.cs</summary><div id=WarehouseWoes.Common.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Immutable</span><span style=color:#111>;</span>
+<span style=color:#00a8c8>using</span> <span style=color:#111>AoC2024.WarehouseWoesDataTypes</span><span style=color:#111>;</span>
+<span style=color:#00a8c8>using</span> <span style=color:#111>ExhaustiveMatching</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+
+<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>WarehouseWoes</span>
+<span style=color:#111>{</span>
+    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>SimulateRobotMoves</span><span style=color:#111>()</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>direction</span> <span style=color:#00a8c8>in</span> <span style=color:#111>ParseMoves</span><span style=color:#111>(</span><span style=color:#111>_filePath</span><span style=color:#111>))</span>
+            <span style=color:#111>robotPosition</span> <span style=color:#111>=</span> <span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>robotPosition</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>);</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Coordinate</span> <span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>delta</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>ToDelta</span><span style=color:#111>();</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>isLateralMove</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>IsLateral</span><span style=color:#111>();</span>
+
+        <span style=color:#00a8c8>var</span> <span style=color:#111>cellsToShiftOver</span> <span style=color:#111>=</span> <span style=color:#111>GetCellsToShiftOver</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>cellsToShiftOver</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+            <span style=color:#00a8c8>return</span> <span style=color:#111>origin</span><span style=color:#111>;</span>
+
+        <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>source</span> <span style=color:#00a8c8>in</span> <span style=color:#111>cellsToShiftOver</span><span style=color:#111>.</span><span style=color:#111>Reverse</span><span style=color:#111>())</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>var</span> <span style=color:#111>target</span> <span style=color:#111>=</span> <span style=color:#111>source</span> <span style=color:#111>+</span> <span style=color:#111>delta</span><span style=color:#111>;</span>
+            <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>];</span>
+            <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>source</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>;</span>
+        <span style=color:#111>}</span>
+
+        <span style=color:#00a8c8>return</span> <span style=color:#111>origin</span> <span style=color:#111>+</span> <span style=color:#111>delta</span><span style=color:#111>;</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IReadOnlyList</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>GetCellsToShiftOver</span><span style=color:#111>(</span><span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>delta</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>ToDelta</span><span style=color:#111>();</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>isLateralMove</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>IsLateral</span><span style=color:#111>();</span>
+
+        <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>candidates</span> <span style=color:#111>=</span> <span style=color:#111>GetCellsAffectedBySingleMove</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>cellsToShift</span> <span style=color:#111>=</span> <span style=color:#111>ImmutableList</span><span style=color:#111>.</span><span style=color:#111>CreateBuilder</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;();</span>
+        <span style=color:#111>cellsToShift</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>origin</span><span style=color:#111>);</span>
+        <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#111>candidates</span><span style=color:#111>.</span><span style=color:#111>All</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>coord</span><span style=color:#111>)))</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>var</span> <span style=color:#111>cellTypes</span> <span style=color:#111>=</span> <span style=color:#111>candidates</span><span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>]).</span><span style=color:#111>ToArray</span><span style=color:#111>();</span>
+
+            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>cellTypes</span><span style=color:#111>.</span><span style=color:#111>Any</span><span style=color:#111>(</span><span style=color:#111>ct</span> <span style=color:#111>=&gt;</span> <span style=color:#111>ct</span> <span style=color:#00a8c8>is</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Wall</span><span style=color:#111>))</span>
+                <span style=color:#00a8c8>return</span> <span style=color:#111>[];</span>
+
+            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>cellTypes</span><span style=color:#111>.</span><span style=color:#111>All</span><span style=color:#111>(</span><span style=color:#111>ct</span> <span style=color:#111>=&gt;</span> <span style=color:#111>ct</span> <span style=color:#00a8c8>is</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>))</span>
+                <span style=color:#00a8c8>return</span> <span style=color:#111>cellsToShift</span><span style=color:#111>.</span><span style=color:#111>ToList</span><span style=color:#111>();</span>
+
+            <span style=color:#111>cellsToShift</span><span style=color:#111>.</span><span style=color:#111>AddRange</span><span style=color:#111>(</span><span style=color:#111>candidates</span><span style=color:#111>);</span>
+            <span style=color:#111>candidates</span> <span style=color:#111>=</span> <span style=color:#111>candidates</span>
+                <span style=color:#111>.</span><span style=color:#111>SelectMany</span><span style=color:#111>(</span><span style=color:#111>coord</span> <span style=color:#111>=&gt;</span> <span style=color:#111>GetCellsAffectedBySingleMove</span><span style=color:#111>(</span><span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>coord</span><span style=color:#111>,</span> <span style=color:#111>direction</span><span style=color:#111>))</span>
+                <span style=color:#111>.</span><span style=color:#111>ToHashSet</span><span style=color:#111>();</span>
+        <span style=color:#111>}</span>
+
+        <span style=color:#00a8c8>return</span> <span style=color:#111>[];</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>Coordinate</span><span style=color:#111>&gt;</span> <span style=color:#111>GetCellsAffectedBySingleMove</span><span style=color:#111>(</span>
+        <span style=color:#111>CellType</span><span style=color:#111>[,]</span> <span style=color:#111>grid</span><span style=color:#111>,</span> <span style=color:#111>Coordinate</span> <span style=color:#111>origin</span><span style=color:#111>,</span> <span style=color:#111>Direction</span> <span style=color:#111>direction</span><span style=color:#111>)</span>
+    <span style=color:#111>{</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>delta</span> <span style=color:#111>=</span> <span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>ToDelta</span><span style=color:#111>();</span>
+        <span style=color:#00a8c8>var</span> <span style=color:#111>target</span> <span style=color:#111>=</span> <span style=color:#111>origin</span> <span style=color:#111>+</span> <span style=color:#111>delta</span><span style=color:#111>;</span>
+
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>direction</span><span style=color:#111>.</span><span style=color:#111>IsLateral</span><span style=color:#111>())</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+        <span style=color:#111>}</span>
+
+        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>grid</span><span style=color:#111>.</span><span style=color:#111>IsInBounds</span><span style=color:#111>(</span><span style=color:#111>target</span><span style=color:#111>))</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+        <span style=color:#111>}</span>
+
+        <span style=color:#00a8c8>var</span> <span style=color:#111>cellType</span> <span style=color:#111>=</span> <span style=color:#111>grid</span><span style=color:#111>[</span><span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>R</span><span style=color:#111>,</span> <span style=color:#111>target</span><span style=color:#111>.</span><span style=color:#111>C</span><span style=color:#111>];</span>
+        <span style=color:#00a8c8>switch</span> <span style=color:#111>(</span><span style=color:#111>cellType</span><span style=color:#111>)</span>
+        <span style=color:#111>{</span>
+            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Wall</span><span style=color:#111>:</span>
+            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Box</span><span style=color:#111>:</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>Free</span><span style=color:#111>:</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>BoxStart</span><span style=color:#111>:</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span> <span style=color:#111>+</span> <span style=color:#111>RightDelta</span><span style=color:#111>;</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>case</span> <span style=color:#111>CellType</span><span style=color:#111>.</span><span style=color:#111>BoxEnd</span><span style=color:#111>:</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span> <span style=color:#111>+</span> <span style=color:#111>LeftDelta</span><span style=color:#111>;</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>target</span><span style=color:#111>;</span>
+                <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+            <span style=color:#00a8c8>default</span><span style=color:#111>:</span>
+                <span style=color:#00a8c8>throw</span> <span style=color:#111>ExhaustiveMatch</span><span style=color:#111>.</span><span style=color:#111>Failed</span><span style=color:#111>(</span><span style=color:#111>cellType</span><span style=color:#111>);</span>
+        <span style=color:#111>}</span>
+    <span style=color:#111>}</span>
+
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Delta</span> <span style=color:#111>LeftDelta</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Delta</span> <span style=color:#111>RightDelta</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+<span style=color:#111>}</span>
+</code></pre></div></div></details><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=AoC2024Day15>Day 15 - Advent of Code 2024: Warehouse Woes<i>.</i></cite>
 Eric Wastl.
 <a href=https://adventofcode.com/2024/day/15 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
@@ -262,5 +233,9 @@ Eric Wastl.
 <a href=https://softwareengineering.stackexchange.com/questions/163185/torvalds-quote-about-good-programmer target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=softwareengineering.stackexchange.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>softwareengineering.stackexchange.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Mar 1, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
-<a href=/cited-authors/Wastl-Eric>Wastl, Eric</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/14-restroom-redoubt/14-restroom-redoubt/>&#171; AoC 2024 Day 14: Restroom Redoubt</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/cited-authors/Wastl-Eric>Wastl, Eric</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/adventofcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
+adventofcode.com</a>
+<a href=/domains/softwareengineering.stackexchange.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=softwareengineering.stackexchange.com" loading=lazy aria-hidden=true width=16 height=16>
+softwareengineering.stackexchange.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/14-restroom-redoubt/14-restroom-redoubt/>&#171; AoC 2024 Day 14: Restroom Redoubt</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
