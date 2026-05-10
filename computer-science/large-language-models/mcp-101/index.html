@@ -6,7 +6,7 @@
 const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
 function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/mcp-101/>Model Context Protocol (MCP)</a></li></ul></nav><section><header><h1>Model Context Protocol (MCP)</h1><p class=meta>Dated May 9, 2026;
-last modified on Sat, 09 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#concepts-of-mcp>Concepts of MCP</a></li><li><a href=#sample-flow>Sample Flow</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>MCP is written with LLM apps as the clients, not human end-users. It provides a
+last modified on Sat, 09 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#concepts-of-mcp>Concepts of MCP</a></li><li><a href=#sample-flow-w-tool-calls>Sample Flow w/ Tool Calls</a></li><li><a href=#notes-on-mcp-primitives>Notes on MCP Primitives</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>MCP is written with LLM apps as the clients, not human end-users. It provides a
 set of conventions on how to agnostically provide context to LLM apps.</p></div></div><h2 id=concepts-of-mcp>Concepts of MCP</h2><p>There are 3 key participants in the MCP architecture:</p><ul><li><strong>MCP Host</strong>: The AI application that manages one or more MCP clients.</li><li><strong>MCP Client</strong>: A component that maintains a connection to an MCP server and
 obtains context from an MCP server for the MCP host to use.</li><li><strong>MCP Server</strong>: A program that provides context to MCP clients.</li></ul><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>MCP consists of two layers:</p><ul><li><strong>Transport layer</strong>: The outer layer that defines communication mechanisms and
 channels that enable client-server data exchange, e.g., message framing,
@@ -19,7 +19,7 @@ retrieval (<code>*/get</code>). Additionally, there&rsquo;s <code>tools/call</co
 application, enabling the MCP server to stay model-independent.</li><li><strong>Elicitation</strong>: Allows servers to request additional information from users.</li><li><strong>Logging</strong>: Enables servers to send log messages to clients for debugging and
 monitoring purposes.</li><li><strong>Tasks (Experimental)</strong>: Durable execution wrappers that enable deferred
 result retrieval and status tracking for MCP requests.</li></ul><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>MCP also supports <strong>notifications</strong> to enable dynamic updates between servers
-and clients. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><h2 id=sample-flow>Sample Flow</h2><p>The client sends an <code>initialize</code> request, e.g.,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
+and clients. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><h2 id=sample-flow-w-tool-calls>Sample Flow w/ Tool Calls</h2><p>The client sends an <code>initialize</code> request, e.g.,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
   <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
   <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span>
   <span style=color:#f92672>&#34;method&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;initialize&#34;</span><span style=color:#111>,</span>
@@ -106,8 +106,30 @@ for making network calls.</p></div></div><p>For real-time updates, MCP supports 
 that specified <code>"tools": { "listChanged": true }</code> can send a notification like:
 <code>{ "jsonrpc": "2.0", "method": "notifications/tools/list_changed" }</code>. The client
 typically reacts by requesting <code>tools/list</code> and refreshing its list of available
-tools. That way, the client doesn&rsquo;t need to poll for changes. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=MCPArchOverview>Architecture overview - Model Context Protocol<i>.</i></cite>
+tools. That way, the client doesn&rsquo;t need to poll for changes. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><h2 id=notes-on-mcp-primitives>Notes on MCP Primitives</h2><p><strong>Resources</strong> provide structured access to information that the AI app can
+retrieve and pass to the model as context, e.g., a server can expose
+<code>calendar://events/2026</code> to return calendar availability for the user. A server
+can also expose resource templates, e.g.,
+<code>travel://activities/{city}/{category}</code> for flexible queries, e.g.,
+<code>travel://activities/barcelona/museums</code>. <span class=citation-ref><a href=#MCPServers></a></span></p><div class=comment-holder><div class=comment><p>The boundaries here seem pretty fluid. For example, filtering to contextual
+data, e.g., <code>travel://activities/barcelona/museums</code> and
+<code>file://documents/travel/passport.pdf</code>, may require an inference to map the user
+query against the list of available resources. Furthermore, resource templates
+seem like they should be behind a tool call, e.g., <code>getAttractions(city: str | None, category: str | None)</code>.</p></div></div><p><strong>Prompts</strong> provide reusable templates for common scenarios, e.g., a
+<code>plan-vacation</code> prompt that accepts a <code>destination</code>, <code>duration</code>, <code>budget</code>, and
+<code>interests</code>. <span class=citation-ref><a href=#MCPServers></a></span></p><div class=comment-holder><div class=comment><p>I don&rsquo;t fully understand the utility here. If the <code>vacation</code> MCP server provides
+a <code>plan-vacation</code> prompt, then the customizations are more like a way to ensure
+that the user provides all of the required data upfront. Contrast this to a case
+where the user has vague vacation plans and the host needs to elicit more
+specific information from the user before calling a tool in the <code>vacation</code> MCP
+server.</p><p>If the <code>plan-vacation</code> prompt contains procedural guidance on how to call the
+tools in the <code>vacation</code> MCP server, then why not have those instructions in some
+internal system prompt? Ah, we&rsquo;re assuming that <code>vacation</code> has an LLM, which is
+not true in general.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=MCPArchOverview>Architecture overview - Model Context Protocol<i>.</i></cite>
 <a href=https://modelcontextprotocol.io/docs/learn/architecture target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modelcontextprotocol.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>modelcontextprotocol.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 9, 2026.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=MCPServers>Understanding MCP servers - Model Context Protocol<i>.</i></cite>
+<a href=https://modelcontextprotocol.io/docs/learn/server-concepts target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modelcontextprotocol.io" loading=lazy aria-hidden=true width=16 height=16>
 <i>modelcontextprotocol.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
 <i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 9, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/modelcontextprotocol.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=modelcontextprotocol.io" loading=lazy aria-hidden=true width=16 height=16>
