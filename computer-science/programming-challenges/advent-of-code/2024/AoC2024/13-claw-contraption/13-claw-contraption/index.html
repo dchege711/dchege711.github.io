@@ -1,56 +1,159 @@
-<!doctype html><html lang=en><head><title>AoC 2024 Day 13: Claw Contraption | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Parsing The input is a list of machine configurations, where buttons \(A\) and \(B\) move the claw some distance \(X\) and \(Y\), and the location of the prize is specified. 
-Button A: X+43, Y+68 Button B: X+10, Y+36 Prize: X=4800, Y=6250 Button A: X+63, Y+41 Button B: X+89, Y+18 Prize: X=17648, Y=19276  namespace AoC2024; using Vector = ClawContraption.Vector; using Button = ClawContraption.Button; using MachineConfig = ClawContraption.MachineConfig; using DirectedEdge = ClawContraption...."><meta property="og:title" content="AoC 2024 Day 13: Claw Contraption"><meta property="og:description" content="Parsing The input is a list of machine configurations, where buttons \(A\) and \(B\) move the claw some distance \(X\) and \(Y\), and the location of the prize is specified. 
-Button A: X+43, Y+68 Button B: X+10, Y+36 Prize: X=4800, Y=6250 Button A: X+63, Y+41 Button B: X+89, Y+18 Prize: X=17648, Y=19276  namespace AoC2024; using Vector = ClawContraption.Vector; using Button = ClawContraption.Button; using MachineConfig = ClawContraption.MachineConfig; using DirectedEdge = ClawContraption...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/13-claw-contraption/13-claw-contraption/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
-const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
-<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/>Advent of Code 2024 - C#</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/13-claw-contraption/13-claw-contraption/>AoC 2024 Day 13: Claw Contraption</a></li></ul></nav><section><header><h1>AoC 2024 Day 13: Claw Contraption</h1><p class=meta>Dated Dec 7, 2025;
-last modified on Sun, 07 Dec 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li><li><a href=#core-implementation>Core Implementation</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><p>The input is a list of machine configurations, where buttons \(A\) and \(B\)
+<!doctype html><html lang=en><head><title>AoC 2024 Day 13: Claw Contraption | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Parsing
+The input is a list of machine configurations, where buttons \(A\) and \(B\)
 move the claw some distance \(X\) and \(Y\), and the location of the prize
-is specified. <span class=citation-ref><a href=#AoC2024Day13></a></span></p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>Button A: X+43, Y+68
+is specified. 
+Button A: X+43, Y+68
 Button B: X+10, Y+36
 Prize: X=4800, Y=6250
 
 Button A: X+63, Y+41
 Button B: X+89, Y+18
 Prize: X=17648, Y=19276
-</code></pre></div><div id=ClawContraption.DataTypes.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
 
-<span style=color:#00a8c8>using</span> <span style=color:#111>Vector</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>using</span> <span style=color:#111>Button</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Button</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>using</span> <span style=color:#111>MachineConfig</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>MachineConfig</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>using</span> <span style=color:#111>DirectedEdge</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>DirectedEdge</span><span style=color:#111>;</span>
 
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>public</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>Vector</span><span style=color:#111>(</span><span style=color:#00a8c8>long</span> <span style=color:#111>X</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>Y</span><span style=color:#111>);</span>
+namespace AoC2024;
 
-    <span style=color:#00a8c8>public</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>Button</span><span style=color:#111>(</span><span style=color:#111>Vector</span> <span style=color:#111>Delta</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TokenCost</span><span style=color:#111>);</span>
+using Vector = ClawContraption.Vector;
+using Button = ClawContraption.Button;
+using MachineConfig = ClawContraption.MachineConfig;
+using DirectedEdge = ClawContraption.DirectedEdge;
 
-    <span style=color:#00a8c8>public</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>MachineConfig</span><span style=color:#111>(</span><span style=color:#111>Button</span> <span style=color:#111>A</span><span style=color:#111>,</span> <span style=color:#111>Button</span> <span style=color:#111>B</span><span style=color:#111>,</span> <span style=color:#111>Vector</span> <span style=color:#111>Prize</span><span style=color:#111>);</span>
+public partial class ClawContraption
+{
+    public record struct Vector(long X, long Y);
 
-    <span style=color:#00a8c8>public</span> <span style=color:#111>record</span> <span style=color:#00a8c8>struct</span> <span style=color:#75af00>DirectedEdge</span><span style=color:#111>(</span><span style=color:#111>Vector</span> <span style=color:#111>From</span><span style=color:#111>,</span> <span style=color:#111>Vector</span> <span style=color:#111>To</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>Cost</span><span style=color:#111>);</span>
-<span style=color:#111>}</span>
+    public record struct Button(Vector Delta, long TokenCost);
 
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraptionExtensions</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Vector</span> <span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Vector</span> <span style=color:#111>vector</span><span style=color:#111>,</span> <span style=color:#111>Button</span> <span style=color:#111>button</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
-        <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>+</span> <span style=color:#111>button</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span><span style=color:#111>,</span> <span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>+</span> <span style=color:#111>button</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>);</span>
+    public record struct MachineConfig(Button A, Button B, Vector Prize);
+
+    public record struct DirectedEdge(Vector From, Vector To, long Cost);
+}
+
+public static class ClawContraptionExtensions
+{
+    public static Vector Move(this Vector vector, Button button) =>
+        new(vector.X + button.Delta.X, vector.Y + button.Delta.Y);
     
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsBeyondPrizeLocation</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Vector</span> <span style=color:#111>vector</span><span style=color:#111>,</span> <span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
-        <span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>&gt;</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>||</span> <span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>&gt;</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>;</span>
+    public static bool IsBeyondPrizeLocation(this Vector vector, MachineConfig config) =>
+        vector.X > config.Prize.X || vector.Y > config.Prize.Y;
     
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>DirectedEdge</span><span style=color:#111>&gt;</span> <span style=color:#111>GetEdges</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Vector</span> <span style=color:#00a8c8>from</span><span style=color:#111>,</span> <span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>to</span> <span style=color:#111>=</span> <span style=color:#00a8c8>from</span><span style=color:#111>.</span><span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>to</span><span style=color:#111>.</span><span style=color:#111>IsBeyondPrizeLocation</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>))</span>
-            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#00a8c8>from</span><span style=color:#111>,</span> <span style=color:#111>to</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span><span style=color:#111>);</span>
+    public static IEnumerable<DirectedEdge> GetEdges(this Vector from, MachineConfig config)
+    {
+        var to = from.Move(config.A);
+        if (!to.IsBeyondPrizeLocation(config))
+            yield return new(from, to, config.A.TokenCost);
         
-        <span style=color:#111>to</span> <span style=color:#111>=</span> <span style=color:#00a8c8>from</span><span style=color:#111>.</span><span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>to</span><span style=color:#111>.</span><span style=color:#111>IsBeyondPrizeLocation</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>))</span>
-            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#00a8c8>from</span><span style=color:#111>,</span> <span style=color:#111>to</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span><span style=color:#111>);</span>
-    <span style=color:#111>}</span>
-<span style=color:#111>}</span>
-</code></pre></div></div><h2 id=part-one>Part One</h2><p>It costs \(3\) tokens to push the \(A\) button and \(1\) token to push the
+        to = from.Move(config.B);
+        if (!to.IsBeyondPrizeLocation(config))
+            yield return new(from, to, config.B.TokenCost);
+    }
+}
+
+Part One
+It costs \(3\) tokens to push the \(A\) button and \(1\) token to push the
+\(B\) button. What is the fewest tokens you would have to spend to win all
+possible prizes? ..."><meta property="og:title" content="AoC 2024 Day 13: Claw Contraption"><meta property="og:description" content="Parsing
+The input is a list of machine configurations, where buttons \(A\) and \(B\)
+move the claw some distance \(X\) and \(Y\), and the location of the prize
+is specified. 
+Button A: X+43, Y+68
+Button B: X+10, Y+36
+Prize: X=4800, Y=6250
+
+Button A: X+63, Y+41
+Button B: X+89, Y+18
+Prize: X=17648, Y=19276
+
+
+namespace AoC2024;
+
+using Vector = ClawContraption.Vector;
+using Button = ClawContraption.Button;
+using MachineConfig = ClawContraption.MachineConfig;
+using DirectedEdge = ClawContraption.DirectedEdge;
+
+public partial class ClawContraption
+{
+    public record struct Vector(long X, long Y);
+
+    public record struct Button(Vector Delta, long TokenCost);
+
+    public record struct MachineConfig(Button A, Button B, Vector Prize);
+
+    public record struct DirectedEdge(Vector From, Vector To, long Cost);
+}
+
+public static class ClawContraptionExtensions
+{
+    public static Vector Move(this Vector vector, Button button) =>
+        new(vector.X + button.Delta.X, vector.Y + button.Delta.Y);
+    
+    public static bool IsBeyondPrizeLocation(this Vector vector, MachineConfig config) =>
+        vector.X > config.Prize.X || vector.Y > config.Prize.Y;
+    
+    public static IEnumerable<DirectedEdge> GetEdges(this Vector from, MachineConfig config)
+    {
+        var to = from.Move(config.A);
+        if (!to.IsBeyondPrizeLocation(config))
+            yield return new(from, to, config.A.TokenCost);
+        
+        to = from.Move(config.B);
+        if (!to.IsBeyondPrizeLocation(config))
+            yield return new(from, to, config.B.TokenCost);
+    }
+}
+
+Part One
+It costs \(3\) tokens to push the \(A\) button and \(1\) token to push the
+\(B\) button. What is the fewest tokens you would have to spend to win all
+possible prizes? ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/13-claw-contraption/13-claw-contraption/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/>Advent of Code 2024 - C#</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/13-claw-contraption/13-claw-contraption/>AoC 2024 Day 13: Claw Contraption</a></li></ul></nav><section><header><h1>AoC 2024 Day 13: Claw Contraption</h1><p class=meta>Dated Dec 7, 2025;
+last modified on Sun, 07 Dec 2025</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#parsing>Parsing</a></li><li><a href=#part-one>Part One</a></li><li><a href=#part-two>Part Two</a></li><li><a href=#core-implementation>Core Implementation</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=parsing>Parsing</h2><p>The input is a list of machine configurations, where buttons \(A\) and \(B\)
+move the claw some distance \(X\) and \(Y\), and the location of the prize
+is specified. <span class=citation-ref><a href=#AoC2024Day13></a></span></p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>Button A: X+43, Y+68
+</span></span><span style=display:flex><span>Button B: X+10, Y+36
+</span></span><span style=display:flex><span>Prize: X=4800, Y=6250
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Button A: X+63, Y+41
+</span></span><span style=display:flex><span>Button B: X+89, Y+18
+</span></span><span style=display:flex><span>Prize: X=17648, Y=19276
+</span></span></code></pre></div><div id=ClawContraption.DataTypes.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>using</span> <span style=color:#111>Vector</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>using</span> <span style=color:#111>Button</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Button</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>using</span> <span style=color:#111>MachineConfig</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>MachineConfig</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>using</span> <span style=color:#111>DirectedEdge</span> <span style=color:#111>=</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>DirectedEdge</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>record</span> <span style=color:#75af00>struct</span> <span style=color:#111>Vector</span><span style=color:#111>(</span><span style=color:#00a8c8>long</span> <span style=color:#111>X</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>Y</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>record</span> <span style=color:#75af00>struct</span> <span style=color:#111>Button</span><span style=color:#111>(</span><span style=color:#111>Vector</span> <span style=color:#111>Delta</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>TokenCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>record</span> <span style=color:#75af00>struct</span> <span style=color:#111>MachineConfig</span><span style=color:#111>(</span><span style=color:#111>Button</span> <span style=color:#111>A</span><span style=color:#111>,</span> <span style=color:#111>Button</span> <span style=color:#111>B</span><span style=color:#111>,</span> <span style=color:#111>Vector</span> <span style=color:#111>Prize</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>record</span> <span style=color:#75af00>struct</span> <span style=color:#111>DirectedEdge</span><span style=color:#111>(</span><span style=color:#111>Vector</span> <span style=color:#111>From</span><span style=color:#111>,</span> <span style=color:#111>Vector</span> <span style=color:#111>To</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>Cost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraptionExtensions</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Vector</span> <span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Vector</span> <span style=color:#111>vector</span><span style=color:#111>,</span> <span style=color:#111>Button</span> <span style=color:#111>button</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>+</span> <span style=color:#111>button</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span><span style=color:#111>,</span> <span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>+</span> <span style=color:#111>button</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsBeyondPrizeLocation</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Vector</span> <span style=color:#111>vector</span><span style=color:#111>,</span> <span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>&gt;</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>||</span> <span style=color:#111>vector</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>&gt;</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>IEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>DirectedEdge</span><span style=color:#111>&gt;</span> <span style=color:#111>GetEdges</span><span style=color:#111>(</span><span style=color:#00a8c8>this</span> <span style=color:#111>Vector</span> <span style=color:#00a8c8>from</span><span style=color:#111>,</span> <span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>to</span> <span style=color:#111>=</span> <span style=color:#00a8c8>from</span><span style=color:#111>.</span><span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>to</span><span style=color:#111>.</span><span style=color:#111>IsBeyondPrizeLocation</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#00a8c8>from</span><span style=color:#111>,</span> <span style=color:#111>to</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#111>to</span> <span style=color:#111>=</span> <span style=color:#00a8c8>from</span><span style=color:#111>.</span><span style=color:#111>Move</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>to</span><span style=color:#111>.</span><span style=color:#111>IsBeyondPrizeLocation</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#00a8c8>from</span><span style=color:#111>,</span> <span style=color:#111>to</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span></span></span></code></pre></div></div><h2 id=part-one>Part One</h2><p>It costs \(3\) tokens to push the \(A\) button and \(1\) token to push the
 \(B\) button. What is the fewest tokens you would have to spend to win all
 possible prizes? <span class=citation-ref><a href=#AoC2024Day13></a></span></p><p>A brute force approach would have us start from \((0, 0)\), and choose whether
 to push \(A\) or \(B\) at each step. All of the buttons in the input have
@@ -64,54 +167,52 @@ properties of this graph:</p><ul><li>The nodes of the graph contain the origin \
 is no path to it.</li><li>There is no need for a node \((x, y)\) where \(x > x_p\) or \(y > y_p\)
 because we can&rsquo;t reach \((x_p, y_p)\) from such a node.</li><li>The edges have weights of either \(3\) or \(1\) depending on whether
 \(A\) or \(B\) was used to connect the two nodes.</li></ul><p>The
-<a href=#core-implementation>core implementation</a>
-is common to both sub-problems.</p><div id=ClawContraption.PartOne.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>PartOne</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
-        <span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>)</span>
-            <span style=color:#111>.</span><span style=color:#111>AsParallel</span><span style=color:#111>()</span>
-            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>GetMinimumCost</span><span style=color:#111>)</span>
-            <span style=color:#111>.</span><span style=color:#111>Where</span><span style=color:#111>(</span><span style=color:#111>cost</span> <span style=color:#111>=&gt;</span> <span style=color:#111>cost</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>)</span>
-            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
-<span style=color:#111>}</span>
-</code></pre></div></div><h2 id=part-two>Part Two</h2><p>Add \(10,000,000,000,000\) to the \(X\) and \(Y\) position of every prize.
+<a href=#core-implementation>core implementation
+</a>is common to both sub-problems.</p><div id=ClawContraption.PartOne.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>PartOne</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>AsParallel</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>GetMinimumCost</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Where</span><span style=color:#111>(</span><span style=color:#111>cost</span> <span style=color:#111>=&gt;</span> <span style=color:#111>cost</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span></span></span></code></pre></div></div><h2 id=part-two>Part Two</h2><p>Add \(10,000,000,000,000\) to the \(X\) and \(Y\) position of every prize.
 What is the fewest tokens you would have to spend to win all possible prizes?
 <span class=citation-ref><a href=#AoC2024Day13></a></span></p><p>The
-<a href=#core-implementation>core implementation</a>
-is common to both sub-problems.
+<a href=#core-implementation>core implementation
+</a>is common to both sub-problems.
 Part Two makes inefficient implementations infeasible because of the sheer
 number of possible \(A\) and \(B\) moves. In
-<a href=#part-one>part 1</a>
-, the prize
+<a href=#part-one>part 1
+</a>, the prize
 was always within \(20,000\) of either \(X\) or \(Y\). Moving the prize
-at least \(500,000,000\) times away does not bode well.</p><div id=ClawContraption.PartTwo.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>PartTwo</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
-        <span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>)</span>
-            <span style=color:#111>.</span><span style=color:#111>AsParallel</span><span style=color:#111>()</span>
-            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>config</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>new</span> <span style=color:#111>MachineConfig</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>,</span> <span style=color:#111>AddOffset</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>)))</span>
-            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>GetMinimumCost</span><span style=color:#111>)</span>
-            <span style=color:#111>.</span><span style=color:#111>Where</span><span style=color:#111>(</span><span style=color:#111>cost</span> <span style=color:#111>=&gt;</span> <span style=color:#111>cost</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>)</span>
-            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
-    
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>long</span> <span style=color:#111>offset</span> <span style=color:#111>=</span> <span style=color:#ae81ff>10</span><span style=color:#111>_000_000_000_000</span><span style=color:#111>;</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Vector</span> <span style=color:#111>AddOffset</span><span style=color:#111>(</span><span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>+</span> <span style=color:#111>offset</span><span style=color:#111>,</span> <span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>+</span> <span style=color:#111>offset</span><span style=color:#111>);</span>
-<span style=color:#111>}</span>
-</code></pre></div></div><h2 id=core-implementation>Core Implementation</h2><div class=comment-holder><div class=comment><p>Relevant notes:</p><ul><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/graphs/shortest-paths/>Shortest Paths in a Graph</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024.Benchmarks/readme/>C# Performance Tools</a></li></ul></div></div><p>The shortest paths implementation is too slow to solve
-<a href=#part-two>part 2</a>
-in a
+at least \(500,000,000\) times away does not bode well.</p><div id=ClawContraption.PartTwo.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>PartTwo</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>AsParallel</span><span style=color:#111>()</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>config</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>new</span> <span style=color:#111>MachineConfig</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>,</span> <span style=color:#111>AddOffset</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>)))</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Select</span><span style=color:#111>(</span><span style=color:#111>GetMinimumCost</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Where</span><span style=color:#111>(</span><span style=color:#111>cost</span> <span style=color:#111>=&gt;</span> <span style=color:#111>cost</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>long</span> <span style=color:#111>offset</span> <span style=color:#111>=</span> <span style=color:#ae81ff>10_000_000_000_000</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#111>Vector</span> <span style=color:#111>AddOffset</span><span style=color:#111>(</span><span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>+</span> <span style=color:#111>offset</span><span style=color:#111>,</span> <span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>+</span> <span style=color:#111>offset</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span></span></span></code></pre></div></div><h2 id=core-implementation>Core Implementation</h2><div class=comment-holder><div class=comment><p>Relevant notes:</p><ul><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/graphs/shortest-paths/>Shortest Paths in a Graph</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024.Benchmarks/readme/>C# Performance Tools</a></li></ul></div></div><p>The shortest paths implementation is too slow to solve
+<a href=#part-two>part 2
+</a>in a
 reasonable time. Solving the 320 configurations for
-<a href=#part-one>part 1</a>
-takes
+<a href=#part-one>part 1
+</a>takes
 \(\approx 3.8s\), and the memory usage is concerning. Naively assuming the
 \(500,000,000\) factor in
-<a href=#part-two>part 2</a>
-blows up the time and space
+<a href=#part-two>part 2
+</a>blows up the time and space
 usage beyond practicality.</p><p>From <code>dotnet run -c Release -- -f '*Day13ClawContraption*'</code>:</p><table><thead><tr><th>Method</th><th style=text-align:right>Mean</th><th style=text-align:right>Error</th><th style=text-align:right>StdDev</th><th style=text-align:right>Gen0</th><th style=text-align:right>Gen1</th><th style=text-align:right>Gen2</th><th style=text-align:right>Allocated</th></tr></thead><tbody><tr><td>PartOne</td><td style=text-align:right>3.834 s</td><td style=text-align:right>0.0647 s</td><td style=text-align:right>0.0540 s</td><td style=text-align:right>589,000</td><td style=text-align:right>193,000</td><td style=text-align:right>40,000</td><td style=text-align:right>3.49 GB</td></tr></tbody></table><p>Using <code>struct</code> instead of <code>class</code> for <code>Vector</code>, <code>Button</code>, and <code>MachineConfig</code>
 shaves 23% off the running time and biases towards more <code>Gen0</code> collections.</p><table><thead><tr><th>Method</th><th style=text-align:right>Mean</th><th style=text-align:right>Error</th><th style=text-align:right>StdDev</th><th style=text-align:right>Gen0</th><th style=text-align:right>Gen1</th><th style=text-align:right>Gen2</th><th style=text-align:right>Allocated</th></tr></thead><tbody><tr><td>PartOne</td><td style=text-align:right>2.949 s</td><td style=text-align:right>0.0583 s</td><td style=text-align:right>0.0648 s</td><td style=text-align:right>650,000</td><td style=text-align:right>33,000</td><td style=text-align:right>22,000</td><td style=text-align:right>4 GB</td></tr></tbody></table><p>Making <code>Vector.GetEdges</code> write to a <code>Span&lt;DirectedEdge></code> owned by the caller
 relieves some memory pressure, but the runtime only decreased by 3%. Reverting
@@ -127,155 +228,160 @@ way.</p><figure><img src=/img/computer-science/programming-challenges/advent-of-
 Should be worthwhile to optimize that method.</p></figcaption></figure><p>Aha, implementing <code>PQWithReplace</code> using a <code>SortedSet&lt;long></code> of known costs and
 <code>Dictionary&lt;long, HashSet&lt;ClawContraption.Vector>></code> reduces the runtime by 88%
 while also relieving memory pressure.</p><table><thead><tr><th>Method</th><th style=text-align:right>Mean</th><th style=text-align:right>Error</th><th style=text-align:right>StdDev</th><th style=text-align:right>Gen0</th><th style=text-align:right>Gen1</th><th style=text-align:right>Gen2</th><th style=text-align:right>Allocated</th></tr></thead><tbody><tr><td>PartOne</td><td style=text-align:right>348.8 ms</td><td style=text-align:right>5.14 ms</td><td style=text-align:right>4.29 ms</td><td style=text-align:right>376,000</td><td style=text-align:right>43,000</td><td style=text-align:right>22,000</td><td style=text-align:right>2.4 GB</td></tr></tbody></table><p>That said, even this improvement is insufficient for
-<a href=#part-two>part 2</a>
-.</p><p>I reached out for shortest path algorithms, and missed the fact that we&rsquo;re
-solving a system of two linear equations! <span class=citation-ref><a href=#edditAoC-1hd5b6o></a></span></p><p>For example, given:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>Button A: X+94, Y+34
-Button B: X+22, Y+67
-Prize: X=8400, Y=5400
-</code></pre></div><p>&mldr; the the system of equations is:</p><p>$$ 94A + 22B = 8400 $$
+<a href=#part-two>part 2
+</a>.</p><p>I reached out for shortest path algorithms, and missed the fact that we&rsquo;re
+solving a system of two linear equations! <span class=citation-ref><a href=#edditAoC-1hd5b6o></a></span></p><p>For example, given:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>Button A: X+94, Y+34
+</span></span><span style=display:flex><span>Button B: X+22, Y+67
+</span></span><span style=display:flex><span>Prize: X=8400, Y=5400
+</span></span></code></pre></div><p>&mldr; the the system of equations is:</p><p>$$ 94A + 22B = 8400 $$
 $$ 34A + 67B = 5400 $$</p><p>&mldr; and from here it&rsquo;s good old linear algebra. A system of two linear equations
 can have either one (they intersect), none (they&rsquo;re parallel) or infinite (they
 overlap) solutions. That both \(A\) and \(B\) start from \((0, 0)\) means
-that they can&rsquo;t be parallel. Much better now:</p><table><thead><tr><th>Method</th><th style=text-align:right>Mean</th><th style=text-align:right>Error</th><th style=text-align:right>StdDev</th><th style=text-align:right>Median</th><th style=text-align:right>Gen0</th><th style=text-align:right>Gen1</th><th style=text-align:right>Allocated</th></tr></thead><tbody><tr><td>PartOne</td><td style=text-align:right>3.044 ms</td><td style=text-align:right>0.0868 ms</td><td style=text-align:right>0.2558 ms</td><td style=text-align:right>3.136 ms</td><td style=text-align:right>140.6250</td><td style=text-align:right>27.3438</td><td style=text-align:right>833.52 KB</td></tr></tbody></table><div id=ClawContraption.Common.cs><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-cs data-lang=cs><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>GetMinimumCost</span><span style=color:#111>(</span><span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
-        <span style=color:#111>GetMinimumCostWithAnalyticalSolution</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>,</span> <span style=color:#00a8c8>out</span> <span style=color:#00a8c8>var</span> <span style=color:#111>minCost</span><span style=color:#111>)</span>
-            <span style=color:#111>?</span> <span style=color:#111>minCost</span>
-            <span style=color:#111>:</span> <span style=color:#111>GetMinimumCostWithShortestPaths</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>);</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>GetMinimumCostWithAnalyticalSolution</span><span style=color:#111>(</span><span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>,</span> <span style=color:#00a8c8>out</span> <span style=color:#00a8c8>long</span> <span style=color:#111>minCost</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#111>minCost</span> <span style=color:#111>=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>;</span>
-
-        <span style=color:#75715e>// Solve for A by eliminating B from the system of equations.
-</span><span style=color:#75715e></span>        <span style=color:#75715e>//
-</span><span style=color:#75715e></span>        <span style=color:#75715e>// dX_A * A + dX_B * B = X  |  dY_B (dX_A * A + dX_B * B = X)
-</span><span style=color:#75715e></span>        <span style=color:#75715e>// dY_A * A + dY_B * B = Y  |  dX_B (dY_A * A + dY_B * B = Y)
-</span><span style=color:#75715e></span>        <span style=color:#75715e>//
-</span><span style=color:#75715e></span>        <span style=color:#75715e>// (dY_B * dX_A - dX_B * dY_A) * A = dY_B * X - dX_B * Y
-</span><span style=color:#75715e></span>        <span style=color:#00a8c8>long</span> <span style=color:#111>aCoeff</span> <span style=color:#111>=</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>-</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>;</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>aCoeff</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
-            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
-        
-        <span style=color:#00a8c8>long</span> <span style=color:#111>rhs</span> <span style=color:#111>=</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>-</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>;</span>
-
-        <span style=color:#00a8c8>double</span> <span style=color:#111>aMoveCount</span> <span style=color:#111>=</span> <span style=color:#111>rhs</span> <span style=color:#111>*</span> <span style=color:#ae81ff>1.0</span> <span style=color:#111>/</span> <span style=color:#111>aCoeff</span><span style=color:#111>;</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#00a8c8>double</span><span style=color:#111>.</span><span style=color:#111>IsInteger</span><span style=color:#111>(</span><span style=color:#111>aMoveCount</span><span style=color:#111>))</span>
-            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
-        
-        <span style=color:#75715e>// Solve for B by plugging in A back into one of the equations.
-</span><span style=color:#75715e></span>        <span style=color:#75715e>//
-</span><span style=color:#75715e></span>        <span style=color:#75715e>// dX_A * A + dX_B * B = X
-</span><span style=color:#75715e></span>        <span style=color:#75715e>// dX_B * B = X - dX_A * A
-</span><span style=color:#75715e></span>        <span style=color:#00a8c8>double</span> <span style=color:#111>bMoveCount</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>-</span> <span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>*</span> <span style=color:#111>aMoveCount</span><span style=color:#111>))</span> <span style=color:#111>/</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span><span style=color:#111>;</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#00a8c8>double</span><span style=color:#111>.</span><span style=color:#111>IsInteger</span><span style=color:#111>(</span><span style=color:#111>bMoveCount</span><span style=color:#111>))</span>
-            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
-        
-        <span style=color:#111>minCost</span> <span style=color:#111>=</span> <span style=color:#00a8c8>double</span><span style=color:#111>.</span><span style=color:#111>ConvertToInteger</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>&gt;(</span><span style=color:#111>aMoveCount</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span> <span style=color:#111>+</span> <span style=color:#111>bMoveCount</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
-    <span style=color:#111>}</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>GetMinimumCostWithShortestPaths</span><span style=color:#111>(</span><span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>pq</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>PQWithReplace</span><span style=color:#111>();</span>
-        <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>Upsert</span><span style=color:#111>(</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>),</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>distTo</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>Dictionary</span><span style=color:#111>&lt;</span><span style=color:#111>Vector</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span><span style=color:#111>&gt;([</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0L</span><span style=color:#111>,</span> <span style=color:#ae81ff>0L</span><span style=color:#111>),</span> <span style=color:#ae81ff>0L</span><span style=color:#111>)]);</span>
-
-        <span style=color:#00a8c8>while</span> <span style=color:#111>(!</span><span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>IsEmpty</span><span style=color:#111>())</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>var</span> <span style=color:#111>v</span> <span style=color:#111>=</span> <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>Dequeue</span><span style=color:#111>();</span>
-            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>v</span> <span style=color:#111>==</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>)</span>
-                <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
-
-            <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>edge</span> <span style=color:#00a8c8>in</span> <span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>GetEdges</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>))</span>
-            <span style=color:#111>{</span>
-                <span style=color:#00a8c8>var</span> <span style=color:#111>prevCost</span> <span style=color:#111>=</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>);</span>
-                <span style=color:#00a8c8>var</span> <span style=color:#111>currCost</span> <span style=color:#111>=</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>v</span><span style=color:#111>)</span> <span style=color:#111>+</span> <span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>Cost</span><span style=color:#111>;</span>
-                <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>prevCost</span> <span style=color:#111>&gt;</span> <span style=color:#111>currCost</span><span style=color:#111>)</span>
-                <span style=color:#111>{</span>
-                    <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>currCost</span><span style=color:#111>;</span>
-                    <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>Upsert</span><span style=color:#111>(</span><span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>,</span> <span style=color:#111>prevCost</span><span style=color:#111>,</span> <span style=color:#111>currCost</span><span style=color:#111>);</span>
-                <span style=color:#111>}</span>
-            <span style=color:#111>}</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>return</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>);</span>
-    <span style=color:#111>}</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>Dictionary</span><span style=color:#111>&lt;</span><span style=color:#111>Vector</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span><span style=color:#111>&gt;</span> <span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>.</span><span style=color:#111>TryGetValue</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>,</span> <span style=color:#00a8c8>out</span> <span style=color:#00a8c8>var</span> <span style=color:#111>cost</span><span style=color:#111>))</span>
-            <span style=color:#00a8c8>return</span> <span style=color:#111>cost</span><span style=color:#111>;</span>
-        
-        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>;</span>
-    <span style=color:#111>}</span>
-<span style=color:#111>}</span>
-
-<span style=color:#00a8c8>public</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>PQWithReplace</span>
-<span style=color:#111>{</span>
-    <span style=color:#00a8c8>private</span> <span style=color:#111>SortedSet</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>&gt;</span> <span style=color:#111>_knownCosts</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
-
-    <span style=color:#00a8c8>private</span> <span style=color:#111>Dictionary</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>,</span> <span style=color:#111>HashSet</span><span style=color:#111>&lt;</span><span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span><span style=color:#111>&gt;&gt;</span> <span style=color:#111>_vectors</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
-
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsEmpty</span><span style=color:#111>()</span> <span style=color:#111>=&gt;</span> <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
-
-    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>Upsert</span><span style=color:#111>(</span><span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>prevCost</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>cost</span><span style=color:#111>)</span>
-    <span style=color:#111>{</span>
-        <span style=color:#75715e>// Remove any previous entry.
-</span><span style=color:#75715e></span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>prevCost</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>)</span>
-        <span style=color:#111>{</span>
-            <span style=color:#00a8c8>var</span> <span style=color:#111>prevSet</span> <span style=color:#111>=</span> <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>prevCost</span><span style=color:#111>];</span>
-            <span style=color:#111>prevSet</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>);</span>
-
-            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>prevSet</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
-            <span style=color:#111>{</span>
-                <span style=color:#111>_vectors</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>prevCost</span><span style=color:#111>);</span>
-                <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>prevCost</span><span style=color:#111>);</span>
-            <span style=color:#111>}</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#75715e>// Insert new entry.
-</span><span style=color:#75715e></span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>_vectors</span><span style=color:#111>.</span><span style=color:#111>ContainsKey</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>))</span>
-            <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>cost</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
-
-        <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>cost</span><span style=color:#111>].</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>);</span>
-        <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>);</span>
-    <span style=color:#111>}</span>
-    
-    <span style=color:#00a8c8>public</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span> <span style=color:#111>Dequeue</span><span style=color:#111>()</span> <span style=color:#111>{</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>cost</span> <span style=color:#111>=</span> <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>();</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#00a8c8>set</span> <span style=color:#111>=</span> <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>cost</span><span style=color:#111>];</span>
-        <span style=color:#00a8c8>var</span> <span style=color:#111>vector</span> <span style=color:#111>=</span> <span style=color:#00a8c8>set</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>();</span>
-        <span style=color:#00a8c8>set</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>vector</span><span style=color:#111>);</span>
-
-        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#00a8c8>set</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
-        <span style=color:#111>{</span>
-            <span style=color:#111>_vectors</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>);</span>
-            <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>);</span>
-        <span style=color:#111>}</span>
-
-        <span style=color:#00a8c8>return</span> <span style=color:#111>vector</span><span style=color:#111>;</span>
-    <span style=color:#111>}</span>
-<span style=color:#111>}</span>
-</code></pre></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=AoC2024Day13>Day 13 - Advent of Code 2024: Claw Contraption<i>.</i></cite>
-Eric Wastl.
+that they can&rsquo;t be parallel. Much better now:</p><table><thead><tr><th>Method</th><th style=text-align:right>Mean</th><th style=text-align:right>Error</th><th style=text-align:right>StdDev</th><th style=text-align:right>Median</th><th style=text-align:right>Gen0</th><th style=text-align:right>Gen1</th><th style=text-align:right>Allocated</th></tr></thead><tbody><tr><td>PartOne</td><td style=text-align:right>3.044 ms</td><td style=text-align:right>0.0868 ms</td><td style=text-align:right>0.2558 ms</td><td style=text-align:right>3.136 ms</td><td style=text-align:right>140.6250</td><td style=text-align:right>27.3438</td><td style=text-align:right>833.52 KB</td></tr></tbody></table><div id=ClawContraption.Common.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>ClawContraption</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>GetMinimumCost</span><span style=color:#111>(</span><span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>GetMinimumCostWithAnalyticalSolution</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>,</span> <span style=color:#00a8c8>out</span> <span style=color:#00a8c8>var</span> <span style=color:#111>minCost</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>?</span> <span style=color:#111>minCost</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>:</span> <span style=color:#111>GetMinimumCostWithShortestPaths</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>GetMinimumCostWithAnalyticalSolution</span><span style=color:#111>(</span><span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>,</span> <span style=color:#00a8c8>out</span> <span style=color:#00a8c8>long</span> <span style=color:#111>minCost</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>minCost</span> <span style=color:#111>=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Solve for A by eliminating B from the system of equations.</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// dX_A * A + dX_B * B = X  |  dY_B (dX_A * A + dX_B * B = X)</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// dY_A * A + dY_B * B = Y  |  dX_B (dY_A * A + dY_B * B = Y)</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// (dY_B * dX_A - dX_B * dY_A) * A = dY_B * X - dX_B * Y</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>long</span> <span style=color:#111>aCoeff</span> <span style=color:#111>=</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>-</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>aCoeff</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>long</span> <span style=color:#111>rhs</span> <span style=color:#111>=</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>Y</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>-</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>Y</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>double</span> <span style=color:#111>aMoveCount</span> <span style=color:#111>=</span> <span style=color:#111>rhs</span> <span style=color:#111>*</span> <span style=color:#ae81ff>1.0</span> <span style=color:#111>/</span> <span style=color:#111>aCoeff</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#00a8c8>double</span><span style=color:#111>.</span><span style=color:#111>IsInteger</span><span style=color:#111>(</span><span style=color:#111>aMoveCount</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Solve for B by plugging in A back into one of the equations.</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// dX_A * A + dX_B * B = X</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// dX_B * B = X - dX_A * A</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>double</span> <span style=color:#111>bMoveCount</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>-</span> <span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span> <span style=color:#111>*</span> <span style=color:#111>aMoveCount</span><span style=color:#111>))</span> <span style=color:#111>/</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>Delta</span><span style=color:#111>.</span><span style=color:#111>X</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#00a8c8>double</span><span style=color:#111>.</span><span style=color:#111>IsInteger</span><span style=color:#111>(</span><span style=color:#111>bMoveCount</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#111>minCost</span> <span style=color:#111>=</span> <span style=color:#00a8c8>double</span><span style=color:#111>.</span><span style=color:#111>ConvertToInteger</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>&gt;(</span><span style=color:#111>aMoveCount</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>A</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span> <span style=color:#111>+</span> <span style=color:#111>bMoveCount</span> <span style=color:#111>*</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>B</span><span style=color:#111>.</span><span style=color:#111>TokenCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>GetMinimumCostWithShortestPaths</span><span style=color:#111>(</span><span style=color:#111>MachineConfig</span> <span style=color:#111>config</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>pq</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>PQWithReplace</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>Upsert</span><span style=color:#111>(</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>),</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>distTo</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>Dictionary</span><span style=color:#111>&lt;</span><span style=color:#111>Vector</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span><span style=color:#111>&gt;([</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0L</span><span style=color:#111>,</span> <span style=color:#ae81ff>0L</span><span style=color:#111>),</span> <span style=color:#ae81ff>0L</span><span style=color:#111>)]);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>while</span> <span style=color:#111>(!</span><span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>IsEmpty</span><span style=color:#111>())</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>var</span> <span style=color:#111>v</span> <span style=color:#111>=</span> <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>Dequeue</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>v</span> <span style=color:#111>==</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>var</span> <span style=color:#111>edge</span> <span style=color:#00a8c8>in</span> <span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>GetEdges</span><span style=color:#111>(</span><span style=color:#111>config</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>var</span> <span style=color:#111>prevCost</span> <span style=color:#111>=</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>var</span> <span style=color:#111>currCost</span> <span style=color:#111>=</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>v</span><span style=color:#111>)</span> <span style=color:#111>+</span> <span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>Cost</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>prevCost</span> <span style=color:#111>&gt;</span> <span style=color:#111>currCost</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                    <span style=color:#111>distTo</span><span style=color:#111>[</span><span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>currCost</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#111>pq</span><span style=color:#111>.</span><span style=color:#111>Upsert</span><span style=color:#111>(</span><span style=color:#111>edge</span><span style=color:#111>.</span><span style=color:#111>To</span><span style=color:#111>,</span> <span style=color:#111>prevCost</span><span style=color:#111>,</span> <span style=color:#111>currCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>config</span><span style=color:#111>.</span><span style=color:#111>Prize</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>long</span> <span style=color:#111>GetCost</span><span style=color:#111>(</span><span style=color:#111>Dictionary</span><span style=color:#111>&lt;</span><span style=color:#111>Vector</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span><span style=color:#111>&gt;</span> <span style=color:#111>distTo</span><span style=color:#111>,</span> <span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>distTo</span><span style=color:#111>.</span><span style=color:#111>TryGetValue</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>,</span> <span style=color:#00a8c8>out</span> <span style=color:#00a8c8>var</span> <span style=color:#111>cost</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>return</span> <span style=color:#111>cost</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>PQWithReplace</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#111>SortedSet</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>&gt;</span> <span style=color:#111>_knownCosts</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#111>Dictionary</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>long</span><span style=color:#111>,</span> <span style=color:#111>HashSet</span><span style=color:#111>&lt;</span><span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span><span style=color:#111>&gt;&gt;</span> <span style=color:#111>_vectors</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsEmpty</span><span style=color:#111>()</span> <span style=color:#111>=&gt;</span> <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>Upsert</span><span style=color:#111>(</span><span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span> <span style=color:#111>v</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>prevCost</span><span style=color:#111>,</span> <span style=color:#00a8c8>long</span> <span style=color:#111>cost</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Remove any previous entry.</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>prevCost</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>long</span><span style=color:#111>.</span><span style=color:#111>MaxValue</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>var</span> <span style=color:#111>prevSet</span> <span style=color:#111>=</span> <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>prevCost</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>prevSet</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>prevSet</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>_vectors</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>prevCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>prevCost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Insert new entry.</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>_vectors</span><span style=color:#111>.</span><span style=color:#111>ContainsKey</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>cost</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>cost</span><span style=color:#111>].</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>v</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#111>ClawContraption</span><span style=color:#111>.</span><span style=color:#111>Vector</span> <span style=color:#111>Dequeue</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>cost</span> <span style=color:#111>=</span> <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#00a8c8>set</span> <span style=color:#111>=</span> <span style=color:#111>_vectors</span><span style=color:#111>[</span><span style=color:#111>cost</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>vector</span> <span style=color:#111>=</span> <span style=color:#00a8c8>set</span><span style=color:#111>.</span><span style=color:#111>First</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>set</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>vector</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#00a8c8>set</span><span style=color:#111>.</span><span style=color:#111>Count</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>_vectors</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>_knownCosts</span><span style=color:#111>.</span><span style=color:#111>Remove</span><span style=color:#111>(</span><span style=color:#111>cost</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>vector</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span></span></span></code></pre></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=AoC2024Day13>Day 13 - Advent of Code 2024: Claw Contraption<i>.</i>
+</cite>Eric Wastl.
 <a href=https://adventofcode.com/2024/day/13 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Dec 7, 2025.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=programming_challenges-33318f0>[AoC 2024] [Claw Contraption] Have Vector.GetEdges modify unowned Span · dchege711/programming_challenges@33318f0 · GitHub<i>.</i></cite>
-<a href=https://github.com/dchege711/programming_challenges/commit/33318f0f1a9fcbffee305e9ed6ce05ac2f0a0d1b target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jan 2, 2026.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=redditAoC-1hd5b6o>[2024 Day 13] In the end, math reigns supreme : adventofcode<i>.</i></cite>
-<a href=https://old.reddit.com/r/adventofcode/comments/1hd5b6o/2024_day_13_in_the_end_math_reigns_supreme/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=old.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>old.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jan 3, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Dec 7, 2025.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=programming_challenges-33318f0>[AoC 2024] [Claw Contraption] Have Vector.GetEdges modify unowned Span · dchege711/programming_challenges@33318f0 · GitHub<i>.</i>
+</cite><a href=https://github.com/dchege711/programming_challenges/commit/33318f0f1a9fcbffee305e9ed6ce05ac2f0a0d1b target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jan 2, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=redditAoC-1hd5b6o>[2024 Day 13] In the end, math reigns supreme : adventofcode<i>.</i>
+</cite><a href=https://old.reddit.com/r/adventofcode/comments/1hd5b6o/2024_day_13_in_the_end_math_reigns_supreme/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=old.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>old.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jan 3, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Wastl-Eric>Wastl, Eric</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/adventofcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=adventofcode.com" loading=lazy aria-hidden=true width=16 height=16>
-adventofcode.com</a>
-<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-github.com</a>
-<a href=/domains/old.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=old.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+adventofcode.com
+</a><a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com
+</a><a href=/domains/old.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=old.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
 old.reddit.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/12-garden-groups/12-garden-groups/>&#171; AoC 2024 Day 12: Garden Groups</a>
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024.Benchmarks/readme/>C# Performance Tools &#187;</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>

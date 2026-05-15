@@ -1,12 +1,222 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Flashcards App on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/</link><description>Recent content in Flashcards App on Chege's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 27 Mar 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/index.xml" rel="self" type="application/rss+xml"/><item><title>Testing in a Monorepo</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</link><pubDate>Sat, 22 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</guid><description>Testing Web Components While any test framework can work, it&amp;rsquo;s better to test web components in a browser environment because that&amp;rsquo;s where they&amp;rsquo;ll be used. Node-based frameworks would require too much shimming of DOM calls that&amp;rsquo;d make the tests unrepresentative. and are good options for browser-based testing.
-is powered by ES-build, and so is the client-side of the app; let&amp;rsquo;s go down this path and see where it leads.</description></item><item><title>Database Layer</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/database-layer/</link><pubDate>Sun, 16 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/database-layer/</guid><description>Currently using MongoDB&amp;rsquo;s free tier, which has shared RAM, and up to 5GB of storage . So far, the overall DB usage has been less than 5MB.
-Query Injection Current State of Affairs Currently have this protection implemented back in 2018:
-/** * @description Prevent a NoSQL Injection in the search parameters. This is * achieved by deleting all query values that begin with `$`. */ export function sanitizeQuery(query: any) { const keys = Object.</description></item><item><title>Continuous Integration Tooling</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/ci-tooling/</link><pubDate>Sun, 09 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/ci-tooling/</guid><description>What automatic tools can I add to keep code quality high?
-CodeQL CodeQL is a tool that runs variant analysis on code. The idea is that we create a query from a known vulnerability, e.g., SQL injection, and then run it against a codebase to find instances of that vulnerability. GitHub authorizes the use of CodeQL for public repos, and so we are covered . ql-analysis.sh has a recipe for running the analysis locally in the repo.</description></item><item><title>Markup Features</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/markup-features/</link><pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/markup-features/</guid><description>Syntax Highlighting Previously, we&amp;rsquo;d highlight code on the client by loading src/lib/highlight.pack.js, a bundle downloaded from but served from our domain, and then execute hljs.highlightBlock on demand, e.g., on page load, when showing a card, etc. This doesn&amp;rsquo;t work well with a web-component-centric design. Running hljs.highlightBlock through possible Shadow DOM boundaries is a hassle.
-Back in 2018 , we installed highlightjs, a shim for the official HighlightJS.</description></item><item><title>Of Builds and Bundlers</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/</link><pubDate>Sat, 20 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/</guid><description>Moving to TypeScript entails configuring how the JavaScript will be eventually consumed by both the server and the client.
-Separating the Client Bundle from the Server Bundle The server code runs in Node while the client code runs in the browser. advises separating the configurations for advantages like faster type-checking and compiling, lower memory usage when using an editor, and improved enforcement of the logical groupings of your program.</description></item><item><title>Client/Server Interface</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/</link><pubDate>Fri, 19 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/</guid><description>How to handle redirects without setting window.location.href? Right now, there&amp;rsquo;s a pattern of doing:
-sendHTTPRequest(&amp;#34;POST&amp;#34;, &amp;#34;/login/&amp;#34;, {}) .then((_) =&amp;gt; { window.location.href = &amp;#34;/&amp;#34;; }) .catch((err) =&amp;gt; { console.error(err); }); Isn&amp;rsquo;t this something that the server can do? In response, why not issue a redirect?
-Screenshot of the redirect chain from /login. The POST request gets a 303 (See Other) redirect to /home. The browser then makes a GET request to /home, which results in a 304 (Not Modified).</description></item><item><title>Use of Local Storage</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/</link><pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/</guid><description>Back when I wrote this, the motivation for using localStorage was to reduce the trips to the server so that the app is usable offline. However, with two data stores (localStorage and the server), the former has a possibility of going stale. What usage is correct and how can we avoid stale data?
-localStorage['session_info'] getAccountInfo: () =&amp;gt; AuthenticateUser | null fetches the session_info entry and JSON.parses it into an AuthenticateUser. This is a possible failure point because the parsed JSON cannot be trusted to be a valid AuthenticateUser instance.</description></item><item><title>Hosting the Flashcards App</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/hosting/</link><pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/hosting/</guid><description>Current State: SaaS The app is hosted at render.com on Render&amp;rsquo;s free tier that gives us these free web services:
-Custom domains Managed TLS certificates Pull request reviews Log streams Rollbacks up to the two most recent previous deploys. &amp;hellip; with these limitations:
-Spins down after 15min of no inbound traffic. Spinning up on the next request causes a noticeable delay for a couple seconds.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Flashcards App on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/</link><description>Recent content in Flashcards App on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 22 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/index.xml" rel="self" type="application/rss+xml"/><item><title>Testing in a Monorepo</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</link><pubDate>Sat, 22 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</guid><description>&lt;h2 id="testing-web-components"&gt;Testing Web Components&lt;/h2&gt;
+&lt;p&gt;While any test framework can work, it&amp;rsquo;s better to test web components in
+a browser environment because that&amp;rsquo;s where they&amp;rsquo;ll be used. Node-based
+frameworks would require too much shimming of DOM calls that&amp;rsquo;d make the
+tests unrepresentative. &lt;span class="citation-ref"&gt;&lt;a href="#WebTestRunner"&gt;&lt;/a&gt;&lt;/span&gt; and &lt;span class="citation-ref"&gt;&lt;a href="#WebDriverIO"&gt;&lt;/a&gt;&lt;/span&gt; are good options for browser-based testing. &lt;span class="citation-ref"&gt;&lt;a href="#testingLit"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#WebTestRunner"&gt;&lt;/a&gt;&lt;/span&gt; is powered by ES-build, and so is the
+client-side of the app; let&amp;rsquo;s go down this path and see where it leads.
+CommonJS modules don&amp;rsquo;t work in the browser &lt;span class="citation-ref"&gt;&lt;a href="#esModulesWebDev"&gt;&lt;/a&gt;&lt;/span&gt;.
+
+&lt;a href="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/#es-modules-vs-commonjs"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ Earlier on
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+, using ESM on the server turned out difficult. Hopefully, that
+doesn&amp;rsquo;t me bite back now.&lt;/p&gt;</description></item><item><title>Database Layer</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/database-layer/</link><pubDate>Sun, 16 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/database-layer/</guid><description>&lt;p&gt;Currently using MongoDB&amp;rsquo;s free tier, which has shared RAM, and up to 5GB
+of storage &lt;span class="citation-ref"&gt;&lt;a href="#mongoDBPricing"&gt;&lt;/a&gt;&lt;/span&gt;. So far, the overall DB usage has
+been less than 5MB.&lt;/p&gt;
+&lt;h2 id="query-injection"&gt;Query Injection&lt;/h2&gt;
+&lt;h3 id="current-state-of-affairs"&gt;Current State of Affairs&lt;/h3&gt;
+&lt;p&gt;Currently have this protection implemented back in 2018:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ts" data-lang="ts"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * @description Prevent a NoSQL Injection in the search parameters. This is
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * achieved by deleting all query values that begin with `$`.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;export&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;function&lt;/span&gt; &lt;span style="color:#75af00"&gt;sanitizeQuery&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;query&lt;/span&gt;: &lt;span style="color:#00a8c8"&gt;any&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;const&lt;/span&gt; &lt;span style="color:#75af00"&gt;keys&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;Object&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;keys&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;query&lt;/span&gt;&lt;span style="color:#111"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;for&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#00a8c8"&gt;let&lt;/span&gt; &lt;span style="color:#75af00"&gt;i&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt; &lt;span style="color:#75af00"&gt;i&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt; &lt;span style="color:#75af00"&gt;keys&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;length&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt; &lt;span style="color:#75af00"&gt;i&lt;/span&gt;&lt;span style="color:#f92672"&gt;++&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;if&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#d88200"&gt;/^\$/&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;test&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;query&lt;/span&gt;&lt;span style="color:#111"&gt;[&lt;/span&gt;&lt;span style="color:#75af00"&gt;keys&lt;/span&gt;&lt;span style="color:#111"&gt;[&lt;/span&gt;&lt;span style="color:#75af00"&gt;i&lt;/span&gt;&lt;span style="color:#111"&gt;]]))&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;delete&lt;/span&gt; &lt;span style="color:#75af00"&gt;query&lt;/span&gt;&lt;span style="color:#111"&gt;[&lt;/span&gt;&lt;span style="color:#75af00"&gt;keys&lt;/span&gt;&lt;span style="color:#111"&gt;[&lt;/span&gt;&lt;span style="color:#75af00"&gt;i&lt;/span&gt;&lt;span style="color:#111"&gt;]];&lt;/span&gt; &lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;return&lt;/span&gt; &lt;span style="color:#75af00"&gt;query&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#commit186da7c"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Continuous Integration Tooling</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/ci-tooling/</link><pubDate>Sun, 09 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/ci-tooling/</guid><description>&lt;p&gt;What automatic tools can I add to keep code quality high?&lt;/p&gt;
+&lt;h2 id="codeql"&gt;CodeQL&lt;/h2&gt;
+&lt;p&gt;CodeQL is a tool that runs variant analysis on code. The idea is that we
+create a query from a known vulnerability, e.g., SQL injection, and then
+run it against a codebase to find instances of that vulnerability. &lt;span class="citation-ref"&gt;&lt;a href="#CodeQL"&gt;&lt;/a&gt;&lt;/span&gt; GitHub authorizes the use of CodeQL for public repos,
+and so we are covered &lt;span class="citation-ref"&gt;&lt;a href="#CodeQLLicense"&gt;&lt;/a&gt;&lt;/span&gt;.
+
+&lt;a href="https://github.com/dchege711/study_buddy/blob/main/ql-analysis.sh"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ ql-analysis.sh
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+
+has a recipe for running the analysis locally in the repo. CodeQL also
+runs on every PR, and blocks check-in if new vulnerabilities are
+discovered.&lt;/p&gt;</description></item><item><title>Markup Features</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/markup-features/</link><pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/markup-features/</guid><description>&lt;h2 id="syntax-highlighting"&gt;Syntax Highlighting&lt;/h2&gt;
+&lt;p&gt;Previously, we&amp;rsquo;d highlight code on the client by loading
+&lt;code&gt;src/lib/highlight.pack.js&lt;/code&gt;, a bundle downloaded from &lt;span class="citation-ref"&gt;&lt;a href="#HighlightJS"&gt;&lt;/a&gt;&lt;/span&gt; but served from our domain, and then execute
+&lt;code&gt;hljs.highlightBlock&lt;/code&gt; on demand, e.g., on page load, when showing a
+card, etc. This doesn&amp;rsquo;t work well with a web-component-centric design.
+Running &lt;code&gt;hljs.highlightBlock&lt;/code&gt; through possible Shadow DOM boundaries is
+a hassle.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href="https://github.com/dchege711/study_buddy/commit/02768f1f58eb73d9ae55d1f1d7eb31ec93dd7867"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ Back in
+2018
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+,
+we installed &lt;code&gt;highlightjs&lt;/code&gt;, a shim for the official HighlightJS. Times
+have changed and &lt;span class="citation-ref"&gt;&lt;a href="#HighlightJS"&gt;&lt;/a&gt;&lt;/span&gt; has an official Node package,
+
+&lt;a href="https://www.npmjs.com/package/highlight.js"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ &lt;code&gt;highlight.js&lt;/code&gt;
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+. Now, on
+the server, compute the syntax-highlighted HTML and have it stored in
+&lt;code&gt;Card.descriptionHTML&lt;/code&gt;. All that&amp;rsquo;s left is to provide CSS on the client.&lt;/p&gt;</description></item><item><title>Of Builds and Bundlers</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/</link><pubDate>Sat, 20 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/</guid><description>&lt;p&gt;Moving to TypeScript entails configuring how the JavaScript will be
+eventually consumed by both the server and the client.&lt;/p&gt;
+&lt;h2 id="separating-the-client-bundle-from-the-server-bundle"&gt;Separating the Client Bundle from the Server Bundle&lt;/h2&gt;
+&lt;p&gt;The server code runs in &lt;code&gt;Node&lt;/code&gt; while the client code runs in the
+browser. &lt;span class="citation-ref"&gt;&lt;a href="#projectReferences"&gt;&lt;/a&gt;&lt;/span&gt; advises separating the
+configurations for advantages like faster type-checking and compiling,
+lower memory usage when using an editor, and improved enforcement of the
+logical groupings of your program.&lt;/p&gt;
+&lt;p&gt;Webpack utilizes loaders to preprocess files, allowing the dev to bundle
+any static resource. For example, &lt;code&gt;markdown-loader&lt;/code&gt; compiles markdown
+into HTML. &lt;span class="citation-ref"&gt;&lt;a href="#webpackLoaders"&gt;&lt;/a&gt;&lt;/span&gt; I&amp;rsquo;ve been using
+
+&lt;a href="https://github.com/TypeStrong/ts-loader"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ &lt;code&gt;ts-loader&lt;/code&gt;
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+, and it should be
+informative to know what else is out there, e.g.,
+
+&lt;a href="https://github.com/privatenumber/esbuild-loader"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ &lt;code&gt;esbuild-loader&lt;/code&gt;
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+,
+which has been mentioned at work. &lt;code&gt;esbuild-loader&lt;/code&gt;&amp;rsquo;s claim to fame is
+speed; other benefits include transpiling to ES6+ using &lt;code&gt;esbuild&lt;/code&gt;.
+&lt;code&gt;ts-loader&lt;/code&gt; admits to being slow, but because of type-checking all files
+in every rebuild though granted that can be dangerously disabled via
+&lt;code&gt;transpileOnly: true&lt;/code&gt;. 
+&lt;a href="https://esbuild.github.io/"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ &lt;code&gt;esbuild&lt;/code&gt;
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+ makes
+bold claims about being pretty fast, e.g., 87x faster than &lt;code&gt;rollup 4 + terser&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>Client/Server Interface</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/</link><pubDate>Fri, 19 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/</guid><description>&lt;h2 id="how-to-handle-redirects-without-setting-windowlocationhref"&gt;How to handle redirects without setting &lt;code&gt;window.location.href&lt;/code&gt;?&lt;/h2&gt;
+&lt;p&gt;Right now, there&amp;rsquo;s a pattern of doing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ts" data-lang="ts"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75af00"&gt;sendHTTPRequest&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#d88200"&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#d88200"&gt;&amp;#34;/login/&amp;#34;&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#111"&gt;{})&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;then&lt;/span&gt;&lt;span style="color:#111"&gt;((&lt;/span&gt;&lt;span style="color:#75af00"&gt;_&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;window&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;location&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;href&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#d88200"&gt;&amp;#34;/&amp;#34;&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;})&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#00a8c8"&gt;catch&lt;/span&gt;&lt;span style="color:#111"&gt;((&lt;/span&gt;&lt;span style="color:#75af00"&gt;err&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt; &lt;span style="color:#75af00"&gt;console&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;error&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;err&lt;/span&gt;&lt;span style="color:#111"&gt;);&lt;/span&gt; &lt;span style="color:#111"&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Isn&amp;rsquo;t this something that the server can do? In response, why not issue
+a redirect?&lt;/p&gt;
+&lt;figure&gt;&lt;img src="https://www.curiosities.dev/img/computer-science/programming-challenges/flashcards/client-server-interface/unfollowed-redirect.jpg"
+ alt="Screenshot of the redirect chain from /login. The POST
+request gets a 303 (See Other) redirect to /home. The browser then
+makes a GET request to /home, which results in a 304 (Not Modified).
+Why doesn&amp;rsquo;t the browser navigate me to /home?"&gt;&lt;figcaption&gt;
+ &lt;p&gt;Screenshot of the redirect chain from /login. The POST
+request gets a 303 (See Other) redirect to /home. The browser then
+makes a GET request to /home, which results in a 304 (Not Modified).
+Why doesn&amp;rsquo;t the browser navigate me to /home?&lt;/p&gt;</description></item><item><title>Use of Local Storage</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/</link><pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/</guid><description>&lt;p&gt;Back when I wrote this, the motivation for using &lt;code&gt;localStorage&lt;/code&gt; was to
+reduce the trips to the server so that the app is usable offline.
+However, with two data stores (&lt;code&gt;localStorage&lt;/code&gt; and the server), the
+former has a possibility of going stale. What usage is correct and how
+can we avoid stale data?&lt;/p&gt;
+&lt;h2 id="localstoragesession_info"&gt;&lt;code&gt;localStorage['session_info']&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;getAccountInfo: () =&amp;gt; AuthenticateUser | null&lt;/code&gt; fetches the
+&lt;code&gt;session_info&lt;/code&gt; entry and &lt;code&gt;JSON.parse&lt;/code&gt;s it into an &lt;code&gt;AuthenticateUser&lt;/code&gt;.
+This is a possible failure point because the parsed JSON cannot be
+trusted to be a valid &lt;code&gt;AuthenticateUser&lt;/code&gt; instance. This bit should be
+removed.&lt;/p&gt;</description></item><item><title>Hosting the Flashcards App</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/hosting/</link><pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/hosting/</guid><description>&lt;h2 id="current-state-saas"&gt;Current State: SaaS&lt;/h2&gt;
+&lt;p&gt;The app is 
+&lt;a href="https://dashboard.render.com/web/srv-cdb17nqen0hldb3lqj6g"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ hosted at
+render.com
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+
+on 
+&lt;a href="https://docs.render.com/free"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ Render&amp;rsquo;s free tier
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+ that gives us
+these free web services:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Custom domains&lt;/li&gt;
+&lt;li&gt;Managed TLS certificates&lt;/li&gt;
+&lt;li&gt;Pull request reviews&lt;/li&gt;
+&lt;li&gt;Log streams&lt;/li&gt;
+&lt;li&gt;Rollbacks up to the two most recent previous deploys.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;hellip; with these limitations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Spins down after 15min of no inbound traffic. Spinning up on the next request causes a noticeable delay for a couple seconds.&lt;/li&gt;
+&lt;li&gt;Monthly limits, which will suspend the app if exceeded:
+&lt;ul&gt;
+&lt;li&gt;750 instance hours.&lt;/li&gt;
+&lt;li&gt;100GB bandwidth.&lt;/li&gt;
+&lt;li&gt;500 pipeline minutes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Can be restarted at any time by Render.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Render&amp;rsquo;s free PostgreSQL database becomes inaccessible 90 days after
+creation. For our DB needs, we&amp;rsquo;re using 
+&lt;a href="https://www.mongodb.com/pricing"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ MongoDB&amp;rsquo;s free
+tier
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+, which has shared RAM, and 512MB
+to 5GB of storage.&lt;/p&gt;</description></item></channel></rss>

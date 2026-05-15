@@ -1,10 +1,44 @@
-<!doctype html><html lang=en><head><title>Testing Your Code | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Why Write Tests Helps catch bugs in the code, and in the programmer&rsquo;s mental model of what the code does. 
-  The later a bug is caught in the development cycle, the more expensive it is to fix it. A good test today is a future debugging session saved. 
-The test is the first client of your code. It uncovers sub-optimal design choices, tight couplings, missed cases, etc...."><meta property="og:title" content="Testing Your Code"><meta property="og:description" content="Why Write Tests Helps catch bugs in the code, and in the programmer&rsquo;s mental model of what the code does. 
-  The later a bug is caught in the development cycle, the more expensive it is to fix it. A good test today is a future debugging session saved. 
-The test is the first client of your code. It uncovers sub-optimal design choices, tight couplings, missed cases, etc...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
-const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<!doctype html><html lang=en><head><title>Testing Your Code | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Why Write Tests
+
+
+
+
+    Helps catch bugs in the code, and in the programmer&rsquo;s mental model of what the
+code does. 
+
+
+
+
+The later a bug is caught in the development cycle, the more expensive it is to
+fix it. A good test today is a future debugging session saved. 
+The test is the first client of your code. It uncovers sub-optimal design
+choices, tight couplings, missed cases, etc.. 
+
+
+
+
+    Some test failures are hard to debug, and slow down development, e.g. flaky
+tests...."><meta property="og:title" content="Testing Your Code"><meta property="og:description" content="Why Write Tests
+
+
+
+
+    Helps catch bugs in the code, and in the programmer&rsquo;s mental model of what the
+code does. 
+
+
+
+
+The later a bug is caught in the development cycle, the more expensive it is to
+fix it. A good test today is a future debugging session saved. 
+The test is the first client of your code. It uncovers sub-optimal design
+choices, tight couplings, missed cases, etc.. 
+
+
+
+
+    Some test failures are hard to debug, and slow down development, e.g. flaky
+tests...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/2022-06-11-testing-your-code/>Testing Your Code</a></li></ul></nav><section><header><h1>Testing Your Code</h1><p class=meta>Dated Jun 11, 2022;
 last modified on Sat, 19 Nov 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#why-write-tests>Why Write Tests</a></li><li><a href=#designing-a-test-suite>Designing a Test Suite</a></li><li><a href=#improving-testing-culture>Improving Testing Culture</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=why-write-tests>Why Write Tests</h2><div class=priors-holder><div class=priors><p>Helps catch bugs in the code, and in the programmer&rsquo;s mental model of what the
 code does. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p></div></div><p>The later a bug is caught in the development cycle, the more expensive it is to
@@ -14,7 +48,7 @@ tests.</p></div></div><p>As a code base grows, poorly written test suites become
 instability, slowness, etc.. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p><p>As the team size grows, programmer ability is insufficient to avoid defects. For
 instance, a 100-person team of devs that only write a single bug each month will
 have 5 new bugs every workday. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p><div class=priors-holder><div class=priors><p>Catches regressions in functionality, e.g. during refactoring, syncing with an
-upstream project, etc.. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p></div></div><p>Automated testing turns the team members' collective wisdom into a benefit for
+upstream project, etc.. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p></div></div><p>Automated testing turns the team members&rsquo; collective wisdom into a benefit for
 the entire team. Everyone can run the test and will benefit when it detects an
 issue. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p><p>Manual testing (e.g. QA department) doesn&rsquo;t scale well, especially when the
 software has multiple libraries/frameworks, platforms, user configurations, and
@@ -100,7 +134,7 @@ mandates to the rest of Google, the Testing Grouplet was focused on
 demonstrating success, in the belief that successful ideas would spread. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p></div></div><p>During orientation, new engineers were taught about testing as if it were
 standard practice at Google. The new engineers would quickly outnumber existing
 team members, and helped bring about cultural change. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Lent2019></a></span>had a different experience. As a new hire, she was very
-keen at testing, but lost steam due to existing team members' disinclinations.</p></div></div><p>A &ldquo;Test Certified&rdquo; program with levels 1 to 5, and each level having goals
+keen at testing, but lost steam due to existing team members&rsquo; disinclinations.</p></div></div><p>A &ldquo;Test Certified&rdquo; program with levels 1 to 5, and each level having goals
 achievable in a quarter. Level 1: set up a continuous build; start tracking code
 coverage; classify all tests as small, medium, or large; identify flaky tests;
 create a set of fast tests. Level 5: all tests are automated; fast tests ran
@@ -111,35 +145,42 @@ Certified&rdquo; was later replaced with an automated approach: Project Health (
 The Testing Grouplet; various engineering productivity teams <span class=citation-ref><a href=#SWEGoogleCh11></a></span>. Being able to have a dedicated group seems crucial.</p></div></div><p>Testing on the Toilet (TotT). Weekly flyers on how to improve testing were
 placed in restroom stalls. An email newsletter would have been lost in the
 noise. TotT&rsquo;s reception was polarized (e.g. invasion of personal space), but the
-uproar subsided. <span class=citation-ref><a href=#TotT></a></span>has online versions of the flyers. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-book" cited-by-count is-main><cite id=SWEGoogleCh11>Software Engineering at Google: Lessons Learned From Programming Over Time<i>.</i>
-Ch 11. Testing Overview<i>.</i></cite>
-Adam Bender; Tom Manshreck.
+uproar subsided. <span class=citation-ref><a href=#TotT></a></span>has online versions of the flyers. <span class=citation-ref><a href=#SWEGoogleCh11></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-book' cited-by-count is-main><cite id=SWEGoogleCh11>Software Engineering at Google: Lessons Learned From Programming Over Time<i>.</i>
+Ch 11. Testing Overview<i>.</i>
+</cite>Adam Bender; Tom Manshreck.
 <a href=https://abseil.io/resources/swe-book/html/ch11.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=abseil.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>abseil.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Feb 28, 2020.
 <a href="https://openlibrary.org/search?isbn=9781492082743" target=_blank rel=noopener>ISBN: 9781492082743 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-book" aria-hidden=true></i></div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Lent2019>7 Absolute Truths I Unlearned as Junior Developer<i>.</i></cite>
-Monica Lent.
+<i class='fas fa-fw fa-book' aria-hidden=true></i></div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Lent2019>7 Absolute Truths I Unlearned as Junior Developer<i>.</i>
+</cite>Monica Lent.
 <a href=https://monicalent.com/blog/2019/06/03/absolute-truths-unlearned-as-junior-developer/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>monicalent.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>monicalent.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Jun 3, 2019.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 6, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=HNLent2019>Absolute truths I unlearned as junior developer (2019) | Hacker News<i>.</i></cite>
-<a href="https://news.ycombinator.com/item?id=31636812" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 6, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=TotT>Google Testing Blog: TotT<i>.</i></cite>
-<a href=https://testing.googleblog.com/search/label/TotT target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>testing.googleblog.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 13, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 6, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HNLent2019>Absolute truths I unlearned as junior developer (2019) | Hacker News<i>.</i>
+</cite><a href="https://news.ycombinator.com/item?id=31636812" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>news.ycombinator.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 6, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=TotT>Google Testing Blog: TotT<i>.</i>
+</cite><a href=https://testing.googleblog.com/search/label/TotT target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>testing.googleblog.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 13, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Bender-Adam>Bender, Adam</a>
 <a href=/cited-authors/Lent-Monica>Lent, Monica</a>
 <a href=/cited-authors/Manshreck-Tom>Manshreck, Tom</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/abseil.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=abseil.io" loading=lazy aria-hidden=true width=16 height=16>
-abseil.io</a>
-<a href=/domains/monicalent.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading=lazy aria-hidden=true width=16 height=16>
-monicalent.com</a>
-<a href=/domains/news.ycombinator.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true width=16 height=16>
-news.ycombinator.com</a>
-<a href=/domains/testing.googleblog.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading=lazy aria-hidden=true width=16 height=16>
+abseil.io
+</a><a href=/domains/monicalent.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=monicalent.com" loading=lazy aria-hidden=true width=16 height=16>
+monicalent.com
+</a><a href=/domains/news.ycombinator.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=news.ycombinator.com" loading=lazy aria-hidden=true width=16 height=16>
+news.ycombinator.com
+</a><a href=/domains/testing.googleblog.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=testing.googleblog.com" loading=lazy aria-hidden=true width=16 height=16>
 testing.googleblog.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/2020-11-21-on-systems-programming/>&#171; On Systems Programming</a>
 <a href=https://www.curiosities.dev/computer-science/2022-01-16-swe-journal-reviews/>Software Engineering Journal Reviews &#187;</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>

@@ -1,10 +1,116 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Analyzing Data Stores on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/</link><description>Recent content in Analyzing Data Stores on Chege's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 24 May 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/analyzing-datastores/index.xml" rel="self" type="application/rss+xml"/><item><title>KQL: Overview</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-overview/</link><pubDate>Sat, 24 May 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-overview/</guid><description>A Kusto query is a read-only request that processes data that is organized into a hierarchy of databases, tables, and columns, similar to SQL.
-Query statements are separated by a ;, and only affect the query at hand. There are 3 kinds of user query statements: tabular expression statements, let statements, and set statements.
-The most common kind is the tabular expression statement where the input and the output consist of tables.</description></item><item><title>KQL: Common Operators</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-common-operators/</link><pubDate>Sat, 24 May 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-common-operators/</guid><description>contains the database referenced in this document.
-Count rows How many storm records are there in the table?
-Count 59066 StormEvents | count
-count returns a table with a single column and a single row containing the count of the remaining rows. The output is not a scalar value.
-See a sample of data Sample N rows from the StormEvents table.</description></item><item><title>KQL: Aggregation Functions</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-aggregation-fns/</link><pubDate>Sat, 24 May 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-aggregation-fns/</guid><description>Aggregation functions allow you to group and combine data from multiple rows into a summary value.
-contains the database referenced in this document.
-Use the summarize operator Find the number of events by state.
-State TotalStorms TEXAS 4,701 KANSAS 3,166 &amp;hellip; &amp;hellip; StormEvents | summarize TotalStorms = count() by State summarize groups together rows based on the by clause and uses the aggregation function to combine each group into a single row.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Analyzing Data Stores on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/</link><description>Recent content in Analyzing Data Stores on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 24 May 2025 21:26:46 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/analyzing-datastores/index.xml" rel="self" type="application/rss+xml"/><item><title>KQL: Overview</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-overview/</link><pubDate>Sat, 24 May 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-overview/</guid><description>&lt;p&gt;A Kusto query is a read-only request that processes data that is organized into
+a hierarchy of databases, tables, and columns, similar to SQL. &lt;span class="citation-ref"&gt;&lt;a href="#KustoOverview"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Query statements are separated by a &lt;code&gt;;&lt;/code&gt;, and only affect the query at hand.
+There are 3 kinds of user query statements: tabular expression statements, &lt;code&gt;let&lt;/code&gt;
+statements, and &lt;code&gt;set&lt;/code&gt; statements. &lt;span class="citation-ref"&gt;&lt;a href="#KustoOverview"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The most common kind is the tabular expression statement where the input and the
+output consist of tables. Tabular statements contain zero or more operators that
+are sequenced by a &lt;code&gt;|&lt;/code&gt; (pipe). Each time the data passes through another
+operator, it&amp;rsquo;s filtered, rearranged, or summarized. Because the piping is
+sequential, the query operator order can affect both results and performance.
+&lt;span class="citation-ref"&gt;&lt;a href="#KustoOverview"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>KQL: Common Operators</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-common-operators/</link><pubDate>Sat, 24 May 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-common-operators/</guid><description>&lt;div class="comment-holder"&gt;
+ &lt;div class="comment"&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#help.Samples"&gt;&lt;/a&gt;&lt;/span&gt; contains the database referenced in this document.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;h2 id="count-rows"&gt;Count rows&lt;/h2&gt;
+&lt;p&gt;How many storm records are there in the table?&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Count&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;59066&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#111"&gt;StormEvents&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;count&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#CommonKQLOperators"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment"&gt;&lt;p&gt;&lt;code&gt;count&lt;/code&gt; returns a table with a single column and a single row containing the
+count of the remaining rows. The output is not a scalar value. &lt;span class="citation-ref"&gt;&lt;a href="#KustoOverview"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;h2 id="see-a-sample-of-data"&gt;See a sample of data&lt;/h2&gt;
+&lt;p&gt;Sample N rows from the &lt;code&gt;StormEvents&lt;/code&gt; table.&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;StartTime&lt;/th&gt;
+ &lt;th&gt;&amp;hellip;&lt;/th&gt;
+ &lt;th&gt;State&lt;/th&gt;
+ &lt;th&gt;EventType&lt;/th&gt;
+ &lt;th&gt;&amp;hellip;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;2007-09-18T20:00:00.000Z&lt;/td&gt;
+ &lt;td&gt;&amp;hellip;&lt;/td&gt;
+ &lt;td&gt;FLORIDA&lt;/td&gt;
+ &lt;td&gt;Heavy Rain&lt;/td&gt;
+ &lt;td&gt;&amp;hellip;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;2007-09-29T08:11:00.000Z&lt;/td&gt;
+ &lt;td&gt;&amp;hellip;&lt;/td&gt;
+ &lt;td&gt;ATLANTIC SOUTH&lt;/td&gt;
+ &lt;td&gt;Waterspout&lt;/td&gt;
+ &lt;td&gt;&amp;hellip;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#111"&gt;StormEvents&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#111"&gt;take&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#CommonKQLOperators"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>KQL: Aggregation Functions</title><link>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-aggregation-fns/</link><pubDate>Sat, 24 May 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/analyzing-datastores/kusto-aggregation-fns/</guid><description>&lt;p&gt;&lt;strong&gt;Aggregation functions&lt;/strong&gt; allow you to group and combine data from multiple rows
+into a summary value. &lt;span class="citation-ref"&gt;&lt;a href="#AggregationFnsKQL"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment"&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#help.Samples"&gt;&lt;/a&gt;&lt;/span&gt; contains the database referenced in this document.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;h2 id="use-the-summarize-operator"&gt;Use the &lt;code&gt;summarize&lt;/code&gt; operator&lt;/h2&gt;
+&lt;p&gt;Find the number of events by state.&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;State&lt;/th&gt;
+ &lt;th&gt;TotalStorms&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;TEXAS&lt;/td&gt;
+ &lt;td&gt;4,701&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;KANSAS&lt;/td&gt;
+ &lt;td&gt;3,166&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&amp;hellip;&lt;/td&gt;
+ &lt;td&gt;&amp;hellip;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#111"&gt;StormEvents&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#111"&gt;summarize&lt;/span&gt; &lt;span style="color:#111"&gt;TotalStorms&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;count&lt;/span&gt;&lt;span style="color:#111"&gt;()&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;by&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;State&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;summarize&lt;/code&gt; groups together rows based on the &lt;code&gt;by&lt;/code&gt; clause and uses the
+aggregation function to combine each group into a single row.&lt;/p&gt;
+&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#AggregationFnsKQL"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h2 id="visualize-query-results"&gt;Visualize query results&lt;/h2&gt;
+&lt;p&gt;Show a bar chart for the number of storm events by state for the top 5 states.&lt;/p&gt;</description></item></channel></rss>

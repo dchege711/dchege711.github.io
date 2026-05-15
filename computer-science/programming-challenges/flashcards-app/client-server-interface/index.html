@@ -1,21 +1,41 @@
-<!doctype html><html lang=en><head><title>Client/Server Interface | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="How to handle redirects without setting window.location.href? Right now, there&rsquo;s a pattern of doing:
-sendHTTPRequest(&#34;POST&#34;, &#34;/login/&#34;, {}) .then((_) => { window.location.href = &#34;/&#34;; }) .catch((err) => { console.error(err); }); Isn&rsquo;t this something that the server can do? In response, why not issue a redirect?
-  Screenshot of the redirect chain from /login. The POST request gets a 303 (See Other) redirect to /home. The browser then makes a GET request to /home, which results in a 304 (Not Modified)...."><meta property="og:title" content="Client/Server Interface"><meta property="og:description" content="How to handle redirects without setting window.location.href? Right now, there&rsquo;s a pattern of doing:
-sendHTTPRequest(&#34;POST&#34;, &#34;/login/&#34;, {}) .then((_) => { window.location.href = &#34;/&#34;; }) .catch((err) => { console.error(err); }); Isn&rsquo;t this something that the server can do? In response, why not issue a redirect?
-  Screenshot of the redirect chain from /login. The POST request gets a 303 (See Other) redirect to /home. The browser then makes a GET request to /home, which results in a 304 (Not Modified)...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
-const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<!doctype html><html lang=en><head><title>Client/Server Interface | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content='How to handle redirects without setting window.location.href?
+Right now, there&rsquo;s a pattern of doing:
+sendHTTPRequest("POST", "/login/", {})
+  .then((_) => {
+      window.location.href = "/";
+  })
+  .catch((err) => { console.error(err); });
+Isn&rsquo;t this something that the server can do? In response, why not issue
+a redirect?
+
+      Screenshot of the redirect chain from /login. The POST
+request gets a 303 (See Other) redirect to /home. The browser then
+makes a GET request to /home, which results in a 304 (Not Modified).
+Why doesn&rsquo;t the browser navigate me to /home?...'><meta property="og:title" content="Client/Server Interface"><meta property="og:description" content='How to handle redirects without setting window.location.href?
+Right now, there&rsquo;s a pattern of doing:
+sendHTTPRequest("POST", "/login/", {})
+  .then((_) => {
+      window.location.href = "/";
+  })
+  .catch((err) => { console.error(err); });
+Isn&rsquo;t this something that the server can do? In response, why not issue
+a redirect?
+
+      Screenshot of the redirect chain from /login. The POST
+request gets a 303 (See Other) redirect to /home. The browser then
+makes a GET request to /home, which results in a 304 (Not Modified).
+Why doesn&rsquo;t the browser navigate me to /home?...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/>Flashcards App</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/client-server-interface/>Client/Server Interface</a></li></ul></nav><section><header><h1>Client/Server Interface</h1><p class=meta>Dated Apr 19, 2024;
-last modified on Fri, 19 Apr 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</a></li><li><a href=#typing-the-clientserver-interface>Typing the Client/Server Interface</a></li><li><a href=#augmenting-server-objects-client-side>Augmenting Server Objects Client Side</a></li><li><a href=#validating-inputs>Validating Inputs</a></li><li><a href=#cross-site-request-forgery-csrf-prevention>Cross-Site Request Forgery (CSRF) Prevention</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</h2><p>Right now, there&rsquo;s a pattern of doing:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75af00>sendHTTPRequest</span><span style=color:#111>(</span><span style=color:#d88200>&#34;POST&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;/login/&#34;</span><span style=color:#111>,</span> <span style=color:#111>{})</span>
-  <span style=color:#111>.</span><span style=color:#75af00>then</span><span style=color:#111>((</span><span style=color:#75af00>_</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
-      <span style=color:#111>window</span><span style=color:#111>.</span><span style=color:#75af00>location</span><span style=color:#111>.</span><span style=color:#75af00>href</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;/&#34;</span><span style=color:#111>;</span>
-  <span style=color:#111>})</span>
-  <span style=color:#111>.</span><span style=color:#00a8c8>catch</span><span style=color:#111>((</span><span style=color:#75af00>err</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span> <span style=color:#75af00>console</span><span style=color:#111>.</span><span style=color:#75af00>error</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>);</span> <span style=color:#111>});</span>
-</code></pre></div><p>Isn&rsquo;t this something that the server can do? In response, why not issue
+last modified on Fri, 19 Apr 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</a></li><li><a href=#typing-the-clientserver-interface>Typing the Client/Server Interface</a></li><li><a href=#augmenting-server-objects-client-side>Augmenting Server Objects Client Side</a></li><li><a href=#validating-inputs>Validating Inputs</a></li><li><a href=#cross-site-request-forgery-csrf-prevention>Cross-Site Request Forgery (CSRF) Prevention</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=how-to-handle-redirects-without-setting-windowlocationhref>How to handle redirects without setting <code>window.location.href</code>?</h2><p>Right now, there&rsquo;s a pattern of doing:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#75af00>sendHTTPRequest</span><span style=color:#111>(</span><span style=color:#d88200>&#34;POST&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;/login/&#34;</span><span style=color:#111>,</span> <span style=color:#111>{})</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>.</span><span style=color:#75af00>then</span><span style=color:#111>((</span><span style=color:#75af00>_</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>      <span style=color:#111>window</span><span style=color:#111>.</span><span style=color:#75af00>location</span><span style=color:#111>.</span><span style=color:#75af00>href</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;/&#34;</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>})</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>.</span><span style=color:#00a8c8>catch</span><span style=color:#111>((</span><span style=color:#75af00>err</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span> <span style=color:#75af00>console</span><span style=color:#111>.</span><span style=color:#75af00>error</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>);</span> <span style=color:#111>});</span>
+</span></span></code></pre></div><p>Isn&rsquo;t this something that the server can do? In response, why not issue
 a redirect?</p><figure><img src=/img/computer-science/programming-challenges/flashcards/client-server-interface/unfollowed-redirect.jpg alt="Screenshot of the redirect chain from /login. The POST
 request gets a 303 (See Other) redirect to /home. The browser then
 makes a GET request to /home, which results in a 304 (Not Modified).
-Why doesn&amp;rsquo;t the browser navigate me to /home?"><figcaption><p>Screenshot of the redirect chain from /login. The POST
+Why doesn&rsquo;t the browser navigate me to /home?"><figcaption><p>Screenshot of the redirect chain from /login. The POST
 request gets a 303 (See Other) redirect to /home. The browser then
 makes a GET request to /home, which results in a 304 (Not Modified).
 Why doesn&rsquo;t the browser navigate me to /home?</p></figcaption></figure><div class=comment-holder><div class=comment><p>The <code>304 Not Modified</code> response is sent when there is no need to
@@ -24,7 +44,8 @@ case, the page at <code>/home</code> has not changed, and the browser can use th
 cached version. If the content had changed, then the browser would have
 requested the resource from the server, resulting in a 200 response.</p></div></div><div class=comment-holder><div class=comment><p>Installing
 <a href=https://www.npmjs.com/package/http-status-codes target=_blank rel=noopener><code>http-status-codes</code>
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>for more legible status codes.</p></div></div><p>This issue does not happen when I issue a <code>GET</code> request to <code>/logout</code> by
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>for more legible status codes.</p></div></div><p>This issue does not happen when I issue a <code>GET</code> request to <code>/logout</code> by
 clicking on a <code>&lt;a href="/logout">Log Out&lt;/a></code>. The server responds with
 a <code>303 (See Other)</code> to <code>/browse</code>, and the browser loads <code>/browse</code> in the
 tab. If I do the same with <code>fetch('/logout', { method: 'GET' })</code>
@@ -44,7 +65,8 @@ and the client in the same repo, how can I avoid mismatches in data?
 there a library or a standard way of creating an interface for my api
 endpoints? :
 typescript
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>floats <code>tRPC</code>, <code>GraphQL</code>, <code>OpenAPI</code>, and some others, with <code>tRPC</code> coming
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>floats <code>tRPC</code>, <code>GraphQL</code>, <code>OpenAPI</code>, and some others, with <code>tRPC</code> coming
 in first and <code>GraphQL</code> as the incumbent.</p><p>GitHub Copilot can help out here with quick intros on what <code>tRPC</code> and
 <code>GraphQL</code> entail. With <code>GraphQL</code>, the client can strongly type the API,
 define the data payloads, fetch all the data in one request, query for
@@ -59,75 +81,77 @@ in response to a <code>GET</code> request? Copilot says that serving HTML files
 should be left to traditional web frameworks like <code>Express</code> as those
 have built-in support for SSR of HTML.</p><p><a href=https://github.com/dchege711/study_buddy/compare/f662e388435764043fa2c23619353c59b23d8dc7..cc2f374acd6f2f9a11c72f61927b6b989964fc25 target=_blank rel=noopener>Adding tRPC endpoints that don&rsquo;t need
 authentication
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>was mostly mechanical. However, there were a few gotchas. Some
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>was mostly mechanical. However, there were a few gotchas. Some
 methods/props on a <code>Mongoose</code> document (e.g., the <code>Document</code> interface)
 cannot be shared between the server and the client, and so we need to
 define a safe interface that can be inferred by <code>tRPC</code> and availed on
 the client side. <span class=citation-ref><a href=#trpcUnknownTypeMongo></a></span>We also encountered a
 challenge in typing the inputs, given that the app relies on <code>Mongoose</code>
 validation that occurs after <code>tRPC</code> has seen the inputs. Ended up adding
-a passthrough input parser, e.g.,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>export</span> <span style=color:#00a8c8>const</span> <span style=color:#75af00>authRouter</span> <span style=color:#f92672>=</span> <span style=color:#75af00>router</span><span style=color:#111>({</span>
-  <span style=color:#75af00>registerUser</span>: <span style=color:#00a8c8>publicProcedure</span>
-    <span style=color:#111>.</span><span style=color:#75af00>input</span><span style=color:#111>((</span><span style=color:#75af00>params</span>: <span style=color:#00a8c8>unknown</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#75af00>params</span> <span style=color:#00a8c8>as</span> <span style=color:#75af00>RegisterUserAndPasswordParams</span><span style=color:#111>)</span>
-    <span style=color:#111>.</span><span style=color:#75af00>mutation</span><span style=color:#111>(({</span> <span style=color:#75af00>input</span> <span style=color:#111>})</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
-      <span style=color:#00a8c8>return</span> <span style=color:#75af00>registerUserAndPassword</span><span style=color:#111>(</span><span style=color:#75af00>input</span><span style=color:#111>);</span>
-    <span style=color:#111>}),</span>
-<span style=color:#111>});</span>
-</code></pre></div><p><span class=citation-ref><a href=#trpcTypeInputWOValidation></a></span>The docs are not explicit about
+a passthrough input parser, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#00a8c8>export</span> <span style=color:#00a8c8>const</span> <span style=color:#75af00>authRouter</span> <span style=color:#f92672>=</span> <span style=color:#75af00>router</span><span style=color:#111>({</span>
+</span></span><span style=display:flex><span>  <span style=color:#75af00>registerUser</span>: <span style=color:#00a8c8>publicProcedure</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>.</span><span style=color:#75af00>input</span><span style=color:#111>((</span><span style=color:#75af00>params</span>: <span style=color:#00a8c8>unknown</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#75af00>params</span> <span style=color:#00a8c8>as</span> <span style=color:#75af00>RegisterUserAndPasswordParams</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>.</span><span style=color:#75af00>mutation</span><span style=color:#111>(({</span> <span style=color:#75af00>input</span> <span style=color:#111>})</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>return</span> <span style=color:#75af00>registerUserAndPassword</span><span style=color:#111>(</span><span style=color:#75af00>input</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}),</span>
+</span></span><span style=display:flex><span><span style=color:#111>});</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#trpcTypeInputWOValidation></a></span>The docs are not explicit about
 this because not validating is considered unsafe, and the <code>tRPC</code>
 maintainers don&rsquo;t want to advocate for it. With the base knowledge from
 non-auth endpoints and reading the docs several times,
-<a href="https://github.com/dchege711/study_buddy/compare/cc2f374...ea80ac5?diff=split&w=" target=_blank rel=noopener>adding
+<a href="https://github.com/dchege711/study_buddy/compare/cc2f374...ea80ac5?diff=split&amp;w=" target=_blank rel=noopener>adding
 auth-dependent
 endpoints
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>integrated nicely with <code>Express</code>&rsquo;s session management.</p><h2 id=augmenting-server-objects-client-side>Augmenting Server Objects Client Side</h2><p>For example, the server transmits JSON data of the <code>ICardRaw</code> shape. Is
-it possible to add helper methods in the client for ease of use? <span class=citation-ref><a href=#declMerging></a></span>suggests that we can do:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#75715e>// server-side-card.ts
-</span><span style=color:#75715e></span><span style=color:#00a8c8>export</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>Card</span> <span style=color:#111>{}</span>
-
-<span style=color:#75715e>// client-side-card.ts
-</span><span style=color:#75715e></span><span style=color:#00a8c8>import</span> <span style=color:#111>{</span> <span style=color:#75af00>Card</span> <span style=color:#111>}</span> <span style=color:#00a8c8>from</span> <span style=color:#d88200>&#39;../../server-side-card.js&#39;</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>declare</span> <span style=color:#75af00>module</span> <span style=color:#d88200>&#39;../../server-side-card.js&#39;</span> <span style=color:#111>{</span>
-  <span style=color:#00a8c8>interface</span> <span style=color:#75af00>Card</span> <span style=color:#111>{</span>
-    <span style=color:#00a8c8>get</span> <span style=color:#75af00>formattedTags</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>string</span><span style=color:#111>[];</span>
-  <span style=color:#111>}</span>
-<span style=color:#111>}</span>
-
-<span style=color:#75af00>Card</span><span style=color:#111>.</span><span style=color:#75af00>prototype</span><span style=color:#111>.</span><span style=color:#75af00>formattedTags</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>function</span><span style=color:#111>()</span> <span style=color:#111>{</span>
-  <span style=color:#00a8c8>return</span> <span style=color:#75af00>tags</span><span style=color:#111>.</span><span style=color:#75af00>split</span><span style=color:#111>(</span><span style=color:#d88200>&#39; &#39;</span><span style=color:#111>).</span><span style=color:#75af00>filter</span><span style=color:#111>(</span><span style=color:#111>Boolean</span><span style=color:#111>).</span><span style=color:#75af00>map</span><span style=color:#111>(</span><span style=color:#75af00>t</span> <span style=color:#f92672>=&gt;</span> <span style=color:#d88200>`#</span><span style=color:#d88200>${</span><span style=color:#75af00>t</span><span style=color:#d88200>}</span><span style=color:#d88200>`</span><span style=color:#111>);</span>
-<span style=color:#111>}</span>
-
-<span style=color:#75715e>// consumer.ts
-</span><span style=color:#75715e></span><span style=color:#00a8c8>import</span> <span style=color:#111>{</span> <span style=color:#75af00>Card</span> <span style=color:#111>}</span> <span style=color:#00a8c8>from</span> <span style=color:#d88200>&#39;../../server-side-card.js&#39;</span><span style=color:#111>;</span>
-<span style=color:#00a8c8>import</span> <span style=color:#d88200>&#39;client-side-card.js&#39;</span><span style=color:#111>;</span>
-
-<span style=color:#00a8c8>let</span> <span style=color:#75af00>c</span>: <span style=color:#00a8c8>Card</span><span style=color:#111>;</span>
-<span style=color:#75af00>console</span><span style=color:#111>.</span><span style=color:#75af00>log</span><span style=color:#111>(</span><span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>formattedTags</span><span style=color:#111>);</span>
-</code></pre></div><p>However, we have <code>type PrivateCardResult = RouterOutput['fetchCard'][0]</code>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>integrated nicely with <code>Express</code>&rsquo;s session management.</p><h2 id=augmenting-server-objects-client-side>Augmenting Server Objects Client Side</h2><p>For example, the server transmits JSON data of the <code>ICardRaw</code> shape. Is
+it possible to add helper methods in the client for ease of use? <span class=citation-ref><a href=#declMerging></a></span>suggests that we can do:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#75715e>// server-side-card.ts
+</span></span></span><span style=display:flex><span><span style=color:#00a8c8>export</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>Card</span> <span style=color:#111>{}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// client-side-card.ts
+</span></span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>{</span> <span style=color:#75af00>Card</span> <span style=color:#111>}</span> <span style=color:#00a8c8>from</span> <span style=color:#d88200>&#39;../../server-side-card.js&#39;</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>declare</span> <span style=color:#75af00>module</span> <span style=color:#d88200>&#39;../../server-side-card.js&#39;</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>interface</span> <span style=color:#75af00>Card</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>get</span> <span style=color:#75af00>formattedTags</span><span style=color:#111>()</span><span style=color:#f92672>:</span> <span style=color:#00a8c8>string</span><span style=color:#111>[];</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>Card</span><span style=color:#111>.</span><span style=color:#75af00>prototype</span><span style=color:#111>.</span><span style=color:#75af00>formattedTags</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>function</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#75af00>tags</span><span style=color:#111>.</span><span style=color:#75af00>split</span><span style=color:#111>(</span><span style=color:#d88200>&#39; &#39;</span><span style=color:#111>).</span><span style=color:#75af00>filter</span><span style=color:#111>(</span><span style=color:#111>Boolean</span><span style=color:#111>).</span><span style=color:#75af00>map</span><span style=color:#111>(</span><span style=color:#75af00>t</span> <span style=color:#f92672>=&gt;</span> <span style=color:#d88200>`#</span><span style=color:#d88200>${</span><span style=color:#75af00>t</span><span style=color:#d88200>}</span><span style=color:#d88200>`</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// consumer.ts
+</span></span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>{</span> <span style=color:#75af00>Card</span> <span style=color:#111>}</span> <span style=color:#00a8c8>from</span> <span style=color:#d88200>&#39;../../server-side-card.js&#39;</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#d88200>&#39;client-side-card.js&#39;</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>let</span> <span style=color:#75af00>c</span>: <span style=color:#00a8c8>Card</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>console</span><span style=color:#111>.</span><span style=color:#75af00>log</span><span style=color:#111>(</span><span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>formattedTags</span><span style=color:#111>);</span>
+</span></span></code></pre></div><p>However, we have <code>type PrivateCardResult = RouterOutput['fetchCard'][0]</code>
 in <code>trpc.ts</code>. While we can extend the <code>type</code> <span class=citation-ref><a href=#extendTypesSO></a></span>,
-it doesn&rsquo;t seem like we can add dynamic properties of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>type</span> <span style=color:#75af00>Foo</span> <span style=color:#f92672>=</span> <span style=color:#111>{</span> <span style=color:#75af00>s</span>: <span style=color:#00a8c8>string</span> <span style=color:#111>};</span>
-<span style=color:#00a8c8>interface</span> <span style=color:#75af00>FooDeluxe</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>Foo</span> <span style=color:#111>{</span>
-  <span style=color:#75af00>emphasized</span><span style=color:#f92672>:</span> <span style=color:#111>()</span> <span style=color:#f92672>=&gt;</span> <span style=color:#00a8c8>string</span><span style=color:#111>;</span>
-<span style=color:#111>}</span>
-<span style=color:#75715e>// &#39;FooDeluxe&#39; only refers to a type, but is being used as a value here.ts(2693)
-</span><span style=color:#75715e></span><span style=color:#75af00>FooDeluxe</span><span style=color:#111>.</span><span style=color:#75af00>prototype</span><span style=color:#111>.</span><span style=color:#75af00>emphasized</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>function</span><span style=color:#111>()</span> <span style=color:#111>{</span>
-  <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>s</span><span style=color:#111>.</span><span style=color:#75af00>toUpperCase</span><span style=color:#111>();</span>
-<span style=color:#111>}</span>
-</code></pre></div><p>Foregoing <code>tRPC</code>&rsquo;s typed procedures is not worth it.</p><h2 id=validating-inputs>Validating Inputs</h2><p>We use <code>zod</code> (vouched for by <code>tRPC</code>) to parse/validate the input on the
+it doesn&rsquo;t seem like we can add dynamic properties of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#00a8c8>type</span> <span style=color:#75af00>Foo</span> <span style=color:#f92672>=</span> <span style=color:#111>{</span> <span style=color:#75af00>s</span>: <span style=color:#00a8c8>string</span> <span style=color:#111>};</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>interface</span> <span style=color:#75af00>FooDeluxe</span> <span style=color:#00a8c8>extends</span> <span style=color:#75af00>Foo</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#75af00>emphasized</span><span style=color:#f92672>:</span> <span style=color:#111>()</span> <span style=color:#f92672>=&gt;</span> <span style=color:#00a8c8>string</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// &#39;FooDeluxe&#39; only refers to a type, but is being used as a value here.ts(2693)
+</span></span></span><span style=display:flex><span><span style=color:#75af00>FooDeluxe</span><span style=color:#111>.</span><span style=color:#75af00>prototype</span><span style=color:#111>.</span><span style=color:#75af00>emphasized</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>function</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>this</span><span style=color:#111>.</span><span style=color:#75af00>s</span><span style=color:#111>.</span><span style=color:#75af00>toUpperCase</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>Foregoing <code>tRPC</code>&rsquo;s typed procedures is not worth it.</p><h2 id=validating-inputs>Validating Inputs</h2><p>We use <code>zod</code> (vouched for by <code>tRPC</code>) to parse/validate the input on the
 server. <span class=citation-ref><a href=#zod></a></span><span class=citation-ref><a href=#pr182></a></span>The &ldquo;parse, don&rsquo;t validate&rdquo;
 mantra resonates as something to apply to programming projects: instead
 of validating input, parse it such that incorrect state is impossible to
-represent. <span class=citation-ref><a href=#King2019></a></span></p><p><code>zod</code> and <code>tRPC</code> work especially well:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-ts data-lang=ts><span style=color:#00a8c8>const</span> <span style=color:#75af00>fetchCardParamsValidator</span> <span style=color:#f92672>=</span> <span style=color:#75af00>z</span><span style=color:#111>.</span><span style=color:#00a8c8>object</span><span style=color:#111>({</span>
-  <span style=color:#75af00>cardID</span>: <span style=color:#00a8c8>z.string</span><span style=color:#111>().</span><span style=color:#75af00>refine</span><span style=color:#111>(</span><span style=color:#75af00>isMongoId</span><span style=color:#111>,</span> <span style=color:#111>{</span> <span style=color:#75af00>message</span><span style=color:#f92672>:</span> <span style=color:#d88200>&#34;Invalid card ID&#34;</span> <span style=color:#111>}),</span>
-<span style=color:#111>});</span>
-
-<span style=color:#00a8c8>const</span> <span style=color:#75af00>inAppRouter</span> <span style=color:#f92672>=</span> <span style=color:#75af00>router</span><span style=color:#111>({</span>
-  <span style=color:#75af00>fetchCard</span>: <span style=color:#00a8c8>authedProcedure</span>
-    <span style=color:#111>.</span><span style=color:#75af00>input</span><span style=color:#111>(</span><span style=color:#75af00>fetchCardParamsValidator</span><span style=color:#111>)</span>
-    <span style=color:#111>.</span><span style=color:#75af00>query</span><span style=color:#111>(({</span> <span style=color:#75af00>input</span><span style=color:#111>,</span> <span style=color:#75af00>ctx</span> <span style=color:#111>})</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
-      <span style=color:#00a8c8>return</span> <span style=color:#75af00>CardsDB</span><span style=color:#111>.</span><span style=color:#75af00>read</span><span style=color:#111>({</span> <span style=color:#111>...</span><span style=color:#75af00>input</span><span style=color:#111>,</span> <span style=color:#75af00>userIDInApp</span>: <span style=color:#00a8c8>ctx.user.userIDInApp</span> <span style=color:#111>});</span>
-    <span style=color:#111>}),</span>
-<span style=color:#111>});</span>
-</code></pre></div><p>Executing <code>fetchCard({cardID: { $ne: "000000000000000000000000" }})</code>
+represent. <span class=citation-ref><a href=#King2019></a></span></p><p><code>zod</code> and <code>tRPC</code> work especially well:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#00a8c8>const</span> <span style=color:#75af00>fetchCardParamsValidator</span> <span style=color:#f92672>=</span> <span style=color:#75af00>z</span><span style=color:#111>.</span><span style=color:#00a8c8>object</span><span style=color:#111>({</span>
+</span></span><span style=display:flex><span>  <span style=color:#75af00>cardID</span>: <span style=color:#00a8c8>z.string</span><span style=color:#111>().</span><span style=color:#75af00>refine</span><span style=color:#111>(</span><span style=color:#75af00>isMongoId</span><span style=color:#111>,</span> <span style=color:#111>{</span> <span style=color:#75af00>message</span><span style=color:#f92672>:</span> <span style=color:#d88200>&#34;Invalid card ID&#34;</span> <span style=color:#111>}),</span>
+</span></span><span style=display:flex><span><span style=color:#111>});</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>const</span> <span style=color:#75af00>inAppRouter</span> <span style=color:#f92672>=</span> <span style=color:#75af00>router</span><span style=color:#111>({</span>
+</span></span><span style=display:flex><span>  <span style=color:#75af00>fetchCard</span>: <span style=color:#00a8c8>authedProcedure</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>.</span><span style=color:#75af00>input</span><span style=color:#111>(</span><span style=color:#75af00>fetchCardParamsValidator</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>.</span><span style=color:#75af00>query</span><span style=color:#111>(({</span> <span style=color:#75af00>input</span><span style=color:#111>,</span> <span style=color:#75af00>ctx</span> <span style=color:#111>})</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>return</span> <span style=color:#75af00>CardsDB</span><span style=color:#111>.</span><span style=color:#75af00>read</span><span style=color:#111>({</span> <span style=color:#111>...</span><span style=color:#75af00>input</span><span style=color:#111>,</span> <span style=color:#75af00>userIDInApp</span>: <span style=color:#00a8c8>ctx.user.userIDInApp</span> <span style=color:#111>});</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}),</span>
+</span></span><span style=display:flex><span><span style=color:#111>});</span>
+</span></span></code></pre></div><p>Executing <code>fetchCard({cardID: { $ne: "000000000000000000000000" }})</code>
 leads to a <code>TRPCError</code> caused by a <code>ZodError</code>. At the input stage, we
 did not just validate that <code>input</code> is of the correct shape, we discarded
 <code>input</code>s that were not of the correct shape. <code>CardsDB.read</code> no longer
@@ -138,9 +162,9 @@ that the validation middleware was applied, and it&rsquo;s safe to trust
 <code>request.body</code>.</p><h2 id=cross-site-request-forgery-csrf-prevention>Cross-Site Request Forgery (CSRF) Prevention</h2><p>In a CSRF attack, the attacker wants the victim to perform
 state-changing requests unknowingly. Suppose Alice is logged into
 <code>bank.com</code> in her browser. To send money to Bob, the request is of the
-form <code>GET http://bank.com/transfer.do?acct=BOB&amount=100 HTTP/1.1</code>.
+form <code>GET http://bank.com/transfer.do?acct=BOB&amp;amount=100 HTTP/1.1</code>.
 Maria, the attacker, send Alice an email with an invisible picture:
-<code>&lt;img src="http://bank.com/transfer.do?acct=MARIA&amount=100000" width="0" height="0" border="0"></code>. When Alice opens the email, the
+<code>&lt;img src="http://bank.com/transfer.do?acct=MARIA&amp;amount=100000" width="0" height="0" border="0"></code>. When Alice opens the email, the
 browser will try loading the image, thereby submitting the transfer
 request to <code>bank.com</code>, without Alice&rsquo;s knowledge. <span class=citation-ref><a href=#csrfOWASP></a></span></p><p>Token-based mitigation involves the server setting a CSRF token, which
 the client then echoes back. The server rejects the request if the
@@ -150,106 +174,139 @@ attack is reduced. Session-based tokens offer a good compromise between
 security and usability. Request-based tokens have usability concerns,
 e.g., breaking when the user uses the back button. <span class=citation-ref><a href=#csrfPreventionOWASP></a></span></p><p>The <code>lusca</code> package provides CSRF protection for Express apps. <span class=citation-ref><a href=#codeQLMissingTokenValidation></a></span><span class=citation-ref><a href=#lusca></a></span><code>lusca</code> docs were
 lacking as they showed how to configure CSRF protection on the server
-but not on the client, leaving me with <code>403</code> errors to handle.</p><p>One technique is to use <code>&lt;form></code> tags:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-html data-lang=html><span style=color:#111>&lt;</span><span style=color:#f92672>form</span> <span style=color:#75af00>action</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/transfer.do&#34;</span> <span style=color:#75af00>method</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;post&#34;</span><span style=color:#111>&gt;</span>
-<span style=color:#111>&lt;</span><span style=color:#f92672>input</span> <span style=color:#75af00>type</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;hidden&#34;</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_csrf&#34;</span> <span style=color:#75af00>value</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;OWY4NmQwODE4ODRjN2Q2NTlhMmZlYWEwYzU1YWQwMTVhM2JmNGYxYjJiMGI4MjJjZDE1ZDZMGYwMGEwOA==&#34;</span><span style=color:#111>&gt;</span>
-[...]
-<span style=color:#111>&lt;/</span><span style=color:#f92672>form</span><span style=color:#111>&gt;</span>
-</code></pre></div><p><span class=citation-ref><a href=#csrfPreventionOWASP></a></span>. This approach works well for forms
+but not on the client, leaving me with <code>403</code> errors to handle.</p><p>One technique is to use <code>&lt;form></code> tags:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#111>&lt;</span><span style=color:#f92672>form</span> <span style=color:#75af00>action</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/transfer.do&#34;</span> <span style=color:#75af00>method</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;post&#34;</span><span style=color:#111>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#111>&lt;</span><span style=color:#f92672>input</span> <span style=color:#75af00>type</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;hidden&#34;</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_csrf&#34;</span> <span style=color:#75af00>value</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;OWY4NmQwODE4ODRjN2Q2NTlhMmZlYWEwYzU1YWQwMTVhM2JmNGYxYjJiMGI4MjJjZDE1ZDZMGYwMGEwOA==&#34;</span><span style=color:#111>&gt;</span>
+</span></span><span style=display:flex><span>[...]
+</span></span><span style=display:flex><span><span style=color:#111>&lt;/</span><span style=color:#f92672>form</span><span style=color:#111>&gt;</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#csrfPreventionOWASP></a></span>. This approach works well for forms
 rendered through <code>response.render</code>.</p><p>What about for <code>tRPC</code> endpoints? A breakpoint in
 <code>node_modules/lusca/lib/csrf.js</code> shows that the CSRF token is looked for
 in either <code>req.body["_csrf"]</code> or <code>req.headers["x-csrf-token"]</code>. <code>tRPC</code>
-sends payloads of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-json data-lang=json><span style=color:#111>{</span>
-  <span style=color:#f92672>&#34;0&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-    <span style=color:#f92672>&#34;_id&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;6682027e7c0aca290ed4ab4c&#34;</span><span style=color:#111>,</span>
-    <span style=color:#f92672>&#34;title&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Modified title&#34;</span><span style=color:#111>,</span>
-  <span style=color:#111>}</span>
-<span style=color:#111>}</span>
-</code></pre></div><p>&mldr; where <code>0</code> is a <code>tRPC</code> internal; the client code for the above call
+sends payloads of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;0&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_id&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;6682027e7c0aca290ed4ab4c&#34;</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;title&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Modified title&#34;</span><span style=color:#111>,</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>&mldr; where <code>0</code> is a <code>tRPC</code> internal; the client code for the above call
 is something like <code>trpc.updateCard.mutate({_id, title})</code>. <code>tRPC</code>
 supports computing custom headers per request <span class=citation-ref><a href=#headerstRPC></a></span>.
 By setting the CSRF token in a <code>&lt;meta></code> element, and then reading that
 before issuing the <code>tRPC</code> call, we&rsquo;re able to have <code>tRPC</code> calls succeed.</p><p>What about testing? The client-side tests
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/#e2e-testing target=_blank rel=noopener>uses a dev server
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, which doesn&rsquo;t come with CSRF enforcement. The server-side uses an
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>, which doesn&rsquo;t come with CSRF enforcement. The server-side uses an
 actual server instance, and it seems that each state-mutating test would
 need to pass a CSRF token. Maybe we can have a few tests that
 specifically check CSRF protections, and then disable CSRF for the rest
-of the tests?</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=status304MDN>304 Not Modified - HTTP | MDN<i>.</i></cite>
-<a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>developer.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=fetchXHRSO>javascript - Difference between fetch, ajax, and xhr - Stack Overflow<i>.</i></cite>
-<a href=https://stackoverflow.com/a/52261205r target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Andrew2016>AJAX/HTTP Library Comparison<i>.</i></cite>
-<a href=https://www.javascriptstuff.com/ajax-libraries/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.javascriptstuff.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.javascriptstuff.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+of the tests?</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=status304MDN>304 Not Modified - HTTP | MDN<i>.</i>
+</cite><a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>developer.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=fetchXHRSO>javascript - Difference between fetch, ajax, and xhr - Stack Overflow<i>.</i>
+</cite><a href=https://stackoverflow.com/a/52261205r target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Andrew2016>AJAX/HTTP Library Comparison<i>.</i>
+</cite><a href=https://www.javascriptstuff.com/ajax-libraries/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.javascriptstuff.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.javascriptstuff.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Feb 3, 2016.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=trpcUnknownTypeMongo>[Next.JS] x.data.user is of type 'unknown' · trpc/trpc · Discussion #3661<i>.</i></cite>
-<a href=https://github.com/trpc/trpc/discussions/3661 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 20, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=trpcTypeInputWOValidation>docs: Howto add typed input (without validation) · Issue #3339 · trpc/trpc<i>.</i></cite>
-<a href=https://github.com/trpc/trpc/issues/3339 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 20, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=declMerging>TypeScript: Documentation - Declaration Merging > Module Augmentation<i>.</i></cite>
-<a href=https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.typescriptlang.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.typescriptlang.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Apr 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=extendTypesSO>javascript - Possible to extend types in Typescript? - Stack Overflow<i>.</i></cite>
-<a href=https://stackoverflow.com/a/41385149 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed May 3, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=zod>Zod | Documentation<i>.</i></cite>
-<a href=https://zod.dev/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=zod.dev" loading=lazy aria-hidden=true width=16 height=16>
-<i>zod.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=pr182>[Major] Add server-side input validation by dchege711 · Pull Request #182 · dchege711/study_buddy<i>.</i></cite>
-<a href=https://github.com/dchege711/study_buddy/pull/182 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=King2019>Parse, don't validate<i>.</i></cite>
-Alexis King.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Apr 19, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=trpcUnknownTypeMongo>[Next.JS] x.data.user is of type 'unknown' · trpc/trpc · Discussion #3661<i>.</i>
+</cite><a href=https://github.com/trpc/trpc/discussions/3661 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Apr 20, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=trpcTypeInputWOValidation>docs: Howto add typed input (without validation) · Issue #3339 · trpc/trpc<i>.</i>
+</cite><a href=https://github.com/trpc/trpc/issues/3339 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Apr 20, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=declMerging>TypeScript: Documentation - Declaration Merging > Module Augmentation<i>.</i>
+</cite><a href=https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.typescriptlang.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.typescriptlang.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Apr 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=extendTypesSO>javascript - Possible to extend types in Typescript? - Stack Overflow<i>.</i>
+</cite><a href=https://stackoverflow.com/a/41385149 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 3, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=zod>Zod | Documentation<i>.</i>
+</cite><a href=https://zod.dev/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=zod.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>zod.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=pr182>[Major] Add server-side input validation by dchege711 · Pull Request #182 · dchege711/study_buddy<i>.</i>
+</cite><a href=https://github.com/dchege711/study_buddy/pull/182 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=King2019>Parse, don't validate<i>.</i>
+</cite>Alexis King.
 <a href=https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lexi-lambda.github.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>lexi-lambda.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>lexi-lambda.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Nov 5, 2019.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=expressMiddleware>Using Express middleware<i>.</i></cite>
-<a href=https://expressjs.com/en/guide/using-middleware.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=expressjs.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>expressjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=csrfOWASP>Cross Site Request Forgery (CSRF) | OWASP Foundation<i>.</i></cite>
-<a href=https://owasp.org/www-community/attacks/csrf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=owasp.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=codeQLMissingTokenValidation>Missing CSRF middleware — CodeQL query help documentation<i>.</i></cite>
-<a href=https://codeql.github.com/codeql-query-help/javascript/js-missing-token-validation/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>codeql.github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=lusca>krakenjs/lusca: Application security for express apps.<i></i></cite>
-<a href=https://github.com/krakenjs/lusca#readme target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=csrfPreventionOWASP>Cross-Site Request Forgery Prevention - OWASP Cheat Sheet Series<i>.</i></cite>
-<a href=https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=cheatsheetseries.owasp.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>cheatsheetseries.owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=headerstRPC>Custom header | tRPC<i>.</i></cite>
-<a href=https://trpc.io/docs/client/headers target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=trpc.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>trpc.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 30, 2024.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=expressMiddleware>Using Express middleware<i>.</i>
+</cite><a href=https://expressjs.com/en/guide/using-middleware.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=expressjs.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>expressjs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=csrfOWASP>Cross Site Request Forgery (CSRF) | OWASP Foundation<i>.</i>
+</cite><a href=https://owasp.org/www-community/attacks/csrf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=owasp.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=codeQLMissingTokenValidation>Missing CSRF middleware — CodeQL query help documentation<i>.</i>
+</cite><a href=https://codeql.github.com/codeql-query-help/javascript/js-missing-token-validation/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>codeql.github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=lusca>krakenjs/lusca: Application security for express apps.<i></i>
+</cite><a href=https://github.com/krakenjs/lusca#readme target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=csrfPreventionOWASP>Cross-Site Request Forgery Prevention - OWASP Cheat Sheet Series<i>.</i>
+</cite><a href=https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=cheatsheetseries.owasp.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>cheatsheetseries.owasp.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=headerstRPC>Custom header | tRPC<i>.</i>
+</cite><a href=https://trpc.io/docs/client/headers target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=trpc.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>trpc.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 30, 2024.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/King-Alexis>King, Alexis</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/cheatsheetseries.owasp.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=cheatsheetseries.owasp.org" loading=lazy aria-hidden=true width=16 height=16>
-cheatsheetseries.owasp.org</a>
-<a href=/domains/codeql.github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
-codeql.github.com</a>
-<a href=/domains/developer.mozilla.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
-developer.mozilla.org</a>
-<a href=/domains/expressjs.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=expressjs.com" loading=lazy aria-hidden=true width=16 height=16>
-expressjs.com</a>
-<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-github.com</a>
-<a href=/domains/lexi-lambda.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=lexi-lambda.github.io" loading=lazy aria-hidden=true width=16 height=16>
-lexi-lambda.github.io</a>
-<a href=/domains/owasp.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=owasp.org" loading=lazy aria-hidden=true width=16 height=16>
-owasp.org</a>
-<a href=/domains/stackoverflow.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
-stackoverflow.com</a>
-<a href=/domains/trpc.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=trpc.io" loading=lazy aria-hidden=true width=16 height=16>
-trpc.io</a>
-<a href=/domains/www.javascriptstuff.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.javascriptstuff.com" loading=lazy aria-hidden=true width=16 height=16>
-www.javascriptstuff.com</a>
-<a href=/domains/www.typescriptlang.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.typescriptlang.org" loading=lazy aria-hidden=true width=16 height=16>
-www.typescriptlang.org</a>
-<a href=/domains/zod.dev style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=zod.dev" loading=lazy aria-hidden=true width=16 height=16>
+cheatsheetseries.owasp.org
+</a><a href=/domains/codeql.github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=codeql.github.com" loading=lazy aria-hidden=true width=16 height=16>
+codeql.github.com
+</a><a href=/domains/developer.mozilla.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
+developer.mozilla.org
+</a><a href=/domains/expressjs.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=expressjs.com" loading=lazy aria-hidden=true width=16 height=16>
+expressjs.com
+</a><a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com
+</a><a href=/domains/lexi-lambda.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=lexi-lambda.github.io" loading=lazy aria-hidden=true width=16 height=16>
+lexi-lambda.github.io
+</a><a href=/domains/owasp.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=owasp.org" loading=lazy aria-hidden=true width=16 height=16>
+owasp.org
+</a><a href=/domains/stackoverflow.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
+stackoverflow.com
+</a><a href=/domains/trpc.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=trpc.io" loading=lazy aria-hidden=true width=16 height=16>
+trpc.io
+</a><a href=/domains/www.javascriptstuff.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.javascriptstuff.com" loading=lazy aria-hidden=true width=16 height=16>
+www.javascriptstuff.com
+</a><a href=/domains/www.typescriptlang.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.typescriptlang.org" loading=lazy aria-hidden=true width=16 height=16>
+www.typescriptlang.org
+</a><a href=/domains/zod.dev style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=zod.dev" loading=lazy aria-hidden=true width=16 height=16>
 zod.dev</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/use-of-local-storage/>&#171; Use of Local Storage</a>
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/>Of Builds and Bundlers &#187;</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>

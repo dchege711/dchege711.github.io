@@ -1,6 +1,24 @@
-<!doctype html><html lang=en><head><title>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="was written in a period when NLP practitioners are producing bigger (# of parameters; size of training data) language models (LMs), and pushing the top scores on benchmarks. The paper itself was controversial because it led to Gebru being fired from Google, following disagreements with her managers on conditions (withdraw, or remove Google-affiliated authors) for publishing the paper. 
-A lot changed since mid-2021, when I initially wrote this page...."><meta property="og:title" content="LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them"><meta property="og:description" content="was written in a period when NLP practitioners are producing bigger (# of parameters; size of training data) language models (LMs), and pushing the top scores on benchmarks. The paper itself was controversial because it led to Gebru being fired from Google, following disagreements with her managers on conditions (withdraw, or remove Google-affiliated authors) for publishing the paper. 
-A lot changed since mid-2021, when I initially wrote this page...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/stochastic-parrots/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<!doctype html><html lang=en><head><title>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="
+     was written in a period when NLP practitioners are
+producing bigger (# of parameters; size of training data) language models (LMs),
+and pushing the top scores on benchmarks. The paper itself was controversial
+because it led to Gebru being fired from Google, following disagreements with
+her managers on conditions (withdraw, or remove Google-affiliated authors) for
+publishing the paper. 
+A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT
+took the world by storm &ndash; reaching 123m MAU less than 3 months after launch and
+becoming the fastest-growing consumer application in history (TikTok took 9
+months to hit 100m MAU). ..."><meta property="og:title" content="LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them"><meta property="og:description" content="
+     was written in a period when NLP practitioners are
+producing bigger (# of parameters; size of training data) language models (LMs),
+and pushing the top scores on benchmarks. The paper itself was controversial
+because it led to Gebru being fired from Google, following disagreements with
+her managers on conditions (withdraw, or remove Google-affiliated authors) for
+publishing the paper. 
+A lot changed since mid-2021, when I initially wrote this page. OpenAI&rsquo;s ChatGPT
+took the world by storm &ndash; reaching 123m MAU less than 3 months after launch and
+becoming the fastest-growing consumer application in history (TikTok took 9
+months to hit 100m MAU). ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/stochastic-parrots/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/stochastic-parrots/>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</a></li></ul></nav><section><header><h1>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</h1><p class=meta>Dated Mar 3, 2021;
 last modified on Thu, 14 Dec 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#llms-101>LLMs 101</a></li><li><a href=#applications-of-llms>Applications of LLMs</a></li><li><a href=#a-mental-model-for-llms>A Mental Model for LLMs</a></li><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Bender2021></a></span>was written in a period when NLP practitioners are
 producing bigger (# of parameters; size of training data) language models (LMs),
@@ -20,7 +38,7 @@ the lines of predicting the next word in a sentence (GPT-style) or completing a
 cloze test (BERT-style), neural LMs capture much of the syntax and semantics of
 human language. <span class=citation-ref><a href=#WikiLLM></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#WikiLLM></a></span>notes that LLMs emerged around 2018, when I was pursuing an
 undergrad degree in Computer Science. Can&rsquo;t say I caught onto the hype until
-much later in 2022 (3 years after graduating) when ChatGPT was all the rage.</p></div></div><p>When it comes to LLMs' skills and range of tasks, it seems to be more of a
+much later in 2022 (3 years after graduating) when ChatGPT was all the rage.</p></div></div><p>When it comes to LLMs&rsquo; skills and range of tasks, it seems to be more of a
 function of resources (data, parameter-size, computing power) devoted to them,
 and less of breakthroughs in design. <span class=citation-ref><a href=#WikiLLM></a></span></p><p>While OpenAI&rsquo;s ChatGPT is the most popular, other LLMs are BERT (Google), T5
 (Google), XLNet (CMU and Google), and RoBERTa (Meta). <span class=citation-ref><a href=#Dennean2023></a></span></p><p>LLMs have a barrier to entry. Training Meta&rsquo;s LLaMA model, which has 65b
@@ -37,12 +55,15 @@ personal time to necessitate a subscription.</p></div></div><div class=comment-h
 platform-generated content (2010 - 2015); user-generated content (2015 - 2020);
 AI-generated content (2020+).</p><p>LLMs can generate text.
 <a href=https://www.midjourney.com/ target=_blank rel=noopener>Midjourney
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>,
 <a href=https://labs.openai.com/ target=_blank rel=noopener>DALL·E
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, and
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>, and
 <a href=https://ommer-lab.com/research/latent-diffusion-models/ target=_blank rel=noopener>Stable
 Diffusion
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>are popular
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>are popular
 text-to-image models. As of June 2023, text-to-video models are yet to take off
 <span class=citation-ref><a href=#WikiTextToVideoModel></a></span>.</p></div></div><h2 id=a-mental-model-for-llms>A Mental Model for LLMs</h2><div class=priors-holder><div class=priors><p>The LLM does not contain all the information verbatim. Instead, it&rsquo;s an
 embedding (which comes with a loss of information). For a good percentage of
@@ -54,10 +75,12 @@ weighing/verifying the output before acting on it.</p></div></div><p>Some people
 performing natural language understanding (NLU). Misplaced hype can mislead the
 public and dissuade research directions that don&rsquo;t depend on the ever-larger-LM
 train. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment><p><a href=https://www.reddit.com/r/SubSimulatorGPT2/ target=_blank rel=noopener>/r/SubSimulatorGPT2/
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>is an
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>is an
 entertaining sub full of GPT-2 bots.
 <a href=https://www.reddit.com/r/SubSimulatorGPT2Meta/ target=_blank rel=noopener>/r/SubSimulatorGPT2Meta/
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>has
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>has
 the human commentary.</p></div></div><p>The texts are not grounded in communicative intent, or any model of the world,
 or any model of the reader&rsquo;s state of mind. An LM is a system for haphazardly
 stitching together sequences of linguistic forms it has observed in its vast
@@ -69,7 +92,8 @@ case. For example, I asked GPT-4 &ldquo;How many zeros does 50100 contain?&rdquo
 answered, &ldquo;The number 50,100 contains two zeros.&rdquo; This is probably due to
 <a href="https://news.ycombinator.com/item?id=35872254" target=_blank rel=noopener>how
 GPT tokenizes the input
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Tokenization refers to the conversion of words into numbers, which is necessary
 because LLMs are mathematical functions whose input and output are lists of
 numbers. <span class=citation-ref><a href=#WikiLLM></a></span></p><p>It keeps on improving though. <span class=citation-ref><a href=#Chiang2023></a></span>&rsquo;s noted that GPT-3 fails
@@ -80,7 +104,8 @@ rephrases content, it comes across as a student expressing ideas in their own
 words. <span class=citation-ref><a href=#Chiang2023></a></span></p><div class=comment-holder><div class=comment><p>LLMs as a blurry JPEG of the web sometimes manifests in obvious ways.
 <a href="https://news.ycombinator.com/item?id=35868927" target=_blank rel=noopener>An HN
 user
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>noted when asked, &ldquo;Which is
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>noted when asked, &ldquo;Which is
 heavier, two pounds of bricks or one pound of feathers?&rdquo; GPT 3.5 would say,
 &ldquo;They are both the same weight, as they both weigh one pound.&rdquo;</p></div></div><p>A useful criterion for gauging an LLM&rsquo;s quality is the willingness of the
 company to use the text generated by the LLM as training material for the next
@@ -92,7 +117,8 @@ Artificial General Intelligence. <span class=citation-ref><a href=#Miller2023></
 abilities. Started
 <a href=https://en.wikipedia.org/wiki/Talk:Large_language_model#Emergent_Abilities target=_blank rel=noopener>a
 thread
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p></div></div><p>The prompts for LLMs can anthropomorphize them, e.g.,</p><ul><li>I want you to act like {character} from {series}. I want you to respond and
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.</p></div></div><p>The prompts for LLMs can anthropomorphize them, e.g.,</p><ul><li>I want you to act like {character} from {series}. I want you to respond and
 answer like {character} using the tone, manner and vocabulary {character}
 would use. Do not write any explanations. Only answer like {character}. You
 must know all of the knowledge of {character}. My first sentence is &ldquo;Hi
@@ -149,67 +175,93 @@ coherent propaganda <span class=citation-ref><a href=#Bender2021></a></span>. <s
 that the more sinister implementation is chatbots masquerading as online friends
 and usually having good content, but every once in a while dropping some
 propaganda, taking advantage of ordinary social reasoning.</p><p>Biases in LMs can manifest as reputational harms that are invisible to users.
-Biases in LMs used for query expansion could influence search results. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-graduation-cap" cited-by-count=1637 is-main><cite id=Bender2021>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜<i>.</i></cite>
-Emily M. Bender; Timnit Gebru; Angelina McMillan-Major; Shmargaret Shmitchell.
+Biases in LMs used for query expansion could influence search results. <span class=citation-ref><a href=#Bender2021></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count=1637 is-main><cite id=Bender2021>On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? 🦜<i>.</i>
+</cite>Emily M. Bender; Timnit Gebru; Angelina McMillan-Major; Shmargaret Shmitchell.
 Proceedings of the 2021 ACM Conference on Fairness, Accountability, and Transparency.
 University of Washington; Black in AI; The Aether.
 <a href=https://doi.org/10.1145/3442188.3445922 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>doi.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Mar 3, 2021.
-<i class="fas fa-fw fa-graduation-cap" aria-hidden=true></i>Cited 1637 times as of Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Wodecki2023>UBS: ChatGPT is the Fastest Growing App of All Time<i>.</i></cite>
-Ben Wodecki.
+<i class='fas fa-fw fa-graduation-cap' aria-hidden=true></i>
+Cited 1637 times as of Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Wodecki2023>UBS: ChatGPT is the Fastest Growing App of All Time<i>.</i>
+</cite>Ben Wodecki.
 <a href=https://aibusiness.com/nlp/ubs-chatgpt-is-the-fastest-growing-app-of-all-time target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=aibusiness.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>aibusiness.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>aibusiness.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Feb 2, 2023.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Dennean2023>Let's chat about ChatGPT<i>.</i></cite>
-Kevin Dennean; Sundeep Gantori; Delwin Kurnia Limas; Allen Pu; Reid Gilligan.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Dennean2023>Let's chat about ChatGPT<i>.</i>
+</cite>Kevin Dennean; Sundeep Gantori; Delwin Kurnia Limas; Allen Pu; Reid Gilligan.
 UBS.
 <a href=https://www.ubs.com/global/en/wealth-management/our-approach/marketnews/article.1585717.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.ubs.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.ubs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>www.ubs.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Feb 22, 2023.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiTextToVideoModel>Text-to-video model<i>.</i></cite>
-<a href=https://en.wikipedia.org/wiki/Text-to-video_model target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Chiang2023>ChatGPT Is a Blurry JPEG of the Web<i>.</i></cite>
-Ted Chiang.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiTextToVideoModel>Text-to-video model<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Text-to-video_model target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Chiang2023>ChatGPT Is a Blurry JPEG of the Web<i>.</i>
+</cite>Ted Chiang.
 <a href=https://www.newyorker.com/tech/annals-of-technology/chatgpt-is-a-blurry-jpeg-of-the-web target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.newyorker.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>www.newyorker.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Feb 9, 2023.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Alexander2023>Mostly Skeptical Thoughts On The Chatbot Propaganda Apocalypse<i>.</i></cite>
-Scott Alexander.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Alexander2023>Mostly Skeptical Thoughts On The Chatbot Propaganda Apocalypse<i>.</i>
+</cite>Scott Alexander.
 <a href=https://astralcodexten.substack.com/p/mostly-skeptical-thoughts-on-the target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>astralcodexten.substack.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>astralcodexten.substack.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Feb 2, 2023.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Miller2023>AI’s Ostensible Emergent Abilities Are a Mirage<i>.</i></cite>
-Katharine Miller.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Miller2023>AI’s Ostensible Emergent Abilities Are a Mirage<i>.</i>
+</cite>Katharine Miller.
 <a href=https://hai.stanford.edu/news/ais-ostensible-emergent-abilities-are-mirage target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
-<i>hai.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>hai.stanford.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 May 8, 2023.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiGebru>Timnit Gebru<i>.</i></cite>
-<a href=https://en.wikipedia.org/wiki/Timnit_Gebru#Exit_from_Google target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=GithubCopilot>GitHub Copilot · Your AI pair programmer<i>.</i></cite>
-<a href=https://github.com/features/copilot target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiLLM>Large language model<i>.</i></cite>
-<a href=https://en.wikipedia.org/wiki/Large_language_model target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Vanian2023>ChatGPT and generative AI are booming, but at a very expensive price<i>.</i></cite>
-Jonathan Vanian; Kif Leswing.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiGebru>Timnit Gebru<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Timnit_Gebru#Exit_from_Google target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=GithubCopilot>GitHub Copilot · Your AI pair programmer<i>.</i>
+</cite><a href=https://github.com/features/copilot target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiLLM>Large language model<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Large_language_model target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Vanian2023>ChatGPT and generative AI are booming, but at a very expensive price<i>.</i>
+</cite>Jonathan Vanian; Kif Leswing.
 <a href=https://www.cnbc.com/2023/03/13/chatgpt-and-generative-ai-are-booming-but-at-a-very-expensive-price.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.cnbc.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.cnbc.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=fChatGPTPrompts>f/awesome-chatgpt-prompts: This repo includes ChatGPT prompt curation to use ChatGPT better.<i></i></cite>
-<a href=https://github.com/f/awesome-chatgpt-prompts target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Harel2004>Computers Ltd.: What They Really Can't Do<i>.</i>
-Ch. 7: Can We Ourselves Do Any Better? > What is Knowledge?<i></i></cite>
-David Harel.
+<i>www.cnbc.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=fChatGPTPrompts>f/awesome-chatgpt-prompts: This repo includes ChatGPT prompt curation to use ChatGPT better.<i></i>
+</cite><a href=https://github.com/f/awesome-chatgpt-prompts target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 4, 2023.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Harel2004>Computers Ltd.: What They Really Can't Do<i>.</i>
+Ch. 7: Can We Ourselves Do Any Better? > What is Knowledge?<i></i>
+</cite>David Harel.
 <a href=https://www.wisdom.weizmann.ac.il/~harel/ltd.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.wisdom.weizmann.ac.il" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.wisdom.weizmann.ac.il</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>www.wisdom.weizmann.ac.il</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 <a href=https://pdfs.semanticscholar.org/e6f3/86645c404da4c4e40ec5657509c3a7c2903c.pdf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=pdfs.semanticscholar.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>pdfs.semanticscholar.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>pdfs.semanticscholar.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 2004.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<i class='fas fa-fw fa-globe' aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
 <a href=/tags/fairness>#fairness</a>
 <a href=/tags/inequality>#inequality</a>
 <a href=/tags/natural-language-processing>#natural-language-processing</a>
@@ -236,25 +288,25 @@ David Harel.
 <a href=/affiliations/UBS>UBS</a>
 <a href=/affiliations/University-of-Washington>University of Washington</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/aibusiness.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=aibusiness.com" loading=lazy aria-hidden=true width=16 height=16>
-aibusiness.com</a>
-<a href=/domains/astralcodexten.substack.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading=lazy aria-hidden=true width=16 height=16>
-astralcodexten.substack.com</a>
-<a href=/domains/doi.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true width=16 height=16>
-doi.org</a>
-<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-en.wikipedia.org</a>
-<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-github.com</a>
-<a href=/domains/hai.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
-hai.stanford.edu</a>
-<a href=/domains/pdfs.semanticscholar.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=pdfs.semanticscholar.org" loading=lazy aria-hidden=true width=16 height=16>
-pdfs.semanticscholar.org</a>
-<a href=/domains/www.cnbc.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.cnbc.com" loading=lazy aria-hidden=true width=16 height=16>
-www.cnbc.com</a>
-<a href=/domains/www.newyorker.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy aria-hidden=true width=16 height=16>
-www.newyorker.com</a>
-<a href=/domains/www.ubs.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.ubs.com" loading=lazy aria-hidden=true width=16 height=16>
-www.ubs.com</a>
-<a href=/domains/www.wisdom.weizmann.ac.il style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.wisdom.weizmann.ac.il" loading=lazy aria-hidden=true width=16 height=16>
+aibusiness.com
+</a><a href=/domains/astralcodexten.substack.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=astralcodexten.substack.com" loading=lazy aria-hidden=true width=16 height=16>
+astralcodexten.substack.com
+</a><a href=/domains/doi.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=doi.org" loading=lazy aria-hidden=true width=16 height=16>
+doi.org
+</a><a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org
+</a><a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com
+</a><a href=/domains/hai.stanford.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hai.stanford.edu" loading=lazy aria-hidden=true width=16 height=16>
+hai.stanford.edu
+</a><a href=/domains/pdfs.semanticscholar.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=pdfs.semanticscholar.org" loading=lazy aria-hidden=true width=16 height=16>
+pdfs.semanticscholar.org
+</a><a href=/domains/www.cnbc.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.cnbc.com" loading=lazy aria-hidden=true width=16 height=16>
+www.cnbc.com
+</a><a href=/domains/www.newyorker.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.newyorker.com" loading=lazy aria-hidden=true width=16 height=16>
+www.newyorker.com
+</a><a href=/domains/www.ubs.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.ubs.com" loading=lazy aria-hidden=true width=16 height=16>
+www.ubs.com
+</a><a href=/domains/www.wisdom.weizmann.ac.il style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.wisdom.weizmann.ac.il" loading=lazy aria-hidden=true width=16 height=16>
 www.wisdom.weizmann.ac.il</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/large-language-models/intro-to-llms/>Introduction to LLMs &#187;</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>

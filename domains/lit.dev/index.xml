@@ -1,13 +1,117 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lit.dev on Chege's Blog</title><link>https://www.curiosities.dev/domains/lit.dev/</link><description>Recent content in lit.dev on Chege's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 22 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/lit.dev/index.xml" rel="self" type="application/rss+xml"/><item><title>Browse Page</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/browse-page/</link><pubDate>Sat, 20 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/browse-page/</guid><description>When a user lands at /browse, this UI is shown. A couple of components seem to emerge: search-bar, tags-list, card-results, and mini-card.
-&amp;lt;search-bar&amp;gt; Currently, this is rendered by search_bar_dropdown.ejs, a partial that that is included in both /home and /browse. The fact that there it has JS, no server-delivered content, and has CSS makes it a good candidate for a web component. Revving up search-bar.ts.
-Ran into Uncaught TypeError: Class constructor s cannot be invoked without 'new' on the export class SearchBar extends LitElement line.</description></item><item><title>Reusable Cards</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/reusable-cards/</link><pubDate>Fri, 03 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/reusable-cards/</guid><description>Context How can I reuse code in these user experiences?
-Current card templates. TL: editable card owned by the user. TR: the overall modal experience. BL: a publicly viewable card. BR: a card owned by the user but is in the trash.
-The current API surface for the different types of UIs is:
-interface EditableCardViewer { displayNewCard(): void; displayFullCard(cardId: string): void; renderCard(card: Partial&amp;lt;ICard&amp;gt; | null): void; fetchCard(caller: () =&amp;gt; Promise&amp;lt;Partial&amp;lt;ICard&amp;gt; | null&amp;gt;): void; fetchPreviousCard(): void; fetchNextCard(): void; updateStreakBar(streak: IStreak): void; handleInputChange(elementId: string): void; handleCardUrgencyChange(): void; handleTagsInputChange(ev: KeyboardEvent): void; displayRawCardDescription(): void; insertTabsIfNecessary(ev: KeyboardEvent): void; saveCard(renderAfterSave: Boolean = true): void; moveCardToTrash(): void; restoreCardFromTrash(cardId: string, cardUrgency: number): void; toggleOption(elementId: &amp;#34;reviewModeToggle&amp;#34; | &amp;#34;card_is_public_toggle&amp;#34;): void; makeInvisible(elementId: string): void; colorUrgencyQuartiles(quartiles: number[]): void; suggestNewTags(tagsInputElement: HTMLInputElement): void; removeTagSuggestions(): void; updateTagsButtons(newTag: string): void; removeTagFromCard(tag: string): void; } interface PublicCardViewer { displayFullCard(cardId: string): void; renderCard(card: Partial&amp;lt;ICard&amp;gt; | null): void; fetchPreviousCard(): void; fetchNextCard(): void; handleSearchInputChange(): void; flagCard(reason: &amp;#34;markedForReview&amp;#34; | &amp;#34;markedAsDuplicate&amp;#34;): void; copyCardToOwnCollection(); } interface TrashedCardViewer { renderTrashedCard(card: Partial&amp;lt;ICard&amp;gt; | null); fetchPreviousCard(): void; fetchNextCard(): void; modifyTrash(endpoint: &amp;#34;/delete-card&amp;#34; | &amp;#34;/restore-from-trash&amp;#34;): void; } The web components v0 has:</description></item><item><title>Home Page</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/home-page/</link><pubDate>Sun, 05 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/home-page/</guid><description>When a user lands at /home, this UI is shown. A couple of components are shareable from /browse, e.g., search-bar, search-results.
-Sharing Code with /browse Components initially created for the /browse page are useful in /home as well.
-The CardsViewingPage Interface This functionality can be shared between the two pages:
-export class CardsViewingPage extends LitElement { @provide({ context: searchResultsContext }) @state() protected searchResults: CardSearchResult[] = []; @state() protected selectedResult: Card | null = null; @provide({ context: cardsCarouselContext }) @state() protected cardsCarousel = new CardsCarousel([]); protected cardFetcher: CardFetchEndpoint; constructor(cardFetcher: CardFetchEndpoint) { super(); this.</description></item><item><title>Testing in a Monorepo</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</link><pubDate>Sat, 22 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</guid><description>Testing Web Components While any test framework can work, it&amp;rsquo;s better to test web components in a browser environment because that&amp;rsquo;s where they&amp;rsquo;ll be used. Node-based frameworks would require too much shimming of DOM calls that&amp;rsquo;d make the tests unrepresentative. and are good options for browser-based testing.
-is powered by ES-build, and so is the client-side of the app; let&amp;rsquo;s go down this path and see where it leads.</description></item><item><title>Of Stale UI and Re-renders</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/of-stale-ui-and-re-renders/</link><pubDate>Tue, 28 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/of-stale-ui-and-re-renders/</guid><description>More than once, I&amp;rsquo;ve been surprised by a web component either showing data that should no longer be there, or not showing data that should be there. This page aims to reason through such cases for a better mental model of web components.
-Rendering Lists Both &amp;lt;search-bar&amp;gt; and &amp;lt;search-results&amp;gt; need to render a collection of N items. offers two options: looping, or using the repeat(items, keyFunction, itemTemplate) directive.
-const cards = html` ${cards.</description></item><item><title>Inheritance</title><link>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/</link><pubDate>Sun, 05 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/</guid><description>Mixins Introduced to mixins by . Didn&amp;rsquo;t know that there are passionate advocates for this, e.g., &amp;rsquo;s &amp;ldquo;You can even look at normal subclass inheritance as a degenerate form of mixin inheritance where the superclass is known at class definition time, and there&amp;rsquo;s only one application of it.&amp;rdquo;
-A mix-in is an abstract subclass. This technique is especially useful in languages where a class can only have a single superclass.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Lit.dev on Chege's Blog</title><link>https://www.curiosities.dev/domains/lit.dev/</link><description>Recent content in Lit.dev on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 22 Jun 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/lit.dev/index.xml" rel="self" type="application/rss+xml"/><item><title>Browse Page</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/browse-page/</link><pubDate>Sat, 20 Apr 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/browse-page/</guid><description>&lt;figure&gt;&lt;img src="https://www.curiosities.dev/img/computer-science/programming-challenges/flashcards/web-components/browse-landing-page.jpg"
+ alt="When a user lands at /browse, this UI is shown. A couple of
+components seem to emerge: search-bar, tags-list, card-results, and
+mini-card."&gt;&lt;figcaption&gt;
+ &lt;p&gt;When a user lands at /browse, this UI is shown. A couple of
+components seem to emerge: search-bar, tags-list, card-results, and
+mini-card.&lt;/p&gt;
+ &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h2 id="search-bar"&gt;&lt;code&gt;&amp;lt;search-bar&amp;gt;&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Currently, this is rendered by &lt;code&gt;search_bar_dropdown.ejs&lt;/code&gt;, a partial that
+that is included in both &lt;code&gt;/home&lt;/code&gt; and &lt;code&gt;/browse&lt;/code&gt;. The fact that there it
+has JS, no server-delivered content, and has CSS makes it a good
+candidate for a web component. Revving up &lt;code&gt;search-bar.ts&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>Reusable Cards</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/reusable-cards/</link><pubDate>Fri, 03 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/reusable-cards/</guid><description>&lt;h2 id="context"&gt;Context&lt;/h2&gt;
+&lt;p&gt;How can I reuse code in these user experiences?&lt;/p&gt;
+&lt;figure&gt;&lt;img src="https://www.curiosities.dev/img/computer-science/programming-challenges/flashcards/web-components/card-types.jpg"
+ alt="Current card templates. TL: editable card owned by the user.
+TR: the overall modal experience. BL: a publicly viewable card. BR: a
+card owned by the user but is in the trash."&gt;&lt;figcaption&gt;
+ &lt;p&gt;Current card templates. TL: editable card owned by the user.
+TR: the overall modal experience. BL: a publicly viewable card. BR: a
+card owned by the user but is in the trash.&lt;/p&gt;</description></item><item><title>Home Page</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/home-page/</link><pubDate>Sun, 05 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/home-page/</guid><description>&lt;figure&gt;&lt;img src="https://www.curiosities.dev/img/computer-science/programming-challenges/flashcards/web-components/home-landing-page.jpg"
+ alt="When a user lands at /home, this UI is shown. A couple of
+components are shareable from /browse, e.g., search-bar,
+search-results."&gt;&lt;figcaption&gt;
+ &lt;p&gt;When a user lands at /home, this UI is shown. A couple of
+components are shareable from /browse, e.g., search-bar,
+search-results.&lt;/p&gt;
+ &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h2 id="sharing-code-with-browse"&gt;Sharing Code with &lt;code&gt;/browse&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Components initially created for 
+&lt;a href="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/browse-page/"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ the &lt;code&gt;/browse&lt;/code&gt; page
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+ are useful in &lt;code&gt;/home&lt;/code&gt; as well.&lt;/p&gt;
+&lt;h3 id="the-cardsviewingpage-interface"&gt;The &lt;code&gt;CardsViewingPage&lt;/code&gt; Interface&lt;/h3&gt;
+&lt;p&gt;This functionality can be shared between the two pages:&lt;/p&gt;</description></item><item><title>Testing in a Monorepo</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</link><pubDate>Sat, 22 Jun 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/testing/</guid><description>&lt;h2 id="testing-web-components"&gt;Testing Web Components&lt;/h2&gt;
+&lt;p&gt;While any test framework can work, it&amp;rsquo;s better to test web components in
+a browser environment because that&amp;rsquo;s where they&amp;rsquo;ll be used. Node-based
+frameworks would require too much shimming of DOM calls that&amp;rsquo;d make the
+tests unrepresentative. &lt;span class="citation-ref"&gt;&lt;a href="#WebTestRunner"&gt;&lt;/a&gt;&lt;/span&gt; and &lt;span class="citation-ref"&gt;&lt;a href="#WebDriverIO"&gt;&lt;/a&gt;&lt;/span&gt; are good options for browser-based testing. &lt;span class="citation-ref"&gt;&lt;a href="#testingLit"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#WebTestRunner"&gt;&lt;/a&gt;&lt;/span&gt; is powered by ES-build, and so is the
+client-side of the app; let&amp;rsquo;s go down this path and see where it leads.
+CommonJS modules don&amp;rsquo;t work in the browser &lt;span class="citation-ref"&gt;&lt;a href="#esModulesWebDev"&gt;&lt;/a&gt;&lt;/span&gt;.
+
+&lt;a href="https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/of-builds-and-bundlers/#es-modules-vs-commonjs"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ Earlier on
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+, using ESM on the server turned out difficult. Hopefully, that
+doesn&amp;rsquo;t me bite back now.&lt;/p&gt;</description></item><item><title>Of Stale UI and Re-renders</title><link>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/of-stale-ui-and-re-renders/</link><pubDate>Tue, 28 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/flashcards-app/web-components/of-stale-ui-and-re-renders/</guid><description>&lt;p&gt;More than once, I&amp;rsquo;ve been surprised by a web component either showing
+data that should no longer be there, or not showing data that should be
+there. This page aims to reason through such cases for a better mental
+model of web components.&lt;/p&gt;
+&lt;h2 id="rendering-lists"&gt;Rendering Lists&lt;/h2&gt;
+&lt;p&gt;Both &lt;code&gt;&amp;lt;search-bar&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;search-results&amp;gt;&lt;/code&gt; need to render a collection
+of N items. &lt;span class="citation-ref"&gt;&lt;a href="#listsLit"&gt;&lt;/a&gt;&lt;/span&gt; offers two options: looping, or using
+the &lt;code&gt;repeat(items, keyFunction, itemTemplate)&lt;/code&gt; directive.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ts" data-lang="ts"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;const&lt;/span&gt; &lt;span style="color:#75af00"&gt;cards&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#75af00"&gt;html&lt;/span&gt;&lt;span style="color:#d88200"&gt;`
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#d88200"&gt; &lt;/span&gt;&lt;span style="color:#d88200"&gt;${&lt;/span&gt;&lt;span style="color:#75af00"&gt;cards&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;map&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;card&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#75af00"&gt;html&lt;/span&gt;&lt;span style="color:#d88200"&gt;`&amp;lt;div&amp;gt;&amp;lt;input type=&amp;#34;checkbox&amp;#34;&amp;gt;&lt;/span&gt;&lt;span style="color:#d88200"&gt;${&lt;/span&gt;&lt;span style="color:#75af00"&gt;card&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;title&lt;/span&gt;&lt;span style="color:#d88200"&gt;}&lt;/span&gt;&lt;span style="color:#d88200"&gt;&amp;lt;/div&amp;gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;)&lt;/span&gt;&lt;span style="color:#d88200"&gt;}&lt;/span&gt;&lt;span style="color:#d88200"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#d88200"&gt;`&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;const&lt;/span&gt; &lt;span style="color:#75af00"&gt;template2&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#75af00"&gt;html&lt;/span&gt;&lt;span style="color:#d88200"&gt;`
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#d88200"&gt; &lt;/span&gt;&lt;span style="color:#d88200"&gt;${&lt;/span&gt;&lt;span style="color:#75af00"&gt;repeat&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75af00"&gt;cards&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;card&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#75af00"&gt;card&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;id&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;card&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#75af00"&gt;html&lt;/span&gt;&lt;span style="color:#d88200"&gt;`&amp;lt;div&amp;gt;&amp;lt;input type=&amp;#34;checkbox&amp;#34;&amp;gt;&lt;/span&gt;&lt;span style="color:#d88200"&gt;${&lt;/span&gt;&lt;span style="color:#75af00"&gt;card&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#75af00"&gt;id&lt;/span&gt;&lt;span style="color:#d88200"&gt;}&lt;/span&gt;&lt;span style="color:#d88200"&gt;&amp;lt;/div&amp;gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;)&lt;/span&gt;&lt;span style="color:#d88200"&gt;}&lt;/span&gt;&lt;span style="color:#d88200"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#d88200"&gt;`&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;When performing updates, &lt;code&gt;repeat&lt;/code&gt; moves DOM nodes, while &lt;code&gt;map&lt;/code&gt; reuses
+DOM nodes. This is also beneficial when there is some part of the node
+that isn&amp;rsquo;t controlled by a template expression because &lt;code&gt;repeat&lt;/code&gt; will
+keep that state, e.g, in the example above, the &lt;code&gt;checked&lt;/code&gt; property. If
+none of these apply, then &lt;code&gt;map&lt;/code&gt; or loops can be used over &lt;code&gt;repeat&lt;/code&gt;. &lt;span class="citation-ref"&gt;&lt;a href="#listsLit"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Inheritance</title><link>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/</link><pubDate>Sun, 05 May 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/</guid><description>&lt;h2 id="mixins"&gt;Mixins&lt;/h2&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment"&gt;&lt;p&gt;Introduced to mixins by &lt;span class="citation-ref"&gt;&lt;a href="#mixinsLit"&gt;&lt;/a&gt;&lt;/span&gt;. Didn&amp;rsquo;t know that there
+are passionate advocates for this, e.g., &lt;span class="citation-ref"&gt;&lt;a href="#fagnani2015"&gt;&lt;/a&gt;&lt;/span&gt;&amp;rsquo;s &amp;ldquo;You
+can even look at normal subclass inheritance as a degenerate form of
+mixin inheritance where the superclass is known at class definition
+time, and there&amp;rsquo;s only one application of it.&amp;rdquo;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;p&gt;A mix-in is an abstract subclass. This technique is especially useful in
+languages where a class can only have a single superclass.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-js" data-lang="js"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;const&lt;/span&gt; &lt;span style="color:#75af00"&gt;calculatorMixin&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;Base&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#111"&gt;=&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;class&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;extends&lt;/span&gt; &lt;span style="color:#75af00"&gt;Base&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75af00"&gt;calc&lt;/span&gt;&lt;span style="color:#111"&gt;()&lt;/span&gt; &lt;span style="color:#111"&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;const&lt;/span&gt; &lt;span style="color:#75af00"&gt;randomizerMixin&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;Base&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#111"&gt;=&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;class&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;extends&lt;/span&gt; &lt;span style="color:#75af00"&gt;Base&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75af00"&gt;randomize&lt;/span&gt;&lt;span style="color:#111"&gt;()&lt;/span&gt; &lt;span style="color:#111"&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;class&lt;/span&gt; &lt;span style="color:#75af00"&gt;Foo&lt;/span&gt; &lt;span style="color:#111"&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;class&lt;/span&gt; &lt;span style="color:#75af00"&gt;Bar&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;extends&lt;/span&gt; &lt;span style="color:#75af00"&gt;calculatorMixin&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;randomizerMixin&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#75af00"&gt;Foo&lt;/span&gt;&lt;span style="color:#111"&gt;))&lt;/span&gt; &lt;span style="color:#111"&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#mixinsMDN"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item></channel></rss>

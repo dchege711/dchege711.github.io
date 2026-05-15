@@ -1,37 +1,72 @@
-<!doctype html><html lang=en><head><title>Learning Haskell via AoC 2021 | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="This page contains remarks on Haskell that I encountered when working with source files that span multiple AoC 2021 problems.
- and  have Haskell solutions. It&rsquo;ll be nice to compare how they solved the problems. I don&rsquo;t want to end up perfecting the wrong approach!
-Setting Up Haskell Env for AoC To manage dependencies, Cabal   and Stack   are pretty popular. Stack incorporates the Cabal build system...."><meta property="og:title" content="Learning Haskell via AoC 2021"><meta property="og:description" content="This page contains remarks on Haskell that I encountered when working with source files that span multiple AoC 2021 problems.
- and  have Haskell solutions. It&rsquo;ll be nice to compare how they solved the problems. I don&rsquo;t want to end up perfecting the wrong approach!
-Setting Up Haskell Env for AoC To manage dependencies, Cabal   and Stack   are pretty popular. Stack incorporates the Cabal build system...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter();></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g
-const hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g
-function addURLHighlighter(){hljs.addPlugin({"after:highlight":(result)=>{result.value=result.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>");console.log(result.value);result.value=result.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>");}});hljs.highlightAll();}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<!doctype html><html lang=en><head><title>Learning Haskell via AoC 2021 | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="This page contains remarks on Haskell that I encountered when working
+with source files that span multiple AoC 2021 problems.
+ and  have Haskell
+solutions. It&rsquo;ll be nice to compare how they solved the problems. I
+don&rsquo;t want to end up perfecting the wrong approach!
+Setting Up Haskell Env for AoC
+To manage dependencies,
+
+
+    Cabal
+     
+
+ and
+
+
+    Stack
+     
+
+ are pretty
+popular. Stack incorporates the Cabal build system...."><meta property="og:title" content="Learning Haskell via AoC 2021"><meta property="og:description" content="This page contains remarks on Haskell that I encountered when working
+with source files that span multiple AoC 2021 problems.
+ and  have Haskell
+solutions. It&rsquo;ll be nice to compare how they solved the problems. I
+don&rsquo;t want to end up perfecting the wrong approach!
+Setting Up Haskell Env for AoC
+To manage dependencies,
+
+
+    Cabal
+     
+
+ and
+
+
+    Stack
+     
+
+ are pretty
+popular. Stack incorporates the Cabal build system...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/>Advent of Code</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/>Advent of Code 2021 - Haskell</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/>Learning Haskell via AoC 2021</a></li></ul></nav><section><header><h1>Learning Haskell via AoC 2021</h1><p class=meta>Dated Feb 19, 2022;
 last modified on Sat, 19 Feb 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#setting-up-haskell-env-for-aoc>Setting Up Haskell Env for AoC</a></li><li><a href=#vs-code-setup>VS Code Setup</a></li><li><a href=#debugging-haskell>Debugging Haskell</a></li><li><a href=#literate-programming>Literate Programming</a></li><li><a href=#the-standard-library>The Standard Library</a></li><li><a href=#lazy-evaluation>Lazy Evaluation</a></li><li><a href=#parsing-input>Parsing Input</a></li><li><a href=#monad><code>Monad</code></a></li><li><a href=#functor><code>Functor</code></a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>This page contains remarks on Haskell that I encountered when working
 with source files that span multiple AoC 2021 problems.</p><p><span class=citation-ref><a href=#HiddingAoC2021></a></span>and <span class=citation-ref><a href=#LeAoC2021></a></span>have Haskell
 solutions. It&rsquo;ll be nice to compare how they solved the problems. I
 don&rsquo;t want to end up perfecting the wrong approach!</p><h2 id=setting-up-haskell-env-for-aoc>Setting Up Haskell Env for AoC</h2><p>To manage dependencies,
 <a href=https://cabal.readthedocs.io/en/3.6/getting-started.html target=_blank rel=noopener>Cabal
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>and
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>and
 <a href=https://docs.haskellstack.org/en/stable/README.html target=_blank rel=noopener>Stack
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>are pretty
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>are pretty
 popular. Stack incorporates the Cabal build system.</p><div class=comment-holder><div class=comment><p>The folks at Stack maintain the Stackage package collection, a curated
 set of packages from Hackage which are tested for compatibility. This
 provides another proxy (in addition to
 <a href=https://wiki.haskell.org/Category:Libraries target=_blank rel=noopener>Category:Libraries -
 HaskellWiki
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>) for
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>) for
 determining which third-party library to build on when several claim to
-do the job.</p></div></div><p>The package structure is of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>2021
-├── advent-of-code-y2021.cabal
-├── app
-│   └── Main.hs
-├── src
-│   ├── AoC2021.hs
-│   ├── SonarSweep.hs
-│   └── SonarSweep.md
-└── test
-    └──  AoC2021Test.hs
-</code></pre></div><p>I ended up using Cabal only as I thought it wouldn&rsquo;t have too many bells
+do the job.</p></div></div><p>The package structure is of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>2021
+</span></span><span style=display:flex><span>├── advent-of-code-y2021.cabal
+</span></span><span style=display:flex><span>├── app
+</span></span><span style=display:flex><span>│   └── Main.hs
+</span></span><span style=display:flex><span>├── src
+</span></span><span style=display:flex><span>│   ├── AoC2021.hs
+</span></span><span style=display:flex><span>│   ├── SonarSweep.hs
+</span></span><span style=display:flex><span>│   └── SonarSweep.md
+</span></span><span style=display:flex><span>└── test
+</span></span><span style=display:flex><span>    └──  AoC2021Test.hs
+</span></span></code></pre></div><p>I ended up using Cabal only as I thought it wouldn&rsquo;t have too many bells
 and whistles. <code>cabal init --interactive</code> got most of my <code>.cabal</code> file
 set up.</p><p><code>cabal run advent-of-code-y2021</code> runs my solutions to the AoC problems .
 <code>cabal run advent-of-code-y2021-test</code> runs some checks based on the
@@ -40,37 +75,45 @@ which problem to run, running tests, and running benchmarks. They even
 published
 <a href=https://hackage.haskell.org/package/advent-of-code-api target=_blank rel=noopener>an <code>advent-of-code-api</code>
 package
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>that
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>that
 abstracts away the network calls!</p><h2 id=vs-code-setup>VS Code Setup</h2><p><a href="https://marketplace.visualstudio.com/items?itemName=haskell.haskell" target=_blank rel=noopener>Haskell
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>,
 <a href="https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell" target=_blank rel=noopener>Haskell Syntax
 Highlighting
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>,
 and
 <a href="https://marketplace.visualstudio.com/items?itemName=hoovercj.haskell-linter" target=_blank rel=noopener>haskell-linter
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>(which is a wrapper for
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>(which is a wrapper for
 <a href=https://github.com/ndmitchell/hlint target=_blank rel=noopener>ndmitchell/hlint
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>) are pretty
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>) are pretty
 useful.</p><p><code>hlint</code> is especially useful as some of the resources linked in
 <a href=https://www.haskell.org/documentation/ target=_blank rel=noopener>https://www.haskell.org/documentation/
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>use idioms that have since been improved.</p><p>VS Code&rsquo;s Haskell Language Server is currently a bit buggy in that
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>use idioms that have since been improved.</p><p>VS Code&rsquo;s Haskell Language Server is currently a bit buggy in that
 <a href=https://github.com/haskell/haskell-language-server/issues/366 target=_blank rel=noopener>the
 symbols may not
 update
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>leading to erroneous flagging of code that compiles fine. Restarting the
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>leading to erroneous flagging of code that compiles fine. Restarting the
 language server every once in a while is a tad inconvenient.</p><p>Sometimes VS Code reports that it can&rsquo;t find both <code>GHC</code> and <code>HLint</code>.
 <span class=citation-ref><a href=#rHaskellCantFindGHC></a></span>&rsquo;s suggestion of launching VS Code via
-<code>code .</code> works.</p><h2 id=debugging-haskell>Debugging Haskell</h2><p>A lot of the errors are caught by the compiler given the strong typing.</p><p>One option is to load the .hs file into GHCi and experiment in there.</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-shell data-lang=shell>$ ghci
-GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? <span style=color:#00a8c8>for</span> <span style=color:#111>help</span>
-Loaded package environment from /Users/dchege711/.ghc/x86_64-darwin-8.10.7/environments/default
-Prelude&gt; :load src/Dive/Dive.hs
-<span style=color:#f92672>[</span><span style=color:#ae81ff>1</span> of 1<span style=color:#f92672>]</span> Compiling Dive.Dive        <span style=color:#f92672>(</span> src/Dive/Dive.hs, interpreted <span style=color:#f92672>)</span>
-Ok, one module loaded.
-*Dive.Dive&gt;
-</code></pre></div><p><a href="https://marketplace.visualstudio.com/items?itemName=phoityne.phoityne-vscode" target=_blank rel=noopener>Haskell GHCi Debug Adapter
+<code>code .</code> works.</p><h2 id=debugging-haskell>Debugging Haskell</h2><p>A lot of the errors are caught by the compiler given the strong typing.</p><p>One option is to load the .hs file into GHCi and experiment in there.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span>$ ghci
+</span></span><span style=display:flex><span>GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? <span style=color:#00a8c8>for</span> <span style=color:#111>help</span>
+</span></span><span style=display:flex><span>Loaded package environment from /Users/dchege711/.ghc/x86_64-darwin-8.10.7/environments/default
+</span></span><span style=display:flex><span>Prelude&gt; :load src/Dive/Dive.hs
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span><span style=color:#ae81ff>1</span> of 1<span style=color:#f92672>]</span> Compiling Dive.Dive        <span style=color:#f92672>(</span> src/Dive/Dive.hs, interpreted <span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>Ok, one module loaded.
+</span></span><span style=display:flex><span>*Dive.Dive&gt;
+</span></span></code></pre></div><p><a href="https://marketplace.visualstudio.com/items?itemName=phoityne.phoityne-vscode" target=_blank rel=noopener>Haskell GHCi Debug Adapter
 Phoityne
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>seems like the de-factor debugger for VS Code. I&rsquo;m having issues of the
-form:</p><pre><code class=language-log data-lang=log>test/AoC2021Test.hs:5:1: error:
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>seems like the de-factor debugger for VS Code. I&rsquo;m having issues of the
+form:</p><pre tabindex=0><code class=language-log data-lang=log>test/AoC2021Test.hs:5:1: error:
     Could not load module ‘Paths_advent_of_code_y2021’
     it is a hidden module in the package ‘advent-of-code-y2021-0.1.0.0’
     Use -v (or `:set -v` in ghci) to see a list of the files searched for.
@@ -81,9 +124,11 @@ form:</p><pre><code class=language-log data-lang=log>test/AoC2021Test.hs:5:1: er
 GHCi. That said,
 <a href=https://downloads.haskell.org/~ghc/7.4.1/docs/html/users_guide/ghci-debugger.html target=_blank rel=noopener>GHCi comes with a debugger
 included
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>so that&rsquo;s promising!</p><h2 id=literate-programming>Literate Programming</h2><p>Literate Haskell
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>so that&rsquo;s promising!</p><h2 id=literate-programming>Literate Programming</h2><p>Literate Haskell
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/project_euler/amicable_numbers/021-amicable-numbers/#PE021Haskell target=_blank rel=noopener>intrigued me
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, but I don&rsquo;t use it much because it&rsquo;s not well-integrated into VS
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>, but I don&rsquo;t use it much because it&rsquo;s not well-integrated into VS
 Code&rsquo;s intellisense and linting extensions.</p><div class=comment-holder><div class=comment><p>In terms of writing code, Literate Haskell works as expected on Emacs.
 However, the literate portion is LaTeX, and having a multi-language code
 doesn&rsquo;t work well with HighlightJS (the plugin API does not support
@@ -96,23 +141,27 @@ in either the markdown or the source file.</p><div class=comment-holder><div cla
 project is still in active development, so something to keep an eye on.</p><p>It&rsquo;s a pretty nifty concept, and superior to my current approach of
 using
 <a href=https://gohugo.io/templates/files/ target=_blank rel=noopener>a Hugo shortcode
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>to embed
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>to embed
 the source file into the generated HTML file. My current approach
 doesn&rsquo;t display both the source and the markdown in the same space when
 I&rsquo;m editing the content.</p></div></div><p><span class=citation-ref><a href=#LeAoC2021></a></span>uses <span class=citation-ref><a href=#Haddock></a></span>to generate markup from
 source code. Haddock reminds me of Python&rsquo;s
 <a href=https://www.sphinx-doc.org/en/master/ target=_blank rel=noopener>Sphinx
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, Java&rsquo;s
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>, Java&rsquo;s
 <a href=https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html target=_blank rel=noopener>Javadoc
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>and JavaScript&rsquo;s
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>and JavaScript&rsquo;s
 <a href=https://jsdoc.app/ target=_blank rel=noopener>JSDoc
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><p>Cabal has integrations with Haddock, and that&rsquo;s useful for generating
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.</p><p>Cabal has integrations with Haddock, and that&rsquo;s useful for generating
 docs for the package. For some reason, <code>cabal init</code> doesn&rsquo;t generate a
 <code>Setup.hs</code> that is needed in <code>runhaskell Setup.hs haddock --internal</code>.
 Update: <code>cabal haddock</code> and <code>cabal v2-haddock</code> are alternative ways of
-using <code>haddock</code> on a package.</p><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/sample-haddock-documentation.jpg alt="&amp;ldquo;cabal haddock&amp;rdquo; generates documentation similar to ones at
-Hackage. Notice the &amp;ldquo;# Source&amp;rdquo; link."><figcaption><p>&ldquo;cabal haddock&rdquo; generates documentation similar to ones at
-Hackage. Notice the &ldquo;# Source&rdquo; link.</p></figcaption></figure><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/sample-haddock-documentation-src-code.jpg alt="Clicking on the &amp;ldquo;#Source&amp;rdquo; link takes me to this browsable
+using <code>haddock</code> on a package.</p><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/sample-haddock-documentation.jpg alt="&ldquo;cabal haddock&rdquo; generates documentation similar to ones at
+Hackage. Notice the &ldquo;# Source&rdquo; link."><figcaption><p>&ldquo;cabal haddock&rdquo; generates documentation similar to ones at
+Hackage. Notice the &ldquo;# Source&rdquo; link.</p></figcaption></figure><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/sample-haddock-documentation-src-code.jpg alt="Clicking on the &ldquo;#Source&rdquo; link takes me to this browsable
 version of the code"><figcaption><p>Clicking on the &ldquo;#Source&rdquo; link takes me to this browsable
 version of the code</p></figcaption></figure><p>However, I&rsquo;d like the code inlined, and the non-code portions of the
 .lhs files rendered as normal text instead of being included inside a
@@ -123,40 +172,44 @@ lines that only have <code>%</code>s, adding YAML, changing the opening back-tic
 to have <code>hs</code> (HighlightJS guesses the language correctly though). Maybe
 <code>lhs2TeX</code> has some customization options that won&rsquo;t require me to whip
 up a Python script? Didn&rsquo;t find anything promising. This script
-suffices:</p><div id=publish_lhs_files.zsh><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-zsh data-lang=zsh><span style=color:#75715e>#!/bin/zsh
-</span><span style=color:#75715e></span>
-<span style=color:#00a8c8>if</span> <span style=color:#f92672>[[</span> <span style=color:#111>$1</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;--all&#34;</span> <span style=color:#f92672>]]</span>
-<span style=color:#00a8c8>then</span>
-<span style=color:#111>working_dir</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;</span><span style=color:#00a8c8>$(</span>dirname <span style=color:#111>$0</span><span style=color:#00a8c8>)</span><span style=color:#d88200>&#34;</span>
-<span style=color:#111>lhs_files</span><span style=color:#f92672>=(</span><span style=color:#111>$working_dir</span>/**/*.lhs<span style=color:#f92672>)</span>
-<span style=color:#00a8c8>elif</span> <span style=color:#f92672>[[</span> <span style=color:#111>$1</span> <span style=color:#f92672>]]</span>
-<span style=color:#00a8c8>then</span>
-<span style=color:#111>lhs_files</span><span style=color:#f92672>=(</span><span style=color:#111>$1</span><span style=color:#f92672>)</span>
-<span style=color:#00a8c8>else</span>
-<span style=color:#111>printf</span> <span style=color:#d88200>&#34;Either supply a filepath to an .lhs file, or use &#39;--all&#39;\n&#34;</span>
-<span style=color:#111>exit</span> <span style=color:#ae81ff>1</span>
-<span style=color:#00a8c8>fi</span>
-
-<span style=color:#00a8c8>for</span> lhs_file in <span style=color:#111>$lhs_files</span> <span style=color:#111>;</span> <span style=color:#00a8c8>do</span>
-    <span style=color:#111>output_file</span><span style=color:#f92672>=</span><span style=color:#d88200>${</span><span style=color:#111>lhs_file</span><span style=color:#111>/.lhs/.md</span><span style=color:#d88200>}</span> <span style=color:#75715e># Replace .lhs with .md</span>
-    <span style=color:#75715e># Delete the first 2 lines which only have a `%` character.</span>
-    <span style=color:#75715e># The 2nd expression replaces `\#` with `#`. The former is needed for .lhs</span>
-    <span style=color:#75715e># to compile. As an SO user said, when in doubt, add another backslash.</span>
-    lhs2tex --markdown <span style=color:#111>$lhs_file</span> <span style=color:#111>|</span> sed -e <span style=color:#d88200>&#39;1,2d&#39;</span> -e s.^<span style=color:#8045ff>\\\\\#</span>.<span style=color:#8045ff>\#</span>. &gt; <span style=color:#111>$output_file</span>
-    <span style=color:#111>printf</span> <span style=color:#d88200>&#34;Published </span><span style=color:#111>$output_file</span><span style=color:#d88200>\n&#34;</span>
-<span style=color:#00a8c8>done</span>
-</code></pre></div></div><p>VS Code lacks multi-mode, which is helpful when editing .lhs files.
+suffices:</p><div id=publish_lhs_files.zsh><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-zsh data-lang=zsh><span style=display:flex><span><span style=color:#75715e>#!/bin/zsh
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>if</span> <span style=color:#f92672>[[</span> <span style=color:#111>$1</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;--all&#34;</span> <span style=color:#f92672>]]</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>then</span>
+</span></span><span style=display:flex><span><span style=color:#111>working_dir</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;</span><span style=color:#00a8c8>$(</span>dirname <span style=color:#111>$0</span><span style=color:#00a8c8>)</span><span style=color:#d88200>&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#111>lhs_files</span><span style=color:#f92672>=(</span><span style=color:#111>$working_dir</span>/**/*.lhs<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>elif</span> <span style=color:#f92672>[[</span> <span style=color:#111>$1</span> <span style=color:#f92672>]]</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>then</span>
+</span></span><span style=display:flex><span><span style=color:#111>lhs_files</span><span style=color:#f92672>=(</span><span style=color:#111>$1</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>else</span>
+</span></span><span style=display:flex><span><span style=color:#111>printf</span> <span style=color:#d88200>&#34;Either supply a filepath to an .lhs file, or use &#39;--all&#39;\n&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#111>exit</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>fi</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>for</span> lhs_file in <span style=color:#111>$lhs_files</span> <span style=color:#111>;</span> <span style=color:#00a8c8>do</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>output_file</span><span style=color:#f92672>=</span><span style=color:#d88200>${</span><span style=color:#111>lhs_file</span><span style=color:#111>/.lhs/.md</span><span style=color:#d88200>}</span> <span style=color:#75715e># Replace .lhs with .md</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Delete the first 2 lines which only have a `%` character.</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># The 2nd expression replaces `\#` with `#`. The former is needed for .lhs</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># to compile. As an SO user said, when in doubt, add another backslash.</span>
+</span></span><span style=display:flex><span>    lhs2tex --markdown <span style=color:#111>$lhs_file</span> <span style=color:#111>|</span> sed -e <span style=color:#d88200>&#39;1,2d&#39;</span> -e s.^<span style=color:#8045ff>\\\\\#</span>.<span style=color:#8045ff>\#</span>. &gt; <span style=color:#111>$output_file</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>printf</span> <span style=color:#d88200>&#34;Published </span><span style=color:#111>$output_file</span><span style=color:#d88200>\n&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>done</span>
+</span></span></code></pre></div></div><p>VS Code lacks multi-mode, which is helpful when editing .lhs files.
 <del>Emacs it is!</del> The editor shows highlights the non-code portions as
 Haskell, but the language server doesn&rsquo;t trip up. I&rsquo;ll keep using VS
 Code for now, especially with the
 <a href="https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave" target=_blank rel=noopener>Run On Save
 extension
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>for regenerating the markdown as I save.</p><h2 id=the-standard-library>The Standard Library</h2><p><span class=citation-ref><a href=#HiddingAoC2021></a></span>uses the <code>RIO</code> library to replace the
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>for regenerating the markdown as I save.</p><h2 id=the-standard-library>The Standard Library</h2><p><span class=citation-ref><a href=#HiddingAoC2021></a></span>uses the <code>RIO</code> library to replace the
 standard <code>Prelude</code>. <span class=citation-ref><a href=#RioLibrary></a></span>aims to be the de-facto
 standard library for Haskell development, as the <code>base</code> package is quite
 minimal, has some contentious APIs, and avoid re-inventing the wheel in
-the name of fewer dependencies.</p><div class=comment-holder><div class=comment><p><a href=https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/>More on dependency management</a>
-.</p><p><code>RIO</code> lives in <a href=https://github.com/commercialhaskell>https://github.com/commercialhaskell</a> alongside Stack, and
+the name of fewer dependencies.</p><div class=comment-holder><div class=comment><p><a href=https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/>More on dependency management
+</a>.</p><p><code>RIO</code> lives in
+<a href=https://github.com/commercialhaskell target=_blank rel=noopener>https://github.com/commercialhaskell
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>alongside Stack, and
 Stackage. I&rsquo;m not especially keen on using <code>RIO</code> for AoC 2021. But it&rsquo;s
 good to know that it exists, and why it exists.</p></div></div><p>Partial functions (e.g. <code>head</code>, <code>tail</code>, <code>init</code>, <code>last</code>, and <code>(!!)</code>) in
 the <code>Prelude</code> (the module with a bunch of standard definitions that get
@@ -167,91 +220,97 @@ list doesn&rsquo;t have a first item). A <strong>total function</strong> is one 
 well-defined on <em>all</em> possible inputs. <span class=citation-ref><a href=#Yorgey2014Functions></a></span></p><h2 id=lazy-evaluation>Lazy Evaluation</h2><div class=comment-holder><div class="comment open-comment"><p>Read
 <a href=https://arxiv.org/abs/1808.08329 target=_blank rel=noopener>[1808.08329] When You Should Use Lists in Haskell (Mostly, You
 Should Not)
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>. I am using lists a lot,
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>. I am using lists a lot,
 and whenever I fret about efficiency, I mumble something to do with lazy
 evaluation in Haskell.</p></div></div><p>Pattern matching drives evaluation. Expressions are only evaluated when
 pattern-matched, and only as far as necessary for the match to proceed,
-and no farther. For example, given these definitions:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>repeat</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span>
-<span style=color:#75af00>repeat</span> <span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#111>x</span>
-
-<span style=color:#75af00>take</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span>
-<span style=color:#75af00>take</span> <span style=color:#111>n</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>|</span> <span style=color:#111>n</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>   <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
-<span style=color:#75af00>take</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>[]</span>           <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
-<span style=color:#75af00>take</span> <span style=color:#111>n</span> <span style=color:#111>(</span><span style=color:#111>x</span><span style=color:#00a8c8>:</span><span style=color:#111>xs</span><span style=color:#111>)</span>       <span style=color:#f92672>=</span> <span style=color:#111>x</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#111>n</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>xs</span>
-</code></pre></div><p>&mldr; we expect <code>take 3 (repeat 7)</code> to evaluate to <code>[7, 7, 7]</code>. A
-step-by-step evaluation looks like:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs>  <span style=color:#111>take</span> <span style=color:#ae81ff>3</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-    <span style=color:#75715e>-- Matches clause 2, which needs the 2nd arg. Expand `repeat 7` one</span>
-    <span style=color:#75715e>-- step.</span>
-<span style=color:#f92672>=</span> <span style=color:#111>take</span> <span style=color:#ae81ff>3</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-    <span style=color:#75715e>-- Matches clause 3. (3-1) not yet evaluated as not needed for</span>
-    <span style=color:#75715e>-- pattern-matching.</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>3</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-    <span style=color:#75715e>-- (3-1) &lt;= 0 forces evaluation of (3-1).</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>2</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-    <span style=color:#75715e>-- Matches clause 2; expand 2nd arg one step.</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>2</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>2</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>0</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-<span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#00a8c8>[]</span>
-</code></pre></div><p>The GHC compiler uses graph reduction, where the expression being
+and no farther. For example, given these definitions:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>repeat</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>repeat</span> <span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#111>x</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#111>n</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>|</span> <span style=color:#111>n</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>   <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>[]</span>           <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#111>n</span> <span style=color:#111>(</span><span style=color:#111>x</span><span style=color:#00a8c8>:</span><span style=color:#111>xs</span><span style=color:#111>)</span>       <span style=color:#f92672>=</span> <span style=color:#111>x</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#111>n</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>xs</span>
+</span></span></code></pre></div><p>&mldr; we expect <code>take 3 (repeat 7)</code> to evaluate to <code>[7, 7, 7]</code>. A
+step-by-step evaluation looks like:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span>  <span style=color:#111>take</span> <span style=color:#ae81ff>3</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Matches clause 2, which needs the 2nd arg. Expand `repeat 7` one</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>-- step.</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#111>take</span> <span style=color:#ae81ff>3</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Matches clause 3. (3-1) not yet evaluated as not needed for</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>-- pattern-matching.</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>3</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>-- (3-1) &lt;= 0 forces evaluation of (3-1).</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>2</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Matches clause 2; expand 2nd arg one step.</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>2</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>2</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>0</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#00a8c8>[]</span>
+</span></span></code></pre></div><p>The GHC compiler uses graph reduction, where the expression being
 evaluated is represented as a graph, so that different parts of the
 expression can share pointers to the same subexpression. Haskell&rsquo;s
 runtime works out the memoization aspect of dynamic programming on our
-behalf!</p><p><span class=citation-ref><a href=#Yorgey2013Laziness></a></span></p><h2 id=parsing-input>Parsing Input</h2><p>For the first two AoC problems, my parsing technique has basically been:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>solutionX</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-<span style=color:#75af00>solutionX</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
-  <span style=color:#111>fileName</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#d88200>&#34;dayX/input.txt&#34;</span>
-  <span style=color:#111>withFile</span>
-    <span style=color:#111>fileName</span>
-    <span style=color:#00a8c8>ReadMone</span>
-    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>s</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetContents</span> <span style=color:#111>h</span>
-               <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>solveX</span> <span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>))</span>
-    <span style=color:#111>)</span>
-</code></pre></div><p>Granted, IO is lazy, but there are improvements to the above sort of
-parsing.</p><p>For example, Day 1 has input of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>199
-200
-</code></pre></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>parsed it as follows:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#00a8c8>import</span> <span style=color:#111>RIO</span>
-<span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>RIO.Text</span> <span style=color:#00a8c8>as</span> <span style=color:#111>Text</span>
-
-<span style=color:#75af00>readInput</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>MonadIO</span> <span style=color:#111>m</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>m</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
-<span style=color:#75af00>readInput</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
-  <span style=color:#111>text</span> <span style=color:#f92672>&lt;-</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>lines</span> <span style=color:#f92672>&lt;$&gt;</span> <span style=color:#111>readFileUtf8</span> <span style=color:#d88200>&#34;data/day01.txt&#34;</span>
-  <span style=color:#111>return</span> <span style=color:#f92672>$</span> <span style=color:#111>mapMaybe</span> <span style=color:#111>(</span><span style=color:#111>readMaybe</span> <span style=color:#f92672>.</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>unpack</span><span style=color:#111>)</span> <span style=color:#111>text</span>
-</code></pre></div><p>Notice how <code>readInput</code> parses the input and takes care of converting
+behalf!</p><p><span class=citation-ref><a href=#Yorgey2013Laziness></a></span></p><h2 id=parsing-input>Parsing Input</h2><p>For the first two AoC problems, my parsing technique has basically been:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>solutionX</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>solutionX</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>fileName</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#d88200>&#34;dayX/input.txt&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>withFile</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>fileName</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>ReadMone</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>s</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetContents</span> <span style=color:#111>h</span>
+</span></span><span style=display:flex><span>               <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>solveX</span> <span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>)</span>
+</span></span></code></pre></div><p>Granted, IO is lazy, but there are improvements to the above sort of
+parsing.</p><p>For example, Day 1 has input of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>199
+</span></span><span style=display:flex><span>200
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>parsed it as follows:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>RIO</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>RIO.Text</span> <span style=color:#00a8c8>as</span> <span style=color:#111>Text</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>MonadIO</span> <span style=color:#111>m</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>m</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>text</span> <span style=color:#f92672>&lt;-</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>lines</span> <span style=color:#f92672>&lt;$&gt;</span> <span style=color:#111>readFileUtf8</span> <span style=color:#d88200>&#34;data/day01.txt&#34;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>return</span> <span style=color:#f92672>$</span> <span style=color:#111>mapMaybe</span> <span style=color:#111>(</span><span style=color:#111>readMaybe</span> <span style=color:#f92672>.</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>unpack</span><span style=color:#111>)</span> <span style=color:#111>text</span>
+</span></span></code></pre></div><p>Notice how <code>readInput</code> parses the input and takes care of converting
 into expected data types <code>[Int]</code> and takes care of parsing uncertainty
 with <code>*Maybe</code>. In comparison, my
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/ target=_blank rel=noopener><code>SonarSweep.num*Increases</code>
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>and
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>and
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/Dive/02-dive/#Dive.hs target=_blank rel=noopener><code>Dive.productOfFinalPosition*</code>
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>functions receive a <code>[String]</code> which they then parse into intended
-types.</p><p>Day 2 had input of the form:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-txt data-lang=txt>forward 5
-down 5
-forward 8
-</code></pre></div><p>&mldr; and I parsed it using regular expressions. <a id=HiddingAoC2021-02-ParsingInput></a><span class=citation-ref><a href=#HiddingAoC2021-02></a></span>used the <code>Parsing</code> module, which results in pretty concise code:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#00a8c8>data</span> <span style=color:#00a8c8>Instruction</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>GoForward</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoUp</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoDown</span> <span style=color:#00a8c8>Int</span> <span style=color:#00a8c8>deriving</span> <span style=color:#111>(</span><span style=color:#00a8c8>Show</span><span style=color:#111>)</span>
-
-<span style=color:#75af00>instructions</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>Instruction</span><span style=color:#111>]</span>
-<span style=color:#75af00>instructions</span> <span style=color:#f92672>=</span> <span style=color:#111>sepEndBy1</span> <span style=color:#111>(</span><span style=color:#111>lexeme</span> <span style=color:#111>direction</span> <span style=color:#f92672>&lt;*&gt;</span> <span style=color:#111>integer</span><span style=color:#111>)</span> <span style=color:#111>eol</span>
-  <span style=color:#00a8c8>where</span> <span style=color:#111>direction</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;forward&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoForward</span><span style=color:#111>)</span>
-                <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;up&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoUp</span><span style=color:#111>)</span>
-                <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;down&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoDown</span><span style=color:#111>)</span>
-
-<span style=color:#75af00>readInput</span> <span style=color:#f92672>::</span> <span style=color:#111>(</span><span style=color:#00a8c8>Monad</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>MonadReader</span> <span style=color:#111>env</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>HasLogFunc</span> <span style=color:#111>env</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>m</span> <span style=color:#111>[</span><span style=color:#00a8c8>Instruction</span><span style=color:#111>]</span>
-<span style=color:#75af00>readInput</span> <span style=color:#f92672>=</span> <span style=color:#111>readInputParsing</span> <span style=color:#d88200>&#34;data/day02.txt&#34;</span> <span style=color:#111>instructions</span>
-</code></pre></div><p>These parsing utilities are not in the packages on Stackage. Turns out
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>functions receive a <code>[String]</code> which they then parse into intended
+types.</p><p>Day 2 had input of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>forward 5
+</span></span><span style=display:flex><span>down 5
+</span></span><span style=display:flex><span>forward 8
+</span></span></code></pre></div><p>&mldr; and I parsed it using regular expressions. <a id=HiddingAoC2021-02-ParsingInput></a><span class=citation-ref><a href=#HiddingAoC2021-02></a></span>used the <code>Parsing</code> module, which results in pretty concise code:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>data</span> <span style=color:#00a8c8>Instruction</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>GoForward</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoUp</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoDown</span> <span style=color:#00a8c8>Int</span> <span style=color:#00a8c8>deriving</span> <span style=color:#111>(</span><span style=color:#00a8c8>Show</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>instructions</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>Instruction</span><span style=color:#111>]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>instructions</span> <span style=color:#f92672>=</span> <span style=color:#111>sepEndBy1</span> <span style=color:#111>(</span><span style=color:#111>lexeme</span> <span style=color:#111>direction</span> <span style=color:#f92672>&lt;*&gt;</span> <span style=color:#111>integer</span><span style=color:#111>)</span> <span style=color:#111>eol</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>where</span> <span style=color:#111>direction</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;forward&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoForward</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;up&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoUp</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;down&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoDown</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>::</span> <span style=color:#111>(</span><span style=color:#00a8c8>Monad</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>MonadReader</span> <span style=color:#111>env</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>HasLogFunc</span> <span style=color:#111>env</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>m</span> <span style=color:#111>[</span><span style=color:#00a8c8>Instruction</span><span style=color:#111>]</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>=</span> <span style=color:#111>readInputParsing</span> <span style=color:#d88200>&#34;data/day02.txt&#34;</span> <span style=color:#111>instructions</span>
+</span></span></code></pre></div><p>These parsing utilities are not in the packages on Stackage. Turns out
 <span class=citation-ref><a href=#HiddingAoC2021-02></a></span>has a custom
 <a href=https://jhidding.github.io/aoc2021/#appendix-parsing target=_blank rel=noopener>app/Parsing.hs
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>,
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>,
 that extends functionality from <span class=citation-ref><a href=#Text.Megaparsec></a></span>, which is
 an advanced fork of
 <a href=https://hackage.haskell.org/package/parsec target=_blank rel=noopener><code>Text.Parsec</code>
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>, the
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>, the
 &ldquo;default&rdquo; parsing library for Haskell.</p><p>My takeaway is to first get the hang of <code>Text.Parsec</code>, as it probably
 has more &ldquo;official&rdquo; resources, e.g.
 <a href=http://book.realworldhaskell.org/read/using-parsec.html target=_blank rel=noopener>Real World Haskell > 16. Using
 Parsec
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.</p><h2 id=monad><code>Monad</code></h2><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>uses a <code>MonadIO</code> and that code looks
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.</p><h2 id=monad><code>Monad</code></h2><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>uses a <code>MonadIO</code> and that code looks
 cleaner.</p><p>My initial perspective on monads is one of trepidation. I&rsquo;ve encountered
 a lot of: Actually, <em>[prior definition]</em> does not encompass a monad™,
 but the more we discuss examples, the more you&rsquo;ll grok monads™.</p><p>(◎ ◎)ゞ</p><p>Monads derive from category theory, but I lack the mathematical maturity
@@ -282,10 +341,10 @@ simply an identity. For example, where \(S\) is the set of real
 numbers, and \(*\) is the addition operator, \(0\) is the identity
 element. <span class=citation-ref><a href=#WikiIdentityElement></a></span></p></div></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Control.Monad></a></span>uses the phrase &ldquo;instances of <code>Monad</code>&rdquo;, which
 requires a bit of digging from my side.</p><p>Type classes correspond to <em>sets of types</em> which have certain operations
-defined for them. For instance,</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#00a8c8>class</span> <span style=color:#00a8c8>Eq</span> <span style=color:#111>a</span> <span style=color:#00a8c8>where</span>
-  <span style=color:#111>(</span><span style=color:#f92672>==</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
-  <span style=color:#111>(</span><span style=color:#f92672>/=</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
-</code></pre></div><p>&mldr; can be read as: <code>Eq</code> is declared to be a type class with a single
+defined for them. For instance,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#00a8c8>Eq</span> <span style=color:#111>a</span> <span style=color:#00a8c8>where</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>(</span><span style=color:#f92672>==</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>(</span><span style=color:#f92672>/=</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
+</span></span></code></pre></div><p>&mldr; can be read as: <code>Eq</code> is declared to be a type class with a single
 parameter, <code>a</code>. Any type <code>a</code> that wants to be an <em>instance</em> of <code>Eq</code> must
 define two functions, <code>(==)</code> and <code>(/=)</code>, with the indicated type
 signatures. <span class=citation-ref><a href=#Yorgey2013TypeClasses></a></span></p><p>Type class polymorphic functions work only for types which are instances
@@ -295,9 +354,9 @@ read this as: for any type <code>a</code>, as long as <code>a</code> is an insta
 <code>(==)</code> can take two values of <code>a</code> and return a <code>Bool</code>; it is a type
 error to call the function <code>(==)</code> on some type which is not an instance
 of <code>Eq</code>. <span class=citation-ref><a href=#Yorgey2013TypeClasses></a></span></p></div></div><p>The <code>(>>=)</code> (bind) operator sequentially composes two actions, passing
-any value produced by the first as an argument to the second. <code>as >>= bs</code> can be understood as:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#00a8c8>do</span> <span style=color:#111>a</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>as</span>
-   <span style=color:#111>bs</span> <span style=color:#111>a</span>
-</code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p><span class=citation-ref><a href=#CIS194Spring13Monads></a></span>dissects <code>(>>=) :: m a -> (a -> m b) -> m b</code> in an enlightening way. <code>(>>=)</code> takes two arguments. The first
+any value produced by the first as an argument to the second. <code>as >>= bs</code> can be understood as:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>do</span> <span style=color:#111>a</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>as</span>
+</span></span><span style=display:flex><span>   <span style=color:#111>bs</span> <span style=color:#111>a</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p><span class=citation-ref><a href=#CIS194Spring13Monads></a></span>dissects <code>(>>=) :: m a -> (a -> m b) -> m b</code> in an enlightening way. <code>(>>=)</code> takes two arguments. The first
 one is a monadic value (or computation or mobit) that represents a
 computation which results in a value (or several values, or no values)
 of type <code>a</code>, and may have some sort of &ldquo;effect&rdquo;. The second argument is
@@ -307,38 +366,42 @@ the promised power of <code>Monad</code> to encapsulate computations which can
 choose what to do next based on the results of previous computations.</em></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#CIS194Spring13Monads></a></span>offers several examples of mobits:</p><ul><li><code>c1 :: Maybe a</code> is a computation which might fail, but results in an <code>a</code> if it succeeds.</li><li><code>c2 :: [a]</code> is a computation which results in (multiple) <code>a</code>s.</li><li><code>c3 :: IO a</code> is a computation which potentially has some I/O effects,
 and then produces an <code>a</code>.</li></ul><p>Till now, I thought <code>c2 :: [a]</code> was a good old list!</p></div></div><div class=comment-holder><div class=comment><p>Forums say that the Spring 2013 version of CIS 194 is the best one. I
 find the writings of
-<a href=https://www.curiosities.dev/cited-authors/yorgey-brent/>Brent Yorgey</a>
-, the Spring 2013 instructor, clearer.</p></div></div><p><span class=citation-ref><a href=#></a></span></p><p>The <code>(>>)</code> (&ldquo;and then&rdquo;) operator sequentially composes two actions,
+<a href=https://www.curiosities.dev/cited-authors/yorgey-brent/>Brent Yorgey
+</a>, the Spring 2013 instructor, clearer.</p></div></div><p><span class=citation-ref><a href=#></a></span></p><p>The <code>(>>)</code> (&ldquo;and then&rdquo;) operator sequentially composes two actions,
 discarding any value produced by the first. <code>as >> bs</code> can be
-understood as:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#00a8c8>do</span> <span style=color:#111>as</span>
-   <span style=color:#111>bs</span>
-</code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p>Each statement in a <code>do</code> block is one of these:</p><ul><li>A single expression <code>e</code>, which is then prepended to the rest with <code>e >> ...</code></li><li>A monadic bind <code>p &lt;- e</code>, which is replaced by <code>e >>= (\p -> ...)</code></li><li>A <code>let</code> binding <code>let p = e</code>, which is translated to <code>let p = e in ...</code></li></ul><p>&mldr; so <code>main</code> and <code>main'</code> are equivalent:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75715e>-- Side note: `readLn` throws an exception if the input is not a number.</span>
-<span style=color:#75715e>-- Actual code should use `getLine`, `readMaybe`, and handle input that</span>
-<span style=color:#75715e>-- is not a number. However, we&#39;re currently concerned with monads.</span>
-
-<span style=color:#75af00>main</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-<span style=color:#75af00>main</span> <span style=color:#f92672>=</span> <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Please enter a number: &#34;</span> <span style=color:#f92672>&gt;&gt;</span>
-       <span style=color:#111>readLn</span> <span style=color:#f92672>&gt;&gt;</span> <span style=color:#75af00>\</span><span style=color:#111>n</span> <span style=color:#f92672>-&gt;</span>
-       <span style=color:#00a8c8>let</span> <span style=color:#111>m</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#00a8c8>in</span>
-       <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#111>show</span> <span style=color:#111>m</span><span style=color:#111>)</span>
-
-<span style=color:#75af00>main&#39;</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-<span style=color:#75af00>main&#39;</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Please enter a number: &#34;</span>
-           <span style=color:#111>n</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readLn</span>
-           <span style=color:#00a8c8>let</span> <span style=color:#111>m</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
-           <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#111>show</span> <span style=color:#111>m</span><span style=color:#111>)</span>
-</code></pre></div><p><span class=citation-ref><a href=#CIS194Fall16IOAndMonads></a></span></p><p>A <code>Monad</code> <code>m</code> also offers a <code>return</code> function of type <code>a -> m a</code>, which
+understood as:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>do</span> <span style=color:#111>as</span>
+</span></span><span style=display:flex><span>   <span style=color:#111>bs</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p>Each statement in a <code>do</code> block is one of these:</p><ul><li>A single expression <code>e</code>, which is then prepended to the rest with <code>e >> ...</code></li><li>A monadic bind <code>p &lt;- e</code>, which is replaced by <code>e >>= (\p -> ...)</code></li><li>A <code>let</code> binding <code>let p = e</code>, which is translated to <code>let p = e in ...</code></li></ul><p>&mldr; so <code>main</code> and <code>main'</code> are equivalent:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75715e>-- Side note: `readLn` throws an exception if the input is not a number.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>-- Actual code should use `getLine`, `readMaybe`, and handle input that</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>-- is not a number. However, we&#39;re currently concerned with monads.</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>main</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>main</span> <span style=color:#f92672>=</span> <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Please enter a number: &#34;</span> <span style=color:#f92672>&gt;&gt;</span>
+</span></span><span style=display:flex><span>       <span style=color:#111>readLn</span> <span style=color:#f92672>&gt;&gt;</span> <span style=color:#75af00>\</span><span style=color:#111>n</span> <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>       <span style=color:#00a8c8>let</span> <span style=color:#111>m</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#00a8c8>in</span>
+</span></span><span style=display:flex><span>       <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#111>show</span> <span style=color:#111>m</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75af00>main&#39;</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>main&#39;</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Please enter a number: &#34;</span>
+</span></span><span style=display:flex><span>           <span style=color:#111>n</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readLn</span>
+</span></span><span style=display:flex><span>           <span style=color:#00a8c8>let</span> <span style=color:#111>m</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>           <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#111>show</span> <span style=color:#111>m</span><span style=color:#111>)</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#CIS194Fall16IOAndMonads></a></span></p><p>A <code>Monad</code> <code>m</code> also offers a <code>return</code> function of type <code>a -> m a</code>, which
 injects a value into the monadic type. <span class=citation-ref><a href=#Control.Monad></a></span></p><div class=comment-holder><div class=comment><p>Examples of <code>Monad</code> instances from <span class=citation-ref><a href=#Control.Monad></a></span>that I
 might find useful: <code>Identity</code>, <code>First</code>, <code>Last</code>, <code>Max</code>, <code>Min</code>, <code>Product</code>,
 <code>Sum</code>, <code>ReadP</code>, <code>IO</code>, <code>NonEmpty</code>, <code>Maybe</code>, <code>[]</code>.</p></div></div><div class=comment-holder><div class=comment><p>There are still holes in my understanding of <code>Monad</code>s. They relate to
 <code>Functor</code>s and <code>Applicative</code>s, and I don&rsquo;t want to go into that rabbit
 hole (yet). <span class=citation-ref><a href=#Typeclassopedia></a></span>promises to help me develop an
-intuition for this [scary] diagram.</p><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/typeclassopedia-diagram.png alt="Graph of type classes and their relationships. Memorable quote: What the heck is a monoid, and how is it different from a monad? Credits: https://wiki.haskell.org/Typeclassopedia"><figcaption><p>Graph of type classes and their relationships. Memorable
+intuition for this [scary] diagram.</p><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/typeclassopedia-diagram.png alt="Graph of type classes and their relationships. Memorable quote: What the heck is a monoid, and how is it different from a monad? Credits: https://wiki.haskell.org/Typeclassopedia "><figcaption><p>Graph of type classes and their relationships. Memorable
 quote: What the heck is a monoid, and how is it different from a
-monad? Credits: <a href=https://wiki.haskell.org/Typeclassopedia>https://wiki.haskell.org/Typeclassopedia</a></p></figcaption></figure><p>For now, my takeaway is: <code>Monad</code>s encapsulate computations which can
+monad? Credits:
+<a href=https://wiki.haskell.org/Typeclassopedia <pre><code>target="_blank" rel="noopener"
+>
+https://wiki.haskell.org/Typeclassopedia
+&lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true">&lt;/i></code></pre><p></a></p></figcaption></p></figure><p>For now, my takeaway is: <code>Monad</code>s encapsulate computations which can
 choose what to do next based on the results of previous computations.</p></div></div><h2 id=functor><code>Functor</code></h2><div class=comment-holder><div class=comment><p>In hindsight, I should have started with exploring <code>Functor</code>s, but here
-I am exploring them after <code>Monad</code>s.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>does:</p><div class=highlight><pre style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-hs data-lang=hs><span style=color:#75af00>text</span> <span style=color:#f92672>&lt;-</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>lines</span> <span style=color:#f92672>&lt;$&gt;</span> <span style=color:#111>readFileUtf8</span> <span style=color:#d88200>&#34;data/day01.txt&#34;</span>
-</code></pre></div><p>A simple intuition is that a <code>Functor</code> represents a &ldquo;container&rdquo; of some
+I am exploring them after <code>Monad</code>s.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>does:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>text</span> <span style=color:#f92672>&lt;-</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>lines</span> <span style=color:#f92672>&lt;$&gt;</span> <span style=color:#111>readFileUtf8</span> <span style=color:#d88200>&#34;data/day01.txt&#34;</span>
+</span></span></code></pre></div><p>A simple intuition is that a <code>Functor</code> represents a &ldquo;container&rdquo; of some
 sort, along with the ability to apply a function uniformly to every
 element in the container. A more useful but more difficult to explain
 intuition is that a <code>Functor</code> represents some sort of &ldquo;computational
@@ -347,7 +410,8 @@ allows for more readable code. <code>Functor</code> instances include <code>[]</
 <code>Maybe</code>, <code>Either</code>, and <code>IO</code>. <span class=citation-ref><a href=#Data.Functor></a></span></p><div class=comment-holder><div class=comment><p>My first reaction to the
 <a href=https://stackoverflow.com/a/37286470/7812406 target=_blank rel=noopener>accepted
 answer
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>of, &ldquo;What does &lt;$>
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>of, &ldquo;What does &lt;$>
 mean in Haskell?&rdquo; was &ldquo;Wait, that&rsquo;s a <code>map</code>; why need an <code>fmap</code>?&rdquo; A
 common argument is that it&rsquo;d pretty a high barrier to spit out errors
 about <code>Functor</code>s to a newbie who is using <code>map</code> incorrectly. <span class=citation-ref><a href=#Typeclassopedia></a></span></p></div></div><p>The signature <code>f a</code> tells us that <code>f</code> is a sort of type function that
@@ -359,115 +423,159 @@ structure. From the context PoV, <code>fmap</code> applies a function to a value
 a context, without altering its context. <span class=citation-ref><a href=#Typeclassopedia></a></span></p><p><code>fmap</code>&rsquo;s type with extra parentheses illustrates the concept of lifting.
 <code>fmap :: (a -> b) -> (f a -> f b)</code> is more apparent that it transforms a
 &ldquo;normal&rdquo; function (<code>g :: a -> b</code>) into one which operates over
-containers/contexts <code>fmap g :: f a -> f b</code>. <span class=citation-ref><a href=#Typeclassopedia></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=HiddingAoC2021>Advent of Code 2021<i>.</i></cite>
-Johan Hidding.
+containers/contexts <code>fmap g :: f a -> f b</code>. <span class=citation-ref><a href=#Typeclassopedia></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HiddingAoC2021>Advent of Code 2021<i>.</i>
+</cite>Johan Hidding.
 <a href=https://jhidding.github.io/aoc2021/#advent-of-code-2021 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Entangled>Entangled: literate programming for the new millennium<i>.</i></cite>
-Johan Hidding.
+<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Entangled>Entangled: literate programming for the new millennium<i>.</i>
+</cite>Johan Hidding.
 <a href=https://entangled.github.io/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=entangled.github.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>entangled.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>entangled.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 <a href=https://github.com/entangled/entangled/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=RioLibrary>rio: A standard library for Haskell<i>.</i></cite>
-<a href=https://hackage.haskell.org/package/rio-0.1.21.0#readme target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=RioLibrary>rio: A standard library for Haskell<i>.</i>
+</cite><a href=https://hackage.haskell.org/package/rio-0.1.21.0#readme target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 <a href=https://www.fpcomplete.com/haskell/library/rio/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.fpcomplete.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>www.fpcomplete.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 <a href=https://github.com/commercialhaskell/rio target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=LeAoC2021>mstksg/advent-of-code-2021: 🎅🌟❄️☃️🎄🎁<i>.</i></cite>
-Justin Le.
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LeAoC2021>mstksg/advent-of-code-2021: 🎅🌟❄️☃️🎄🎁<i>.</i>
+</cite>Justin Le.
 <a href=https://github.com/mstksg/advent-of-code-2021 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Haddock>Welcome to Haddock’s documentation! — Haddock 1.0 documentation<i>.</i></cite>
-<a href=https://haskell-haddock.readthedocs.io/en/latest/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=haskell-haddock.readthedocs.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>haskell-haddock.readthedocs.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=HiddingAoC2021-01>Advent of Code 2021<i>.</i></cite>
-Johan Hidding.
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Haddock>Welcome to Haddock’s documentation! — Haddock 1.0 documentation<i>.</i>
+</cite><a href=https://haskell-haddock.readthedocs.io/en/latest/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=haskell-haddock.readthedocs.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>haskell-haddock.readthedocs.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HiddingAoC2021-01>Advent of Code 2021<i>.</i>
+</cite>Johan Hidding.
 <a href=https://jhidding.github.io/aoc2021/#day-1-sonar-sweep target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Control.Monad.IO.Class>Control.Monad.IO.Class<i>.</i></cite>
-<a href=https://hackage.haskell.org/package/transformers-0.4.2.0/docs/Control-Monad-IO-Class.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Yorgey2014Functions>3: Recursion Patterns, Polymorphism, and the Prelude - School of Haskell<i>.</i></cite>
-Brent Yorgey.
+<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 20, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Control.Monad.IO.Class>Control.Monad.IO.Class<i>.</i>
+</cite><a href=https://hackage.haskell.org/package/transformers-0.4.2.0/docs/Control-Monad-IO-Class.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Yorgey2014Functions>3: Recursion Patterns, Polymorphism, and the Prelude - School of Haskell<i>.</i>
+</cite>Brent Yorgey.
 <a href=https://www.schoolofhaskell.com/school/starting-with-haskell/introduction-to-haskell/3-recursion-patterns-polymorphism-and-the-prelude#total-and-partial-functions target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Jul 14, 2014.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Yorgey2013Laziness>6: Laziness - School of Haskell<i>.</i></cite>
-Brent Yorgey.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Yorgey2013Laziness>6: Laziness - School of Haskell<i>.</i>
+</cite>Brent Yorgey.
 <a href=https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/6-laziness target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CIS194Fall16IOAndMonads>CIS194 Fall 2016: IO and Monads<i>.</i></cite>
-Joachim Breitner.
+<i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=CIS194Fall16IOAndMonads>CIS194 Fall 2016: IO and Monads<i>.</i>
+</cite>Joachim Breitner.
 <a href=https://www.cis.upenn.edu/~cis194/fall16/lectures/06-io-and-monads.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.cis.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Control.Monad>Control.Monad<i>.</i></cite>
-<a href=https://hackage.haskell.org/package/base-4.16.0.0/docs/Control-Monad.html#t:Monad target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Yorgey2013TypeClasses>5: Type Classes - School of Haskell<i>.</i></cite>
-Brent Yorgey.
+<i>www.cis.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Control.Monad>Control.Monad<i>.</i>
+</cite><a href=https://hackage.haskell.org/package/base-4.16.0.0/docs/Control-Monad.html#t:Monad target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Yorgey2013TypeClasses>5: Type Classes - School of Haskell<i>.</i>
+</cite>Brent Yorgey.
 <a href=https://www.schoolofhaskell.com/school/starting-with-haskell/introduction-to-haskell/5-type-classes target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiAssociativity>Associative property - Wikipedia<i>.</i></cite>
-<a href=https://en.wikipedia.org/wiki/Associative_property target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=WikiIdentityElement>Identity element - Wikipedia<i>.</i></cite>
-<a href=https://en.wikipedia.org/wiki/Identity_element target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=CIS194Spring13Monads>CIS194 Spring 2013: Monads<i>.</i></cite>
-Brent Yorgey.
+<i>www.schoolofhaskell.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 21, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiAssociativity>Associative property - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Associative_property target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiIdentityElement>Identity element - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Identity_element target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=CIS194Spring13Monads>CIS194 Spring 2013: Monads<i>.</i>
+</cite>Brent Yorgey.
 <a href=https://www.cis.upenn.edu/~cis194/spring13/lectures/12-monads.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.cis.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>www.cis.upenn.edu</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 Apr 8, 2013.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Data.Functor>Data.Functor<i>.</i></cite>
-<a href=https://hackage.haskell.org/package/base-4.8.2.0/docs/Data-Functor.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Typeclassopedia>Typeclassopedia - HaskellWiki<i>.</i></cite>
-Brent Yorgey.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Data.Functor>Data.Functor<i>.</i>
+</cite><a href=https://hackage.haskell.org/package/base-4.8.2.0/docs/Data-Functor.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Typeclassopedia>Typeclassopedia - HaskellWiki<i>.</i>
+</cite>Brent Yorgey.
 <a href=https://wiki.haskell.org/Typeclassopedia target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=HiddingAoC2021-02>Advent of Code 2021: Day 2: Dive!<i></i></cite>
-<a href=https://jhidding.github.io/aoc2021/#day-2-dive target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true width=16 height=16>
-<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=Text.Megaparsec>Text.Megaparsec<i>.</i></cite>
-Mark Karpov.
+<i>wiki.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HiddingAoC2021-02>Advent of Code 2021: Day 2: Dive!<i></i>
+</cite><a href=https://jhidding.github.io/aoc2021/#day-2-dive target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>jhidding.github.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 22, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Text.Megaparsec>Text.Megaparsec<i>.</i>
+</cite>Mark Karpov.
 <a href=https://hackage.haskell.org/package/megaparsec-9.2.0/docs/Text-Megaparsec.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i>hackage.haskell.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
 <a href=https://markkarpov.com/tutorial/megaparsec.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>markkarpov.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 23, 2022.</div></li><li><div class=citation citation-icon-class="fas fa-fw fa-globe" cited-by-count is-main><cite id=rHaskellCantFindGHC>Haskell Extension for VS Code can't find GHC installed with nix-shell. Help! : haskell<i>.</i></cite>
-<a href=https://www.reddit.com/r/haskell/comments/jah4ac/haskell_extension_for_vs_code_cant_find_ghc/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
-<i class="fas fa-fw fa-globe" aria-hidden=true></i>Accessed Feb 25, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<i>markkarpov.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 23, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=rHaskellCantFindGHC>Haskell Extension for VS Code can't find GHC installed with nix-shell. Help! : haskell<i>.</i>
+</cite><a href=https://www.reddit.com/r/haskell/comments/jah4ac/haskell_extension_for_vs_code_cant_find_ghc/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.reddit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Feb 25, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Breitner-Joachim>Breitner, Joachim</a>
 <a href=/cited-authors/Hidding-Johan>Hidding, Johan</a>
 <a href=/cited-authors/Karpov-Mark>Karpov, Mark</a>
 <a href=/cited-authors/Le-Justin>Le, Justin</a>
 <a href=/cited-authors/Yorgey-Brent>Yorgey, Brent</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
-en.wikipedia.org</a>
-<a href=/domains/entangled.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=entangled.github.io" loading=lazy aria-hidden=true width=16 height=16>
-entangled.github.io</a>
-<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
-github.com</a>
-<a href=/domains/hackage.haskell.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-hackage.haskell.org</a>
-<a href=/domains/haskell-haddock.readthedocs.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=haskell-haddock.readthedocs.io" loading=lazy aria-hidden=true width=16 height=16>
-haskell-haddock.readthedocs.io</a>
-<a href=/domains/jhidding.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true width=16 height=16>
-jhidding.github.io</a>
-<a href=/domains/markkarpov.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading=lazy aria-hidden=true width=16 height=16>
-markkarpov.com</a>
-<a href=/domains/wiki.haskell.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
-wiki.haskell.org</a>
-<a href=/domains/www.cis.upenn.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading=lazy aria-hidden=true width=16 height=16>
-www.cis.upenn.edu</a>
-<a href=/domains/www.fpcomplete.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading=lazy aria-hidden=true width=16 height=16>
-www.fpcomplete.com</a>
-<a href=/domains/www.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
-www.reddit.com</a>
-<a href=/domains/www.schoolofhaskell.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org
+</a><a href=/domains/entangled.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=entangled.github.io" loading=lazy aria-hidden=true width=16 height=16>
+entangled.github.io
+</a><a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com
+</a><a href=/domains/hackage.haskell.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=hackage.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
+hackage.haskell.org
+</a><a href=/domains/haskell-haddock.readthedocs.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=haskell-haddock.readthedocs.io" loading=lazy aria-hidden=true width=16 height=16>
+haskell-haddock.readthedocs.io
+</a><a href=/domains/jhidding.github.io style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=jhidding.github.io" loading=lazy aria-hidden=true width=16 height=16>
+jhidding.github.io
+</a><a href=/domains/markkarpov.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=markkarpov.com" loading=lazy aria-hidden=true width=16 height=16>
+markkarpov.com
+</a><a href=/domains/wiki.haskell.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=wiki.haskell.org" loading=lazy aria-hidden=true width=16 height=16>
+wiki.haskell.org
+</a><a href=/domains/www.cis.upenn.edu style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.cis.upenn.edu" loading=lazy aria-hidden=true width=16 height=16>
+www.cis.upenn.edu
+</a><a href=/domains/www.fpcomplete.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.fpcomplete.com" loading=lazy aria-hidden=true width=16 height=16>
+www.fpcomplete.com
+</a><a href=/domains/www.reddit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.reddit.com" loading=lazy aria-hidden=true width=16 height=16>
+www.reddit.com
+</a><a href=/domains/www.schoolofhaskell.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.schoolofhaskell.com" loading=lazy aria-hidden=true width=16 height=16>
 www.schoolofhaskell.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/SonarSweep/>AoC 2021 Day 01: Sonar Sweep &#187;</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
