@@ -1,29 +1,29 @@
-<!doctype html><html lang=en><head><title>Objects and Classes in Python | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content='Objects
-Consider two Shapes, Square and Circle, with the methods perimeter,
-area, and density. Polymorphism reduces cognitive load by allowing clients
-using related things to ignore their differences. In this case, we&rsquo;ll implement
-a toy version of polymorphism using dictionaries. 
+<!doctype html><html lang=en><head><title>Dictionary-Based Implementation of Classes and Objects (Python) | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content=' implements a toy version of Python&rsquo;s object
+system using dictionaries that contain references to properties, functions and
+other dictionaries. Consider two shapes, Square and Circle, with the methods
+perimeter, area, and density.
+Objects
 A function is an object, where the bytes in a function are instructions. For
 example:
 def foo():
   print("in foo")
 &mldr; creates an object in memory that contains instructions to print a string,
-and assigns that object to the variable foo. ...'><meta property="og:title" content="Objects and Classes in Python"><meta property="og:description" content='Objects
-Consider two Shapes, Square and Circle, with the methods perimeter,
-area, and density. Polymorphism reduces cognitive load by allowing clients
-using related things to ignore their differences. In this case, we&rsquo;ll implement
-a toy version of polymorphism using dictionaries. 
+and assigns that object to the variable foo. ...'><meta property="og:title" content="Dictionary-Based Implementation of Classes and Objects (Python)"><meta property="og:description" content=' implements a toy version of Python&rsquo;s object
+system using dictionaries that contain references to properties, functions and
+other dictionaries. Consider two shapes, Square and Circle, with the methods
+perimeter, area, and density.
+Objects
 A function is an object, where the bytes in a function are instructions. For
 example:
 def foo():
   print("in foo")
 &mldr; creates an object in memory that contains instructions to print a string,
-and assigns that object to the variable foo. ...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/objects-and-classes/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
-<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/objects-and-classes/>Objects and Classes in Python</a></li></ul></nav><section><header><h1>Objects and Classes in Python</h1><p class=meta>Dated May 16, 2026;
-last modified on Sat, 16 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#objects>Objects</a></li><li><a href=#classes>Classes</a></li><li><a href=#inheritance>Inheritance</a></li><li><a href=#constructors>Constructors</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=objects>Objects</h2><p>Consider two <code>Shape</code>s, <code>Square</code> and <code>Circle</code>, with the methods <code>perimeter</code>,
-<code>area</code>, and <code>density</code>. Polymorphism reduces cognitive load by allowing clients
-using related things to ignore their differences. In this case, we&rsquo;ll implement
-a toy version of polymorphism using dictionaries. <span class=citation-ref><a href=#SDXPyObjectsAndClasses></a></span></p><p>A function is an object, where the bytes in a function are instructions. For
+and assigns that object to the variable foo. ...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/dict-based-impl-of-objects-and-class-python/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/dict-based-impl-of-objects-and-class-python/>Dictionary-Based Implementation of Classes and Objects (Python)</a></li></ul></nav><section><header><h1>Dictionary-Based Implementation of Classes and Objects (Python)</h1><p class=meta>Dated May 16, 2026;
+last modified on Sat, 16 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#objects>Objects</a></li><li><a href=#classes>Classes</a></li><li><a href=#inheritance>Inheritance</a></li><li><a href=#constructors>Constructors</a></li><li><a href=#dynamic-dispatch>Dynamic Dispatch</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p><span class=citation-ref><a href=#SDXPyObjectsAndClasses></a></span>implements a toy version of Python&rsquo;s object
+system using dictionaries that contain references to properties, functions and
+other dictionaries. Consider two shapes, <code>Square</code> and <code>Circle</code>, with the methods
+<code>perimeter</code>, <code>area</code>, and <code>density</code>.</p><h2 id=objects>Objects</h2><p>A function is an object, where the bytes in a function are instructions. For
 example:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>foo</span><span style=color:#111>():</span>
 </span></span><span style=display:flex><span>  <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;in foo&#34;</span><span style=color:#111>)</span>
 </span></span></code></pre></div><p>&mldr; creates an object in memory that contains instructions to print a string,
@@ -176,14 +176,34 @@ e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-col
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>make</span><span style=color:#111>(</span><span style=color:#111>_cls</span><span style=color:#111>,</span> <span style=color:#f92672>*</span><span style=color:#111>args</span><span style=color:#111>,</span> <span style=color:#f92672>**</span><span style=color:#111>kwargs</span><span style=color:#111>):</span>
 </span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>_cls</span><span style=color:#111>[</span><span style=color:#d88200>&#34;_new&#34;</span><span style=color:#111>](</span><span style=color:#f92672>*</span><span style=color:#111>args</span><span style=color:#111>,</span> <span style=color:#f92672>**</span><span style=color:#111>kwargs</span><span style=color:#111>)</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#SDXPyObjectsAndClasses></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=SDXPyObjectsAndClasses>Objects and Classes<i>.</i>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#SDXPyObjectsAndClasses></a></span></p><h2 id=dynamic-dispatch>Dynamic Dispatch</h2><p><code>find_method</code>&rsquo;s dynamic dispatch can be improved by adding a <code>_cache</code> dictionary
+to each object, where the keys are the names of methods that have been called in
+the past, and the values are the functions that were found to implement those
+methods. <span class=citation-ref><a href=#SDXPyObjectsAndClasses></a></span></p><p>C++&rsquo;s compiler generates a virtual function table, an array of virtual function
+pointers. Each virtual function is assigned a fixed integer index. Instances of
+that type store a pointer to the vtable as part of their instance data. Because
+C++ does not support late binding, the vtable cannot be modified at runtime. At
+runtime, calling <code>shape->area()</code> is a matter of calling <code>vptr[i]</code> where <code>i</code> is
+the index assigned to <code>area</code>. <span class=citation-ref><a href=#DynamicDispatchWiki></a></span><span class=citation-ref><a href=#vTableWiki></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=SDXPyObjectsAndClasses>Objects and Classes<i>.</i>
 </cite>Greg Wilson.
 <a href=https://third-bit.com/sdxpy/oop/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=third-bit.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>third-bit.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.
 <i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 16, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=DynamicDispatchWiki>Dynamic dispatch - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Dynamic_dispatch target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 16, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=vTableWiki>Virtual method table - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Virtual_method_table target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
 Accessed May 16, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Wilson-Greg>Wilson, Greg</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
-<a href=/domains/third-bit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=third-bit.com" loading=lazy aria-hidden=true width=16 height=16>
-third-bit.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/>Classes in C++ &#187;</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org
+</a><a href=/domains/third-bit.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=third-bit.com" loading=lazy aria-hidden=true width=16 height=16>
+third-bit.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/>&#171; Inheritance</a></footer></section></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
