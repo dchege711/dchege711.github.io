@@ -1,0 +1,101 @@
+<!doctype html><html lang=en><head><title>Majority Element in Array | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Given an array of size \(N\), return the element that appears more than
+\(\lfloor N/2 \rfloor\) times. Solve the problem in \(\mathcal{O}(N)\) time
+and \(\mathcal{O}(1)\) space. 
+Solving this in \(\mathcal{O}(N)\) time precludes sorting as that takes
+\(\mathcal{O}(N\ logN)\) time. Using \(\mathcal{O}(1)\) space precludes
+having a dictionary of frequencies. What is special about a frequency that is
+\(> \lfloor N/2 \rfloor\)? What kind of arithmetic would such a value
+survive?
+In a sorted array, a number that appears \(> \lfloor N/2 \rfloor\) times is
+also the median. How can we compute the median of an unsorted array in
+\(\mathcal{O}(N)\) time and \(\mathcal{O}(1)\) space? Scratch that, the
+median is a more general problem as the frequency need not be \(> \lfloor N/2
+\rfloor\)...."><meta property="og:title" content="Majority Element in Array"><meta property="og:description" content="Given an array of size \(N\), return the element that appears more than
+\(\lfloor N/2 \rfloor\) times. Solve the problem in \(\mathcal{O}(N)\) time
+and \(\mathcal{O}(1)\) space. 
+Solving this in \(\mathcal{O}(N)\) time precludes sorting as that takes
+\(\mathcal{O}(N\ logN)\) time. Using \(\mathcal{O}(1)\) space precludes
+having a dictionary of frequencies. What is special about a frequency that is
+\(> \lfloor N/2 \rfloor\)? What kind of arithmetic would such a value
+survive?
+In a sorted array, a number that appears \(> \lfloor N/2 \rfloor\) times is
+also the median. How can we compute the median of an unsorted array in
+\(\mathcal{O}(N)\) time and \(\mathcal{O}(1)\) space? Scratch that, the
+median is a more general problem as the frequency need not be \(> \lfloor N/2
+\rfloor\)...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/majority-element-in-array/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/>Sorting and Searching</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/majority-element-in-array/>Majority Element in Array</a></li></ul></nav><section><header><h1>Majority Element in Array</h1><p class=meta>Dated May 27, 2026;
+last modified on Wed, 27 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>Given an array of size \(N\), return the element that appears more than
+\(\lfloor N/2 \rfloor\) times. Solve the problem in \(\mathcal{O}(N)\) time
+and \(\mathcal{O}(1)\) space. <span class=citation-ref><a href=#LCMajorityElement></a></span></p><p>Solving this in \(\mathcal{O}(N)\) time precludes sorting as that takes
+\(\mathcal{O}(N\ logN)\) time. Using \(\mathcal{O}(1)\) space precludes
+having a dictionary of frequencies. What is special about a frequency that is
+\(> \lfloor N/2 \rfloor\)? What kind of arithmetic would such a value
+survive?</p><p>In a sorted array, a number that appears \(> \lfloor N/2 \rfloor\) times is
+also the median. How can we compute the median of an unsorted array in
+\(\mathcal{O}(N)\) time and \(\mathcal{O}(1)\) space? Scratch that, the
+median is a more general problem as the frequency need not be \(> \lfloor N/2
+\rfloor\).</p><p>Aha, a number that appears \(> \lfloor N/2 \rfloor\) times will survive a
+knockout series involving \(N - 1\) comparisons, i.e.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>int</span> <span style=color:#111>MajorityElement</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>[]</span> <span style=color:#111>nums</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>.</span><span style=color:#111>Length</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>InvalidOperationException</span><span style=color:#111>(</span><span style=color:#d88200>&#34;No majority element found.&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>best</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>strength</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#111>],</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&lt;</span> <span style=color:#111>nums</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>int</span> <span style=color:#111>candidate</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>strength</span> <span style=color:#111>+=</span> <span style=color:#111>candidate</span> <span style=color:#111>==</span> <span style=color:#111>best</span> <span style=color:#111>?</span> <span style=color:#ae81ff>1</span> <span style=color:#111>:</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>strength</span> <span style=color:#111>&lt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>(</span><span style=color:#111>best</span><span style=color:#111>,</span> <span style=color:#111>strength</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>candidate</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>strength</span> <span style=color:#111>&lt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>InvalidOperationException</span><span style=color:#111>(</span><span style=color:#d88200>&#34;No majority element found.&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>best</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>This algorithm is called the Boyer-Moore majority vote algorithm, and is a
+prototypical example of a streaming algorithm:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>int</span> <span style=color:#111>MajorityElement</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>[]</span> <span style=color:#111>nums</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>(</span><span style=color:#00a8c8>int?</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#00a8c8>null</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>x</span> <span style=color:#00a8c8>in</span> <span style=color:#111>nums</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>c</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>(</span><span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>x</span><span style=color:#111>,</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>else</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>c</span> <span style=color:#111>+=</span> <span style=color:#111>m</span> <span style=color:#111>==</span> <span style=color:#111>x</span> <span style=color:#111>?</span> <span style=color:#ae81ff>1</span> <span style=color:#111>:</span> <span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>int</span> <span style=color:#111>actualCount</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>.</span><span style=color:#111>Count</span><span style=color:#111>(</span><span style=color:#111>x</span> <span style=color:#111>=&gt;</span> <span style=color:#111>x</span> <span style=color:#111>==</span> <span style=color:#111>m</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>m</span> <span style=color:#00a8c8>is</span> <span style=color:#00a8c8>null</span> <span style=color:#111>||</span> <span style=color:#111>actualCount</span> <span style=color:#111>&lt;=</span> <span style=color:#111>nums</span><span style=color:#111>.</span><span style=color:#111>Length</span> <span style=color:#111>/</span> <span style=color:#ae81ff>2</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>InvalidOperationException</span><span style=color:#111>(</span><span style=color:#d88200>&#34;No majority element found.&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>m</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#WikiBoyerMooreMajorityVote></a></span></p><p>After processing \(n\) input elements, the input sequence can be partitioned
+into \((n-c)/2\) pairs of unequal elements, and \(c\) copies of \(m\) left
+over. It is trivially true when \(n = c = 0\), and the invariant is maintained
+every time an element \(x\) is added:</p><ul><li>If \(x = m\), increment \(c\), the number of copies of \(m\)</li><li>If \(x \ne m\) and \(c > 0\), remove one of the copies of \(m\) from the
+left-over set.</li><li>If \(c = 0\), set \(m \leftarrow x\) and add \(x\) to the previously
+empty set of copies of \(m\) and set \(c \leftarrow 1\).</li></ul><p>In the end, no element \(x \ne m\) can have a majority because \(x\) can
+equal at most one element of each unequal pair and none of the remaining \(c\)
+copies of \(m\). Thus, if there is a majority element, it can only be \(m\).
+<span class=citation-ref><a href=#WikiBoyerMooreMajorityVote></a></span></p><p>When the sequence has no majority, the Boyer-Moore majority vote algorithm
+reports one of the sequence elements as its result. The second pass is needed as
+it&rsquo;s impossible for a sublinear-space algorithm to determine whether there
+exists a majority element in a single pass through the input. <span class=citation-ref><a href=#WikiBoyerMooreMajorityVote></a></span></p><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCMajorityElement>Majority Element - LeetCode<i>.</i>
+</cite><a href="https://leetcode.com/problems/majority-element/description/?envType=study-plan-v2&amp;envId=top-interview-150" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 27, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiBoyerMooreMajorityVote>Boyer–Moore majority vote algorithm - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 27, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org
+</a><a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+leetcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/kth-smallest-in-sorted-matrix/>&#171; K-th Smallest Element in Sorted Matrix</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/merging-sorted-arrays/>Merging Sorted Arrays &#187;</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

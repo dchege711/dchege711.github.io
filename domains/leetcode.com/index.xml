@@ -1,4 +1,108 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Leetcode.com on Chege's Blog</title><link>https://www.curiosities.dev/domains/leetcode.com/</link><description>Recent content in Leetcode.com on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sun, 21 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/leetcode.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Minimum Penalty for a Shop</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings/minimum-penalty-for-a-shop/</link><pubDate>Sun, 21 Jul 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings/minimum-penalty-for-a-shop/</guid><description>&lt;div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count='' is-main=''&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Leetcode.com on Chege's Blog</title><link>https://www.curiosities.dev/domains/leetcode.com/</link><description>Recent content in Leetcode.com on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 29 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/leetcode.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Valid Sudoku</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/grids/valid-sudoku/</link><pubDate>Fri, 29 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/grids/valid-sudoku/</guid><description>&lt;p&gt;Determine if a \(9 \times 9\) Sudoku board is valid. A Sudoku board has nine
+\(3 \times 3\) sub-boxes. Validate the filled cells such that each row,
+column, and sub-box contain the digits \([1, &amp;hellip;, 9]\) without repetition. &lt;span class="citation-ref"&gt;&lt;a href="#LCValidSudoku"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment"&gt;&lt;p&gt;Unintuitive to me that given a &lt;code&gt;char c&lt;/code&gt;, we need &lt;code&gt;c - '0'&lt;/code&gt; to convert it into an
+&lt;code&gt;int&lt;/code&gt;. &lt;code&gt;Convert.ToInt32('4')&lt;/code&gt; gives us &lt;code&gt;52&lt;/code&gt;, not &lt;code&gt;4&lt;/code&gt;. &lt;span class="citation-ref"&gt;&lt;a href="#Convert.ToInt32"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;p&gt;I don&amp;rsquo;t think we can do better than validating all 9 rows, 9 columns, and 9
+sub-boxes. There&amp;rsquo;s no repeated work that can be optimized. At its core, this
+problem is about traversing the grid in different ways. There is room for
+improvement in how we handle each check. From the &lt;code&gt;char[][]&lt;/code&gt; grid, we can use a
+&lt;code&gt;HashSet&amp;lt;char&amp;gt;&lt;/code&gt; to check for duplicates (ignoring &lt;code&gt;c == '.'&lt;/code&gt;). If we convert the
+&lt;code&gt;char[][]&lt;/code&gt; to an &lt;code&gt;int?[9,9]&lt;/code&gt; grid, we can use a compact &lt;code&gt;BitArray&lt;/code&gt; to check for
+duplicates, or as I&amp;rsquo;ve just learned, a &lt;code&gt;BitVector32&lt;/code&gt; which is even more compact
+at 32 bits.&lt;/p&gt;</description></item><item><title>Is Subsequence</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/is-subsequence/</link><pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/is-subsequence/</guid><description>&lt;p&gt;Given two lowercase strings, &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;t&lt;/code&gt;, return &lt;code&gt;true&lt;/code&gt; if &lt;code&gt;s&lt;/code&gt; is a subsequence
+of &lt;code&gt;t&lt;/code&gt;, or &lt;code&gt;false&lt;/code&gt; otherwise. A subsequence of a string is a string that is
+formed from the original string by deleting some (can be none) of the characters
+while maintaining the relative positions of the remaining characters. &lt;span class="citation-ref"&gt;&lt;a href="#LCIsSubsequence"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;My solution was:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#00a8c8"&gt;public&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;class&lt;/span&gt; &lt;span style="color:#75af00"&gt;Solution&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;private&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;string&lt;/span&gt; &lt;span style="color:#111"&gt;_s&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;private&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;string&lt;/span&gt; &lt;span style="color:#111"&gt;_t&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;public&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;bool&lt;/span&gt; &lt;span style="color:#111"&gt;IsSubsequence&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#00a8c8"&gt;string&lt;/span&gt; &lt;span style="color:#111"&gt;s&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;string&lt;/span&gt; &lt;span style="color:#111"&gt;t&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;_s&lt;/span&gt; &lt;span style="color:#111"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;s&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;_t&lt;/span&gt; &lt;span style="color:#111"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;t&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;return&lt;/span&gt; &lt;span style="color:#111"&gt;IsReachable&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#111"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;private&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;bool&lt;/span&gt; &lt;span style="color:#111"&gt;IsReachable&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#00a8c8"&gt;int&lt;/span&gt; &lt;span style="color:#111"&gt;si&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;int&lt;/span&gt; &lt;span style="color:#111"&gt;ti&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;if&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#111"&gt;si&lt;/span&gt; &lt;span style="color:#111"&gt;==&lt;/span&gt; &lt;span style="color:#111"&gt;_s&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#111"&gt;Length&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;return&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;true&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;char&lt;/span&gt; &lt;span style="color:#111"&gt;c&lt;/span&gt; &lt;span style="color:#111"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;_s&lt;/span&gt;&lt;span style="color:#111"&gt;[&lt;/span&gt;&lt;span style="color:#111"&gt;si&lt;/span&gt;&lt;span style="color:#111"&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;for&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#00a8c8"&gt;int&lt;/span&gt; &lt;span style="color:#111"&gt;i&lt;/span&gt; &lt;span style="color:#111"&gt;=&lt;/span&gt; &lt;span style="color:#111"&gt;ti&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt; &lt;span style="color:#111"&gt;i&lt;/span&gt; &lt;span style="color:#111"&gt;&amp;lt;&lt;/span&gt; &lt;span style="color:#111"&gt;_t&lt;/span&gt;&lt;span style="color:#111"&gt;.&lt;/span&gt;&lt;span style="color:#111"&gt;Length&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt; &lt;span style="color:#111"&gt;i&lt;/span&gt;&lt;span style="color:#111"&gt;++)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;if&lt;/span&gt; &lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#111"&gt;_t&lt;/span&gt;&lt;span style="color:#111"&gt;[&lt;/span&gt;&lt;span style="color:#111"&gt;i&lt;/span&gt;&lt;span style="color:#111"&gt;]&lt;/span&gt; &lt;span style="color:#111"&gt;==&lt;/span&gt; &lt;span style="color:#111"&gt;c&lt;/span&gt;&lt;span style="color:#111"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;return&lt;/span&gt; &lt;span style="color:#111"&gt;IsReachable&lt;/span&gt;&lt;span style="color:#111"&gt;(&lt;/span&gt;&lt;span style="color:#111"&gt;si&lt;/span&gt; &lt;span style="color:#111"&gt;+&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#111"&gt;,&lt;/span&gt; &lt;span style="color:#111"&gt;i&lt;/span&gt; &lt;span style="color:#111"&gt;+&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#111"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#00a8c8"&gt;return&lt;/span&gt; &lt;span style="color:#00a8c8"&gt;false&lt;/span&gt;&lt;span style="color:#111"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#111"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&amp;hellip; where &lt;code&gt;_s&lt;/code&gt; and &lt;code&gt;_t&lt;/code&gt; avoid unnecessary string copies in the recursion tree.&lt;/p&gt;</description></item><item><title>Minimum Size Subarray Sum</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/min-size-subarray-sum/</link><pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/min-size-subarray-sum/</guid><description>&lt;p&gt;Given an array of positive integers &lt;code&gt;nums&lt;/code&gt; and a positive integer &lt;code&gt;target&lt;/code&gt;,
+return the minimal length of a subarray whose sum is greater than or equal to
+&lt;code&gt;target&lt;/code&gt;. Return &lt;code&gt;0&lt;/code&gt; if there is no such subarray. &lt;span class="citation-ref"&gt;&lt;a href="#LCMinSizeSubarraySum"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This reads like an \(^{n}P_{k}\) permutation problem, where we&amp;rsquo;re trying to
+minimize \(k\) under the constraint that the sum of elements is greater than
+&lt;code&gt;target&lt;/code&gt;. \(^{n}P_{k}\) can be implemented in a BFS manner, e.g.,&lt;/p&gt;</description></item><item><title>Remove Duplicates from Sorted Array</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/remove-duplicates-in-sorted-arrays/</link><pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/remove-duplicates-in-sorted-arrays/</guid><description>&lt;p&gt;Given a sorted integer array, remove some duplicates in-place such that each
+unique element appears at most twice. Maintain the relative order of the
+elements. If there are \(k\) elements after removing the duplicates, the first
+\(k\) elements of the array should hold the final result. &lt;span class="citation-ref"&gt;&lt;a href="#LCRemoveDuplicatesSortedII"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This a two-pointer problem, where we have a tortoise and a hare. Establishing an
+invariant that must be maintained throughout the array is useful to avoid
+tripping up on index arithmetic. In this case, let &lt;code&gt;tortoise&lt;/code&gt; be the index whose
+final value needs to be determined in the current iteration. &lt;code&gt;[..., tortoise-1]&lt;/code&gt;
+(inclusive) is the processed range that won&amp;rsquo;t change. &lt;span class="tag-ref"&gt;&lt;a href="https://www.curiosities.dev/tags/two-pointer-algorithm"&gt;#two-pointer-algorithm&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Rotate Array</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/rotate-array/</link><pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/rotate-array/</guid><description>&lt;p&gt;Given an integer array of length \(N\), rotate the array to the right by
+\(k\) steps, where \(k \ge 0\). &lt;span class="citation-ref"&gt;&lt;a href="#LCRotateArray"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Rotation is periodical, e.g., rotating a 5-item array 13 times yields the same
+result as rotating it \( 13 \mod 5 = 3\) times. So our effective \(k\) is
+\(k \mod N\). That \(k \ge 0\) saves us from 
+&lt;a href="https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/14-restroom-redoubt/14-restroom-redoubt/#WikiModulo"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ worrying about how the
+programming language implements modulo operations
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+.&lt;/p&gt;</description></item><item><title>Two Sum</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/two-sum/</link><pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/two-sum/</guid><description>&lt;p&gt;Given a 1-indexed array of integers that is sorted in non-decreasing order, find
+two numbers such that they add up to a &lt;code&gt;target&lt;/code&gt; number. &lt;span class="citation-ref"&gt;&lt;a href="#LCTwoSumII"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;At its core, the problem is a binary search one. Given \(a\), find \(b = t -
+a\) in the right side of &lt;code&gt;array&lt;/code&gt;. If \(a &amp;gt; \lfloor t / 2 \rfloor\), then
+there is no possible \(b\) to the right because \(b \ge a\) and \(2a &amp;gt;
+t\).&lt;/p&gt;</description></item><item><title>Majority Element in Array</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/majority-element-in-array/</link><pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/majority-element-in-array/</guid><description>&lt;p&gt;Given an array of size \(N\), return the element that appears more than
+\(\lfloor N/2 \rfloor\) times. Solve the problem in \(\mathcal{O}(N)\) time
+and \(\mathcal{O}(1)\) space. &lt;span class="citation-ref"&gt;&lt;a href="#LCMajorityElement"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Solving this in \(\mathcal{O}(N)\) time precludes sorting as that takes
+\(\mathcal{O}(N\ logN)\) time. Using \(\mathcal{O}(1)\) space precludes
+having a dictionary of frequencies. What is special about a frequency that is
+\(&amp;gt; \lfloor N/2 \rfloor\)? What kind of arithmetic would such a value
+survive?&lt;/p&gt;
+&lt;p&gt;In a sorted array, a number that appears \(&amp;gt; \lfloor N/2 \rfloor\) times is
+also the median. How can we compute the median of an unsorted array in
+\(\mathcal{O}(N)\) time and \(\mathcal{O}(1)\) space? Scratch that, the
+median is a more general problem as the frequency need not be \(&amp;gt; \lfloor N/2
+\rfloor\).&lt;/p&gt;</description></item><item><title>Merging Sorted Arrays</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/merging-sorted-arrays/</link><pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/merging-sorted-arrays/</guid><description>&lt;h2 id="merge-sorted-arrays-in-place-with-buffer"&gt;Merge Sorted Arrays In-Place With Buffer&lt;/h2&gt;
+&lt;p&gt;You are given two integer arrays &lt;code&gt;nums1&lt;/code&gt; and &lt;code&gt;nums2&lt;/code&gt;, sorted in non-decreasing
+order, and two integers &lt;code&gt;m&lt;/code&gt; and &lt;code&gt;n&lt;/code&gt; representing the number of elements in
+&lt;code&gt;nums1&lt;/code&gt; and &lt;code&gt;nums2&lt;/code&gt; respectively. &lt;code&gt;nums1&lt;/code&gt; has a length of \(m + n\). Merge
+&lt;code&gt;nums1&lt;/code&gt; and &lt;code&gt;nums2&lt;/code&gt; into &lt;code&gt;nums1&lt;/code&gt; in non-decreasing order. &lt;span class="citation-ref"&gt;&lt;a href="#LCMergeSortedArray"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We don&amp;rsquo;t want to use extra \(\mathcal{O}(m + n)\) space. Traversing &lt;code&gt;nums1&lt;/code&gt;
+and &lt;code&gt;nums2&lt;/code&gt; from left to right creates complications, e.g., given \([4, 6, 8,
+0, 0, 0]\) and \([3, 4, 5]\), the intermediate \([3, 6, 8, 0, 0, 0]\)
+raises questions on where to stash the \(4\). However, starting from \(m -
+1\) and \(n - 1\) leads to an elegant solution where we don&amp;rsquo;t need
+intermediate stashes.&lt;/p&gt;</description></item><item><title>Minimum Penalty for a Shop</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/minimum-penalty-for-a-shop/</link><pubDate>Sun, 21 Jul 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/minimum-penalty-for-a-shop/</guid><description>&lt;div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count='' is-main=''&gt;
  &lt;cite id='leetCode2483'&gt;
  
  Minimum Penalty for a Shop&lt;i&gt;.&lt;/i&gt;
@@ -105,9 +209,7 @@ such a walk, return &lt;code&gt;-1&lt;/code&gt;.&lt;/p&gt;</description></item><
 where &lt;code&gt;grid[r][c]&lt;/code&gt; represents the number of points at position \((r,
 c)\) on the matrix. Two robots are playing a game on this matrix.&lt;/p&gt;
 &lt;p&gt;Both robots initially start at \((0, 0)\) and want to reach \((1,
-n-1)\). Each robot may only move to the right or down.&lt;/p&gt;</description></item><item><title>Sorting and Searching</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/</link><pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/</guid><description>&lt;h2 id="order-statistics"&gt;Order Statistics&lt;/h2&gt;
-&lt;h3 id="k-th-smallest-element-in-sorted-matrix"&gt;K-th Smallest Element in Sorted Matrix&lt;/h3&gt;
-&lt;blockquote&gt;
+n-1)\). Each robot may only move to the right or down.&lt;/p&gt;</description></item><item><title>K-th Smallest Element in Sorted Matrix</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/kth-smallest-in-sorted-matrix/</link><pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/kth-smallest-in-sorted-matrix/</guid><description>&lt;blockquote&gt;
 &lt;p&gt;Given an \(N \times N\) matrix, where each of the rows and columns
 are sorted in ascending order, return the \(k^{th}\) smallest
 element in the matrix. The memory complexity must be better than

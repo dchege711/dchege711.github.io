@@ -1,0 +1,89 @@
+<!doctype html><html lang=en><head><title>Rotate Array | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Given an integer array of length \(N\), rotate the array to the right by
+\(k\) steps, where \(k \ge 0\). 
+Rotation is periodical, e.g., rotating a 5-item array 13 times yields the same
+result as rotating it \( 13 \mod 5 = 3\) times. So our effective \(k\) is
+\(k \mod N\). That \(k \ge 0\) saves us from 
+
+    worrying about how the
+programming language implements modulo operations
+     
+
+...."><meta property="og:title" content="Rotate Array"><meta property="og:description" content="Given an integer array of length \(N\), rotate the array to the right by
+\(k\) steps, where \(k \ge 0\). 
+Rotation is periodical, e.g., rotating a 5-item array 13 times yields the same
+result as rotating it \( 13 \mod 5 = 3\) times. So our effective \(k\) is
+\(k \mod N\). That \(k \ge 0\) saves us from 
+
+    worrying about how the
+programming language implements modulo operations
+     
+
+...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/rotate-array/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/>Strings and 1D Arrays</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/rotate-array/>Rotate Array</a></li></ul></nav><section><header><h1>Rotate Array</h1><p class=meta>Dated May 28, 2026;
+last modified on Thu, 28 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>Given an integer array of length \(N\), rotate the array to the right by
+\(k\) steps, where \(k \ge 0\). <span class=citation-ref><a href=#LCRotateArray></a></span></p><p>Rotation is periodical, e.g., rotating a 5-item array 13 times yields the same
+result as rotating it \( 13 \mod 5 = 3\) times. So our effective \(k\) is
+\(k \mod N\). That \(k \ge 0\) saves us from
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2024/AoC2024/14-restroom-redoubt/14-restroom-redoubt/#WikiModulo target=_blank rel=noopener>worrying about how the
+programming language implements modulo operations
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.</p><p>A brute-force algorithm would have \(\mathcal{O}(kN)\) swap operations, where
+we iterate over the array \(k\) times, and shift the items over once in each
+iteration. That said, we&rsquo;d use no extra space.</p><p>If we allow ourselves \(\mathcal{O}(k)\) extra space, then we can store the
+\(k\) elements that will be displaced, use \(N\) swap operations:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>Rotate</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>[]</span> <span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>k</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>N</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>k</span> <span style=color:#111>=</span> <span style=color:#111>k</span> <span style=color:#111>%</span> <span style=color:#111>N</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span><span style=color:#111>[]</span> <span style=color:#111>stash</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#00a8c8>int</span><span style=color:#111>[</span><span style=color:#111>k</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>offset</span> <span style=color:#111>=</span> <span style=color:#111>N</span> <span style=color:#111>-</span> <span style=color:#111>k</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#111>offset</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&lt;</span> <span style=color:#111>N</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>stash</span><span style=color:#111>[</span><span style=color:#111>i</span> <span style=color:#111>-</span> <span style=color:#111>offset</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#111>N</span> <span style=color:#111>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&gt;=</span> <span style=color:#111>k</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>--)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>i</span> <span style=color:#111>-</span> <span style=color:#111>k</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&lt;</span> <span style=color:#111>k</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>stash</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>How can we solve this problem in \(\mathcal{O}(1)\) extra space and less than
+\(\mathcal{O}(kN)\) swaps?</p><p>When dealing with these kinds of problems, think of ordering and subsequences.
+There are only so many primitives to work with. Sorting the array isn&rsquo;t useful
+here because we need to keep the relative order of the input array. This leaves
+us with reversing operations. Given \([1, 2, 3, 4, 5, 6, 7]\) and \(k = 3\),
+we want to get to \([5, 6, 7, 1, 2, 3, 4]\). Reversing the array gives us
+\([7, 6, 5, 4, 3, 2, 1]\), where the \([7, 6, 5]\) and \([4, 3, 2, 1]\)
+sub-arrays are in the proper positions, but the elements therein are not.
+Reversing the sub-arrays themselves gives us \([5, 6, 7, 1, 2, 3, 4]\). Viola!</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>Rotate</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>[]</span> <span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>k</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>N</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>k</span> <span style=color:#111>=</span> <span style=color:#111>k</span> <span style=color:#111>%</span> <span style=color:#111>N</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>k</span> <span style=color:#111>==</span> <span style=color:#ae81ff>0</span> <span style=color:#111>||</span> <span style=color:#111>N</span> <span style=color:#111>&lt;=</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#111>ReverseSection</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>N</span><span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>ReverseSection</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>k</span> <span style=color:#111>-</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>ReverseSection</span><span style=color:#111>(</span><span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#111>k</span><span style=color:#111>,</span> <span style=color:#111>N</span><span style=color:#111>-</span><span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>private</span> <span style=color:#00a8c8>void</span> <span style=color:#111>ReverseSection</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>[]</span> <span style=color:#111>nums</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>start</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>end</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>end</span> <span style=color:#111>&lt;</span> <span style=color:#111>start</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>InvalidOperationException</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;Violation: start({start}) &lt;= end({end})&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>temp</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&lt;=</span> <span style=color:#111>(</span><span style=color:#111>end</span> <span style=color:#111>-</span> <span style=color:#111>start</span><span style=color:#111>)</span> <span style=color:#111>/</span> <span style=color:#ae81ff>2</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>temp</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>start</span> <span style=color:#111>+</span> <span style=color:#111>i</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>start</span> <span style=color:#111>+</span> <span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>end</span> <span style=color:#111>-</span> <span style=color:#111>i</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>nums</span><span style=color:#111>[</span><span style=color:#111>end</span> <span style=color:#111>-</span> <span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>temp</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCRotateArray>Rotate Array - LeetCode<i>.</i>
+</cite><a href="https://leetcode.com/problems/rotate-array/description/?envType=study-plan-v2&amp;envId=top-interview-150" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 28, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+leetcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/min-size-subarray-sum/>&#171; Minimum Size Subarray Sum</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

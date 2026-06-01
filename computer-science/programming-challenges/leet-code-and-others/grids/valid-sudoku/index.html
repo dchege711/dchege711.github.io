@@ -1,0 +1,151 @@
+<!doctype html><html lang=en><head><title>Valid Sudoku | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Determine if a \(9 \times 9\) Sudoku board is valid. A Sudoku board has nine
+\(3 \times 3\) sub-boxes. Validate the filled cells such that each row,
+column, and sub-box contain the digits \([1, &mldr;, 9]\) without repetition. 
+
+
+
+
+    Unintuitive to me that given a char c, we need c - '0' to convert it into an
+int. Convert.ToInt32('4') gives us 52, not 4. 
+
+
+
+
+I don&rsquo;t think we can do better than validating all 9 rows, 9 columns, and 9
+sub-boxes. There&rsquo;s no repeated work that can be optimized. At its core, this
+problem is about traversing the grid in different ways. There is room for
+improvement in how we handle each check. From the char[][] grid, we can use a
+HashSet<char> to check for duplicates (ignoring c == '.'). If we convert the
+char[][] to an int?[9,9] grid, we can use a compact BitArray to check for
+duplicates, or as I&rsquo;ve just learned, a BitVector32 which is even more compact
+at 32 bits...."><meta property="og:title" content="Valid Sudoku"><meta property="og:description" content="Determine if a \(9 \times 9\) Sudoku board is valid. A Sudoku board has nine
+\(3 \times 3\) sub-boxes. Validate the filled cells such that each row,
+column, and sub-box contain the digits \([1, &mldr;, 9]\) without repetition. 
+
+
+
+
+    Unintuitive to me that given a char c, we need c - '0' to convert it into an
+int. Convert.ToInt32('4') gives us 52, not 4. 
+
+
+
+
+I don&rsquo;t think we can do better than validating all 9 rows, 9 columns, and 9
+sub-boxes. There&rsquo;s no repeated work that can be optimized. At its core, this
+problem is about traversing the grid in different ways. There is room for
+improvement in how we handle each check. From the char[][] grid, we can use a
+HashSet<char> to check for duplicates (ignoring c == '.'). If we convert the
+char[][] to an int?[9,9] grid, we can use a compact BitArray to check for
+duplicates, or as I&rsquo;ve just learned, a BitVector32 which is even more compact
+at 32 bits...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/grids/valid-sudoku/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/grids/>Grids</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/grids/valid-sudoku/>Valid Sudoku</a></li></ul></nav><section><header><h1>Valid Sudoku</h1><p class=meta>Dated May 29, 2026;
+last modified on Fri, 29 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>Determine if a \(9 \times 9\) Sudoku board is valid. A Sudoku board has nine
+\(3 \times 3\) sub-boxes. Validate the filled cells such that each row,
+column, and sub-box contain the digits \([1, &mldr;, 9]\) without repetition. <span class=citation-ref><a href=#LCValidSudoku></a></span></p><div class=comment-holder><div class=comment><p>Unintuitive to me that given a <code>char c</code>, we need <code>c - '0'</code> to convert it into an
+<code>int</code>. <code>Convert.ToInt32('4')</code> gives us <code>52</code>, not <code>4</code>. <span class=citation-ref><a href=#Convert.ToInt32></a></span></p></div></div><p>I don&rsquo;t think we can do better than validating all 9 rows, 9 columns, and 9
+sub-boxes. There&rsquo;s no repeated work that can be optimized. At its core, this
+problem is about traversing the grid in different ways. There is room for
+improvement in how we handle each check. From the <code>char[][]</code> grid, we can use a
+<code>HashSet&lt;char></code> to check for duplicates (ignoring <code>c == '.'</code>). If we convert the
+<code>char[][]</code> to an <code>int?[9,9]</code> grid, we can use a compact <code>BitArray</code> to check for
+duplicates, or as I&rsquo;ve just learned, a <code>BitVector32</code> which is even more compact
+at 32 bits.</p><details><summary>Implementation Using <code>BitVector32</code></summary><div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>using</span> <span style=color:#111>System.Collections.Specialized</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>Solution</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>int</span> <span style=color:#111>BOARD_LENGTH</span> <span style=color:#111>=</span> <span style=color:#ae81ff>9</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>int</span> <span style=color:#111>NUM_SUBBOXES_PER_LENGTH</span> <span style=color:#111>=</span> <span style=color:#ae81ff>3</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>int</span> <span style=color:#111>SUBBOX_LENGTH</span> <span style=color:#111>=</span> <span style=color:#111>BOARD_LENGTH</span> <span style=color:#111>/</span> <span style=color:#111>NUM_SUBBOXES_PER_LENGTH</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>int</span> <span style=color:#111>VALID_CHECK_BIT_MASK</span> <span style=color:#111>=</span> <span style=color:#ae81ff>1</span> <span style=color:#111>&lt;&lt;</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsValidSudoku</span><span style=color:#111>(</span><span style=color:#00a8c8>char</span><span style=color:#111>[][]</span> <span style=color:#111>board</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>board</span><span style=color:#111>.</span><span style=color:#111>Length</span> <span style=color:#111>!=</span> <span style=color:#111>BOARD_LENGTH</span> <span style=color:#111>||</span> <span style=color:#111>board</span><span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#111>].</span><span style=color:#111>Length</span> <span style=color:#111>!=</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>ArgumentException</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;Board is not a square of length {BOARD_LENGTH}&#34;</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>int?</span><span style=color:#111>[,]</span> <span style=color:#111>sudokuBoard</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#00a8c8>int?</span><span style=color:#111>[</span><span style=color:#111>BOARD_LENGTH</span><span style=color:#111>,</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>r</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>c</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>int</span> <span style=color:#111>x</span> <span style=color:#111>=</span> <span style=color:#111>board</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>][</span><span style=color:#111>c</span><span style=color:#111>]</span> <span style=color:#111>-</span> <span style=color:#d88200>&#39;0&#39;</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>sudokuBoard</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#111>(</span><span style=color:#111>x</span> <span style=color:#111>&gt;=</span> <span style=color:#ae81ff>1</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>x</span> <span style=color:#111>&lt;=</span> <span style=color:#ae81ff>9</span><span style=color:#111>)</span> <span style=color:#111>?</span> <span style=color:#111>x</span> <span style=color:#111>:</span> <span style=color:#00a8c8>null</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Validate columns</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>c</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>BitVector32</span> <span style=color:#111>seenValues</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>BitVector32</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>r</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>seenValues</span> <span style=color:#111>=</span> <span style=color:#111>CheckIfTileIsValid</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>,</span> <span style=color:#111>seenValues</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>VALID_CHECK_BIT_MASK</span><span style=color:#111>])</span>
+</span></span><span style=display:flex><span>                    <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Validate rows</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>r</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>BitVector32</span> <span style=color:#111>seenValues</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>BitVector32</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>BOARD_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>c</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>seenValues</span> <span style=color:#111>=</span> <span style=color:#111>CheckIfTileIsValid</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>,</span> <span style=color:#111>seenValues</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>VALID_CHECK_BIT_MASK</span><span style=color:#111>])</span>
+</span></span><span style=display:flex><span>                    <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Validate 3x3 sub-boxes</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>br</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>br</span> <span style=color:#111>&lt;</span> <span style=color:#111>NUM_SUBBOXES_PER_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>br</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>bc</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>bc</span> <span style=color:#111>&lt;</span> <span style=color:#111>NUM_SUBBOXES_PER_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>bc</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>BitVector32</span> <span style=color:#111>seenValues</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>BitVector32</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#111>=</span> <span style=color:#111>br</span> <span style=color:#111>*</span> <span style=color:#111>SUBBOX_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#111>&lt;</span> <span style=color:#111>(</span><span style=color:#111>br</span> <span style=color:#111>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>*</span> <span style=color:#111>SUBBOX_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>r</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                    <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#111>bc</span> <span style=color:#111>*</span> <span style=color:#111>SUBBOX_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>c</span> <span style=color:#111>&lt;</span> <span style=color:#111>(</span><span style=color:#111>bc</span> <span style=color:#111>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>*</span> <span style=color:#111>SUBBOX_LENGTH</span><span style=color:#111>;</span> <span style=color:#111>c</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>                    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                        <span style=color:#111>seenValues</span> <span style=color:#111>=</span> <span style=color:#111>CheckIfTileIsValid</span><span style=color:#111>(</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>,</span> <span style=color:#111>seenValues</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>                        <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>VALID_CHECK_BIT_MASK</span><span style=color:#111>])</span>
+</span></span><span style=display:flex><span>                            <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#111>BitVector32</span> <span style=color:#111>CheckIfTileIsValid</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>c</span><span style=color:#111>,</span> <span style=color:#111>BitVector32</span> <span style=color:#111>seenValues</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>sudokuBoard</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>c</span><span style=color:#111>]</span> <span style=color:#00a8c8>is</span> <span style=color:#00a8c8>int</span> <span style=color:#111>x</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>int</span> <span style=color:#111>mask</span> <span style=color:#111>=</span> <span style=color:#ae81ff>1</span> <span style=color:#111>&lt;&lt;</span> <span style=color:#111>x</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>mask</span><span style=color:#111>])</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>                    <span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>VALID_CHECK_BIT_MASK</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#00a8c8>return</span> <span style=color:#111>seenValues</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>                <span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>mask</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>            <span style=color:#111>seenValues</span><span style=color:#111>[</span><span style=color:#111>VALID_CHECK_BIT_MASK</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#00a8c8>return</span> <span style=color:#111>seenValues</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div></div></details><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCValidSudoku>Valid Sudoku - LeetCode<i>.</i>
+</cite><a href="https://leetcode.com/problems/valid-sudoku/description/?envType=study-plan-v2&amp;envId=top-interview-150" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 29, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Convert.ToInt32>Convert.ToInt32 Method (System) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.convert.toint32?view=net-10.0#system-convert-toint32%28system-char%29" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 29, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/learn.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+learn.microsoft.com
+</a><a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+leetcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/grids/shortest-path-in-grid-with-obstacles-elimination/>&#171; Shortest Path in a Grid w/ Obstacles Elimination</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

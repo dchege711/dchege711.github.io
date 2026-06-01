@@ -1,0 +1,151 @@
+<!doctype html><html lang=en><head><title>Is Subsequence | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Given two lowercase strings, s and t, return true if s is a subsequence
+of t, or false otherwise. A subsequence of a string is a string that is
+formed from the original string by deleting some (can be none) of the characters
+while maintaining the relative positions of the remaining characters. 
+My solution was:
+public class Solution {
+  private string _s;
+  private string _t;
+
+  public bool IsSubsequence(string s, string t) {
+    _s = s;
+    _t = t;
+    return IsReachable(0, 0);
+  }
+
+  private bool IsReachable(int si, int ti)
+  {
+    if (si == _s.Length)
+      return true;
+
+    char c = _s[si];
+    for (int i = ti; i < _t.Length; i++)
+    {
+      if (_t[i] == c)
+        return IsReachable(si + 1, i + 1);
+    }
+    return false;
+  }
+}
+&mldr; where _s and _t avoid unnecessary string copies in the recursion tree...."><meta property="og:title" content="Is Subsequence"><meta property="og:description" content="Given two lowercase strings, s and t, return true if s is a subsequence
+of t, or false otherwise. A subsequence of a string is a string that is
+formed from the original string by deleting some (can be none) of the characters
+while maintaining the relative positions of the remaining characters. 
+My solution was:
+public class Solution {
+  private string _s;
+  private string _t;
+
+  public bool IsSubsequence(string s, string t) {
+    _s = s;
+    _t = t;
+    return IsReachable(0, 0);
+  }
+
+  private bool IsReachable(int si, int ti)
+  {
+    if (si == _s.Length)
+      return true;
+
+    char c = _s[si];
+    for (int i = ti; i < _t.Length; i++)
+    {
+      if (_t[i] == c)
+        return IsReachable(si + 1, i + 1);
+    }
+    return false;
+  }
+}
+&mldr; where _s and _t avoid unnecessary string copies in the recursion tree...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/is-subsequence/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/>Strings and 1D Arrays</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/is-subsequence/>Is Subsequence</a></li></ul></nav><section><header><h1>Is Subsequence</h1><p class=meta>Dated May 28, 2026;
+last modified on Thu, 28 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>Given two lowercase strings, <code>s</code> and <code>t</code>, return <code>true</code> if <code>s</code> is a subsequence
+of <code>t</code>, or <code>false</code> otherwise. A subsequence of a string is a string that is
+formed from the original string by deleting some (can be none) of the characters
+while maintaining the relative positions of the remaining characters. <span class=citation-ref><a href=#LCIsSubsequence></a></span></p><p>My solution was:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>Solution</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>string</span> <span style=color:#111>_s</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>string</span> <span style=color:#111>_t</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsSubsequence</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#00a8c8>string</span> <span style=color:#111>t</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>_s</span> <span style=color:#111>=</span> <span style=color:#111>s</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>_t</span> <span style=color:#111>=</span> <span style=color:#111>t</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>IsReachable</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsReachable</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>si</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>ti</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>si</span> <span style=color:#111>==</span> <span style=color:#111>_s</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>char</span> <span style=color:#111>c</span> <span style=color:#111>=</span> <span style=color:#111>_s</span><span style=color:#111>[</span><span style=color:#111>si</span><span style=color:#111>];</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#111>ti</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&lt;</span> <span style=color:#111>_t</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>_t</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#111>==</span> <span style=color:#111>c</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>IsReachable</span><span style=color:#111>(</span><span style=color:#111>si</span> <span style=color:#111>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>i</span> <span style=color:#111>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>&mldr; where <code>_s</code> and <code>_t</code> avoid unnecessary string copies in the recursion tree.</p><div class=comment-holder><div class=comment><p>C# supports local functions, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsSubsequence</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#00a8c8>string</span> <span style=color:#111>t</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#111>IsReachable</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>bool</span> <span style=color:#111>IsReachable</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>si</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span> <span style=color:#111>ti</span><span style=color:#111>)</span> <span style=color:#111>{</span> <span style=color:#111>...</span> <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>They are efficient for writing nested functions that can only be called from the
+context of another method. Local functions are defined at compile time. <span class=citation-ref><a href=#DotNetLocalFunctions></a></span></p></div></div><p><span class=citation-ref><a href=#LCIsSubsequence6743977></a></span>&rsquo;s iterative solution is much cleaner. Trying
+to implement it myself:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsSubsequence</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#00a8c8>string</span> <span style=color:#111>t</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>si</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>ti</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#111>si</span> <span style=color:#111>&lt;</span> <span style=color:#111>s</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>bool</span> <span style=color:#111>foundNextChar</span> <span style=color:#111>=</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#111>=</span> <span style=color:#111>ti</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#111>&lt;</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span> <span style=color:#111>i</span><span style=color:#111>++)</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>t</span><span style=color:#111>[</span><span style=color:#111>i</span><span style=color:#111>]</span> <span style=color:#111>==</span> <span style=color:#111>s</span><span style=color:#111>[</span><span style=color:#111>si</span><span style=color:#111>])</span>
+</span></span><span style=display:flex><span>      <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>ti</span> <span style=color:#111>=</span> <span style=color:#111>i</span> <span style=color:#111>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>si</span> <span style=color:#111>+=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#111>foundNextChar</span> <span style=color:#111>=</span> <span style=color:#00a8c8>true</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#00a8c8>break</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>      <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>foundNextChar</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>false</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#111>si</span> <span style=color:#111>==</span> <span style=color:#111>s</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>&mldr; but I still have <code>si</code>, <code>ti</code>, and <code>i</code> lingering over. Why can I not come up
+with the simpler algorithm from <span class=citation-ref><a href=#LCIsSubsequence6743977></a></span>?</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>bool</span> <span style=color:#111>IsSubsequence</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>s</span><span style=color:#111>,</span> <span style=color:#00a8c8>string</span> <span style=color:#111>t</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>si</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#111>ti</span> <span style=color:#111>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#111>si</span> <span style=color:#111>&lt;</span> <span style=color:#111>s</span><span style=color:#111>.</span><span style=color:#111>Length</span> <span style=color:#111>&amp;&amp;</span> <span style=color:#111>ti</span> <span style=color:#111>&lt;</span> <span style=color:#111>t</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>s</span><span style=color:#111>[</span><span style=color:#111>si</span><span style=color:#111>]</span> <span style=color:#111>==</span> <span style=color:#111>t</span><span style=color:#111>[</span><span style=color:#111>ti</span><span style=color:#111>])</span>
+</span></span><span style=display:flex><span>      <span style=color:#111>si</span> <span style=color:#111>+=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#111>ti</span> <span style=color:#111>+=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#111>si</span> <span style=color:#111>==</span> <span style=color:#111>s</span><span style=color:#111>.</span><span style=color:#111>Length</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>I think I over-anchored too early on complicating this problem. I was already
+thinking that I need to consider every possible starting point of the
+subsequence. However, when looking for subsequence <code>ac</code> in <code>a1b2a1c</code>:</p><table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody><tr><td>a</td><td>1</td><td>b</td><td>2</td><td>a</td><td>1</td><td>c</td></tr></tbody></table><p>&mldr; there is no point in considering <code>a</code> at index \(4\) when we&rsquo;ve already
+satisfied <code>a</code> from index \(0\).</p><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCIsSubsequence>Is Subsequence - LeetCode<i>.</i>
+</cite><a href="https://leetcode.com/problems/is-subsequence/description/?envType=study-plan-v2&amp;envId=top-interview-150" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 28, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCIsSubsequence6743977>Is Subsequence - LeetCode > Two Pointer Solution<i>.</i>
+</cite><a href=https://leetcode.com/problems/is-subsequence/solutions/6743977/video-two-pointer-solution-by-niits-7igj target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 28, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=DotNetLocalFunctions>Local functions - C# | Microsoft Learn<i>.</i>
+</cite><a href=https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 28, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/learn.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+learn.microsoft.com
+</a><a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+leetcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/minimum-penalty-for-a-shop/>&#171; Minimum Penalty for a Shop</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/strings-and-1d-arrays/min-size-subarray-sum/>Minimum Size Subarray Sum &#187;</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

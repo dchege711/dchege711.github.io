@@ -1,0 +1,42 @@
+<!doctype html><html lang=en><head><title>Merging Sorted Arrays | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Merge Sorted Arrays In-Place With Buffer
+You are given two integer arrays nums1 and nums2, sorted in non-decreasing
+order, and two integers m and n representing the number of elements in
+nums1 and nums2 respectively. nums1 has a length of \(m + n\). Merge
+nums1 and nums2 into nums1 in non-decreasing order. 
+We don&rsquo;t want to use extra \(\mathcal{O}(m + n)\) space. Traversing nums1
+and nums2 from left to right creates complications, e.g., given \([4, 6, 8,
+0, 0, 0]\) and \([3, 4, 5]\), the intermediate \([3, 6, 8, 0, 0, 0]\)
+raises questions on where to stash the \(4\). However, starting from \(m -
+1\) and \(n - 1\) leads to an elegant solution where we don&rsquo;t need
+intermediate stashes...."><meta property="og:title" content="Merging Sorted Arrays"><meta property="og:description" content="Merge Sorted Arrays In-Place With Buffer
+You are given two integer arrays nums1 and nums2, sorted in non-decreasing
+order, and two integers m and n representing the number of elements in
+nums1 and nums2 respectively. nums1 has a length of \(m + n\). Merge
+nums1 and nums2 into nums1 in non-decreasing order. 
+We don&rsquo;t want to use extra \(\mathcal{O}(m + n)\) space. Traversing nums1
+and nums2 from left to right creates complications, e.g., given \([4, 6, 8,
+0, 0, 0]\) and \([3, 4, 5]\), the intermediate \([3, 6, 8, 0, 0, 0]\)
+raises questions on where to stash the \(4\). However, starting from \(m -
+1\) and \(n - 1\) leads to an elegant solution where we don&rsquo;t need
+intermediate stashes...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/merging-sorted-arrays/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/>Sorting and Searching</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/merging-sorted-arrays/>Merging Sorted Arrays</a></li></ul></nav><section><header><h1>Merging Sorted Arrays</h1><p class=meta>Dated May 27, 2026;
+last modified on Wed, 27 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#merge-sorted-arrays-in-place-with-buffer>Merge Sorted Arrays In-Place With Buffer</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=merge-sorted-arrays-in-place-with-buffer>Merge Sorted Arrays In-Place With Buffer</h2><p>You are given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in non-decreasing
+order, and two integers <code>m</code> and <code>n</code> representing the number of elements in
+<code>nums1</code> and <code>nums2</code> respectively. <code>nums1</code> has a length of \(m + n\). Merge
+<code>nums1</code> and <code>nums2</code> into <code>nums1</code> in non-decreasing order. <span class=citation-ref><a href=#LCMergeSortedArray></a></span></p><p>We don&rsquo;t want to use extra \(\mathcal{O}(m + n)\) space. Traversing <code>nums1</code>
+and <code>nums2</code> from left to right creates complications, e.g., given \([4, 6, 8,
+0, 0, 0]\) and \([3, 4, 5]\), the intermediate \([3, 6, 8, 0, 0, 0]\)
+raises questions on where to stash the \(4\). However, starting from \(m -
+1\) and \(n - 1\) leads to an elegant solution where we don&rsquo;t need
+intermediate stashes.</p><div class=comment-holder><div class=comment><p>Think of how the direction of traversal can help. There are only so many ways of
+traversing a sorted data structure &ndash; think through the possible options before
+committing to a path forward.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCMergeSortedArray>Merge Sorted Array - LeetCode<i>.</i>
+</cite><a href="https://leetcode.com/problems/merge-sorted-array/description/?envType=study-plan-v2&amp;envId=top-interview-150" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 27, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+leetcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/majority-element-in-array/>&#171; Majority Element in Array</a>
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/remove-duplicates-in-sorted-arrays/>Remove Duplicates from Sorted Array &#187;</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

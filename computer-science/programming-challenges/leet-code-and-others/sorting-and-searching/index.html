@@ -1,34 +1,50 @@
-<!doctype html><html lang=en><head><title>Sorting and Searching | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Order Statistics
-K-th Smallest Element in Sorted Matrix
-
-Given an \(N \times N\) matrix, where each of the rows and columns
-are sorted in ascending order, return the \(k^{th}\) smallest
-element in the matrix. The memory complexity must be better than
-\(O(N^2)\).
-
-It&rsquo;s not guaranteed that matrix[r][c] > matrix[r-1][c], so we can&rsquo;t
-compute the row (and similarly, the column) in which the \(k^{th}\)
-smallest element is in.
-Using a priority queue that holds the \(K\) smallest elements does not
-work because the memory usage is \(O(K)\), where \(K\) can be any
-value in \([1, N^2]\). Furthermore, that doesn&rsquo;t take into account
-that the rows and columns are already sorted...."><meta property="og:title" content="Sorting and Searching"><meta property="og:description" content="Order Statistics
-K-th Smallest Element in Sorted Matrix
-
-Given an \(N \times N\) matrix, where each of the rows and columns
-are sorted in ascending order, return the \(k^{th}\) smallest
-element in the matrix. The memory complexity must be better than
-\(O(N^2)\).
-
-It&rsquo;s not guaranteed that matrix[r][c] > matrix[r-1][c], so we can&rsquo;t
-compute the row (and similarly, the column) in which the \(k^{th}\)
-smallest element is in.
-Using a priority queue that holds the \(K\) smallest elements does not
-work because the memory usage is \(O(K)\), where \(K\) can be any
-value in \([1, N^2]\). Furthermore, that doesn&rsquo;t take into account
-that the rows and columns are already sorted...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
-<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/>Sorting and Searching</a></li></ul></nav><section><header><h1>Sorting and Searching</h1><p class=meta>Dated Aug 1, 2022;
-last modified on Mon, 01 Aug 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#order-statistics>Order Statistics</a><ul><li><a href=#k-th-smallest-element-in-sorted-matrix>K-th Smallest Element in Sorted Matrix</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=order-statistics>Order Statistics</h2><h3 id=k-th-smallest-element-in-sorted-matrix>K-th Smallest Element in Sorted Matrix</h3><blockquote><p>Given an \(N \times N\) matrix, where each of the rows and columns
+<!doctype html><html lang=en><head><title>Sorting and Searching | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content><meta property="og:title" content="Sorting and Searching"><meta property="og:description" content><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/>Sorting and Searching</a></li></ul></nav><main><article><header><h1>Sorting and Searching</h1><p class=meta>Dated Aug 1, 2022;
+last modified on Mon, 01 Aug 2022</p></header></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage()>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>May 28, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/two-sum/>Two Sum</a>
+<span class=meta>2 min; updated May 28, 2026
+<button id=6d3cd75145eb9b4f240869b72bf23ebb-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=6d3cd75145eb9b4f240869b72bf23ebb-summary style=display:none><p>Given a 1-indexed array of integers that is sorted in non-decreasing order, find
+two numbers such that they add up to a <code>target</code> number. <span class=citation-ref><a href=#LCTwoSumII></a></span></p><p>At its core, the problem is a binary search one. Given \(a\), find \(b = t -
+a\) in the right side of <code>array</code>. If \(a > \lfloor t / 2 \rfloor\), then
+there is no possible \(b\) to the right because \(b \ge a\) and \(2a >
+t\).</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>May 28, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/remove-duplicates-in-sorted-arrays/>Remove Duplicates from Sorted Array</a>
+<span class=meta>1 min; updated May 28, 2026
+<button id=46e889e09a12db6274d1587928159eb4-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=46e889e09a12db6274d1587928159eb4-summary style=display:none><p>Given a sorted integer array, remove some duplicates in-place such that each
+unique element appears at most twice. Maintain the relative order of the
+elements. If there are \(k\) elements after removing the duplicates, the first
+\(k\) elements of the array should hold the final result. <span class=citation-ref><a href=#LCRemoveDuplicatesSortedII></a></span></p><p>This a two-pointer problem, where we have a tortoise and a hare. Establishing an
+invariant that must be maintained throughout the array is useful to avoid
+tripping up on index arithmetic. In this case, let <code>tortoise</code> be the index whose
+final value needs to be determined in the current iteration. <code>[..., tortoise-1]</code>
+(inclusive) is the processed range that won&rsquo;t change. <span class=tag-ref><a href=/tags/two-pointer-algorithm>#two-pointer-algorithm</a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>May 27, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/merging-sorted-arrays/>Merging Sorted Arrays</a>
+<span class=meta>1 min; updated May 27, 2026
+<button id=3c7f8f8a0138cfeb9512725ad00068e6-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=3c7f8f8a0138cfeb9512725ad00068e6-summary style=display:none><h2 id=merge-sorted-arrays-in-place-with-buffer>Merge Sorted Arrays In-Place With Buffer</h2><p>You are given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in non-decreasing
+order, and two integers <code>m</code> and <code>n</code> representing the number of elements in
+<code>nums1</code> and <code>nums2</code> respectively. <code>nums1</code> has a length of \(m + n\). Merge
+<code>nums1</code> and <code>nums2</code> into <code>nums1</code> in non-decreasing order. <span class=citation-ref><a href=#LCMergeSortedArray></a></span></p><p>We don&rsquo;t want to use extra \(\mathcal{O}(m + n)\) space. Traversing <code>nums1</code>
+and <code>nums2</code> from left to right creates complications, e.g., given \([4, 6, 8,
+0, 0, 0]\) and \([3, 4, 5]\), the intermediate \([3, 6, 8, 0, 0, 0]\)
+raises questions on where to stash the \(4\). However, starting from \(m -
+1\) and \(n - 1\) leads to an elegant solution where we don&rsquo;t need
+intermediate stashes.</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>May 27, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/majority-element-in-array/>Majority Element in Array</a>
+<span class=meta>3 min; updated May 27, 2026
+<button id=40396bd840f380b03cc47e77cec0c985-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=40396bd840f380b03cc47e77cec0c985-summary style=display:none><p>Given an array of size \(N\), return the element that appears more than
+\(\lfloor N/2 \rfloor\) times. Solve the problem in \(\mathcal{O}(N)\) time
+and \(\mathcal{O}(1)\) space. <span class=citation-ref><a href=#LCMajorityElement></a></span></p><p>Solving this in \(\mathcal{O}(N)\) time precludes sorting as that takes
+\(\mathcal{O}(N\ logN)\) time. Using \(\mathcal{O}(1)\) space precludes
+having a dictionary of frequencies. What is special about a frequency that is
+\(> \lfloor N/2 \rfloor\)? What kind of arithmetic would such a value
+survive?</p><p>In a sorted array, a number that appears \(> \lfloor N/2 \rfloor\) times is
+also the median. How can we compute the median of an unsorted array in
+\(\mathcal{O}(N)\) time and \(\mathcal{O}(1)\) space? Scratch that, the
+median is a more general problem as the frequency need not be \(> \lfloor N/2
+\rfloor\).</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Aug 1, 2022</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/kth-smallest-in-sorted-matrix/>K-th Smallest Element in Sorted Matrix</a>
+<span class=meta>5 min; updated Aug 1, 2022
+<button id=224b862e0cf90a6eda644b15c42a1319-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=224b862e0cf90a6eda644b15c42a1319-summary style=display:none><blockquote><p>Given an \(N \times N\) matrix, where each of the rows and columns
 are sorted in ascending order, return the \(k^{th}\) smallest
 element in the matrix. The memory complexity must be better than
 \(O(N^2)\).</p></blockquote><p>It&rsquo;s not guaranteed that <code>matrix[r][c] > matrix[r-1][c]</code>, so we can&rsquo;t
@@ -36,117 +52,5 @@ compute the row (and similarly, the column) in which the \(k^{th}\)
 smallest element is in.</p><p>Using a priority queue that holds the \(K\) smallest elements does not
 work because the memory usage is \(O(K)\), where \(K\) can be any
 value in \([1, N^2]\). Furthermore, that doesn&rsquo;t take into account
-that the rows and columns are already sorted.</p><p>The fact that the rows and columns are sorted is reminiscent of merge
-sort which deals with partially sorted arrays. But the fact that the
-\(k^{th}\) smallest element may be in the last row/column implies that
-we need to process all rows/columns, and therefore potentially use
-\(O(N^2)\) space, which is not allowed.</p><p>Maybe we do need to compute the row and column that contains the
-\(k^{th}\) smallest element? Say we want \(k = 8\) for the matrix
-below.</p><p>$$
-\begin{bmatrix}
-1 & 5 & 9 \\
-10 & 11 & 13 \\
-12 & 13 & 15
-\end{bmatrix}
-$$</p><p>\([1, 5, 9] \cup [10, 12]\) can give us at most the 5th smallest
-element. Also considering \([11, 13] \cup [13]\), we can get the \(5
-+ 3 = 8\) smallest element. Computing the 3rd smallest element in
-\([11, 13] \cup [13]\) gives \(13\), which is the expected answer.
-But does this technique always work? Well, it fails for \(k = 5\);
-it&rsquo;d wrongly compute \(12\) from \([1, 5, 9] \cup [10, 12]\); the
-5th smallest element is \(11\).</p><div class=comment-holder><div class=comment><p>How does this question have 422k accepted solutions out of 698k
-submitted solutions? The numbers suggest that this is something that a
-lot of people solve. What am I missing? It&rsquo;s not straightforward to
-me&mldr;</p></div></div><p>Can this be modeled as a DFS problem? Starting at <code>matrix[0][0]</code>, we
-move either right or down, preferring the smaller value first, and count
-the elements visited so far. Once we have a path of length \(k\), we
-store that as our best answer, and backtrack, trying to find another
-path of length \(k\), but with a lower number. I think this should
-work. But DFS needs to keep track of <code>visited</code>, and this can use space
-up to \(O(N^2)\)&mldr; Maybe we can reason out which elements have been
-visited given that we&rsquo;re only moving right/down, and always to the
-smaller number first (and if there&rsquo;s a tie, to the right neighbor
-first)? Maybe the return value of the DFS can be right/down, and if its
-down, it&rsquo;s time to backtrack.</p><div class=comment-holder><div class=comment><p>Coming from Python, I&rsquo;m quite surprised that C++&rsquo;s
-<code>std::numeric_limits&lt;int>::infinity()</code> evaluates to <code>0</code>.</p><p><code>std::numeric_limits&lt;T>::has_infinity()</code> is <code>false</code> for <code>int</code>, and
-&ldquo;usually <code>true</code> just for <code>float</code>, <code>double</code> and <code>long double</code>. Only types
-capable of representing positive infinity as a distinct special value
-have a meaningful result for <code>infinity()</code>. <span class=citation-ref><a href=#cppReferenceInfinity></a></span></p></div></div><p>DFS as described above doesn&rsquo;t work. While \(1 \le k \le N^2\), the
-longest path from going down/right is \(N + N - 1 = 2N - 1 \le N^2,
-\ \ \forall N \ge 1\).</p><div class=comment-holder><div class=comment><p>Only after writing up
-<a href=https://leetcode.com/submissions/detail/763075069/ target=_blank rel=noopener>a DFS
-solution
-<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>did the
-inadequacy above come to me. I need to get better at noting when an
-algorithm won&rsquo;t work.</p></div></div><p>What about modeling it as a BFS problem? At each BFS step, we can expand
-the covered nodes. Unlike DFS, this technique can cover the whole grid.
-What is the max space usage at a BFS round? In general, the max
-expansion step occurs when a node is connected to all other nodes, and
-that&rsquo;s \(O(V)\), which is \(O(N^2)\) in our case. However, in the
-problem&rsquo;s matrix, each element has only two neighbors (right & down),
-and so the \(O(N^2)\) wouldn&rsquo;t happen. In the max case, every element
-popped from the BFS queue leads to two elements, so at most, we&rsquo;d have
-\(2N^2 / 3\) elements in the new BFS queue, and this is still
-\(O(N^2)\). Hmm&mldr; Doesn&rsquo;t hurt to try? Ended up using a PQ, and the
-solution&rsquo;s runtime is in the 38th percentile, and the memory efficiency
-is in the 59th percentile.</p><p><span class=citation-ref><a href=#hiepitLCKthSmallestElemInSortedMatrix></a></span>has a MinPQ-based
-solution that takes into account that the rows are sorted.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span><span style=color:#111>;</span> <span style=color:#111>r</span> <span style=color:#f92672>&lt;</span> <span style=color:#111>min</span><span style=color:#111>(</span><span style=color:#111>n</span><span style=color:#111>,</span> <span style=color:#111>k</span><span style=color:#111>);</span> <span style=color:#f92672>++</span><span style=color:#111>r</span><span style=color:#111>)</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>min_pq</span><span style=color:#111>.</span><span style=color:#111>push</span><span style=color:#111>({</span><span style=color:#111>matrix</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>][</span><span style=color:#ae81ff>0</span><span style=color:#111>],</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>});</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>int</span> <span style=color:#111>ans</span> <span style=color:#f92672>=</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>numeric_limits</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;::</span><span style=color:#111>max</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>for</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span> <span style=color:#111>i</span> <span style=color:#f92672>&lt;=</span> <span style=color:#111>k</span><span style=color:#111>;</span> <span style=color:#f92672>++</span><span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>vector</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>top</span> <span style=color:#f92672>=</span> <span style=color:#111>min_pq</span><span style=color:#111>.</span><span style=color:#111>top</span><span style=color:#111>();</span> <span style=color:#111>min_pq</span><span style=color:#111>.</span><span style=color:#111>pop</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>ans</span> <span style=color:#f92672>=</span> <span style=color:#111>top</span><span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#111>];</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>r</span> <span style=color:#f92672>=</span> <span style=color:#111>top</span><span style=color:#111>[</span><span style=color:#ae81ff>1</span><span style=color:#111>],</span> <span style=color:#111>c</span> <span style=color:#f92672>=</span> <span style=color:#111>top</span><span style=color:#111>[</span><span style=color:#ae81ff>2</span><span style=color:#111>];</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>c_next</span> <span style=color:#f92672>=</span> <span style=color:#111>c</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span><span style=color:#111>;</span> <span style=color:#111>c_next</span> <span style=color:#f92672>&lt;</span> <span style=color:#111>n</span><span style=color:#111>)</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>min_pq</span><span style=color:#111>.</span><span style=color:#111>push</span><span style=color:#111>({</span><span style=color:#111>matrix</span><span style=color:#111>[</span><span style=color:#111>r</span><span style=color:#111>][</span><span style=color:#111>next_c</span><span style=color:#111>],</span> <span style=color:#111>r</span><span style=color:#111>,</span> <span style=color:#111>next_c</span><span style=color:#111>});</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>return</span> <span style=color:#111>ans</span><span style=color:#111>;</span>
-</span></span></code></pre></div><p>Surprisingly, the above solution is slower and takes more memory than
-the BFS + MinPQ version. And more surprisingly, a straight up iteration
-over the grid while keeping a MinPQ beats the BFS that tries to
-judiciously add items to the PQ. Maybe this question&rsquo;s cost is dominated
-by cache locality? After all, the run time is \(\le\) 100ms.</p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCKthSmallestElemInSortedMatrix>Kth Smallest Element in a Sorted Matrix - LeetCode<i>.</i>
-</cite><a href=https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>.
-<a href=https://leetcode.com/submissions/detail/763109621/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>.
-<i class='fas fa-fw fa-globe' aria-hidden=true></i>
-Accessed Aug 1, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=cppReferenceInfinity>std::numeric_limits&lt;T>::infinity - cppreference.com<i>.</i>
-</cite><a href=https://en.cppreference.com/w/cpp/types/numeric_limits/infinity target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>en.cppreference.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>.
-<i class='fas fa-fw fa-globe' aria-hidden=true></i>
-Accessed Aug 2, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-graduation-cap' cited-by-count is-main><cite id=Mirzaian1984>Selection in X + Y And Matrices with Sorted Rows and Columns<i>.</i>
-</cite>A. Mirzaian; E. Arjomandi.
-Information Processing Letters, Vol. 20, 1985, 13-17.
-<a href=http://www.cse.yorku.ca/~andy/pubs/X+Y.pdf target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.cse.yorku.ca" loading=lazy aria-hidden=true width=16 height=16>
-<i>www.cse.yorku.ca</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>.
-<a href=https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/discuss/85170/O%28n%29-from-paper.-Yes-O%28rows%29. target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>.
-1984.
-<i class='fas fa-fw fa-graduation-cap' aria-hidden=true></i>
-Accessed Aug 6, 2022.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=hiepitLCKthSmallestElemInSortedMatrix>[C++/Java/Python] MaxHeap, MinHeap, Binary Search - Picture Explain - Clean & Concise - LeetCode Discuss<i>.</i>
-</cite><a href=https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/discuss/1322101/C%2B%2BJavaPython-MaxHeap-MinHeap-Binary-Search-Picture-Explain-Clean-and-Concise target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
-<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>.
-<i class='fas fa-fw fa-globe' aria-hidden=true></i>
-Accessed Aug 6, 2022.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
-<a href=/cited-authors/Arjomandi-E.>Arjomandi, E.</a>
-<a href=/cited-authors/Mirzaian-A.>Mirzaian, A.</a></aside><aside id=publications-holder style="margin:0 0 2%">Cited Publications:
-<a href=/publications/Information-Processing-Letters>Information Processing Letters</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
-<a href=/domains/en.cppreference.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.cppreference.com" loading=lazy aria-hidden=true width=16 height=16>
-en.cppreference.com
-</a><a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
-leetcode.com
-</a><a href=/domains/www.cse.yorku.ca style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.cse.yorku.ca" loading=lazy aria-hidden=true width=16 height=16>
-www.cse.yorku.ca</a></aside></div></div><footer></footer></section></div><footer><a href=/about>About</a>
+that the rows and columns are already sorted.</p>...</section></td></tr></table><script>let pageURLs=[];const alternateOrganizations=new Set(["tags","categories","domains","authors","publications"]);fetch("/json/site_tree.json").then(e=>e.json()).then(e=>{const s=document.location.pathname,n=s==="/random/"?"/":s,i=n==="/";let t=e;if(n.split("/").forEach(e=>{if(!e)return;t=t[e]}),!t)return;function o(e,t){const s=Object.keys(t);s.forEach(s=>{if(s==="_meta")return;if(n==="/"&&alternateOrganizations.has(s))return;let i=e===""?s:`${e}/${s}`;o(i,t[s])}),s.length===0&&e&&pageURLs.push(`${i?"/":""}${e}`)}o("",t)}).then(()=>{pageURLs.length===0&&(document.getElementById("randomSelectorContainer").style.display="none")});function goToRandomPage(){let e=Math.floor(Math.random()*pageURLs.length);window.open(pageURLs[e],"_self")}</script></main></div><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></body></html>
