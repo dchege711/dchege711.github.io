@@ -108,11 +108,11 @@ blocked waiting on <code>l</code> to become unlocked, <code>l.release()</code> a
 them to proceed. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=rlock-objects><code>RLock</code> Objects</h2><p>A reentrant lock is a synchronization primitive that may be acquired multiple
 times by the same thread. It is owned by a particular thread when locked; in the
 unlocked state, no thread owns it. <span class=citation-ref><a href=#threadingPy></a></span></p><p><code>acquire()</code>/<code>release()</code> must be called in pairs. Failing to call <code>release()</code> as
-many times as <code>acquire()</code> can lead to dreadlock. <span class=citation-ref><a href=#threadingPy></a></span></p><p><code>acquire(blocking=True, timeout=-1)</code>. If no thread owns <code>l</code>, acquire the lock
+many times as <code>acquire()</code> can lead to deadlock. <span class=citation-ref><a href=#threadingPy></a></span></p><p><code>acquire(blocking=True, timeout=-1)</code>. If no thread owns <code>l</code>, acquire the lock
 and return <code>True</code>. If the same thread owns <code>l</code>, acquire the lock again and
 return <code>True</code> (<code>Lock</code> would have blocked until <code>l</code> can be acquired). If another
 thread owns the lock:</p><ul><li>If <code>blocking=True</code>, block until we can acquire the lock, while respecting
-<code>timeout</code>.</li><li>Otherwise, return <code>False</code> as we cannot acquire the lock.</li></ul><p><span class=citation-ref><a href=#threadingPy></a></span></p><div class=comment-holder><div class=comment><p>Doesn&rsquo;t reentrancy on <code>Lock</code> always cause dreadlock? If <code>t</code> locked <code>l</code>, how can
+<code>timeout</code>.</li><li>Otherwise, return <code>False</code> as we cannot acquire the lock.</li></ul><p><span class=citation-ref><a href=#threadingPy></a></span></p><div class=comment-holder><div class=comment><p>Doesn&rsquo;t reentrancy on <code>Lock</code> always cause deadlock? If <code>t</code> locked <code>l</code>, how can
 <code>t</code> unlock <code>l</code> while its own execution is blocked waiting for &ldquo;someone&rdquo; to
 unlock <code>t</code>? Ah, some other thread <code>t2</code> can call <code>l.release()</code>.</p></div></div><p><code>release()</code> decrements the recursion level. If the new recursion level is zero,
 <code>l</code> is unlocked (not owned by any thread) and exactly one of any pending threads
@@ -171,7 +171,8 @@ wait for each other, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#
 </span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#00a8c8>True</span><span style=color:#111>:</span>
 </span></span><span style=display:flex><span>    <span style=color:#111>connection</span> <span style=color:#f92672>=</span> <span style=color:#111>make_connection</span><span style=color:#111>()</span>
 </span></span><span style=display:flex><span>    <span style=color:#111>process_client_connection</span><span style=color:#111>(</span><span style=color:#111>connection</span><span style=color:#111>)</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#threadingPy></a></span></p><p><code>wait(timeout=None)</code> passes the barrier. When all \(n\) threads call <code>wait()</code>,
+</span></span></code></pre></div><p><span class=citation-ref><a href=#threadingPy></a></span></p><p>A <code>Barrier</code> can be reused any number of times for the same number of threads.
+<span class=citation-ref><a href=#threadingPy></a></span></p><p><code>wait(timeout=None)</code> passes the barrier. When all \(n\) threads call <code>wait()</code>,
 they are all released simultaneously. <code>wait</code> returns an integer \(x \in [0,
 N)\), which can be used for housekeeping, e.g., printing something. If <code>action</code>
 was passed in the constructor, one of the threads will have called it prior to
