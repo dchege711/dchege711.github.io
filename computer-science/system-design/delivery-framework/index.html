@@ -1,0 +1,80 @@
+<!doctype html><html lang=en><head><title>Delivery Framework for System Design Interviews | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Requirements (~5min)
+Functional Requirements
+Completions for &ldquo;Users/Clients should be able to&mldr;&rdquo;, e.g., for Twitter: post
+tweets, follow other users, and see tweets from users they follow. Keep the list
+targeted and prioritized (e.g., top 3) as your job is to develop a system that
+meets those requirements. 
+Non-Functional Requirements
+Completions for &ldquo;The system should be&mldr;&rdquo;, e.g., for Twitter:
+
+Highly available, prioritizing availability over consistency.
+Scale to support 100M+ daily active users.
+Low latency, rendering feeds in under 200ms.
+
+..."><meta property="og:title" content="Delivery Framework for System Design Interviews"><meta property="og:description" content="Requirements (~5min)
+Functional Requirements
+Completions for &ldquo;Users/Clients should be able to&mldr;&rdquo;, e.g., for Twitter: post
+tweets, follow other users, and see tweets from users they follow. Keep the list
+targeted and prioritized (e.g., top 3) as your job is to develop a system that
+meets those requirements. 
+Non-Functional Requirements
+Completions for &ldquo;The system should be&mldr;&rdquo;, e.g., for Twitter:
+
+Highly available, prioritizing availability over consistency.
+Scale to support 100M+ daily active users.
+Low latency, rendering feeds in under 200ms.
+
+..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/system-design/delivery-framework/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/system-design/>System Design</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/system-design/delivery-framework/>Delivery Framework for System Design Interviews</a></li></ul></nav><section><header><h1>Delivery Framework for System Design Interviews</h1><p class=meta>Dated May 31, 2026;
+last modified on Sun, 31 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#requirements-5min>Requirements (~5min)</a><ul><li><a href=#functional-requirements>Functional Requirements</a></li><li><a href=#non-functional-requirements>Non-Functional Requirements</a></li><li><a href=#capacity-estimation>Capacity Estimation</a></li></ul></li><li><a href=#core-entities-2min>Core Entities (~2min)</a></li><li><a href=#api-or-interface-5min>API or Interface (~5min)</a></li><li><a href=#data-flow-5min>Data Flow (~5min)</a></li><li><a href=#high-level-design-15min>High-Level Design (~15min)</a></li><li><a href=#deep-dives-10min>Deep Dives (~10min)</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=requirements-5min>Requirements (~5min)</h2><h3 id=functional-requirements>Functional Requirements</h3><p>Completions for &ldquo;Users/Clients should be able to&mldr;&rdquo;, e.g., for Twitter: post
+tweets, follow other users, and see tweets from users they follow. Keep the list
+targeted and prioritized (e.g., top 3) as your job is to develop a system that
+meets those requirements. <span class=citation-ref><a href=#DeliveryFramework></a></span></p><h3 id=non-functional-requirements>Non-Functional Requirements</h3><p>Completions for &ldquo;The system should be&mldr;&rdquo;, e.g., for Twitter:</p><ul><li>Highly available, prioritizing availability over consistency.</li><li>Scale to support 100M+ daily active users.</li><li>Low latency, rendering feeds in under 200ms.</li></ul><p><span class=citation-ref><a href=#DeliveryFramework></a></span></p><p>Consider these when coming up with non-functional requirements:</p><ul><li><strong>CAP Theorem</strong>: Should your system prioritize consistency or availability?</li><li><strong>Environment Constrants</strong>: Running on mobile device with limited memory?</li><li><strong>Scalability</strong>: Does the system have bursty traffic? Scale reads or writes
+more?</li><li><strong>Latency</strong>: How long can users wait, especially on requests that require
+meaningful computation?</li><li><strong>Durability</strong>: A social network might tolerate data loss, but a banking
+system cannot.</li><li><strong>Security</strong>: Data protection, access control.</li><li><strong>Fault Tolerance</strong>: How well does the system need to handle failures, e.g.,
+redundancy, failover, and recovery mechanisms.</li><li><strong>Compliance</strong>: Are there legal requirements the system needs to meet?</li></ul><p><span class=citation-ref><a href=#DeliveryFramework></a></span></p><h3 id=capacity-estimation>Capacity Estimation</h3><p>You can always assume you&rsquo;re dealing with a large, distributed system. Skip
+estimations until they feed in directly to the design, e.g., when designing a
+TopK system for trending topics in FB posts, estimating the number of topics
+feeds into whether the data structure is a single instance, e.g., a min-heap, or
+a sharded one across multiple instances. <span class=citation-ref><a href=#DeliveryFramework></a></span></p><h2 id=core-entities-2min>Core Entities (~2min)</h2><p>The entities that your API will exchange and your system will persist in a data
+model, e.g., for Twitter: <code>User</code>, <code>Tweet</code>, and <code>Follow</code>. Start with a small list
+and iterate as you go, e.g., add relevant fields for each entity during the
+high-level design. <span class=citation-ref><a href=#DeliveryFramework></a></span></p><h2 id=api-or-interface-5min>API or Interface (~5min)</h2><p>For the API protocol, consider:</p><ul><li><strong>REST (Representational State Transfer)</strong>: Uses <code>GET</code>, <code>POST</code>, <code>PUT</code>,
+<code>DELETE</code> to perform CRUD operations on resources. Default choice for most.</li><li><strong>GraphQL</strong>: Allows clients to specify exactly what data they want to receive,
+avoiding over/under-fetching. Useful when there are diverse clients with
+different data needs.</li><li><strong>RPC (Remote Procedure Call)</strong>: Action-oriented protocol (e.g., gRPC) that&rsquo;s
+faster than REST. Useful for internal APIs when performance is critical.</li><li><strong>Web Sockets</strong> or <strong>Server-Sent Events</strong>: Useful for real-time features.</li></ul><p><span class=citation-ref><a href=#DeliveryFramework></a></span></p><p>For the Twitter example, choosing REST with core entities as resources:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-rest data-lang=rest><span style=display:flex><span>POST /v1/tweets<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>body {<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>  &#34;text&#34;: string<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>}<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>GET /v1/tweets/{tweetId} -&gt; Tweet<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>POST /v1/follows<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>body: {<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>  &#34;followee_id&#34;: string<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>}<span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span><span style=color:#960050;background-color:#1e0010>
+</span></span></span><span style=display:flex><span>GET /v1/feed -&gt; Tweet[]<span style=color:#960050;background-color:#1e0010>
+</span></span></span></code></pre></div><p>&mldr; and the user is derived from the authentication token (not from user input).
+<span class=citation-ref><a href=#DeliveryFramework></a></span></p><h2 id=data-flow-5min>Data Flow (~5min)</h2><p>A simple high-level sequence of actions/processes that the system performs on
+inputs to produce the desired outputs. Useful if the system involves a long
+sequence of actions, e.g., for a web crawler,</p><ol><li>Fetch seed URLs</li><li>Parse HTML</li><li>Extract URLs</li><li>Store data</li><li>Repeat</li></ol><p><span class=citation-ref><a href=#DeliveryFramework></a></span></p><h2 id=high-level-design-15min>High-Level Design (~15min)</h2><p>Draw boxes and arrows of different components (e.g., servers, databases) of your
+system and how they interact. Note areas where you can add complexity (e.g.,
+caches, message queues), but don&rsquo;t layer it on at this stage. Be explicit about
+data flows and what state changes with each request. <span class=citation-ref><a href=#DeliveryFramework></a></span></p><figure><img src=/img/computer-science/system-design/sample-high-level-design.svg></figure><p>Make your diagrams easier to follow by documenting what needs to change. For
+example, no need to write down that the <code>User</code> table has a name, email, and
+password hash, if that&rsquo;s not relevant to the flow you&rsquo;re designing for. <span class=citation-ref><a href=#DeliveryFramework></a></span></p><h2 id=deep-dives-10min>Deep Dives (~10min)</h2><p>Time to harden your design by ensuring that it meets all your non-functional
+requirements, addressing edge cases, identifying and addressing bottlenecks, and
+improving the design based on interviewer feedback. For example, &ldquo;rendering
+feeds in under 200ms&rdquo; leads to a discussion on fanout-on-read vs.
+fanout-on-write, caching, etc. <span class=citation-ref><a href=#DeliveryFramework></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=DeliveryFramework>System Design Delivery Framework<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/system-design/in-a-hurry/delivery target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed May 31, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>

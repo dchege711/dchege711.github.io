@@ -1,0 +1,55 @@
+<!doctype html><html lang=en><head><title>Earliest Finish Time for Land and Water Rides | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Problem Statement
+There are \(L\) possible land rides and \(W\) possible water rides, with
+\(1 \le L, W \le 5 \times 10^4\). A tourist must experience exactly one ride
+from each category, in either order. A ride may be started at its opening time
+or any later moment. Immediately after finishing one ride, the tourist may board
+the other if it&rsquo;s already open or wait until it opens. Return the earliest
+possible time at which the tourist can finish both rides. ..."><meta property="og:title" content="Earliest Finish Time for Land and Water Rides"><meta property="og:description" content="Problem Statement
+There are \(L\) possible land rides and \(W\) possible water rides, with
+\(1 \le L, W \le 5 \times 10^4\). A tourist must experience exactly one ride
+from each category, in either order. A ride may be started at its opening time
+or any later moment. Immediately after finishing one ride, the tourist may board
+the other if it&rsquo;s already open or wait until it opens. Return the earliest
+possible time at which the tourist can finish both rides. ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/earliest-finish-time-land-and-water-rides/earliest-finish-time-land-and-water-rides/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/>Leet Code Style Questions</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/>Sorting and Searching</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/earliest-finish-time-land-and-water-rides/earliest-finish-time-land-and-water-rides/>Earliest Finish Time for Land and Water Rides</a></li></ul></nav><section><header><h1>Earliest Finish Time for Land and Water Rides</h1><p class=meta>Dated Jun 3, 2026;
+last modified on Wed, 03 Jun 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#problem-statement>Problem Statement</a></li><li><a href=#solution>Solution</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=problem-statement>Problem Statement</h2><p>There are \(L\) possible land rides and \(W\) possible water rides, with
+\(1 \le L, W \le 5 \times 10^4\). A tourist must experience exactly one ride
+from each category, in either order. A ride may be started at its opening time
+or any later moment. Immediately after finishing one ride, the tourist may board
+the other if it&rsquo;s already open or wait until it opens. Return the earliest
+possible time at which the tourist can finish both rides. <span class=citation-ref><a href=#LCEarliestFinishTime></a></span></p><h2 id=solution>Solution</h2><p>When in doubt, brute-force:</p><ol><li>Initialize \(t_{earliest} \leftarrow \infty\)</li><li>For ride \(l \in L\), choose \(l\) such that \(l_{start} &lt;
+t_{earliest}\).<ol><li>For each \(w \in W\), choose whether to take the ride before or
+after \(l\), preferring before whenever possible.<ol><li>Compute \(t_{candidate} = max(l_{end}, w_{end})\)</li><li>Update \(t_{earliest} \leftarrow min(t_{candidate}, t_{earliest})\)</li></ol></li></ol></li><li>Repeat steps (1) and (2) but in (2) start by choosing from \(W\) first, and
+then from \(L\).</li></ol><p>This algorithm would run in \(\mathcal{O}(LW)\), which is quadratic. Let&rsquo;s try
+the \(\mathcal{O}(LW)\) solution and see how much perf is needed for <span class=citation-ref><a href=#LCEarliestFinishTime></a></span>. Welp, \(\mathcal{O}(LW)\) is too slow; times out at
+the 625th of 627 test cases.</p><details><summary>Implementation: O(LW)</summary><div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py></code></pre></div></div></details><p>Can sorting help reduce the search space so that we run in less than
+\(\mathcal{O}(LW)\) time? Sorting \(L\) and \(W\) should helps us
+disqualify more fixed rides faster, but that&rsquo;s still not fast enough for <span class=citation-ref><a href=#LCEarliestFinishTime></a></span>.</p><p><span class=citation-ref><a href=#LCEarliestFinishTimeSingh></a></span>describes an \(\mathcal{O}(L + W)\)
+algorithm. Suppose we take a ride \(l \in L\) first. If \(l\) finishes at
+\(l_{finish} = l_{available} + l_{duration}\), then a \(w \in W\) can only
+start at \(\max(l_{finish}, w_{available})\), and finish at \(w_{finish} =
+\max(l_{finish}, w_{available}) + w_{duration}\). \(w_{finish}\) is minimized
+by minimizing \(l_{finish}\). The same reasoning applies when finishing a
+water ride first. <span class=tag-ref><a href=/tags/greedy-algorithm>#greedy-algorithm</a></span></p><p>My confusion came from &ldquo;&mldr; a \(w \in W\) can only start at
+\(\max(l_{finish}, w_{available})\)&mldr;&rdquo;. While it&rsquo;s possible to have a \(w\)
+that can finish earlier than \(l_{start}\), that goes against &ldquo;Suppose we take
+a ride \(l \in L\) first&mldr;&rdquo; Furthermore, any such \(w\) will be discovered
+when we do the second pass where we choose a minimal \(w_{finish}\) before
+looking at \(l \in L\).</p><details><summary>Implementation: O(L + W)</summary><div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py></code></pre></div></div></details><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCEarliestFinishTime>Earliest Finish Time for Land and Water Rides II<i>.</i>
+</cite><a href=https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-ii/description/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 3, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LCEarliestFinishTimeSingh>Earliest Finish Time for Land and Water Rides II<i>.</i>
+✅ Optimal O(n + m) Approach | Greedy Observation | C++ | Java | Python | JavaScript | Go<i>.</i>
+</cite>Bijoy Singh.
+<a href="https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-ii/solutions/8309992/optimal-on-m-approach-greedy-observation-ih2a/?envType=daily-question&amp;envId=2026-06-03" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>leetcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jun 4, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=tags-holder style="margin:0 0 2%">Tags:
+<a href=/tags/greedy-algorithm>#greedy-algorithm</a></aside><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Singh-Bijoy>Singh, Bijoy</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/leetcode.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=leetcode.com" loading=lazy aria-hidden=true width=16 height=16>
+leetcode.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/min-cost-buying-candies-with-discount/>&#171; Minimum Cost of Buying Candies with Discount</a></footer></section></div><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></body></html>
