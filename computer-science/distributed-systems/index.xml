@@ -1,4 +1,84 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Distributed Systems on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/distributed-systems/</link><description>Recent content in Distributed Systems on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 19 Jul 2025 12:38:15 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>Resilient App Development in .NET</title><link>https://www.curiosities.dev/computer-science/distributed-systems/resilient-app-development-dotnet/</link><pubDate>Sat, 19 Jul 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/resilient-app-development-dotnet/</guid><description>&lt;p&gt;&lt;code&gt;Microsoft.Extensions.Resilience&lt;/code&gt; and &lt;code&gt;Microsoft.Extensions.Http.Resilience&lt;/code&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Distributed Systems on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/distributed-systems/</link><description>Recent content in Distributed Systems on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 06 Jun 2026 15:40:49 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>API Design</title><link>https://www.curiosities.dev/computer-science/distributed-systems/api-design/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/api-design/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;For 90% of interviews, default to REST, which maps resources to URLs and uses
+HTTP methods to manipulate them, e.g., &lt;code&gt;POST /events/{id}/bookings&lt;/code&gt; for creating
+a booking. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;When returning large result sets, pagination comes into play. Cursor-based
+pagination works better for real-time data where new items get added frequently.
+Offset-based pagination is fine for most cases. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment open-comment"&gt;&lt;p&gt;How does cursor-based pagination beat offset-based pagination for new additions?
+Aren&amp;rsquo;t new additions invisible to inflight paginations?&lt;/p&gt;</description></item><item><title>Caching</title><link>https://www.curiosities.dev/computer-science/distributed-systems/caching/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/caching/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;For read-heavy applications, storing frequently accessed data in fast memory
+(e.g., Redis) allows you to skip the DB entirely for some reads. A cache hit on
+Redis takes ~1ms compared to 20-50ms for a typical DB query, and this speedup is
+impactful in the order of millions of requests. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Caching requires a solution for invalidating stale data, e.g., user updates
+their profile in the DB. Strategies include invalidating the cache immediately
+after writes, using short TTLs, etc. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>CAP Theorem</title><link>https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;The CAP theorem states that you can only have 2 of 3 properties at once:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Consistency: All nodes see the same data.&lt;/li&gt;
+&lt;li&gt;Availability: Every request gets a response.&lt;/li&gt;
+&lt;li&gt;Partition Tolerance: System works even when network connections fail between
+nodes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;In practice, network partitions are unavoidable in distributed system. Choosing
+consistency means some nodes will refuse to serve requests rather than return
+potentially stale data. Choosing availability means different nodes might
+temporarily have different data. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Data Modeling</title><link>https://www.curiosities.dev/computer-science/distributed-systems/data-modeling/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/data-modeling/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;Choosing what data to store and how to structure it directly affects
+performance, scalability, and maintenance. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Relational databases are useful when you have structured data with clear
+relationships and need strong consistency (transaction-based actions, enforcing
+foreign key constraints). NoSQL databases shine for flexible schemas or when you
+need to scale horizontally across many servers without complex joins. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Normalization refers to splitting data across tables to avoid duplication, e.g.,
+you have a &lt;code&gt;users&lt;/code&gt; table, and &lt;code&gt;orders&lt;/code&gt; table, and a &lt;code&gt;products&lt;/code&gt; table, where each
+order references a &lt;code&gt;userId&lt;/code&gt; and &lt;code&gt;productId&lt;/code&gt;. Normalized data is easy to keep
+consistent, e.g., updating a product name is limited to the &lt;code&gt;products&lt;/code&gt; table.
+However, getting complete data needs joins, which get expensive on huge/many
+tables. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Database Indexing</title><link>https://www.curiosities.dev/computer-science/distributed-systems/database-indexing/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/database-indexing/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;Indexes make database queries fast. Most relational databases use B-trees, which
+support exact lookups (find user with email X) and range queries (find all
+orders between date A and date B). Hash indexes are faster for exact matches but
+can&amp;rsquo;t do range queries. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;There are external systems that go beyond what the primary DB provider has.
+Elasticsearch is the go-to for full-text search. PostGIS in Postgres is popular
+for geospatial queries. Such extensions typically sync from your primary DB and
+so the search index will lag slightly behind. However, the increased
+functionality is usually worth it. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Networking Essentials</title><link>https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;At a basic level, understand how services talk to each other and what happens
+when those connections fail or get slow. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For 90% of the use cases, default to HTTP over TCP. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;WebSockets and Server-Sent Events (SSE) come up when you need real-time updates.
+SSE is unidirectional - the client makes an initial HTTP request to open the
+connection, and the server pushes data down that connection. WebSockets handle
+bidirectional communication where both sides send messages freely. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Sharding</title><link>https://www.curiosities.dev/computer-science/distributed-systems/sharding/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/sharding/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;Sharding comes up when a single database won&amp;rsquo;t work (e.g., hit storage limits,
+write throughput limits, or read throughput limits) and you need to split your
+data across multiple independent servers. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For a user-centric social media app, sharding by &lt;code&gt;user_id&lt;/code&gt; means all of a user&amp;rsquo;s
+posts, likes, and comments live on one shard. User-scoped queries are fast, but
+&amp;ldquo;trending posts across all users&amp;rdquo; become expensive because of hitting every
+shard and aggregating results. Mutating transations need to account for the
+distributed nature of the shards, making them complex and slow. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Delivery Framework for System Design Interviews</title><link>https://www.curiosities.dev/computer-science/distributed-systems/delivery-framework/</link><pubDate>Sun, 31 May 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/delivery-framework/</guid><description>&lt;h2 id="requirements-5min"&gt;Requirements (~5min)&lt;/h2&gt;
+&lt;h3 id="functional-requirements"&gt;Functional Requirements&lt;/h3&gt;
+&lt;p&gt;Completions for &amp;ldquo;Users/Clients should be able to&amp;hellip;&amp;rdquo;, e.g., for Twitter: post
+tweets, follow other users, and see tweets from users they follow. Keep the list
+targeted and prioritized (e.g., top 3) as your job is to develop a system that
+meets those requirements. &lt;span class="citation-ref"&gt;&lt;a href="#DeliveryFramework"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h3 id="non-functional-requirements"&gt;Non-Functional Requirements&lt;/h3&gt;
+&lt;p&gt;Completions for &amp;ldquo;The system should be&amp;hellip;&amp;rdquo;, e.g., for Twitter:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Highly available, prioritizing availability over consistency.&lt;/li&gt;
+&lt;li&gt;Scale to support 100M+ daily active users.&lt;/li&gt;
+&lt;li&gt;Low latency, rendering feeds in under 200ms.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#DeliveryFramework"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Resilient App Development in .NET</title><link>https://www.curiosities.dev/computer-science/distributed-systems/resilient-app-development-dotnet/</link><pubDate>Sat, 19 Jul 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/resilient-app-development-dotnet/</guid><description>&lt;p&gt;&lt;code&gt;Microsoft.Extensions.Resilience&lt;/code&gt; and &lt;code&gt;Microsoft.Extensions.Http.Resilience&lt;/code&gt;
 provide resilience mechanisms against transient failures. These two packages are
 built on top of the open-source &lt;code&gt;Polly&lt;/code&gt; resilience library. &lt;span class="citation-ref"&gt;&lt;a href="#ResilientAppDevelopment"&gt;&lt;/a&gt;&lt;/span&gt; &lt;span class="citation-ref"&gt;&lt;a href="#Polly"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;h2 id="build-a-resilience-pipeline"&gt;Build a Resilience Pipeline&lt;/h2&gt;
@@ -19,7 +99,22 @@ follows:&lt;/p&gt;
 &lt;p&gt;Using &lt;code&gt;AddResiliencePipeline&lt;/code&gt; separates the pipeline&amp;rsquo;s definition from its usage
 points where it&amp;rsquo;s injected. This allows for convenient unit testing, e.g.,
 supplying &lt;code&gt;ResiliencePipeline&amp;lt;T&amp;gt;.Empty&lt;/code&gt; for faster and less complicated tests.
-&lt;span class="citation-ref"&gt;&lt;a href="#ResiliencePipelines"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Mergeable Replicated Data Types</title><link>https://www.curiosities.dev/computer-science/distributed-systems/2020-05-17-mergeable-replicated-data-types/</link><pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/2020-05-17-mergeable-replicated-data-types/</guid><description>&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#Kaki2019"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;span class="citation-ref"&gt;&lt;a href="#ResiliencePipelines"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Consistent Hashing</title><link>https://www.curiosities.dev/computer-science/distributed-systems/consistent-hashing/</link><pubDate>Wed, 27 Nov 2024 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/consistent-hashing/</guid><description>&lt;div class="priors-holder"&gt;
+ &lt;div class="priors"&gt;&lt;p&gt;The term &amp;ldquo;consistent hashing&amp;rdquo; makes me think of hashing without randomization.
+Why isn&amp;rsquo;t every hash consistent by definition? For example, a map implementation
+would need consistent hashing lest it&amp;rsquo;s inaccurate when searching for stored
+values. Or is consistent hashing a tradeoff between collision-resistance and
+speed?&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;h2 id="web-caching"&gt;Web Caching&lt;/h2&gt;
+&lt;p&gt;Web caching was the original motivation for consistent hashing. With a web
+cache, if a browser requests a URL that is not in the cache, the page is
+downloaded from the server, and the result is sent to both the browser and the
+cache. On a second request, the page is served from the cache without contacting
+the server. &lt;span class="citation-ref"&gt;&lt;a href="#CS168-01"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Mergeable Replicated Data Types</title><link>https://www.curiosities.dev/computer-science/distributed-systems/2020-05-17-mergeable-replicated-data-types/</link><pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/2020-05-17-mergeable-replicated-data-types/</guid><description>&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#Kaki2019"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;On a distributed system, each replica should [eventually] converge to the same state. Commutative Replicated Data Types (CRDTs) can accept updates and achieve consistent without remote synchronization.&lt;/p&gt;
 &lt;h2 id="the-need-for-commutativity"&gt;The Need for Commutativity&lt;/h2&gt;
 &lt;p&gt;Say we have a queue \( 1 \to 2 \). Suppose two replicas, \(r_1\) and \(r_2\), independently call &lt;code&gt;pop()&lt;/code&gt;. Each replica will have \(2\) on their queue.&lt;/p&gt;
