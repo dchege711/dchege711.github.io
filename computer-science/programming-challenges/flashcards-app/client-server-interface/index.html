@@ -38,11 +38,11 @@ makes a GET request to /home, which results in a 304 (Not Modified).
 Why doesn&rsquo;t the browser navigate me to /home?"><figcaption><p>Screenshot of the redirect chain from /login. The POST
 request gets a 303 (See Other) redirect to /home. The browser then
 makes a GET request to /home, which results in a 304 (Not Modified).
-Why doesn&rsquo;t the browser navigate me to /home?</p></figcaption></figure><div class=comment-holder><div class=comment><p>The <code>304 Not Modified</code> response is sent when there is no need to
+Why doesn&rsquo;t the browser navigate me to /home?</p></figcaption></figure><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The <code>304 Not Modified</code> response is sent when there is no need to
 retransmit the requested resources. <span class=citation-ref><a href=#status304MDN></a></span>In this
 case, the page at <code>/home</code> has not changed, and the browser can use the
 cached version. If the content had changed, then the browser would have
-requested the resource from the server, resulting in a 200 response.</p></div></div><div class=comment-holder><div class=comment><p>Installing
+requested the resource from the server, resulting in a 200 response.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Installing
 <a href=https://www.npmjs.com/package/http-status-codes target=_blank rel=noopener><code>http-status-codes</code>
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>for more legible status codes.</p></div></div><p>This issue does not happen when I issue a <code>GET</code> request to <code>/logout</code> by
@@ -52,7 +52,7 @@ tab. If I do the same with <code>fetch('/logout', { method: 'GET' })</code>
 instead, then the browser does not navigate the page to <code>/browse</code>
 despite the <code>/browse</code> response being observable in the Network tab. The
 consensus online is that <code>fetch</code> responses do not lead to automatic
-browser navigation.</p><div class=comment-holder><div class=comment><p>Re: <code>fetch</code> vs. <code>XMLHttpRequest</code>. The latter is the older way of making
+browser navigation.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Re: <code>fetch</code> vs. <code>XMLHttpRequest</code>. The latter is the older way of making
 HTTP requests from JavaScript without leaving the page; it is based on
 events. <code>fetch</code> is built around promises, which are considered the
 preferred way of doing asynchronous operations. <code>fetch</code> and
@@ -76,7 +76,7 @@ TypeScript in mind. Advantages of <code>tRPC</code> include no schema syncing as
 the input/output is inferred directly from function signatures, and can
 work with GraphQL (or any other data fetching method). In the case of my
 app, using <code>tRPC</code> involves replacing <code>Express</code> routes with <code>tRPC</code>
-procedures. Trying <code>tRPC</code>!</p><div class=comment-holder><div class=comment><p>Impressed by Copilot. Definitely saved me time on this one.</p></div></div><p>What&rsquo;s the use case for <code>tRPC</code> for endpoints that return a static page
+procedures. Trying <code>tRPC</code>!</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Impressed by Copilot. Definitely saved me time on this one.</p></div></div><p>What&rsquo;s the use case for <code>tRPC</code> for endpoints that return a static page
 in response to a <code>GET</code> request? Copilot says that serving HTML files
 should be left to traditional web frameworks like <code>Express</code> as those
 have built-in support for SSR of HTML.</p><p><a href=https://github.com/dchege711/study_buddy/compare/f662e388435764043fa2c23619353c59b23d8dc7..cc2f374acd6f2f9a11c72f61927b6b989964fc25 target=_blank rel=noopener>Adding tRPC endpoints that don&rsquo;t need

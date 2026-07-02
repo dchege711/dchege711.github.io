@@ -103,7 +103,7 @@ correct answer.</p><p>Is the median the best candidate? In \([0,0,0,7,9,9,15]\),
 \([0,0,0,0,10,10,10]\), the median (\(0\)) gives \(30\). Choosing \(6\)
 gives \(6 \cdot 4 + 4 \cdot 3 = 36\), \(5\) gives \(5 \cdot 4 + 4 \cdot 3
 = 32\), and \(4\) gives \(4 \cdot 4 + 6 \cdot 3 = 34\). A counterexample is
-proving elusive. Maybe the median works.</p><div class=comment-holder><div class=comment><p>CLRS provides an algorithm for getting the \(k\)-th largest element in an
+proving elusive. Maybe the median works.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>CLRS provides an algorithm for getting the \(k\)-th largest element in an
 unsorted array in \(O(N)\) probabilistic time, and \(O(1)\) space. I don&rsquo;t
 know if it&rsquo;ll come to that, but this is Advent of Code. And maybe the median is
 not the winning answer.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>module</span> <span style=color:#111>AoC2021.TreacheryOfWhales</span>
@@ -154,13 +154,13 @@ not the winning answer.</p></div></div><div class=highlight><pre tabindex=0 styl
 </span></span></code></pre></div><p>Whoa, the median does work. I need a solid proof for why it works.</p><p><span class=citation-ref><a href=#Hidding2021-07></a></span>phrases the problem as a minimization of a cost
 function. For Part I, the cost function is
 \( f_a (x) = \sum_{i=1}^{N} | c_i - x | \), and that representation more
-readily intuits the median.</p><div class=comment-holder><div class="comment open-comment"><p>I don&rsquo;t quite comprehend <span class=citation-ref><a href=#Hidding2021-07></a></span>&rsquo;s proof that the median
+readily intuits the median.</p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>I don&rsquo;t quite comprehend <span class=citation-ref><a href=#Hidding2021-07></a></span>&rsquo;s proof that the median
 always works. Revisit this part: <em>If we remove the outer two most points, the
 answer stays the same, repeat and we arrive at the center most point.</em></p></div></div><p><span class=citation-ref><a href=#Hidding2021-07></a></span>further claims that for even length sequences, it
 doesn&rsquo;t matter if we take the upper or lower median; the cost is the same. This
 fact simplifies the solution as <code>median</code> could have returned an <code>Int</code>, and
 <code>minFuelForAlignment</code> would not need to try out both the <code>floor</code> and <code>ceiling</code>
-of the returned median.</p><h2 id=part-ii-description>Part II Description</h2><div class=priors-holder><div class=priors><p>Given that the \(O(N\ log(N))\) approached worked for Part I, it&rsquo;s not the
+of the returned median.</p><h2 id=part-ii-description>Part II Description</h2><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Given that the \(O(N\ log(N))\) approached worked for Part I, it&rsquo;s not the
 bottleneck for Part II since \(O(N\ log(N))\) is pretty typical of efficient
 algorithms; no need to implement the \(O(N)\) quick-select algorithm.</p><p>Maybe another variable to optimize over that&rsquo;s in conflict with coalescing into
 the same horizontal position? Maybe they need to spend more fuel to get into a
@@ -171,7 +171,7 @@ fuel than the last: the first step costs <code>1</code>, the second step costs <
 third step costs <code>3</code>, and so on.</em></p><p><em>As each crab moves, moving further becomes expensive. This changes the best
 horizontal position to align them all on.</em></p><p><em>Determine the horizontal position that the crabs can align to using the least
 fuel possible so they can make you an escape route! <strong>How much fuel must they
-spend to align to that position?</strong></em></p><div class=comment-holder><div class=comment><p>Huh, my guess on where Part II was headed was wrong.</p></div></div><h2 id=part-ii-solution>Part II Solution</h2><p>The cost of moving from position \(0\) to position \(n\) is
+spend to align to that position?</strong></em></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Huh, my guess on where Part II was headed was wrong.</p></div></div><h2 id=part-ii-solution>Part II Solution</h2><p>The cost of moving from position \(0\) to position \(n\) is
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/cs97si/02-mathematics/01-sum-of-powers/ target=_blank rel=noopener>\(1 + 2 + &mldr; + n = n(n+1)/2\)
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.</p><p>The best position for \([0,1,1,2,2,2,4,7,14,16]\) is \(5\), and that is
@@ -194,8 +194,8 @@ out?</p><div class=highlight><pre tabindex=0 style=color:#272822;background-colo
 </span></span></code></pre></div><p>Holy smokes! The mean works for Part II! I&rsquo;m missing a lot of fundamentals.</p><p><span class=citation-ref><a href=#Hidding2021-07></a></span>defines the cost function as
 \( f_b (x) = \sum_{i=1}^{N} (| c_i - x |)(| c_i - x | + 1) / 2 \), and
 writes a proof for why \(\bar{x} = \langle c_i \rangle\) minimizes the cost
-function.</p><div class=comment-holder><div class=comment><p>In mathematical notation, angle brackets (or &lsquo;chevrons&rsquo;) are used:</p><ul><li>In group theory to write group representations (1) and to denote the subgroup
-generated by a collection of elements (2).</li><li>In set theory to denote ordered pairs and other tuples (3).</li></ul><p><span class=citation-ref><a href=#WikiAngleBrackets></a></span></p></div></div><div class=comment-holder><div class="comment open-comment"><p>So much for not taking the optimization class in college. I&rsquo;m feeling out of my
+function.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>In mathematical notation, angle brackets (or &lsquo;chevrons&rsquo;) are used:</p><ul><li>In group theory to write group representations (1) and to denote the subgroup
+generated by a collection of elements (2).</li><li>In set theory to denote ordered pairs and other tuples (3).</li></ul><p><span class=citation-ref><a href=#WikiAngleBrackets></a></span></p></div></div><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>So much for not taking the optimization class in college. I&rsquo;m feeling out of my
 depth w.r.t mathematical maturity. Find some material that explains how to
 minimize the \(f_a\) and \(f_b\) cost functions. ORF 307 might be a good
 start.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Hidding2021-07>Advent of Code 2021: Day 07. The Treachery of Whales<i>.</i>

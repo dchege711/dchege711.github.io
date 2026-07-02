@@ -42,10 +42,10 @@ MCP Server: A program that provides context to MCP clients.
     So typically, the MCP server and the client are implementation details that the
 end user doesn&rsquo;t really see. The user&rsquo;s view is mediated by the MCP host...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/mcp-101/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/mcp-101/>Model Context Protocol (MCP)</a></li></ul></nav><section><header><h1>Model Context Protocol (MCP)</h1><p class=meta>Dated May 9, 2026;
-last modified on Thu, 14 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#mcp-101>MCP 101</a></li><li><a href=#sample-flow>Sample Flow</a></li><li><a href=#mcp-primitives>MCP Primitives</a><ul><li><a href=#resources>Resources</a></li><li><a href=#prompts>Prompts</a></li><li><a href=#tools>Tools</a></li><li><a href=#tasks>Tasks</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors><p>MCP is written with LLM apps as the clients, not human end-users. It provides a
+last modified on Thu, 14 May 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#mcp-101>MCP 101</a></li><li><a href=#sample-flow>Sample Flow</a></li><li><a href=#mcp-primitives>MCP Primitives</a><ul><li><a href=#resources>Resources</a></li><li><a href=#prompts>Prompts</a></li><li><a href=#tools>Tools</a></li><li><a href=#tasks>Tasks</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>MCP is written with LLM apps as the clients, not human end-users. It provides a
 set of conventions on how to agnostically provide context to LLM apps.</p></div></div><h2 id=mcp-101>MCP 101</h2><p>There are 3 key participants in the MCP architecture:</p><ul><li><strong>MCP Host</strong>: The AI application that manages one or more MCP clients, e.g.,
 Claude Code, Copilot, etc.</li><li><strong>MCP Client</strong>: A component that maintains a connection to an MCP server and
-obtains context from an MCP server for the MCP host to use.</li><li><strong>MCP Server</strong>: A program that provides context to MCP clients.</li></ul><div class=comment-holder><div class=comment><p>So typically, the MCP server and the client are implementation details that the
+obtains context from an MCP server for the MCP host to use.</li><li><strong>MCP Server</strong>: A program that provides context to MCP clients.</li></ul><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>So typically, the MCP server and the client are implementation details that the
 end user doesn&rsquo;t really see. The user&rsquo;s view is mediated by the MCP host.</p></div></div><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>MCP consists of two layers:</p><ul><li><strong>Transport layer</strong>: The outer layer that defines communication mechanisms and
 channels that enable client-server data exchange, e.g., message framing,
 authorization, etc. MCP supports two transport mechanisms:<ul><li><strong>Stdio</strong> for local processes on the same machine.</li><li><strong>Streamable HTTP</strong> for remote server communication with bearer tokens, API
@@ -112,7 +112,7 @@ should be terminated. Otherwise, the client notifies the server that it&rsquo;s 
 </span></span><span style=display:flex><span>  <span style=color:#111>}</span>
 </span></span><span style=display:flex><span><span style=color:#111>}</span>
 </span></span></code></pre></div><p>&mldr; and the MCP host combines all the tools from the MCP servers into a unified
-tool registry that the LLM can access. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment><p>There&rsquo;s additional bookkeeping needed on the MCP host. While <code>weather_current</code>
+tool registry that the LLM can access. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>There&rsquo;s additional bookkeeping needed on the MCP host. While <code>weather_current</code>
 is unique in <code>example-server</code>&rsquo;s namespace, that might not hold in the MCP
 hosts&rsquo;s tool registry. A potential solution is prefixing with the server&rsquo;s name,
 e.g., <code>example-server.weather_current</code>, and the host strips the prefix at the
@@ -139,7 +139,7 @@ e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-col
 </span></span><span style=display:flex><span>    <span style=color:#111>]</span>
 </span></span><span style=display:flex><span>  <span style=color:#111>}</span>
 </span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment><p>One of the common criticisms for MCP is that cases like <code>weather_current</code> can
+</span></span></code></pre></div><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>One of the common criticisms for MCP is that cases like <code>weather_current</code> can
 already be solved with existing tech, i.e., expose the API docs and a utility
 for making network calls. Admittedly, if I squint, MCP is the name for this
 technique. It&rsquo;s not a new concept, but the name makes it easier to talk about
@@ -147,20 +147,20 @@ unambiguously and succinctly.</p></div></div><p>For real-time updates, MCP suppo
 that specified <code>"tools": { "listChanged": true }</code> can send a notification like:
 <code>{ "jsonrpc": "2.0", "method": "notifications/tools/list_changed" }</code>. The client
 typically reacts by requesting <code>tools/list</code> and refreshing its list of available
-tools. That way, the client doesn&rsquo;t need to poll for changes. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment><p>Incomplete messages for simplicity&rsquo;s sake? One can envision a case where
+tools. That way, the client doesn&rsquo;t need to poll for changes. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Incomplete messages for simplicity&rsquo;s sake? One can envision a case where
 <code>notifications/tools/list_changed</code> also comes with <code>tools/list</code>&rsquo;s payload
 because that&rsquo;s what the MCP client is expected to call.</p></div></div><h2 id=mcp-primitives>MCP Primitives</h2><h3 id=resources>Resources</h3><p><strong>Resources</strong> provide structured access to information that the AI app can
 retrieve and pass to the model as context, e.g., a server can expose
 <code>calendar://events/2026</code> to return calendar availability for the user. A server
 can also expose resource templates, e.g.,
 <code>travel://activities/{city}/{category}</code> for flexible queries, e.g.,
-<code>travel://activities/barcelona/museums</code>. <span class=citation-ref><a href=#MCPServers></a></span></p><div class=comment-holder><div class=comment><p>The boundaries here seem pretty fluid. For example, filtering to contextual
+<code>travel://activities/barcelona/museums</code>. <span class=citation-ref><a href=#MCPServers></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The boundaries here seem pretty fluid. For example, filtering to contextual
 data, e.g., <code>travel://activities/barcelona/museums</code> and
 <code>file://documents/travel/passport.pdf</code>, may require an inference to map the user
 query against the list of available resources. Furthermore, resource templates
 seem like they should be behind a tool call, e.g., <code>getAttractions(city: str | None, category: str | None)</code>.</p></div></div><h3 id=prompts>Prompts</h3><p><strong>Prompts</strong> provide reusable templates for common scenarios, e.g., a
 <code>plan-vacation</code> prompt that accepts a <code>destination</code>, <code>duration</code>, <code>budget</code>, and
-<code>interests</code>. <span class=citation-ref><a href=#MCPServers></a></span></p><div class=comment-holder><div class=comment><p>I don&rsquo;t fully understand the utility here. If the <code>vacation</code> MCP server provides
+<code>interests</code>. <span class=citation-ref><a href=#MCPServers></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I don&rsquo;t fully understand the utility here. If the <code>vacation</code> MCP server provides
 a <code>plan-vacation</code> prompt, then the customizations are more like a way to ensure
 that the user provides all of the required data upfront. Contrast this to a case
 where the user has vague vacation plans and the host needs to elicit more
@@ -193,7 +193,7 @@ data, use <code>str</code> and manually call <code>base64.b64decode()</code>. By
 <code>strict_input_validation=False</code> allowing <code>"10"</code> to be coerced into an <code>int</code>
 where the tool requires it so. However, Pydantic models must be provided as JSON
 objects (dicts); <code>strict_input_validation=False</code> won&rsquo;t work on stringified JSON.
-<span class=citation-ref><a href=#ToolsFastMCP></a></span></p><div class=comment-holder><div class=comment><p>Because we&rsquo;re dealing with an LLM, it seems that <code>strict_input_validation=False</code>
+<span class=citation-ref><a href=#ToolsFastMCP></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Because we&rsquo;re dealing with an LLM, it seems that <code>strict_input_validation=False</code>
 is desirable to combat unreliability on the LLM&rsquo;s part.</p><p>The <strong>robustness principle</strong> states: <em>be conservative in what you send, be
 liberal in what you accept</em>. However, this principle has been criticized for
 entrenching flaws as a de facto standard because ensuring interoperability in
@@ -220,7 +220,7 @@ e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-col
 </span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>get_user_details</span><span style=color:#111>(</span><span style=color:#111>user_id</span><span style=color:#111>:</span> <span style=color:#111>str</span> <span style=color:#f92672>=</span> <span style=color:#111>Depends</span><span style=color:#111>(</span><span style=color:#111>get_user_id</span><span style=color:#111>))</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>str</span><span style=color:#111>:</span>
 </span></span><span style=display:flex><span>  <span style=color:#75715e># user_id is injected by the server, not provided by the LLM.</span>
 </span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#d88200>f</span><span style=color:#d88200>&#34;Details for </span><span style=color:#d88200>{</span><span style=color:#111>user_id</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#ToolsFastMCP></a></span></p><div class=comment-holder><div class=comment><p>This gels with
+</span></span></code></pre></div><p><span class=citation-ref><a href=#ToolsFastMCP></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>This gels with
 <a href=https://www.curiosities.dev/computer-science/large-language-models/building-with-llms/#deterministic-control-flows-vs-prompting>Deterministic Control Flows vs. Prompting
 </a>.
 While we could prompt the LLM to give the correct <code>user_id</code>, this is a
@@ -262,7 +262,7 @@ appear in LLM prompts, but can support appropriate UX patterns. Possible
 annotations include <code>title: str</code>, <code>readOnlyHint: bool</code>, <code>destructiveHint: bool</code>,
 <code>idempotentHint: bool</code>, and <code>openWorldHint: bool</code>. For example, an MCP host can
 choose to skip confirmation prompts for read-only tools, and enable more
-aggressive batching and caching. <span class=citation-ref><a href=#ToolsFastMCP></a></span></p><h3 id=tasks>Tasks</h3><div class=comment-holder><div class=comment><p>Tasks are still experimental per <span class=citation-ref><a href=#TasksMCP></a></span>, having been proposed in
+aggressive batching and caching. <span class=citation-ref><a href=#ToolsFastMCP></a></span></p><h3 id=tasks>Tasks</h3><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Tasks are still experimental per <span class=citation-ref><a href=#TasksMCP></a></span>, having been proposed in
 Nov 2025.</p></div></div><p>MCP allows requestors (can be clients or servers) to augment their requests
 with tasks, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
 </span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
@@ -325,15 +325,15 @@ the client to choose the mode. <span class=citation-ref><a href=#TasksMCP></a></
 for requestors sending task-augmented requests for <code>mode="forbidden"</code> so that
 clients can always request background execution without worrying about server
 capabilities. However, there are no accomodations for requestors failing to meet
-<code>mode="required"</code>. <span class=citation-ref><a href=#TasksFastMCP></a></span></p><div class=comment-holder><div class="comment open-comment"><p>In what cases would a client choose not to task-augment a tool call? Maybe the
+<code>mode="required"</code>. <span class=citation-ref><a href=#TasksFastMCP></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>In what cases would a client choose not to task-augment a tool call? Maybe the
 client doesn&rsquo;t yet have support for showing incremental results?</p><p>Re: forking of the implementation for <code>execution.taskSupport = "optional"</code>, <span class=citation-ref><a href=#TasksFastMCP></a></span>implies that the fork lives in the library, and not in the
-application code.</p></div></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#TasksFastMCP></a></span>&rsquo;s deviation from <span class=citation-ref><a href=#TasksMCP></a></span>&rsquo;s spec for
+application code.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#TasksFastMCP></a></span>&rsquo;s deviation from <span class=citation-ref><a href=#TasksMCP></a></span>&rsquo;s spec for
 <code>execution.taskSupport = "forbidden"</code> is entrenching a flaw into a de-facto
 standard, which is what <span class=citation-ref><a href=#RobustnessPrinciple></a></span>was criticized for.</p></div></div><p>When a task status changes, receivers may send a <code>notifications/tasks/status</code>
 to inform the requestor. The notification includes the full <code>Task</code> object, and
 so an additional <code>tasks/get</code> isn&rsquo;t necessary (but a <code>tasks/result</code> would be).
 The requestor must not rely on <code>notifications/tasks/status</code> and should poll via
-<code>tasks/get</code> to ensure they receive status updates. <span class=citation-ref><a href=#TasksMCP></a></span></p><div class=comment-holder><div class="comment open-comment"><p>Why is it optional for receivers to send <code>notifications/tasks/status</code>? Surely,
+<code>tasks/get</code> to ensure they receive status updates. <span class=citation-ref><a href=#TasksMCP></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Why is it optional for receivers to send <code>notifications/tasks/status</code>? Surely,
 <code>notifications/tasks/status</code> is more efficient than polling <code>tasks/get</code>? Maybe
 some MCP clients have already shipped without <code>notifications/tasks/status</code> and
 thus this is a back-compat guidance? But an experimental API shouldn&rsquo;t try to be

@@ -92,7 +92,7 @@ last modified on Sat, 19 Feb 2022</p></header><div id=toc-then-article><aside id
 <i>adventofcode.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.
 <i class='fas fa-fw fa-globe' aria-hidden=true></i>
-Accessed Feb 19, 2022.</div><h2 id=problem-statement>Problem Statement</h2><h3 id=part-one>Part One</h3><p>Now, you need to figure out how to pilot this thing.</p><p>It seems like the submarine can take a series of commands like <code>forward 1</code>, <code>down 2</code>, or <code>up 3</code>:</p><ul><li><code>forward X</code> increases the horizontal position by <code>X</code> units.</li><li><code>down X</code> <strong>increases</strong> the depth by <code>X</code> units.</li><li><code>up X</code> <strong>decreases</strong> the depth by <code>X</code> units.</li></ul><div class=comment-holder><div class=comment><p>Can&rsquo;t submarines move backwards? Why is there no <code>backward X</code>?</p></div></div><p>Note that since you&rsquo;re on a submarine, <code>down</code> and <code>up</code> affect your
+Accessed Feb 19, 2022.</div><h2 id=problem-statement>Problem Statement</h2><h3 id=part-one>Part One</h3><p>Now, you need to figure out how to pilot this thing.</p><p>It seems like the submarine can take a series of commands like <code>forward 1</code>, <code>down 2</code>, or <code>up 3</code>:</p><ul><li><code>forward X</code> increases the horizontal position by <code>X</code> units.</li><li><code>down X</code> <strong>increases</strong> the depth by <code>X</code> units.</li><li><code>up X</code> <strong>decreases</strong> the depth by <code>X</code> units.</li></ul><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Can&rsquo;t submarines move backwards? Why is there no <code>backward X</code>?</p></div></div><p>Note that since you&rsquo;re on a submarine, <code>down</code> and <code>up</code> affect your
 <strong>depth</strong>, and so they have the opposite result of what you might
 expect.</p><p>Calculate the horizontal position and depth you would have after the
 following
@@ -100,7 +100,7 @@ following
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.
 <strong>What do you get if you multiply your final horizontal position by your
-final depth?</strong></p><div class=comment-holder><div class=comment><p>Not sure why we&rsquo;re interested in \(h \cdot d\) rather than in
+final depth?</strong></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Not sure why we&rsquo;re interested in \(h \cdot d\) rather than in
 \(\sqrt{h^2 + d^2}\), which represents the distance. Part II might
 have this. Update: Part II doesn&rsquo;t address this.</p><p>Another extension would be taking into account the effects of water
 current. If a submarine is not actively moving, it seems like it should
@@ -362,7 +362,7 @@ final depth?</strong></p><h2 id=my-solution>My Solution</h2><div id=Dive.hs><div
 </span></span><span style=display:flex><span>          <span style=color:#111>(</span><span style=color:#111>zip</span> <span style=color:#111>forwardDeltas</span> <span style=color:#111>cumulativeAims</span><span style=color:#111>)</span>
 </span></span><span style=display:flex><span>   <span style=color:#00a8c8>in</span> <span style=color:#111>finalHorizontalPos</span> <span style=color:#f92672>*</span> <span style=color:#111>finalDepth</span>
 </span></span></code></pre></div></div><h2 id=learning-from-others-solutions>Learning from Others&rsquo; Solutions</h2><p>Once again, I find myself admiring <span class=citation-ref><a href=#HiddingAoC2021-02></a></span>&rsquo;s
-solution, which has fewer moving parts.</p><div class=comment-holder><div class=comment><p><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#HiddingAoC2021-02-ParsingInput>Remarks on how Hidding parses the file into <code>[Instruction]</code>
+solution, which has fewer moving parts.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/haskell-meta/#HiddingAoC2021-02-ParsingInput>Remarks on how Hidding parses the file into <code>[Instruction]</code>
 </a>.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>data</span> <span style=color:#00a8c8>Instruction</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>GoForward</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoUp</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoDown</span> <span style=color:#00a8c8>Int</span> <span style=color:#00a8c8>deriving</span> <span style=color:#111>(</span><span style=color:#00a8c8>Show</span><span style=color:#111>)</span>
 </span></span><span style=display:flex><span><span style=color:#00a8c8>type</span> <span style=color:#00a8c8>Pos</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#00a8c8>Int</span><span style=color:#111>,</span> <span style=color:#00a8c8>Int</span><span style=color:#111>)</span>
 </span></span><span style=display:flex><span>
@@ -395,9 +395,9 @@ solution, which has fewer moving parts.</p><div class=comment-holder><div class=
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#75715e>-- Granted, during this time, I hadn&#39;t known about folding.</span>
 </span></span></code></pre></div><p>&mldr; really shows the code clarity that can be obtained from creating the
-proper abstractions.</p><div class=comment-holder><div class=comment><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/stack-more-functions.jpg alt="&ldquo;sum $ map applySign $ filter (not . isForward) parsedSteps&rdquo;,
+proper abstractions.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><figure><img src=/img/computer-science/programming-challenges/advent-of-code/2021/stack-more-functions.jpg alt="&ldquo;sum $ map applySign $ filter (not . isForward) parsedSteps&rdquo;,
 colorized, Feb 2022."><figcaption><p>&ldquo;sum $ map applySign $ filter (not . isForward) parsedSteps&rdquo;,
-colorized, Feb 2022.</p></figcaption></figure></div></div><div class=comment-holder><div class=comment><p>Copilot suggested <code>product . foldl' moveA (0, 0)</code>, but <code>product (3, 3) = 3</code> while <code>product [3, 3] = 9</code>. Color me surprised.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-02></a></span>&rsquo;s solution for part two contains syntax
+colorized, Feb 2022.</p></figcaption></figure></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Copilot suggested <code>product . foldl' moveA (0, 0)</code>, but <code>product (3, 3) = 3</code> while <code>product [3, 3] = 9</code>. Color me surprised.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-02></a></span>&rsquo;s solution for part two contains syntax
 that I am not familiar with:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75715e>-- `Navigation` is using the record syntax. The compiler will generate</span>
 </span></span><span style=display:flex><span><span style=color:#75715e>-- accessor functions and update functions for the fields. Note that the</span>
 </span></span><span style=display:flex><span><span style=color:#75715e>-- records are still immutable, so the update syntax `y { x = z}`</span>
@@ -435,7 +435,7 @@ that I am not familiar with:</p><div class=highlight><pre tabindex=0 style=color
 think <code>x = x + dx</code> is valid Haskell syntax, given it is not a generally
 true mathematical equation. However, the first <code>x</code> refers to the <code>x</code>
 field in <code>n</code>, while the second <code>x</code> refers to the one that was
-autogenerated by the <code>RecordWildCards</code> extension.</p><div class=comment-holder><div class="comment open-comment"><p><a href=https://github.com/mstksg/advent-of-code-2021/blob/master/reflections-out/day02.md target=_blank rel=noopener>Le&rsquo;s
+autogenerated by the <code>RecordWildCards</code> extension.</p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p><a href=https://github.com/mstksg/advent-of-code-2021/blob/master/reflections-out/day02.md target=_blank rel=noopener>Le&rsquo;s
 solution
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>starts with, &ldquo;Day 2 has a satisfying &ldquo;unified&rdquo; solution for both parts

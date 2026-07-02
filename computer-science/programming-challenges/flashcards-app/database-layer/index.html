@@ -56,7 +56,7 @@ arbitrary JS in these MongoDB operations: <code>$where</code>, <code>mapReduce</
 <code>js/sql-injection</code> violation, and suggested <code>User.findOne({email: { $eq: payload.email }})</code> instead. <span class=citation-ref><a href=#commit0d57acc></a></span>The use of <code>eq</code>
 ensures that the input is interpreted as a literal value and not a query
 object. Alternatively, checking that <code>typeof payload.email === "string"</code>
-also provides protection against NoSQL injection. <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span></p><div class=comment-holder><div class=comment><p>Reading <span class=citation-ref><a href=#MongoDBQueryInjection></a></span>, I don&rsquo;t think I&rsquo;d have
+also provides protection against NoSQL injection. <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Reading <span class=citation-ref><a href=#MongoDBQueryInjection></a></span>, I don&rsquo;t think I&rsquo;d have
 gotten to <span class=citation-ref><a href=#commit0d57acc></a></span>without the hint from <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span>. Does Mongoose&rsquo;s <code>Model.findOne</code> internally use
 <code>$where</code> and that&rsquo;s why <span class=citation-ref><a href=#codeQLJSSQLInjection></a></span>flags it?</p></div></div><p><span class=citation-ref><a href=#OWASPNoSQLInjection></a></span>has concrete examples of NoSQL
 injection attacks:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-ts data-lang=ts><span style=display:flex><span><span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>myCollection</span><span style=color:#111>.</span><span style=color:#75af00>find</span><span style=color:#111>({</span>
@@ -71,7 +71,7 @@ injection attacks:</p><div class=highlight><pre tabindex=0 style=color:#272822;b
 </span></span><span style=display:flex><span><span style=color:#75715e>// If inserted into `$userInput`, the MongoDB instance would execute at
 </span></span></span><span style=display:flex><span><span style=color:#75715e>// 100% CPU usage for 10 seconds.
 </span></span></span><span style=display:flex><span><span style=color:#00a8c8>const</span> <span style=color:#75af00>injection</span> <span style=color:#f92672>=</span> <span style=color:#d88200>`0;var date=new Date(); do{curDate = new Date();}while(curDate-date&lt;10000)`</span><span style=color:#111>;</span>
-</span></span></code></pre></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#OWASPNoSQLInjection></a></span>also brings up an alternate injection
+</span></span></code></pre></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#OWASPNoSQLInjection></a></span>also brings up an alternate injection
 attack in a language like PHP, where PHP would try to substitute
 <code>$where</code> with the value of the variable <code>$where</code>. However, this doesn&rsquo;t
 apply to the current project.</p></div></div><p>A sample NoSQL injection is navigating to
@@ -86,7 +86,7 @@ by stripping out such keys recursively.</p><p><span class=citation-ref><a href=#
 either <code>$</code> or <code>.</code>. It can also be used as middleware allowing it to
 sanitize fields such as <code>req.body</code>, <code>req.params</code>, <code>req.headers</code>, and
 <code>req.query</code>. It can also be used in a non-middleware context, allowing
-it to be a drop-in replacement for <span class=citation-ref><a href=#commit186da7c></a></span>.</p><div class=comment-holder><div class=comment><p><code>db.inventory.find({"price.usd": { $gt: 40 }})</code> would match the document</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
+it to be a drop-in replacement for <span class=citation-ref><a href=#commit186da7c></a></span>.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><code>db.inventory.find({"price.usd": { $gt: 40 }})</code> would match the document</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
 </span></span><span style=display:flex><span>   <span style=color:#f92672>&#34;item&#34;</span> <span style=color:#111>:</span> <span style=color:#d88200>&#34;sweatshirt&#34;</span><span style=color:#111>,</span>
 </span></span><span style=display:flex><span>   <span style=color:#f92672>&#34;price&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
 </span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;usd&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>45.99</span>

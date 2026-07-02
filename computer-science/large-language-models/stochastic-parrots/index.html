@@ -20,7 +20,7 @@ took the world by storm &ndash; reaching 123m MAU less than 3 months after launc
 becoming the fastest-growing consumer application in history (TikTok took 9
 months to hit 100m MAU). ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/large-language-models/stochastic-parrots/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/large-language-models/>Large Language Models</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/large-language-models/stochastic-parrots/>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</a></li></ul></nav><section><header><h1>LLMs: Stochastic Parrots 🦜 and How (Not) to Use Them</h1><p class=meta>Dated Mar 3, 2021;
-last modified on Thu, 14 Dec 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#llms-101>LLMs 101</a></li><li><a href=#applications-of-llms>Applications of LLMs</a></li><li><a href=#a-mental-model-for-llms>A Mental Model for LLMs</a></li><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Bender2021></a></span>was written in a period when NLP practitioners are
+last modified on Thu, 14 Dec 2023</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#llms-101>LLMs 101</a></li><li><a href=#applications-of-llms>Applications of LLMs</a></li><li><a href=#a-mental-model-for-llms>A Mental Model for LLMs</a></li><li><a href=#environmental-risks>Environmental Risks</a></li><li><a href=#non-inclusive-lms>Non-Inclusive LMs</a></li><li><a href=#lms-misbehaving-in-the-town-square>LMs Misbehaving in the Town Square</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#Bender2021></a></span>was written in a period when NLP practitioners are
 producing bigger (# of parameters; size of training data) language models (LMs),
 and pushing the top scores on benchmarks. The paper itself was controversial
 because it led to Gebru being fired from Google, following disagreements with
@@ -36,22 +36,22 @@ fairer inspection is in order.</p></div></div><h2 id=llms-101>LLMs 101</h2><p>An
 using self-supervised learning or semi-supervised learning. Though trained along
 the lines of predicting the next word in a sentence (GPT-style) or completing a
 cloze test (BERT-style), neural LMs capture much of the syntax and semantics of
-human language. <span class=citation-ref><a href=#WikiLLM></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#WikiLLM></a></span>notes that LLMs emerged around 2018, when I was pursuing an
+human language. <span class=citation-ref><a href=#WikiLLM></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#WikiLLM></a></span>notes that LLMs emerged around 2018, when I was pursuing an
 undergrad degree in Computer Science. Can&rsquo;t say I caught onto the hype until
 much later in 2022 (3 years after graduating) when ChatGPT was all the rage.</p></div></div><p>When it comes to LLMs&rsquo; skills and range of tasks, it seems to be more of a
 function of resources (data, parameter-size, computing power) devoted to them,
 and less of breakthroughs in design. <span class=citation-ref><a href=#WikiLLM></a></span></p><p>While OpenAI&rsquo;s ChatGPT is the most popular, other LLMs are BERT (Google), T5
 (Google), XLNet (CMU and Google), and RoBERTa (Meta). <span class=citation-ref><a href=#Dennean2023></a></span></p><p>LLMs have a barrier to entry. Training Meta&rsquo;s LLaMA model, which has 65b
-parameters, took 21 days, and if it had been done on AWS, over 2.4m USD. <span class=citation-ref><a href=#Vanian2023></a></span></p><h2 id=applications-of-llms>Applications of LLMs</h2><div class=priors-holder><div class=priors><p>LLMs are especially useful in that they have a natural language UI; one doesn&rsquo;t
+parameters, took 21 days, and if it had been done on AWS, over 2.4m USD. <span class=citation-ref><a href=#Vanian2023></a></span></p><h2 id=applications-of-llms>Applications of LLMs</h2><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>LLMs are especially useful in that they have a natural language UI; one doesn&rsquo;t
 need specialized knowledge to obtain information from the model. It&rsquo;s like a
-massive database, where the queries are not in SQL but in natural language.</p></div></div><div class=priors-holder><div class=priors><p>Incorporating an LLM into an automated decision-making software seems risky.
+massive database, where the queries are not in SQL but in natural language.</p></div></div><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Incorporating an LLM into an automated decision-making software seems risky.
 Other embedding technologies have suffered from adversarial inputs that lead to
 poor outputs. Ultimately, it&rsquo;s a matter of how bad are the results when the LLM
 misbehaves, and are there measures to limit the blast area.</p></div></div><p>LLMs can perform language translation, sentiment analysis, question-answering,
 summarization, and text classification. <span class=citation-ref><a href=#Dennean2023></a></span></p><p>Monetization for LLMs: enterprise and consumer subscriptions for access,
-AI-generated content, dialogue-based search. <span class=citation-ref><a href=#Dennean2023></a></span></p><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#GithubCopilot></a></span>charges $10/month. It should have better performance
+AI-generated content, dialogue-based search. <span class=citation-ref><a href=#Dennean2023></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#GithubCopilot></a></span>charges $10/month. It should have better performance
 than the more general ChatGPT, but I don&rsquo;t think I code often enough on my
-personal time to necessitate a subscription.</p></div></div><div class=comment-holder><div class=comment><p><span class=citation-ref><a href=#Dennean2023></a></span>highlight eras in content generation:
+personal time to necessitate a subscription.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#Dennean2023></a></span>highlight eras in content generation:
 platform-generated content (2010 - 2015); user-generated content (2015 - 2020);
 AI-generated content (2020+).</p><p>LLMs can generate text.
 <a href=https://www.midjourney.com/ target=_blank rel=noopener>Midjourney
@@ -65,7 +65,7 @@ Diffusion
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>are popular
 text-to-image models. As of June 2023, text-to-video models are yet to take off
-<span class=citation-ref><a href=#WikiTextToVideoModel></a></span>.</p></div></div><h2 id=a-mental-model-for-llms>A Mental Model for LLMs</h2><div class=priors-holder><div class=priors><p>The LLM does not contain all the information verbatim. Instead, it&rsquo;s an
+<span class=citation-ref><a href=#WikiTextToVideoModel></a></span>.</p></div></div><h2 id=a-mental-model-for-llms>A Mental Model for LLMs</h2><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>The LLM does not contain all the information verbatim. Instead, it&rsquo;s an
 embedding (which comes with a loss of information). For a good percentage of
 queries, the answers generated from extrapolating are good enough. However, some
 extrapolations are erroneous, hence the trait of LLMs to hallucinate information
@@ -74,7 +74,7 @@ hallucinating or not, coming across as confident and thus misleading users.</p><
 weighing/verifying the output before acting on it.</p></div></div><p>Some people mistakenly impute meaning to the LM-generated texts. LMs are not
 performing natural language understanding (NLU). Misplaced hype can mislead the
 public and dissuade research directions that don&rsquo;t depend on the ever-larger-LM
-train. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment><p><a href=https://www.reddit.com/r/SubSimulatorGPT2/ target=_blank rel=noopener>/r/SubSimulatorGPT2/
+train. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><a href=https://www.reddit.com/r/SubSimulatorGPT2/ target=_blank rel=noopener>/r/SubSimulatorGPT2/
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>is an
 entertaining sub full of GPT-2 bots.
@@ -85,7 +85,7 @@ the human commentary.</p></div></div><p>The texts are not grounded in communicat
 or any model of the reader&rsquo;s state of mind. An LM is a system for haphazardly
 stitching together sequences of linguistic forms it has observed in its vast
 training data, according to probabilistic information about how they combine,
-but without reference to meaning: a stochastic parrot. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment><p>This is apparent when the model is made to do things that it wasn&rsquo;t trained to
+but without reference to meaning: a stochastic parrot. <span class=citation-ref><a href=#Bender2021></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>This is apparent when the model is made to do things that it wasn&rsquo;t trained to
 do. You&rsquo;d think that given the LLM&rsquo;s generation of text in complex disciplines,
 it should be able to answer math questions consistently, but that&rsquo;s not the
 case. For example, I asked GPT-4 &ldquo;How many zeros does 50100 contain?&rdquo; and it
@@ -101,7 +101,7 @@ at addition questions that involve carrying the \(1\), but seems like GPT-4
 does not have that problem.</p></div></div><p>If ChatGPT were a lossless algorithm that answers questions by verbatim quotes
 from web pages, then it&rsquo;d not be as impressive to us. However, because it
 rephrases content, it comes across as a student expressing ideas in their own
-words. <span class=citation-ref><a href=#Chiang2023></a></span></p><div class=comment-holder><div class=comment><p>LLMs as a blurry JPEG of the web sometimes manifests in obvious ways.
+words. <span class=citation-ref><a href=#Chiang2023></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>LLMs as a blurry JPEG of the web sometimes manifests in obvious ways.
 <a href="https://news.ycombinator.com/item?id=35868927" target=_blank rel=noopener>An HN
 user
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
@@ -113,7 +113,7 @@ model. <span class=citation-ref><a href=#Chiang2023></a></span></p><p>With bigge
 that the whole is greater than the sum of their parts. Previous claims of
 emergent abilities at particular model sizes are due to choosing metrics that
 are especially harsh to smaller models. LLMs aren&rsquo;t going to surprise us with
-Artificial General Intelligence. <span class=citation-ref><a href=#Miller2023></a></span></p><div class=comment-holder><div class=comment><p>This viewpoint is not apparent in <span class=citation-ref><a href=#WikiLLM></a></span>&rsquo;s discussion of emergent
+Artificial General Intelligence. <span class=citation-ref><a href=#Miller2023></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>This viewpoint is not apparent in <span class=citation-ref><a href=#WikiLLM></a></span>&rsquo;s discussion of emergent
 abilities. Started
 <a href=https://en.wikipedia.org/wiki/Talk:Large_language_model#Emergent_Abilities target=_blank rel=noopener>a
 thread
@@ -127,7 +127,7 @@ equations or concepts, and it will be your job to explain them in
 easy-to-understand terms. This could include providing step-by-step
 instructions for solving a problem, demonstrating various techniques with
 visuals or suggesting online resources for further study. My first request is
-&ldquo;I need help understanding how probability works.&rdquo;</li></ul><p><span class=citation-ref><a href=#fChatGPTPrompts></a></span></p><div class=comment-holder><div class=comment><p>Read <span class=citation-ref><a href=#Harel2004></a></span>back in my first year of undergrad, and a passage on
+&ldquo;I need help understanding how probability works.&rdquo;</li></ul><p><span class=citation-ref><a href=#fChatGPTPrompts></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Read <span class=citation-ref><a href=#Harel2004></a></span>back in my first year of undergrad, and a passage on
 what knowledge stuck with me:</p><blockquote><p>HUMAN. Why do you think that [flying novel-writing whales] cannot exist?</p><p>AI. For many reasons. First of all, our genetic engineering capabilities are
 far from adequate when it comes to turning fins into wins, not to mention our
 inability to cause 10-ton engineless creatures to defy gravity just by

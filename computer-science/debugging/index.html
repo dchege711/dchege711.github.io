@@ -46,14 +46,14 @@ filtering of output; color-coding for readability.
 (16 color codes with bold/italic and background); 256 color palette; 24-bit
 truecolor (&ldquo;888&rdquo; colors, aka 16 million, e.g. printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n"). ...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/debugging/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/debugging/>Debugging</a></li></ul></nav><section><header><h1>Debugging</h1><p class=meta>Dated Jul 2, 2022;
-last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#debugging-101>Debugging 101</a><ul><li><a href=#printf-debugging-and-logging><code>printf</code> Debugging and Logging</a></li><li><a href=#debuggers>Debuggers</a></li><li><a href=#specialized-tools>Specialized Tools</a></li><li><a href=#static-analysis>Static Analysis</a></li></ul></li><li><a href=#literature-review>Literature Review</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=debugging-101>Debugging 101</h2><div class=priors-holder><div class=priors><p>Definition? Debugging involves inspecting a program&rsquo;s internal state.</p></div></div><h3 id=printf-debugging-and-logging><code>printf</code> Debugging and Logging</h3><p>In <code>printf</code> debugging, one adds print statements and keeps iterating until
+last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#debugging-101>Debugging 101</a><ul><li><a href=#printf-debugging-and-logging><code>printf</code> Debugging and Logging</a></li><li><a href=#debuggers>Debuggers</a></li><li><a href=#specialized-tools>Specialized Tools</a></li><li><a href=#static-analysis>Static Analysis</a></li></ul></li><li><a href=#literature-review>Literature Review</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=debugging-101>Debugging 101</h2><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Definition? Debugging involves inspecting a program&rsquo;s internal state.</p></div></div><h3 id=printf-debugging-and-logging><code>printf</code> Debugging and Logging</h3><p>In <code>printf</code> debugging, one adds print statements and keeps iterating until
 enough information has been extracted. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><p>Using logging has several advantages over <code>printf</code> debugging: varying logging
 destinations (e.g. standard output, files, sockets, remote servers, etc.);
 severity levels (e.g. <code>INFO</code>, <code>DEBUG</code>, <code>WARN</code>, <code>ERROR</code>, <code>&amp;c</code>) that support
-filtering of output; color-coding for readability. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=comment-holder><div class=comment><p>Terminals have varying levels of color support: plain color; ANSI escape codes
+filtering of output; color-coding for readability. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Terminals have varying levels of color support: plain color; ANSI escape codes
 (16 color codes with bold/italic and background); 256 color palette; 24-bit
 truecolor (&ldquo;888&rdquo; colors, aka 16 million, e.g. <code>printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n"</code>). <span class=citation-ref><a href=#TermStandardColors></a></span></p></div></div><p>Logging can also be disabled in various contexts. For example, Chromium compiles
-away <code>DLOG</code> statements to no-op in non-debug builds. <span class=citation-ref><a href=#ChromiumLogging></a></span></p><div class=comment-holder><div class=comment><p>In principle though, one can also compile away <code>printf</code> statements into no-ops
+away <code>DLOG</code> statements to no-op in non-debug builds. <span class=citation-ref><a href=#ChromiumLogging></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>In principle though, one can also compile away <code>printf</code> statements into no-ops
 in various execution contexts. For instance, <span class=citation-ref><a href=#ChromiumLogging></a></span>re-defines <code>assert(x)</code> to <code>DLOG_ASSERT(x)</code>. A similar treatment can be applied
 to <code>printf</code>.</p></div></div><p>Most programs write logs to some standardized location (sometimes through a
 shell-provided program like <code>logger</code>). In UNIX systems, logs are usually written
@@ -65,11 +65,11 @@ logs, e.g.
 Linux, and
 <a href=https://www.manpagez.com/man/1/log/ target=_blank rel=noopener><code>log show</code>
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>on macOS. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><h3 id=debuggers>Debuggers</h3><div class=priors-holder><div class=priors><p>Optimized code is frequently tougher to debug because the symbols are often
-optimized away.</p></div></div><div class=priors-holder><div class=priors><p>Making one-off adjustments during debugging has varying levels of support, e.g.
+</a>on macOS. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><h3 id=debuggers>Debuggers</h3><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Optimized code is frequently tougher to debug because the symbols are often
+optimized away.</p></div></div><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Making one-off adjustments during debugging has varying levels of support, e.g.
 Haskell&rsquo;s debugger allows on-the-fly modification; log-points in Microsoft&rsquo;s C++
 Extension for VS Code pauses execution whenever I try it.</p></div></div><p>Debuggers are programs that let you interact with the execution of a program,
-allowing actions like:</p><ul><li>Halt execution of the program when it reaches a certain line.</li><li>Step through the program one instruction at a time.</li><li>Inspect values of variables after the program crashed.</li><li>Conditionally halt the execution when a given condition is met.</li></ul><p><span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=priors-holder><div class=priors><p>Various debuggers exist, e.g. GDB, LLDB, extensions in VS Code, Haskell&rsquo;s
+allowing actions like:</p><ul><li>Halt execution of the program when it reaches a certain line.</li><li>Step through the program one instruction at a time.</li><li>Inspect values of variables after the program crashed.</li><li>Conditionally halt the execution when a given condition is met.</li></ul><p><span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Various debuggers exist, e.g. GDB, LLDB, extensions in VS Code, Haskell&rsquo;s
 built-in debugger, and so forth.</p></div></div><p>Many programming languages come with some form of debugger, e.g.
 <a href=https://docs.python.org/3/library/pdb.html target=_blank rel=noopener><code>pdb</code>
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
@@ -94,7 +94,7 @@ system calls.
 <a href=http://dtrace.org/blogs/about/ target=_blank rel=noopener><code>dtrace</code>
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>(macOS and BSD) commands let you
-trace the system calls that a program makes. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span><span id=SysCallAnalysis></span></p><div class=comment-holder><div class=comment><p>System calls include <strong>process control</strong> (e.g. create process, terminate
+trace the system calls that a program makes. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span><span id=SysCallAnalysis></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>System calls include <strong>process control</strong> (e.g. create process, terminate
 process, load, execute, get/set process attributes, wait, allocate/free memory),
 <strong>file management</strong> (create/delete file, open/close file, read/write/reposition,
 get/set file attributes), <strong>device management</strong> (request/release device,
@@ -102,7 +102,7 @@ read/write/reposition, get/set device attributes, logically attach/detach
 devices), <strong>information maintenance</strong> (get/set total system information; get/set
 process, file, or device metadata), <strong>communication</strong> (create/delete
 communication connection, send/receive messages, transfer status information,
-attach/detach remote devices), <strong>protection</strong> (get/set file permissions). <span class=citation-ref><a href=#WikiSystemCalls></a></span></p></div></div><div class=comment-holder><div class=comment><p>See
+attach/detach remote devices), <strong>protection</strong> (get/set file permissions). <span class=citation-ref><a href=#WikiSystemCalls></a></span></p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>See
 <a href=https://www.curiosities.dev/computer-science/2020-11-14-software-dependencies/#Wright2020>using system calls to identify malicious Python packages
 </a>.</p></div></div><p>To look at network packets,
 <a href=https://www.man7.org/linux/man-pages/man1/tcpdump.1.html target=_blank rel=noopener><code>tcpdump</code>
@@ -141,12 +141,12 @@ tools
 <a href=https://github.com/caramelomartins/awesome-linters target=_blank rel=noopener>awesome
 linters
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=comment-holder><div class=comment><p>Linters and static analyzers are pretty helpful when picking up a language. It&rsquo;s
-like having an ever-present tutor.</p></div></div><div class=comment-holder><div class=comment><p>Pretty cool that <code>ale</code> can display warnings and errors in files being edited in
+</a>. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Linters and static analyzers are pretty helpful when picking up a language. It&rsquo;s
+like having an ever-present tutor.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Pretty cool that <code>ale</code> can display warnings and errors in files being edited in
 Vim <em>before</em> files have been saved back to a filesystem. This is possible
 because Vim has APIs to access the contents of its text buffers.</p></div></div><p>Code formatters auto-format source code such that it&rsquo;s consistent with common
 stylistic patterns. Giving up stylistic control and using standardized code
-format helps other people read your (stylistically standardized) code. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=comment-holder><div class=comment><p>Code formatters can be pretty opinionated because there can be more than one
+format helps other people read your (stylistically standardized) code. <span class=citation-ref><a href=#MissingSemester2020DebuggingAndProfiling></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Code formatters can be pretty opinionated because there can be more than one
 valid way of achieving something. For example,
 <a href=https://black.readthedocs.io/en/stable/ target=_blank rel=noopener>Python&rsquo;s
 Black
@@ -169,9 +169,9 @@ to improve on <span class=citation-ref><a href=#Zeller2002></a></span>&rsquo;s w
 sequence, while ProbDD learns a probabilistic model to select which items to
 remove in the next iteration. The worst-case asymptotic number of tests while
 using ProDD is \(O(n)\), while that of <em>ddmin</em> is \(O(n^2)\). ProbDD also
-tends to produce smaller final artifacts than those produced by <em>ddmin</em>.</p><p><span class=tag-ref><a href=/tags/probability>#probability</a></span></p></div><div class=comment-holder><div class=comment><p>In the space of probabilistic algorithms, ProbDD is probabilistic in running
+tends to produce smaller final artifacts than those produced by <em>ddmin</em>.</p><p><span class=tag-ref><a href=/tags/probability>#probability</a></span></p></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>In the space of probabilistic algorithms, ProbDD is probabilistic in running
 time, but not in the answer produced. <span class=citation-ref><a href=#Wang2021></a></span>provide a proof of
-correctness.</p></div></div><div class=comment-holder><div class=comment><p>Delta debugging reminds me of
+correctness.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Delta debugging reminds me of
 <a href=https://git-scm.com/docs/git-bisect target=_blank rel=noopener>git-bisect
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>,
@@ -181,15 +181,15 @@ at most \(O(lg N)\) steps. ProbDD looks useful where git history is absent or
 not useful (e.g. finding the fault within a commit that changed a lot of
 things).</p><p><sup>1</sup> For example, if we&rsquo;re looking for a feature bug, then the code must
 be buildable at each commit. Otherwise, we won&rsquo;t know whether that commit broke
-the feature.</p></div></div><div class=comment-holder><div class="comment open-comment"><p>Read <span class=citation-ref><a href=#Zeller2002></a></span>. There are mentions of binary search, so maybe
+the feature.</p></div></div><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Read <span class=citation-ref><a href=#Zeller2002></a></span>. There are mentions of binary search, so maybe
 that&rsquo;s why <span class=citation-ref><a href=#Wang2021></a></span>did not concern themselves with it.</p></div></div><p>Statistical Fault Localization (SFL) techniques use execution profiles and
 success/failure information from execution data to predict which program
-elements are likely to be faulty. <span class=citation-ref><a href=#Kucuk2021></a></span></p><div class=comment-holder><div class=comment><p>SFL is one of the techniques for Automated Software Fault Localization (AFL).
+elements are likely to be faulty. <span class=citation-ref><a href=#Kucuk2021></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>SFL is one of the techniques for Automated Software Fault Localization (AFL).
 The goal of AFL is to compute suspiciousness scores for program statements and
 other elements, and present those to the developers for deeper investigation.
 SFL is not used widely in industry because most techniques do not consistently
 locate faults with enough precision. <span class=citation-ref><a href=#Kucuk2021></a></span></p></div></div><p><span class=citation-ref><a href=#Kucuk2021></a></span>note that most SFL techniques measure correlation, and
-are thus susceptible to confounding bias.</p><div class=comment-holder><div class=comment><p>Let \(X\) be some independent variable, and \(Y\) some dependent variable.
+are thus susceptible to confounding bias.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Let \(X\) be some independent variable, and \(Y\) some dependent variable.
 To estimate the effect of \(X\) on \(Y\), the statistician must suppress the
 effects of extraneous variables that influence both \(X\) and \(Y\). We say
 that \(X\) and \(Y\) are confounded by some other variable \(Z\) whenever

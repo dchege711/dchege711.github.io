@@ -31,7 +31,7 @@ steal passwords....'><meta property="og:type" content="website"><meta property="
 last modified on Mon, 05 Sep 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#cross-site-request-forgery-xsrf>Cross-site Request Forgery (XSRF)</a></li><li><a href=#xsrf-defense>XSRF Defense</a></li><li><a href=#same-origin-policy-sop>Same-Origin Policy (SOP)</a><ul><li><a href=#problems-with-sop>Problems with SOP</a></li><li><a href=#solution-html5-postmessage>Solution: HTML5 postMessage</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=cross-site-request-forgery-xsrf>Cross-site Request Forgery (XSRF)</h2><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;http://bank.com/transfer?from=from_ID&amp;to=to_ID&amp;value=1000&#34;</span><span style=color:#111>&gt;</span>
 </span></span></code></pre></div><p>Because the user is logged in and has a cookie, the victim site trusts the
 user&rsquo;s browser.</p><p>The attacker gets user/browser to execute command on victim site, e.g. request a
-link, post a form. The command has permanent effects.</p><div class=comment-holder><div class=comment><p>A frame can navigate its immediate children. Why is it designed such that it
+link, post a form. The command has permanent effects.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>A frame can navigate its immediate children. Why is it designed such that it
 can&rsquo;t navigate its children too?</p><p><em>Consider a website with a login frame, where the user inputs passwords. The
 attacker can put this website inside a frame and navigate to the login frame and
 steal passwords.</em></p></div></div><h2 id=xsrf-defense>XSRF Defense</h2><p>Classify URLs as public and non-public. Non-public URLs should contain an
@@ -47,7 +47,7 @@ email.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-co
 </span></span><span style=display:flex><span>    <span style=color:#75715e>// Send response back to attacker.com
 </span></span></span><span style=display:flex><span><span style=color:#111>};</span>
 </span></span></code></pre></div><p>Scripts on different pages are allowed to access each other if and only if the
-pages they originate from share the same protocol, port and origin.</p><div class=comment-holder><div class=comment><p><a href=https://example.com/ target=_blank rel=noopener>https://example.com/
+pages they originate from share the same protocol, port and origin.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><a href=https://example.com/ target=_blank rel=noopener>https://example.com/
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>has a different origin from
 <a href=https://www.example.com/ target=_blank rel=noopener>https://www.example.com/
@@ -57,7 +57,7 @@ said, websites tend to redirect the naked domain to the www domain for user
 convenience.</p></div></div><p>Note that SOP doesn&rsquo;t prevent example.com loads an externally hosted script,
 e.g. <code>&lt;script src="https://third-party.com/lib/d3.js>&lt;/script></code>. In this case,
 the origin of this script is still example.com because it was loaded on
-example.com</p><h3 id=problems-with-sop>Problems with SOP</h3><ul><li>Subtly different policies for cookies, HTML5 storage, plugins</li><li>Ambiguities: different browsers, extensions, IP addresses&mldr;</li><li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> & <code>login.example.com</code> vs <code>payments.example.com</code></li></ul><div class=comment-holder><div class=comment><p>I&rsquo;ve mostly seen the <code>example.com/~username</code> pattern in universities, but that
+example.com</p><h3 id=problems-with-sop>Problems with SOP</h3><ul><li>Subtly different policies for cookies, HTML5 storage, plugins</li><li>Ambiguities: different browsers, extensions, IP addresses&mldr;</li><li>Hostnames are not an accurate way to define trust boundaries, e.g. <code>webhost.com/~alice</code> vs <code>webhost.com/~bob</code> & <code>login.example.com</code> vs <code>payments.example.com</code></li></ul><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I&rsquo;ve mostly seen the <code>example.com/~username</code> pattern in universities, but that
 technique comes with security disclaimers. Web hosters that still intend to use
 the technique are advised to allow only static content. <span class=citation-ref><a href=#ApacheDocs></a></span></p><p>Modern web hosters go the subdomain route, e.g. <code>username.github.io</code>, which
 complicates the <code>login.example.com</code> vs. <code>payments.example.com</code>. One mitigation

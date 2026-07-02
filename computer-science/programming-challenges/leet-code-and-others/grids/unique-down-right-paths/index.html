@@ -69,7 +69,7 @@ online judge, so the runtime (less than 5ms) is not comparable. The
 runtime is \(O(m n)\).</p><p>The memory usage is \(O(n)\). Per <span class=citation-ref><a href=#LCUniquePaths></a></span>, that&rsquo;s
 \(\approx\) 6MB which is better than 63% of submissions. The range is
 5,400 KB to 6,500 KB, so all submissions within an order of magnitude of
-each other.</p><div class=comment-holder><div class=comment><p>The answer is guaranteed to be \(\le 2 \cdot 10^9 = 2^{lg(2 \cdot
+each other.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The answer is guaranteed to be \(\le 2 \cdot 10^9 = 2^{lg(2 \cdot
 10^9)} &lt; 2^{31}\). The <code>int</code> data type is guaranteed to be at least 16
 bits, but on 32/64 bit systems, it&rsquo;s almost guaranteed to be at least 32
 bits wide <span class=citation-ref><a href=#cppReferenceFundamentalTypes></a></span>. I can specify
@@ -79,10 +79,10 @@ solutions that use 3MB. It&rsquo;s more likely that LeetCode&rsquo;s environment
 uses 32-bit <code>int</code>s. Update: no improvement, both <code>sizeof(int)</code> and
 <code>sizeof(std::uint32_t)</code> evaluate to <code>4</code> bytes (and therefore 32 bits).</p></div></div><h2 id=combinatorics-solution-for-moving-downright>Combinatorics Solution for Moving Down/Right</h2><p><span class=tag-ref><a href=/tags/combinatorics>#combinatorics</a></span></p><p><span class=citation-ref><a href=#Archit91LCUniquePaths></a></span>models the problem as a combinatorics
 problem: to get to the bottom-right, we need to choose \(m - 1\) right
-moves and \(n - 1\) down moves, from a total of \(m + n - 2\) moves.</p><p>$$ C_{m-1}^{m+n-2} = C_{n-1}^{m+n-2} = \frac{(m+n-2)!}{(m-1)!(n-1)!} $$</p><div class=comment-holder><div class=comment><p>Why is \(C_{m-1}^{m+n-2} = C_{n-1}^{m+n-2}\) true? In general,
+moves and \(n - 1\) down moves, from a total of \(m + n - 2\) moves.</p><p>$$ C_{m-1}^{m+n-2} = C_{n-1}^{m+n-2} = \frac{(m+n-2)!}{(m-1)!(n-1)!} $$</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Why is \(C_{m-1}^{m+n-2} = C_{n-1}^{m+n-2}\) true? In general,
 \(C^{n}_{k} = \frac{n!}{k!(n-k)!}\), and so this follows
 algebraically. It&rsquo;s not a special property of the problem.</p></div></div><p>Assuming \(m > n\) in order to eliminate \((m-1)!\) gives us:</p><p>$$ C_{m-1}^{m+n-2} = \frac{(m+n-2) \times (m+n-3) \times &mldr; \times (m+n-n) \times (m-1) \times &mldr; \times 1 }{ ((m-1) \times (m-2) \times &mldr; \times 1) (n-1)!} $$
-$$ = \frac{(m+n-2) \times (m+n-3) \times &mldr; \times m}{(n-1)!} $$</p><div class=comment-holder><div class="comment open-comment"><p>How is the above guaranteed to be an integer?</p><p>By definition, \(C^{n}_{k}\) counts something, and therefore it&rsquo;s an
+$$ = \frac{(m+n-2) \times (m+n-3) \times &mldr; \times m}{(n-1)!} $$</p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>How is the above guaranteed to be an integer?</p><p>By definition, \(C^{n}_{k}\) counts something, and therefore it&rsquo;s an
 integer. <span class=citation-ref><a href=#SECombinationIsAnInteger></a></span></p><p>From <span class=citation-ref><a href=#proofWikiBinomialCoefficientInteger></a></span>:</p><p>$$ C^{n}_{k} = \binom{n}{k} = \frac{n}{k!(n-k)!} $$
 $$ = \frac{n (n-1) (n-2) &mldr; (n - k + 1)}{k!} $$</p><p>&mldr; the numerator is a product of \(k\) successive integers, and <span class=citation-ref><a href=#proofWikiBFactorialDividesProductOfSuccessiveNumbers></a></span>(whose
 proof is beyond my mathematical maturity) states that the factorial of
@@ -113,7 +113,7 @@ infinite-precision arithmetic, e.g. Python?</p></div></div><div class=highlight>
 </span></span></code></pre></div><p>Re-ordering \(m, n\), such that \(m\) is the max, the loop goes
 through \(m + n - 2 - m = n - 2\) iterations, and therefore the
 runtime is \(O(min(m, n))\). The space usage is \(O(1)\). I don&rsquo;t
-think we can do better than this.</p><div class=comment-holder><div class=comment><p>Curiously, the space usage for the combinatorics approach is 5.9MB. I
+think we can do better than this.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Curiously, the space usage for the combinatorics approach is 5.9MB. I
 thought it&rsquo;d be much lower than the 6MB used in the DP solution. On
 second thought, the DP solution uses \(O(n)\) space, and the problem
 is defined such that \(n \le 100\), which is close to \(O(1)\).</p></div></div><h2 id=takeaways>Takeaways</h2><p>I was wrong to earlier assume that because other people&rsquo;s solutions were

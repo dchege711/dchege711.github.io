@@ -174,7 +174,7 @@ of set operations, e.g. intersection and subtraction, and therefore, using a
 </span></span></code></pre></div><p>The <code>containers</code> package provides <code>IntMap</code> and <code>IntSet</code> in addition to the
 general <code>Map</code> and <code>Set</code> data structures. <a id=PatriciaTreesSection></a><span class=citation-ref><a href=#containersHaskell></a></span>This distinction is motivated by <span class=citation-ref><a href=#Okasaki1998></a></span>&rsquo;s work on finite maps that are based on <span class=citation-ref><a href=#Morrison1968></a></span>&rsquo;s Patricia trees, instead of the usual base of balanced binary search trees.
 While both bases have fast lookups and inserts, Patricia trees have fast merges
-of two containers. <span class=citation-ref><a href=#Okasaki1998></a></span></p><div class=comment-holder><div class=comment><p>I&rsquo;ve been getting the vibe that Haskell is more explicit in its connection to
+of two containers. <span class=citation-ref><a href=#Okasaki1998></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I&rsquo;ve been getting the vibe that Haskell is more explicit in its connection to
 academia, e.g. foundational papers being linked from API docs, and library
 writers and maintainers being faculty in CS departments.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>numOf1478AppearancesInOutput</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>SevenSegmentDisplay</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
 </span></span><span style=display:flex><span><span style=color:#75af00>numOf1478AppearancesInOutput</span> <span style=color:#f92672>=</span> <span style=color:#111>foldr</span> <span style=color:#111>f</span> <span style=color:#ae81ff>0</span> <span style=color:#00a8c8>where</span>
@@ -188,10 +188,10 @@ writers and maintainers being faculty in CS departments.</p></div></div><div cla
 to a <code>Wname-shadowing</code> HLint warning on the second <code>outputValues</code>. <span class=citation-ref><a href=#LeventErkok2020></a></span>notes that either of the <code>NamedFieldPuns</code> or
 <code>RecordWildCards</code> extensions allows shadowing of field names. However, adding
 either language extension results in HLint warning that the <code>LANGUAGE</code> pragma is
-unused.</p><div class=comment-holder><div class=comment><p>Compared to other Part I&rsquo;s, this one felt too straightforward. Most of the
+unused.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Compared to other Part I&rsquo;s, this one felt too straightforward. Most of the
 difficulty was in
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/AoC2021InputParser/#day-08-seven-segment-search>using <code>parsec</code> to parse the input line
-</a>.</p></div></div><h2 id=part-ii-description>Part II Description</h2><div class=priors-holder><div class=priors><p>Part II might feature additional information to distinguish additional digits.
+</a>.</p></div></div><h2 id=part-ii-description>Part II Description</h2><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>Part II might feature additional information to distinguish additional digits.
 Maybe the output values follow some pattern, e.g. the digits are always
 increasing from right to left, not all digits are possible for a given output,
 etc.</p><p>Update: I was wrong. We <em>do</em> have enough information to deduce all of the
@@ -259,7 +259,7 @@ info than what I got from the shared segments analysis.</p><p>Maybe I can do som
 </span></span><span style=display:flex><span>5 - ab d fg (5)
 </span></span></code></pre></div><p>The union of <code>069</code>&rsquo;s active segments is <code>abcdefg</code>, and so is the union of
 <code>235</code>&rsquo;s active segments, so that&rsquo;s not helpful.</p><p>The intersection of <code>069</code>&rsquo;s active segments is <code>abfg</code>, and the complement of
-this intersection is <code>cde</code>; nothing useful yet.</p><div class=comment-holder><div class=comment><p>I&rsquo;m mostly talking in set terminology, so maybe instead of using <code>String</code> to
+this intersection is <code>cde</code>; nothing useful yet.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I&rsquo;m mostly talking in set terminology, so maybe instead of using <code>String</code> to
 represent a display digit, I should have used a <code>Set Char</code>.</p></div></div><p>The intersection of <code>253</code>&rsquo;s active segments is <code>adg</code>, and the complement of this
 intersection is <code>bcef</code>; nothing useful yet.</p><p>The union of the previous two intersections (<code>abfg</code> and <code>adg</code>) is <code>abdfg</code>, and
 for once we have something useful as that equals to <code>5</code>&rsquo;s active segments! The
@@ -300,7 +300,7 @@ either.</p><p>The knowns and unknowns are currently:</p><div class=highlight><pr
 latter has a <code>d</code>. Subtracting <code>5 abdfg</code> from <code>9 abcdfg</code> gives <code>c</code>, and therefore
 distinguishes <code>0</code> from <code>6</code>.</p><p>The difference between <code>2</code> and <code>3</code> is that the former has an <code>e</code>, while the
 latter has an <code>f</code>. The complement of the union of <code>14759</code>&rsquo;s active segments is
-<code>e</code>, and that can be used to distinguish <code>2</code> from <code>3</code>.</p><div class=comment-holder><div class=comment><p>Tedious exercise, but rewarding in the end. I feel like Sherlock Holmes.</p></div></div><p><span class=citation-ref><a href=#Mazon2021-08></a></span>has simpler logic though. For convenience, here is the
+<code>e</code>, and that can be used to distinguish <code>2</code> from <code>3</code>.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Tedious exercise, but rewarding in the end. I feel like Sherlock Holmes.</p></div></div><p><span class=citation-ref><a href=#Mazon2021-08></a></span>has simpler logic though. For convenience, here is the
 non-scrambled mapping:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-md data-lang=md><span style=display:flex><span>1 -   c  f  (2)
 </span></span><span style=display:flex><span>4 -  bcd f  (4)
 </span></span><span style=display:flex><span>7 - a c  f  (3)
@@ -317,7 +317,7 @@ non-scrambled mapping:</p><div class=highlight><pre tabindex=0 style=color:#2728
 not include <code>1</code>. <code>9</code> is the 6-segment digit that includes <code>4</code>. <code>0</code> is the
 remaining 6-segment digit. <code>3</code> is the 5-segment digit that includes <code>1</code>. <code>5</code>
 is the 5-segment digit that&rsquo;s included in <code>6</code>. <code>2</code> is the remaining 5-segment
-digit. <span class=citation-ref><a href=#Mazon2021-08></a></span></p><div class=comment-holder><div class=comment><p>The major shortcoming of how I went about deducing the mapping was thinking in
+digit. <span class=citation-ref><a href=#Mazon2021-08></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The major shortcoming of how I went about deducing the mapping was thinking in
 terms of unions and intersections, and not considering subsets. Once I found a
 working approach, I hastened to implement it and call it a day.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>type</span> <span style=color:#00a8c8>Segment</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>IntSet</span><span style=color:#f92672>.</span><span style=color:#00a8c8>IntSet</span>
 </span></span><span style=display:flex><span><span style=color:#00a8c8>type</span> <span style=color:#00a8c8>SegmentsMapping</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Map</span><span style=color:#f92672>.</span><span style=color:#00a8c8>Map</span> <span style=color:#00a8c8>Segment</span> <span style=color:#00a8c8>Int</span>
@@ -366,14 +366,14 @@ working approach, I hastened to implement it and call it a day.</p></div></div><
 </span></span><span style=display:flex><span><span style=color:#75af00>sumOfOutputValues</span> <span style=color:#f92672>=</span> <span style=color:#111>foldl&#39;</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>acc</span> <span style=color:#111>display</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>acc</span> <span style=color:#f92672>+</span> <span style=color:#111>extractOutputValue</span> <span style=color:#111>display</span><span style=color:#111>)</span> <span style=color:#ae81ff>0</span> <span style=color:#00a8c8>where</span>
 </span></span><span style=display:flex><span>    <span style=color:#111>extractOutputValue</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>SevenSegmentDisplay</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
 </span></span><span style=display:flex><span>    <span style=color:#111>extractOutputValue</span> <span style=color:#00a8c8>SevenSegmentDisplay</span><span style=color:#111>{</span> <span style=color:#f92672>..</span> <span style=color:#111>}</span> <span style=color:#f92672>=</span> <span style=color:#111>parseInt</span> <span style=color:#111>(</span><span style=color:#111>deduceMappings</span> <span style=color:#111>uniquePatterns</span><span style=color:#111>)</span> <span style=color:#111>outputValues</span>
-</span></span></code></pre></div><div class=comment-holder><div class=comment><p><code>parseInt</code> adapted from
+</span></span></code></pre></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><code>parseInt</code> adapted from
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/BinaryDiagnostic/03-binary-diagnostic/#converting-binary-representation-to-decimal>AoC 21 #03: Binary Diagnostic > Converting Binary
 Representation to Decimal
 </a>.</p></div></div><p><span class=citation-ref><a href=#Mazon2021-08></a></span>approaches the problem differently. They note that the
 search space is small enough, \(7! = 5{,}040\), that there is
 <a href=#Mazon2021-08-LogicDeduction>no need to use
 first-order logic
-</a>.</p><div class=comment-holder><div class="comment open-comment"><p>Why is the search space \(7!\) instead of \(6!\), given that we already know
+</a>.</p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Why is the search space \(7!\) instead of \(6!\), given that we already know
 the representations of \([1, 4, 7, 8]\)?</p><p>Answer: We&rsquo;re looking at a seven-segment display.</p><p>Why \(7!\) though. \(7!\) is the number of ways \(7\) items can be
 ordered. I don&rsquo;t understand why the search space also corresponds to this.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75715e>-- From https://xn--sant-epa.ti-pun.ch/posts/2021-12-aoc/day08.html</span>
 </span></span><span style=display:flex><span>
@@ -382,14 +382,14 @@ ordered. I don&rsquo;t understand why the search space also corresponds to this.
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#00a8c8>type</span> <span style=color:#00a8c8>Wire</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Int</span>
 </span></span><span style=display:flex><span><span style=color:#00a8c8>newtype</span> <span style=color:#00a8c8>Digit</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Digit</span> <span style=color:#111>[</span><span style=color:#00a8c8>Wire</span><span style=color:#111>]</span> <span style=color:#00a8c8>deriving</span> <span style=color:#111>(</span><span style=color:#00a8c8>Eq</span><span style=color:#111>,</span> <span style=color:#00a8c8>Ord</span><span style=color:#111>)</span>
-</span></span></code></pre></div><div class=comment-holder><div class=comment><p>So far I&rsquo;ve been using <code>data</code> to define custom types; <code>newtype</code> is new to me.</p></div></div><p>The syntax and usage of <code>newtype</code> and <code>data</code> are identical. Replacing <code>newtype</code>
+</span></span></code></pre></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>So far I&rsquo;ve been using <code>data</code> to define custom types; <code>newtype</code> is new to me.</p></div></div><p>The syntax and usage of <code>newtype</code> and <code>data</code> are identical. Replacing <code>newtype</code>
 with <code>data</code> will compile and most probably work, but <code>data</code> can only be replaced
 with <code>newtype</code> if the type has exactly one constructor with exactly one field
 inside it. The restrictions for <code>newtype</code> imply that the new type and the type
 of field are in direct correspondence (isomorphic), and therefore after the
 type is checked at compile time, at run time the two types can be treated
 essentially the same, without the overhead or indirection normally associated
-with a data constructor. <span class=citation-ref><a href=#haskellWikiNewtype></a></span></p><div class=comment-holder><div class=comment><p>Note that there is more subtle reasoning on the nuance between <code>newtype</code> and
+with a data constructor. <span class=citation-ref><a href=#haskellWikiNewtype></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Note that there is more subtle reasoning on the nuance between <code>newtype</code> and
 <code>data</code> (e.g. why not use <code>newtype</code> everywhere you can?) in
 <span class=citation-ref><a href=#haskellWikiNewtype></a></span>and in
 <a href=https://www.haskell.org/tutorial/moretypes.html#sect6.1 target=_blank rel=noopener>A Gentle Introduction to Haskell: Types,
@@ -417,9 +417,9 @@ thus entirely compatible, and that&rsquo;s why <code>Digit</code> can accept a <
 </span></span><span style=display:flex><span>        <span style=color:#00a8c8>Just</span> <span style=color:#111>perm</span> <span style=color:#f92672>=</span> <span style=color:#111>find</span> <span style=color:#111>((</span><span style=color:#f92672>==</span> <span style=color:#111>sort</span> <span style=color:#111>reference</span><span style=color:#111>)</span> <span style=color:#f92672>.</span> <span style=color:#111>sort</span> <span style=color:#f92672>.</span> <span style=color:#111>flip</span> <span style=color:#111>permute</span> <span style=color:#111>obsDigits</span><span style=color:#111>)</span>
 </span></span><span style=display:flex><span>                    <span style=color:#111>(</span><span style=color:#111>permutations</span> <span style=color:#111>[</span><span style=color:#ae81ff>0</span><span style=color:#f92672>..</span><span style=color:#ae81ff>6</span><span style=color:#111>])</span>
 </span></span><span style=display:flex><span>    <span style=color:#00a8c8>in</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#111>fromJust</span> <span style=color:#f92672>.</span> <span style=color:#111>(`</span><span style=color:#111>elemIndex</span><span style=color:#111>`</span> <span style=color:#111>reference</span><span style=color:#111>))</span> <span style=color:#111>(</span><span style=color:#111>permute</span> <span style=color:#111>perm</span> <span style=color:#111>obsDisplay</span><span style=color:#111>)</span>
-</span></span></code></pre></div><div class=comment-holder><div class="comment open-comment"><p>I don&rsquo;t yet follow why <code>solve</code> works, and I don&rsquo;t think dissecting it further
+</span></span></code></pre></div><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>I don&rsquo;t yet follow why <code>solve</code> works, and I don&rsquo;t think dissecting it further
 is worthwhile. Maybe I can leave it at &ldquo;exhaustive search is feasible for this
-problem&rdquo;?</p></div></div><div class=comment-holder><div class=comment><p>New API: <code>flip :: (a -> b -> c) -> b -> a -> c</code>, where <code>flip f</code> takes its
+problem&rdquo;?</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>New API: <code>flip :: (a -> b -> c) -> b -> a -> c</code>, where <code>flip f</code> takes its
 (first) two arguments in the reverse order of <code>f</code>, e.g.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span> <span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#111>flip</span> <span style=color:#111>(</span><span style=color:#f92672>++</span><span style=color:#111>)</span> <span style=color:#d88200>&#34;hello&#34;</span> <span style=color:#d88200>&#34;world&#34;</span>
 </span></span><span style=display:flex><span><span style=color:#d88200>&#34;worldhello&#34;</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Prelude></a></span></p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=containersHaskell>containers: Assorted concrete container types<i>.</i>

@@ -116,7 +116,7 @@ returns an error, e.g., 5XX, 408 (request timeout), 429 (too many requests),
 <code>Backoff: Exponential</code>, <code>UseJitter: true</code>, and <code>Delay: 2s</code>. The default retries
 on all HTTP methods, but can be customized, e.g.,
 <code>Retry.DisableFor(HttpMethod.Post)</code> or <code>Retry.DisableForUnsafeHttpMethods()</code>
-which covers <code>POST</code>, <code>PATCH</code>, <code>PUT</code>, <code>DELETE</code>, and <code>CONNECT</code>. <span class=citation-ref><a href=#PatternsForResilientHTTPApps></a></span></p><div class=comment-holder><div class="comment open-comment"><p>Why should a 5XX server error be considered transient? I assumed that in
+which covers <code>POST</code>, <code>PATCH</code>, <code>PUT</code>, <code>DELETE</code>, and <code>CONNECT</code>. <span class=citation-ref><a href=#PatternsForResilientHTTPApps></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Why should a 5XX server error be considered transient? I assumed that in
 general, server errors are deterministic, e.g., input <code>X</code> triggers a code path
 that tries to dereference <code>null</code>; retrying such a case won&rsquo;t help.</p></div></div><p>The <strong>hedging</strong> strategy executes the requests against multiple endpoints in
 case the dependency is slow or returns a transient error. By default, it hedges
@@ -143,7 +143,7 @@ customizable, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;
 </span></span><span style=display:flex><span>    <span style=color:#111>});</span>
 </span></span><span style=display:flex><span>  <span style=color:#111>});</span>
 </span></span><span style=display:flex><span><span style=color:#111>});</span>
-</span></span></code></pre></div><p>&mldr; with other configs like <code>ConfigureWeightedGroups</code> also available. <span class=citation-ref><a href=#PatternsForResilientHTTPApps></a></span></p><div class=comment-holder><div class="comment open-comment"><p>The hedging example from <span class=citation-ref><a href=#PatternsForResilientHTTPApps></a></span>doesn&rsquo;t make
+</span></span></code></pre></div><p>&mldr; with other configs like <code>ConfigureWeightedGroups</code> also available. <span class=citation-ref><a href=#PatternsForResilientHTTPApps></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>The hedging example from <span class=citation-ref><a href=#PatternsForResilientHTTPApps></a></span>doesn&rsquo;t make
 sense to me. Instead of having the branch in code, isn&rsquo;t it conventional to
 define a feature flag and then control its enablement from outside of the app,
 e.g., and experimentation platform?</p></div></div><h2 id=using-the-resilience-pipeline>Using the Resilience Pipeline</h2><p>Given a <code>ServiceProvider provider</code> and a <code>string key</code>:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#111>ResiliencePipelineProvider</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>string</span><span style=color:#111>&gt;</span> <span style=color:#111>pipelineProvider</span> <span style=color:#111>=</span>
