@@ -1,0 +1,167 @@
+<!doctype html><html lang=en><head><title>High Performance Networking in Chrome | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Performance in Context
+The execution of a web browser primarily involves three tasks: fetching
+resources, page layout and rendering, and JavaScript execution. That said,
+optimizing the last two tasks won&rsquo;t do much good if the browser is blocked on
+the network, waiting for resources to arrive. 
+Of the top 100K, the median page on desktop requests 97 resources weighing
+2,954KB in total, and makes 16 TCP connections .
+While the underlying transport (TCP) is optimized for large, streaming
+downloads, most network transfers in the browser are short and bursty. ..."><meta property="og:title" content="High Performance Networking in Chrome"><meta property="og:description" content="Performance in Context
+The execution of a web browser primarily involves three tasks: fetching
+resources, page layout and rendering, and JavaScript execution. That said,
+optimizing the last two tasks won&rsquo;t do much good if the browser is blocked on
+the network, waiting for resources to arrive. 
+Of the top 100K, the median page on desktop requests 97 resources weighing
+2,954KB in total, and makes 16 TCP connections .
+While the underlying transport (TCP) is optimized for large, streaming
+downloads, most network transfers in the browser are short and bursty. ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/www/high-perf-networking-in-chrome/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/www/>The World Wide Web</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/www/high-perf-networking-in-chrome/>High Performance Networking in Chrome</a></li></ul></nav><section><header><h1>High Performance Networking in Chrome</h1><p class=meta>Dated Jul 4, 2026;
+last modified on Sun, 05 Jul 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#performance-in-context>Performance in Context</a></li><li><a href=#before-starttime>Before <code>startTime</code></a></li><li><a href=#speculative-optimization-with-chromes-predictor>Speculative Optimization with Chrome&rsquo;s Predictor</a></li><li><a href=#the-http-cache>The HTTP Cache</a></li><li><a href=#domain-lookup>Domain Lookup</a></li><li><a href=#establishing-the-connection>Establishing the Connection</a></li><li><a href=#sending-the-http-request>Sending the HTTP Request</a></li><li><a href=#hints-provided-by-page-authors>Hints Provided by Page Authors</a></li><li><a href=#optimizing-the-cold-boot-experience>Optimizing the Cold-Boot Experience</a></li><li><a href=#optimizing-interactions-with-the-omnibox>Optimizing Interactions with the Omnibox</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=performance-in-context>Performance in Context</h2><p>The execution of a web browser primarily involves three tasks: fetching
+resources, page layout and rendering, and JavaScript execution. That said,
+optimizing the last two tasks won&rsquo;t do much good if the browser is blocked on
+the network, waiting for resources to arrive. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>Of the top 100K, the median page on desktop requests 97 resources weighing
+2,954KB in total, and makes 16 TCP connections <span class=citation-ref><a href=#StateOfTheWebTop1M></a></span>.
+While the underlying transport (TCP) is optimized for large, streaming
+downloads, most network transfers in the browser are short and bursty. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>Even before the HTTP request itself is dispatched to the server, there is
+considerable overhead, e.g., DNS lookup, TCP handshake, and SSL negotiation.
+Assuming a 100ms roundtrip time, that&rsquo;s DNS (50ms), TCP (100ms), SSL (200ms),
+HTTP request to server (50ms), server processing (100ms), and HTTP response from
+the server (50ms). The overhead before the HTTP request accounts for \(350 /
+650 = 53.84 \% \) of the latency. <span class=citation-ref><a href=#Grigorik2013></a></span></p><figure><img src=/img/computer-science/www/browser-navigation-timestamps.svg alt="Navigation Timestamps. Source: w3c.github.io"><figcaption><p>Navigation Timestamps. Source: w3c.github.io</p></figcaption></figure><p>~100ms is the limit for the user feeling that the system reacts instantaneously.
+~1s is the limit for the user&rsquo;s flow of thought to remain uninterrupted. ~10s is
+the limit for keeping the user&rsquo;s attention focused on the UI. <span class=citation-ref><a href=#Nielsen1993></a></span>Faster sites yield more pageviews, higher engagement, and higher
+conversion rates, and so minimizing latency has a direct impact on the bottom
+line. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=before-starttime>Before <code>startTime</code></h2><p>Where resources are available, Chrome aims to use a renderer process for each
+site (scheme plus eTLD+1) <span class=citation-ref><a href=#ChromiumProcessModelAndSiteIsolation></a></span>. The
+browser I/O thread listens to the named pipe from the renderer process, and
+automatically forwards messages to the UI thread. A <code>ResourceMessageFilter</code> is
+installed on this channel so that certain messages, e.g., network requests, can
+be handled directly on the I/O thread. <span class=citation-ref><a href=#ChromiumDisplayingWebPages></a></span>The <code>ResourceDispatcherHost</code> singleton in the browser process controls each
+renderer&rsquo;s access to the network. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=speculative-optimization-with-chromes-predictor>Speculative Optimization with Chrome&rsquo;s Predictor</h2><p>There are 4 core optimization techniques:</p><ul><li><strong>DNS pre-resolve</strong>: Resolve hostnames ahead of time.</li><li><strong>TCP pre-connect</strong>: Connect to destination server ahead of time.</li><li><strong>Resource prefetching</strong>: Fetch critical resources on the page ahead of time.</li><li><strong>Page prerendering</strong>: Fetch the entire page ahead of time, to enable instant
+navigation when triggered by the user.</li></ul><p><span class=citation-ref><a href=#Grigorik2013></a></span></p><p>The singleton <code>Predictor</code> object observes network patterns to learn and
+anticipate likely user actions, e.g., user hovering over a link gives the
+browser a ~200ms heads up before the user clicks. If done poorly, speculative
+optimizations trigger unnecessary work and network traffic, and may impede
+actual navigation triggered by the user. The <code>Predictor</code> adds a
+<code>ConnectInterceptor</code> object to each request to observe traffic patterns and
+record success metrics. Given a signal, <code>Predictor</code>&rsquo;s job is to evaluate the
+likelihood of its success and trigger the optimization technique(s) if resources
+are available. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=the-http-cache>The HTTP Cache</h2><p>Given the URL of a resource, the browser checks the HTTP cache. If the resource
+exists and the appropriate cache headers, e.g., <code>Expires</code>, <code>Cache-Control</code>, were
+provided, then it&rsquo;s possible that the local copy is sufficient to fulfill the
+request. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>There are two implementations of the internal cache: one backed by local disk,
+and one that stores everything in memory. Incognito browsing uses the latter.
+<span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=domain-lookup>Domain Lookup</h2><p>Given a hostname and a resource path, Chrome checks the <code>ResourceDispatcherHost</code>
+singleton for pre-existing sockets, which are pooled by <code>{scheme, host, port}</code>.
+This is also where configured proxies are consulted. If neither succeed, then a
+DNS lookup (going from hostname to an IP address) is necessary. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>The OS caches DNS queries, so the response might be just a system call away. If
+not, the time taken for the DNS lookup depends on your internet provider,
+presence in intermediate caches, response times for authoritative servers for
+that domain, etc. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>DNS prefetch may be triggered by Blink providing a list of hostnames for all the
+links in the current page, the render process sending a mouse-hover or
+button-down event as an early signal of a likely navigation, the Omnibox
+proposing a high likelihood suggestion, the <code>Predictor</code> going off of past
+navigations, etc. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>Chrome originally used the OS-provided <code>getaddrinfo()</code> blocking system call.
+Chrome maintained a worker threadpool to allow it to perform multiple lookups in
+parallel. The OS has a DNS cache to store results of <code>getaddrinfo()</code> for faster
+future lookups. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>Because <code>getaddrinfo()</code> hides a lot of information, Chrome implemented their own
+cross-platform asynchronous DNS resolver, enabling optimizations like:</p><ul><li>Better control of retransmission timers</li><li>Ability to execute multiple queries in parallel</li><li>Visibility into record TTLs, allowing Chrome to refresh popular records ahead
+of time</li><li>Better behavior for dual stack implementations (IPv4 and IPv6)</li><li>Failovers to different servers, based on signals like RTT</li></ul><p><span class=citation-ref><a href=#Grigorik2013></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Choosing to roll out your own X is a fascinating decision to me. Takes some to
+decide that you can do better than the underlying platform. Maybe the Chrome
+team had a wishlist that the OS maintainers were taking too long to get to.</p></div></div><h2 id=establishing-the-connection>Establishing the Connection</h2><p>With the resolved IP address, Chrome opens a new TCP connection, a 3-way
+handshake: <code>SYN > SYN-ACK > ACK</code>. This adds a full roundtrip of latency delay,
+which depends on the chosen routing path from the client to the server. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p>For HTTPS destinations, an SSL handshake follows the TCP handshake. This can add
+up to two additional roundtrips of latency delay. If the SSL session is cached,
+then only one additional roundtrip is needed. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=sending-the-http-request>Sending the HTTP Request</h2><p>HTTP requests are associated with an underlying TCP connection only once the
+socket is ready to dispatch the request. This allows request prioritization,
+e.g., arrival of a higher priority request while the socket was connecting. It
+also supports &ldquo;warm&rdquo; TCP connections, where an existing socket becomes available
+while a new connection is being opened. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=hints-provided-by-page-authors>Hints Provided by Page Authors</h2><p>The page may contain <code>&lt;link rel="subresource" href="/javascript/myapp.js"></code> to
+tell the browser that it may want to dispatch the request before it encounters
+it later in the page. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p><code>&lt;link rel="dns-prefetch" ...></code> is useful when the page author has more
+information than the browser, e.g., a link that points to an analytics tracking
+service which redirects the user to the actual destination. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p><code>&lt;link rel="preconnect" ...></code> hints at the browser to open a connection before
+waiting for the HTML parser or preload scanner to do so. Google Fonts recommends
+<code>preconnect</code>-ing to
+<a href=https://fonts.googleapis.com target=_blank rel=noopener>https://fonts.googleapis.com
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>and
+<a href=https://fonts.gstatic.com target=_blank rel=noopener>https://fonts.gstatic.com
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<span class=citation-ref><a href=#ResourceHintsWebDev></a></span></p><p><code>&lt;link rel="prefetch" ...></code> is a hint to the browser that the resource may be
+needed in a future navigation. Chrome considers this a low priority hint that is
+evaluated after the current page has finished loading. <span class=citation-ref><a href=#Grigorik2013></a></span></p><p><code>&lt;link rel="prerender" ...></code> hints to Chrome that it should prerender the page
+in a hidden tab. When the user triggers navigation, the tab is swapped in from
+the background for an &ldquo;instant experience&rdquo;. Prerendering comes with many
+limitations, e.g., at most 1 prerender tab across all processes, no HTTPS or
+HTTP auth pages, only GET requests allowed, uses lowest CPU and network
+priority, abandoned if memory requirements exceed 100MB, etc. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=optimizing-the-cold-boot-experience>Optimizing the Cold-Boot Experience</h2><p>Many users follow the same routine after a cold boot of the browser, e.g.,
+navigating to our email inbox. Chrome remembers the top 10 most likely hostnames
+accessed by a user following browser start. As the browser loads, Chrome can
+trigger a DNS prefetch for likely destinations. <span class=citation-ref><a href=#Grigorik2013></a></span><span class=citation-ref><a href=#ChromiumDNSPrefetching></a></span></p><h2 id=optimizing-interactions-with-the-omnibox>Optimizing Interactions with the Omnibox</h2><p>Chrome records the history of user-entered prefixes, the actions it proposed,
+and the hit rate for each one, e.g., from chrome://predictors, whenever I enter
+&ldquo;n&rdquo; in the omnibox, I head to
+<a href=https://news.ycombinator.com/ target=_blank rel=noopener>https://news.ycombinator.com/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>\(23 / 29 \approx
+83\%\) of the time. The higher the confidence, the more aggressive the
+speculative optimizations, e.g., DNS pre-resolve, TCP pre-connect, and so forth.
+An average user takes hundreds of ms to fill their query and evaluate
+autocomplete suggestions, and so by the time they press &ldquo;Enter&rdquo; much of the
+network latency has already been eliminated. <span class=citation-ref><a href=#Grigorik2013></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-book' cited-by-count is-main><cite id=Grigorik2013>The Performance of Open Source Software<i>.</i>
+High Performance Networking in Chrome<i>.</i>
+</cite>Ilya Grigorik.
+<a href=https://aosabook.org/en/posa/high-performance-networking-in-chrome.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=aosabook.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>aosabook.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+Sep 26, 2013.
+<a href="https://openlibrary.org/search?isbn=9781304488787" target=_blank rel=noopener>ISBN: 9781304488787 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class='fas fa-fw fa-book' aria-hidden=true></i></div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=StateOfTheWebTop1M>HTTP Archive: Top 1,000,000: State of the Web<i>.</i>
+</cite><a href="https://httparchive.org/reports/state-of-the-web?lens=top1m" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=httparchive.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>httparchive.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 4, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Nielsen1993>Response Time Limits<i>.</i>
+</cite>Jakob Nielsen.
+<a href=https://www.nngroup.com/articles/response-times-3-important-limits/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.nngroup.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.nngroup.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+1993.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 4, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ChromiumProcessModelAndSiteIsolation>Chromium Docs - Process Model and Site Isolation<i>.</i>
+</cite><a href=https://chromium.googlesource.com/chromium/src/+/main/docs/process_model_and_site_isolation.md target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>chromium.googlesource.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 4, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ChromiumDisplayingWebPages>How Chromium Displays Web Pages<i>.</i>
+</cite><a href=https://chromium.googlesource.com/website/+/main/site/developers/design-documents/displaying-a-web-page-in-chrome/index.md target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>chromium.googlesource.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 4, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ChromiumDNSPrefetching>DNS Prefetching<i>.</i>
+</cite><a href=https://www.chromium.org/developers/design-documents/dns-prefetching/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 5, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ResourceHintsWebDev>Assist the browser with resource hints<i>.</i>
+</cite><a href=https://web.dev/learn/performance/resource-hints target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=web.dev" loading=lazy aria-hidden=true width=16 height=16>
+<i>web.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 5, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Grigorik-Ilya>Grigorik, Ilya</a>
+<a href=/cited-authors/Nielsen-Jakob>Nielsen, Jakob</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/aosabook.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=aosabook.org" loading=lazy aria-hidden=true width=16 height=16>
+aosabook.org
+</a><a href=/domains/chromium.googlesource.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=chromium.googlesource.com" loading=lazy aria-hidden=true width=16 height=16>
+chromium.googlesource.com
+</a><a href=/domains/httparchive.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=httparchive.org" loading=lazy aria-hidden=true width=16 height=16>
+httparchive.org
+</a><a href=/domains/web.dev style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=web.dev" loading=lazy aria-hidden=true width=16 height=16>
+web.dev
+</a><a href=/domains/www.chromium.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.chromium.org" loading=lazy aria-hidden=true width=16 height=16>
+www.chromium.org
+</a><a href=/domains/www.nngroup.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.nngroup.com" loading=lazy aria-hidden=true width=16 height=16>
+www.nngroup.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/www/2020-05-19-chrome-vs-everybody/>&#171; Chrome vs. Everybody</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
