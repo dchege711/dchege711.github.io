@@ -1,0 +1,139 @@
+<!doctype html><html lang=en><head><title>System Design Practice: Metric Monitoring System | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Functional Requirements
+
+FR1: Platform can ingest metrics (CPU, memory, latency, custom counters) from
+services.
+FR2: Users can query and visualize metrics on dashboards with filters,
+aggregations, and time ranges.
+FR3: Users can define alert rules with thresholds over time windows, e.g.,
+&ldquo;alert if P99 latency > 500ms for 5min&rdquo;.
+FR4: Users can receive notifications when alerts fire, e.g., email, Slack.
+
+
+Scale: 500K servers, 5M metrics per second, ~1GB/s raw ingestion. ..."><meta property="og:title" content="System Design Practice: Metric Monitoring System"><meta property="og:description" content="Functional Requirements
+
+FR1: Platform can ingest metrics (CPU, memory, latency, custom counters) from
+services.
+FR2: Users can query and visualize metrics on dashboards with filters,
+aggregations, and time ranges.
+FR3: Users can define alert rules with thresholds over time windows, e.g.,
+&ldquo;alert if P99 latency > 500ms for 5min&rdquo;.
+FR4: Users can receive notifications when alerts fire, e.g., email, Slack.
+
+
+Scale: 500K servers, 5M metrics per second, ~1GB/s raw ingestion. ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/distributed-systems/>Distributed Systems</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/>System Design Practice: Metric Monitoring System</a></li></ul></nav><section><header><h1>System Design Practice: Metric Monitoring System</h1><p class=meta>Dated Jul 8, 2026;
+last modified on Thu, 09 Jul 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#functional-requirements>Functional Requirements</a></li><li><a href=#non-functional-requirements>Non-Functional Requirements</a></li><li><a href=#core-entities>Core Entities</a></li><li><a href=#data-flow>Data Flow</a></li><li><a href=#system-api>System API</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=functional-requirements>Functional Requirements</h2><ul><li>FR1: Platform can ingest metrics (CPU, memory, latency, custom counters) from
+services.</li><li>FR2: Users can query and visualize metrics on dashboards with filters,
+aggregations, and time ranges.</li><li>FR3: Users can define alert rules with thresholds over time windows, e.g.,
+&ldquo;alert if P99 latency > 500ms for 5min&rdquo;.</li><li>FR4: Users can receive notifications when alerts fire, e.g., email, Slack.</li></ul><p><span class=citation-ref><a href=#Mai2026></a></span></p><p>Scale: 500K servers, 5M metrics per second, ~1GB/s raw ingestion. <span class=citation-ref><a href=#Mai2026></a></span></p><h2 id=non-functional-requirements>Non-Functional Requirements</h2><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>At first, I tried evaluating
+<a href=https://www.curiosities.dev/computer-science/distributed-systems/delivery-framework/>all 8 areas
+</a>, but <span class=citation-ref><a href=#Mai2026></a></span>calls for the top 3-5 that apply. Makes sense as some like
+&ldquo;environment concerns&rdquo; aren&rsquo;t interesting because we&rsquo;re designing a server
+application that can be as powerful as our wallets allow.</p></div></div><p>System should be highly available. Dashboards can tolerate eventual consistency.
+<span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Initially had this the other way round where I did not want to create false
+alarms. However, a metric monitoring system that goes down during incidents is
+not useful at all.</p></div></div><p>Scalability. Need to scale both writes (500K servers each emitting 100 metric
+data points every 10s gets as 5M metrics/second at peak) and reads (dashboard
+queries should evaluate in seconds, and alerts should fire in less than a
+minute). A minute or so allows you to accumulate enough data in order to &ldquo;see&rdquo;
+an event, and then fire an alert. <span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The point here is to quantify with ballparks. &ldquo;A firehose of incoming data&rdquo;
+doesn&rsquo;t help you pick between options. Do some napkin math.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The 1min for alert latency is flexible. For example, Amazon has a consistently
+large number of orders. This allows them to track the number of ms since their
+last order and fire an alert almost immediately when something&rsquo;s wrong. <span class=citation-ref><a href=#Mai2026></a></span></p></div></div><p>Security. Metrics are meant to be low cardinality non-PII data. That said,
+integrations with alert services like Slack involves PII that comes with
+additional security requirements, e.g., access control. Authoring metrics also
+needs access control as that&rsquo;s used to determine actions downstream, e.g., when
+to ping on-call folks.</p><p>Fault Tolerance. To a point. Past some time \(t\), recovery doesn&rsquo;t help as
+old data is not useful in issuing metrics updates. There&rsquo;s a time window that we
+care about.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#Mai2026></a></span>did not consider security and fault tolerance in their top
+concerns.</p></div></div><p>Network delays (or even retried payloads) mean metrics don&rsquo;t always come in
+order. At the scale of 5M metrics/second, this is a worthwhile problem to
+handle. <span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Missed this in the quiz. In the future, think of the core operations, and what
+you need to consider about those core operations.</p></div></div><h2 id=core-entities>Core Entities</h2><p>A <strong>label</strong> is a key-value pair attached to a metric that lets you slice and
+filter, e.g., <code>host="server-1"</code>. <span class=citation-ref><a href=#Mai2026></a></span></p><p>A <strong>metric</strong> is a named measurement with labels and a value at some time
+\(t\), e.g., <code>cpu_usage{host="server-1", region="us-west"} = 0.75</code>. <span class=citation-ref><a href=#Mai2026></a></span></p><p>A <strong>series</strong> is a full sequence of (timestamp, value) pairs for one specific
+metric + label combination, e.g., <code>cpu_usage{host="server-1"}</code> over time,
+<code>cpu_usage{host="server-2"}</code> over time, etc. <span class=citation-ref><a href=#Mai2026></a></span></p><p>An <strong>alert rule</strong> combines a metric query (e.g., average CPU in <code>us-east</code>),
+threshold (above 90%), and duration (for 5min), and triggers notifications when
+violated. <span class=citation-ref><a href=#Mai2026></a></span></p><p>A <strong>dashboard</strong> is a collection of panels, each displaying a query result as a
+chart or table. <span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I also had these core entities:</p><ul><li>User representation, e.g., login, and access control lists for metrics/alert
+ownership.</li><li>Notification sinks. Where the alerts are delivered to, e.g., email group(s),
+Slack channel, etc.</li></ul></div></div><h2 id=data-flow>Data Flow</h2><p>The core flows:</p><ol><li>Services generate metric data points and send them to our platform.</li><li>The platform ingests, validates, and stores metrics as time-series data.</li><li>Users query stored metrics through dashboards (and adhoc queries).</li><li>The platform periodically evaluates alert rules against stored metrics.</li><li>On violation of an alert condition, the platform sends a notification to the
+configured channel.</li></ol><p>&mldr; where steps 1-2 are write-heavy and continuous, step 3 is read-heavy and
+bursty (engineers debugging incidents), and steps 4-5 need to be reliable above
+all else. <span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I should consider the core data flow before the non-functional requirements as
+the former informs the latter.</p></div></div><h2 id=system-api>System API</h2><p>Ingesting metrics is a high-volume operation. Protobufs are ideal for the wire
+protocol. Using JSON here for ease in writing:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>POST /v1/metrics/ingest
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  name: string,
+</span></span><span style=display:flex><span>  value: number,
+</span></span><span style=display:flex><span>  timestamp: number,
+</span></span><span style=display:flex><span>  labels: {name: string, value: string | number}[],
+</span></span><span style=display:flex><span>}[]
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Initially did not batch <code>POST /v1/metrics/ingest</code>. Consider that ingestion is
+a high volume operation. You&rsquo;d typically have SDKs installed on the services
+that batch metrics and send them in one payload. Sending individual metrics is
+taxing both on the services and the platform.</p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>In the ingestion stage, using protobufs probably comes with providing services
+with an SDK for emitting metrics. OpenTelemetry helps with this by being a
+middle layer between telemetry-emitting services and observability backends
+(like Jaeger, Prometheus, etc.) <span class=citation-ref><a href=#OTel></a></span>. IRL, I&rsquo;d design the platform
+against the OTel specifications so that it&rsquo;s one less thing for services to know
+about.</p></div></div><p>Querying metrics benefits from a domain-specific language. Prometheus Query
+Language (PromQL) is an industry example on querying time-series data, e.g.,
+<code>http_requests_total{job="apiserver", handler="/api/comments"}[5m]</code> to return
+time series for the <code>http_requests_total</code> metric with the given <code>job</code> and
+<code>handler</code> labels over the past 5 minutes; <code>topk(3, sum by (app, proc) (rate(instance_cpu_time_ns[5m])))</code> for the top 3 CPU users grouped by
+application and process type. <span class=citation-ref><a href=#PromQLExamples></a></span>Our platform can use
+something similar, e.g., <code>GET /metrics/query?query=avg(cpu_usage{region="us-east"})&amp;start=A&amp;end=B&amp;step=60</code>.
+<span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Prior experience with <span class=citation-ref><a href=#PromQLExamples></a></span>could have helped here. I
+initially had:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>POST /v1/metrics/query
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  name: string,
+</span></span><span style=display:flex><span>  labels: {name: string, value: string | number}[],
+</span></span><span style=display:flex><span>  aggregation: {
+</span></span><span style=display:flex><span>    type: &#34;average&#34; | &#34;percentile&#34; | ...,
+</span></span><span style=display:flex><span>    ... # params specific to aggregation type
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  startTime: number,
+</span></span><span style=display:flex><span>  endTime?: number, # Omitting this triggers SSE events for latest updates
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>&mldr; which is a rudimentary version of a querying DSL. A proper DSL shifts
+complexity away from the request payload. Complexity of the payload was a reason
+why I opted to use POST as a GET-like request, because GET requests shouldn&rsquo;t
+have bodies. <span class=citation-ref><a href=#mdnGet></a></span></p><p>The DSL specification also requires front-end support for forming the queries
+and backend support for evaluating them.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>POST /v1/alerts/rules
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  name: &#34;High CPU alert&#34;,
+</span></span><span style=display:flex><span>  query: &#34;avg(cpu_usage{region=&#39;us-east&#39;}) &gt; 0.9&#34;, # Using the DSL
+</span></span><span style=display:flex><span>  duration: number,
+</span></span><span style=display:flex><span>  notificationChannels: {
+</span></span><span style=display:flex><span>    type: &#34;email&#34; | &#34;slack&#34; | &#34;pagerDuty&#34;,
+</span></span><span style=display:flex><span>    ... # params specific to notification channel type
+</span></span><span style=display:flex><span>  }[]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Mai2026></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Mai2026>Design a Metrics Monitoring Platform like Datadog<i>.</i>
+</cite>Stefan Mai.
+<a href=https://www.hellointerview.com/learn/system-design/problem-breakdowns/metrics-monitoring target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 8, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=PromQLExamples>Query examples | Prometheus<i>.</i>
+</cite><a href=https://prometheus.io/docs/prometheus/latest/querying/examples/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=prometheus.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>prometheus.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 9, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=mdnGet>GET request method - HTTP | MDN<i>.</i>
+</cite><a href=https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/GET target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>developer.mozilla.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 9, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=OTel>What is OpenTelemetry? | OpenTelemetry<i>.</i>
+</cite><a href=https://opentelemetry.io/docs/what-is-opentelemetry/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=opentelemetry.io" loading=lazy aria-hidden=true width=16 height=16>
+<i>opentelemetry.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 9, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Mai-Stefan>Mai, Stefan</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/distributed-systems/consistent-hashing/>&#171; Consistent Hashing</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
