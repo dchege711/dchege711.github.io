@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Distributed Systems on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/distributed-systems/</link><description>Recent content in Distributed Systems on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 09 Jul 2026 07:11:09 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>System Design Practice: Metric Monitoring System</title><link>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</link><pubDate>Wed, 08 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</guid><description>&lt;h2 id="functional-requirements"&gt;Functional Requirements&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Distributed Systems on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/distributed-systems/</link><description>Recent content in Distributed Systems on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 14 Jul 2026 22:11:35 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>System Design Practice: Metrics Monitoring System</title><link>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</link><pubDate>Wed, 08 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</guid><description>&lt;h2 id="functional-requirements"&gt;Functional Requirements&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;FR1: Platform can ingest metrics (CPU, memory, latency, custom counters) from
 services.&lt;/li&gt;
@@ -40,28 +40,17 @@ nodes.&lt;/li&gt;
 &lt;p&gt;In practice, network partitions are unavoidable in distributed system. Choosing
 consistency means some nodes will refuse to serve requests rather than return
 potentially stale data. Choosing availability means different nodes might
-temporarily have different data. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Data Modeling</title><link>https://www.curiosities.dev/computer-science/distributed-systems/data-modeling/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/data-modeling/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+temporarily have different data. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Data Modeling</title><link>https://www.curiosities.dev/computer-science/distributed-systems/data-modeling/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/data-modeling/</guid><description>&lt;h2 id="data-modeling"&gt;Data Modeling&lt;/h2&gt;
 &lt;p&gt;Choosing what data to store and how to structure it directly affects
 performance, scalability, and maintenance. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Relational databases are useful when you have structured data with clear
 relationships and need strong consistency (transaction-based actions, enforcing
 foreign key constraints). NoSQL databases shine for flexible schemas or when you
 need to scale horizontally across many servers without complex joins. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Normalization refers to splitting data across tables to avoid duplication, e.g.,
-you have a &lt;code&gt;users&lt;/code&gt; table, and &lt;code&gt;orders&lt;/code&gt; table, and a &lt;code&gt;products&lt;/code&gt; table, where each
-order references a &lt;code&gt;userId&lt;/code&gt; and &lt;code&gt;productId&lt;/code&gt;. Normalized data is easy to keep
-consistent, e.g., updating a product name is limited to the &lt;code&gt;products&lt;/code&gt; table.
-However, getting complete data needs joins, which get expensive on huge/many
-tables. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Database Indexing</title><link>https://www.curiosities.dev/computer-science/distributed-systems/database-indexing/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/database-indexing/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
-&lt;p&gt;Indexes make database queries fast. Most relational databases use B-trees, which
-support exact lookups (find user with email X) and range queries (find all
-orders between date A and date B). Hash indexes are faster for exact matches but
-can&amp;rsquo;t do range queries. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;There are external systems that go beyond what the primary DB provider has.
-Elasticsearch is the go-to for full-text search. PostGIS in Postgres is popular
-for geospatial queries. Such extensions typically sync from your primary DB and
-so the search index will lag slightly behind. However, the increased
-functionality is usually worth it. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Networking Essentials</title><link>https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+&lt;p&gt;That said, the overlap between relational DBs and NoSQL ones is substantial, so
+focus on the DB that your using and how it helps solve the problem at hand,
+e.g., NoSQL DBs can express relationships too, SQL DBs can have JSON columns
+with flexible schemas, etc. &lt;span class="citation-ref"&gt;&lt;a href="#KeyTechnologiesSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Networking Essentials</title><link>https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
 &lt;p&gt;At a basic level, understand how services talk to each other and what happens
 when those connections fail or get slow. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;For 90% of the use cases, default to HTTP over TCP. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
