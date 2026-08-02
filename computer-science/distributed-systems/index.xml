@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Distributed Systems on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/distributed-systems/</link><description>Recent content in Distributed Systems on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 16 Jul 2026 21:46:20 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>System Design Practice: Metrics Monitoring System</title><link>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</link><pubDate>Wed, 08 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</guid><description>&lt;h2 id="functional-requirements"&gt;Functional Requirements&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Distributed Systems on Chege's Blog</title><link>https://www.curiosities.dev/computer-science/distributed-systems/</link><description>Recent content in Distributed Systems on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 21 Jul 2026 10:57:32 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/computer-science/distributed-systems/index.xml" rel="self" type="application/rss+xml"/><item><title>Distributed Systems Potpourri</title><link>https://www.curiosities.dev/computer-science/distributed-systems/potpourri/</link><pubDate>Tue, 21 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/potpourri/</guid><description>&lt;div class="comment-holder"&gt;
+ &lt;div class="comment" title="Comment: tangential aside"&gt;&lt;p&gt;Contains content that is not extensive enough for its own page.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;h2 id="streams-and-event-sourcing"&gt;Streams and Event Sourcing&lt;/h2&gt;
+&lt;p&gt;Unlike 
+&lt;a href="https://www.curiosities.dev/computer-science/distributed-systems/distributing-work/#queue"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ message queues
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+, streams
+can retain data for a configurable period of time, allowing consumers to read
+and re-read messages from a specified time. You can use a stream to ingest high
+volumes of events in real-time, e.g., real-time analytics of user engagements in
+social media. &lt;span class="citation-ref"&gt;&lt;a href="#KeyTechnologiesSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Event sourcing&lt;/strong&gt; involves storing changes in application state as a sequence
+of events. These events can be replayed to reconstruct the system&amp;rsquo;s state at any
+point in time. The technique is useful for systems that require a detailed audit
+trail, e.g., a banking system, where every transaction (deposits, withdrawals,
+transfers) need to be recorded and may affect multiple accounts. &lt;span class="citation-ref"&gt;&lt;a href="#KeyTechnologiesSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>System Design Practice: Metrics Monitoring System</title><link>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</link><pubDate>Wed, 08 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/metrics-monitoring/</guid><description>&lt;h2 id="functional-requirements"&gt;Functional Requirements&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;FR1: Platform can ingest metrics (CPU, memory, latency, custom counters) from
 services.&lt;/li&gt;
@@ -25,10 +51,9 @@ Aren&amp;rsquo;t new additions invisible to inflight paginations?&lt;/p&gt;</des
 &lt;p&gt;For read-heavy applications, storing frequently accessed data in fast memory
 (e.g., Redis) allows you to skip the DB entirely for some reads. A cache hit on
 Redis takes ~1ms compared to 20-50ms for a typical DB query, and this speedup is
-impactful in the order of millions of requests. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Caching requires a solution for invalidating stale data, e.g., user updates
-their profile in the DB. Strategies include invalidating the cache immediately
-after writes, using short TTLs, etc. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>CAP Theorem</title><link>https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
+impactful in the order of millions of requests. In a web application, user
+sessions are typically stored in a distributed cache, allowing the system to
+quickly retrieve the data when a user makes a request. &lt;span class="citation-ref"&gt;&lt;a href="#CoreConceptsSysDesign"&gt;&lt;/a&gt;&lt;/span&gt; &lt;span class="citation-ref"&gt;&lt;a href="#KeyTechnologiesSysDesign"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>CAP Theorem</title><link>https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/</link><pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/</guid><description>&lt;h2 id="notes"&gt;Notes&lt;/h2&gt;
 &lt;p&gt;The CAP theorem states that you can only have 2 of 3 properties at once:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Consistency: All nodes see the same data.&lt;/li&gt;

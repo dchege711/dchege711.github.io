@@ -2,22 +2,26 @@
 For read-heavy applications, storing frequently accessed data in fast memory
 (e.g., Redis) allows you to skip the DB entirely for some reads. A cache hit on
 Redis takes ~1ms compared to 20-50ms for a typical DB query, and this speedup is
-impactful in the order of millions of requests. 
-Caching requires a solution for invalidating stale data, e.g., user updates
-their profile in the DB. Strategies include invalidating the cache immediately
-after writes, using short TTLs, etc. ..."><meta property="og:title" content="Caching"><meta property="og:description" content="Notes
+impactful in the order of millions of requests. In a web application, user
+sessions are typically stored in a distributed cache, allowing the system to
+quickly retrieve the data when a user makes a request.  ..."><meta property="og:title" content="Caching"><meta property="og:description" content="Notes
 For read-heavy applications, storing frequently accessed data in fast memory
 (e.g., Redis) allows you to skip the DB entirely for some reads. A cache hit on
 Redis takes ~1ms compared to 20-50ms for a typical DB query, and this speedup is
-impactful in the order of millions of requests. 
-Caching requires a solution for invalidating stale data, e.g., user updates
-their profile in the DB. Strategies include invalidating the cache immediately
-after writes, using short TTLs, etc. ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/distributed-systems/caching/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+impactful in the order of millions of requests. In a web application, user
+sessions are typically stored in a distributed cache, allowing the system to
+quickly retrieve the data when a user makes a request.  ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/distributed-systems/caching/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/distributed-systems/>Distributed Systems</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/distributed-systems/caching/>Caching</a></li></ul></nav><section><header><h1>Caching</h1><p class=meta>Dated Jun 6, 2026;
-last modified on Sat, 06 Jun 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#notes>Notes</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=notes>Notes</h2><p>For read-heavy applications, storing frequently accessed data in fast memory
+last modified on Tue, 21 Jul 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#notes>Notes</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=notes>Notes</h2><p>For read-heavy applications, storing frequently accessed data in fast memory
 (e.g., Redis) allows you to skip the DB entirely for some reads. A cache hit on
 Redis takes ~1ms compared to 20-50ms for a typical DB query, and this speedup is
-impactful in the order of millions of requests. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>Caching requires a solution for invalidating stale data, e.g., user updates
+impactful in the order of millions of requests. In a web application, user
+sessions are typically stored in a distributed cache, allowing the system to
+quickly retrieve the data when a user makes a request. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span><span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p><p>Caches are also useful in avoiding expensive computations, e.g., aggregrating
+data from numerous sources to show on dashboards, showing a user a feed of
+content from accounts that they follow, etc. <span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p><p>Caches have different eviction policies that come into play when the cache is
+full, e.g., least recently used (LRU); first in, first out (FIFO); least
+frequently used (LFU). <span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p><p>Caching requires a solution for invalidating stale data, e.g., user updates
 their profile in the DB. Strategies include invalidating the cache immediately
 after writes, using short TTLs, etc. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>A cache stampede occurs when a popular cache entry expires and many concurrent
 requests all miss at the same time and hit the DB. Strategies include locking
@@ -26,15 +30,19 @@ TTLs so entries don&rsquo;t all expire at once. <span class=citation-ref><a href
 fallback cache, circuit breakers to shed load, or graceful degradation until
 Redis recovers. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>CDN caching is useful for static assets, e.g., images, JavaScript files, etc.
 In-process caching is useful for small values that change rarely, e.g., feature
-flags or config data. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>How does caching work for feature flags? Don&rsquo;t different users see different
-feature flags? A server instance would be serving many users with different
-feature flag configs.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=CoreConceptsSysDesign>Core Concepts for System Design Interviews<i>.</i>
+flags or config data. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>Modern caches support different data structures, not just key-value stores. For
+example, you may want to cache a list of events in a sorted set so that you can
+easily retrieve the most popular events. <span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=CoreConceptsSysDesign>Core Concepts for System Design Interviews<i>.</i>
 </cite><a href=https://www.hellointerview.com/learn/system-design/in-a-hurry/core-concepts target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.
 <i class='fas fa-fw fa-globe' aria-hidden=true></i>
-Accessed Jun 6, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+Accessed Jun 6, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=KeyTechnologiesSysDesign>System Design Key Technologies<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/system-design/in-a-hurry/key-technologies target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Jul 14, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
-www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/distributed-systems/api-design/>&#171; API Design</a>
-<a href=https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/>CAP Theorem &#187;</a></footer></section><footer><a href=/about>About</a>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/distributed-systems/potpourri/>&#171; Distributed Systems Potpourri</a></footer></section><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></div></body></html>

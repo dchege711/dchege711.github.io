@@ -1,0 +1,308 @@
+<!doctype html><html lang=en><head><title>Passing Data Asynchronously Between Producers and Consumers (.NET) | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="A channel is a data structure that&rsquo;s used to store produced data for a consumer
+to retrieve, and an appropriate synchronization to enable that to happen safely,
+while also enabling appropriate notifications in both directions. 
+A Toy Channel
+public sealed class Channel<T> {
+  // Use a thread-safe data store to free us from locking semantics for any
+  // number of producers and consumers.
+  private readonly ConcurrentQueue<T> _items = new ConcurrentQueue<T>();
+
+  // A mechanism for coordinating between producers and consumers.
+  private readonly SemaphoreSlim _semaphore = new Semaphore(0);
+
+  public void Write(T item)
+  {
+    _items.Enqueue(item); // Store the data.
+    _semaphore.Release(); // Notify any consumers that more data is available.
+  }
+
+  public ValueTask<T> ReadAsync(CancellationToken ct = default)
+  {
+    await _semaphore.WaitAsync(ct).ConfigureAwait(false); // Wait for data to be available.
+    bool gotOne = _items.TryDequeue(out T item);
+    Debug.Assert(gotOne);
+    return item;
+  }
+}
+..."><meta property="og:title" content="Passing Data Asynchronously Between Producers and Consumers (.NET)"><meta property="og:description" content="A channel is a data structure that&rsquo;s used to store produced data for a consumer
+to retrieve, and an appropriate synchronization to enable that to happen safely,
+while also enabling appropriate notifications in both directions. 
+A Toy Channel
+public sealed class Channel<T> {
+  // Use a thread-safe data store to free us from locking semantics for any
+  // number of producers and consumers.
+  private readonly ConcurrentQueue<T> _items = new ConcurrentQueue<T>();
+
+  // A mechanism for coordinating between producers and consumers.
+  private readonly SemaphoreSlim _semaphore = new Semaphore(0);
+
+  public void Write(T item)
+  {
+    _items.Enqueue(item); // Store the data.
+    _semaphore.Release(); // Notify any consumers that more data is available.
+  }
+
+  public ValueTask<T> ReadAsync(CancellationToken ct = default)
+  {
+    await _semaphore.WaitAsync(ct).ConfigureAwait(false); // Wait for data to be available.
+    bool gotOne = _items.TryDequeue(out T item);
+    Debug.Assert(gotOne);
+    return item;
+  }
+}
+..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/dotnet-threading-channels/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/>Algorithms and Data Structures</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/dotnet-threading-channels/>Passing Data Asynchronously Between Producers and Consumers (.NET)</a></li></ul></nav><section><header><h1>Passing Data Asynchronously Between Producers and Consumers (.NET)</h1><p class=meta>Dated Aug 1, 2026;
+last modified on Sat, 01 Aug 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#a-toy-channel>A Toy Channel</a></li><li><a href=#creating-a-channelt>Creating a <code>Channel&lt;T></code></a></li><li><a href=#writing-to-a-channel>Writing to a Channel</a></li><li><a href=#reading-from-a-channel>Reading from a Channel</a></li><li><a href=#performance-considerations>Performance Considerations</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><p>A channel is a data structure that&rsquo;s used to store produced data for a consumer
+to retrieve, and an appropriate synchronization to enable that to happen safely,
+while also enabling appropriate notifications in both directions. <span class=citation-ref><a href=#Toub2019></a></span></p><h2 id=a-toy-channel>A Toy Channel</h2><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>sealed</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>Channel</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Use a thread-safe data store to free us from locking semantics for any</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// number of producers and consumers.</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>ConcurrentQueue</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>_items</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>ConcurrentQueue</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;();</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// A mechanism for coordinating between producers and consumers.</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>SemaphoreSlim</span> <span style=color:#111>_semaphore</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>Semaphore</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>Write</span><span style=color:#111>(</span><span style=color:#111>T</span> <span style=color:#111>item</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>_items</span><span style=color:#111>.</span><span style=color:#111>Enqueue</span><span style=color:#111>(</span><span style=color:#111>item</span><span style=color:#111>);</span> <span style=color:#75715e>// Store the data.</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>_semaphore</span><span style=color:#111>.</span><span style=color:#111>Release</span><span style=color:#111>();</span> <span style=color:#75715e>// Notify any consumers that more data is available.</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>public</span> <span style=color:#111>ValueTask</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>ReadAsync</span><span style=color:#111>(</span><span style=color:#111>CancellationToken</span> <span style=color:#111>ct</span> <span style=color:#111>=</span> <span style=color:#00a8c8>default</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>await</span> <span style=color:#111>_semaphore</span><span style=color:#111>.</span><span style=color:#111>WaitAsync</span><span style=color:#111>(</span><span style=color:#111>ct</span><span style=color:#111>).</span><span style=color:#111>ConfigureAwait</span><span style=color:#111>(</span><span style=color:#00a8c8>false</span><span style=color:#111>);</span> <span style=color:#75715e>// Wait for data to be available.</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>bool</span> <span style=color:#111>gotOne</span> <span style=color:#111>=</span> <span style=color:#111>_items</span><span style=color:#111>.</span><span style=color:#111>TryDequeue</span><span style=color:#111>(</span><span style=color:#00a8c8>out</span> <span style=color:#111>T</span> <span style=color:#111>item</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>Assert</span><span style=color:#111>(</span><span style=color:#111>gotOne</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>item</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Toub2019></a></span></p><h2 id=creating-a-channelt>Creating a <code>Channel&lt;T></code></h2><p>A <code>Channel&lt;TWrite, TRead></code> supports writing elements of type <code>TWrite</code> and
+reading elements of type <code>TRead</code>. There are implicit casts and properties
+available to get its writable half, <code>ChannelWriter&lt;TWrite></code>, and its readable
+half, <code>ChannelReader&lt;TRead></code>. <code>Channel&lt;T></code> is a <code>Channel&lt;T, T></code>, i.e., supports
+reading and writing elements of type <code>T</code>. <span class=citation-ref><a href=#dotNetChannelTWriteTRead></a></span><span class=citation-ref><a href=#dotNetChannelT></a></span></p><p>The base <code>Channel&lt;TWrite, TRead></code> abstract class is available for niche
+implementations where a channel may itself transform written data into a
+different type for consumption. <code>Channel&lt;T></code> suffices for the vast majority of
+use cases. <span class=citation-ref><a href=#Toub2019></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>A continuation task is an asynchronous task that&rsquo;s invoked by another task,
+known as the antecedent, when the antecedent finishes, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>// Declare, assign, and start the antecedent task.</span>
+</span></span><span style=display:flex><span><span style=color:#111>Task</span><span style=color:#111>&lt;</span><span style=color:#111>DayOfWeek</span><span style=color:#111>&gt;</span> <span style=color:#111>taskA</span> <span style=color:#111>=</span> <span style=color:#111>Task</span><span style=color:#111>.</span><span style=color:#111>Run</span><span style=color:#111>(()</span> <span style=color:#111>=&gt;</span> <span style=color:#111>DateTime</span><span style=color:#111>.</span><span style=color:#111>Today</span><span style=color:#111>.</span><span style=color:#111>DayOfWeek</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Execute the continuation when the antecedent finishes.</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>await</span> <span style=color:#111>taskA</span><span style=color:#111>.</span><span style=color:#111>ContinueWith</span><span style=color:#111>(</span><span style=color:#111>antecedent</span> <span style=color:#111>=&gt;</span> <span style=color:#111>Console</span><span style=color:#111>.</span><span style=color:#111>WriteLine</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;Today is {antecedent.Result}&#34;</span><span style=color:#111>));</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#dotNetContinuationTasks></a></span></p></div></div><p><code>ChannelOptions</code> provide information that the <code>Channel</code> can use to optimize
+certain operations. All of the options default to <code>false</code>, the conservative
+option.</p><ul><li><code>ChannelOptions.SingleReader</code>. Set if readers from the channel guarantee that
+there will only ever be at most one read operation at a time.</li><li><code>ChannelOptions.SingleWriter</code>. Set if writers from the channel guarantee that
+there will only ever be at most one write operation at a time.</li><li><code>ChannelOptions.AllowSynchronousContinuations</code>. Set if operations performed in
+a channel may synchronously invoke continuations subscribed to notifications
+of pending async operations.</li></ul><p>&mldr; e.g., <code>SingleReader == true</code> allows an implementation that avoids locks and
+interlocked operations when reading. <span class=citation-ref><a href=#dotNetChannelOptions></a></span><span class=citation-ref><a href=#Toub2019></a></span></p><p>Consider a case where a consumer reads asynchronously before any data is
+available, effectively hooking up a callback. Typically, when a producer writes
+data, it queues the invocation of consumer&rsquo;s callback, for that callback to be
+invoked asynchronously. With <code>AllowSynchronousContinuations == true</code>, writing to
+the channel can invoke the pending callback instead of queuing its invocation,
+cutting down on overhead. However, this might end up invoking the callback while
+holding a lock, leading to broken invariants that said lock was trying to
+maintain. <span class=citation-ref><a href=#dotNetChannelOptions></a></span><span class=citation-ref><a href=#Toub2019></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>I don&rsquo;t quite grok <code>AllowSynchronousContinuations</code>. &ldquo;If I&rsquo;m not using locks,
+then I&rsquo;m fine&rdquo; doesn&rsquo;t sound convincing. I need examples of broken invariants.</p></div></div><p><code>Channel.CreateBounded&lt;T>(...)</code> creates a channel that call hold at most \(N\)
+items. It supports <code>BoundedChannelOptions</code>, an extension of <code>ChannelOptions</code>.
+<span class=citation-ref><a href=#dotNetCreateBounded></a></span></p><p><code>BoundedChannelOptions.FullMode</code> specifies the behavior to use when writing to a
+bounded channel that is already full. <code>BoundedChannelFullMode.Wait</code> waits for
+space to be available. Various <code>BoundedChannelFullMode.Drop*</code> make room by
+dropping an item, e.g., <code>DropNewest</code>, <code>DropOldest</code>, and <code>DropWrite</code>.
+<code>BoundedChannelFullMode.Wait</code> is the default. <code>DropWrite</code> means that writing
+will return success, but the item added will immediately be removed. <span class=citation-ref><a href=#dotNetBoundedChannelFullMode></a></span><span class=citation-ref><a href=#Toub2019></a></span></p><p><code>Channel.CreateBounded&lt;T>(...)</code> supports supplying a delegate that will be
+called when an item is being dropped from the channel. <span class=citation-ref><a href=#dotNetCreateBounded></a></span></p><p><code>Channel.CreateUnbounded&lt;T>(...)</code> creates an unbounded channel, with
+<code>UnboundedChannelOptions</code> that have the same options as <code>ChannelOptions</code>. <span class=citation-ref><a href=#dotNetCreateUnbounded></a></span></p><p><code>Channel.CreateUnboundedPrioritized&lt;T>(...)</code> creates an unbounded channel, but
+where the next item read from the channel will be the element available in the
+channel with the lowest priority value. <code>UnboundedPrioritizedChannelOptions&lt;T></code>,
+an extension of <code>ChannelOptions</code>, allows us to specify the <code>IComparer&lt;T></code>. <span class=citation-ref><a href=#dotNetCreateUnboundedPrioritized></a></span></p><h2 id=writing-to-a-channel>Writing to a Channel</h2><p><code>ChannelWriter&lt;T>.WaitToWriteAsync(CancellationToken)</code> returns a
+<code>ValueTask&lt;bool></code> that will complete with <code>true</code> when space is available to
+write an item, or with <code>false</code> when no further writing is permitted <span class=citation-ref><a href=#dotNetChannelWriterWaitToWriteAsync></a></span>. <code>WaitToWriteAsync</code> is useful when it&rsquo;s
+undesirable to produce a value immediately, e.g., when producing a value is
+expensive <span class=citation-ref><a href=#Toub2019></a></span>.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Calling <code>ChannelWriter&lt;T>.WaitToWriteAsync</code> on a bounded channel created with
+<code>BoundedChannelFullMode.Wait</code> will never complete if there are no read
+operations on the other end of the channel.</p></div></div><p><code>ChannelWriter&lt;T>.WriteAsync(T, CancellationToken)</code> returns a <code>ValueTask</code> that
+represents the asynchronous write operation <span class=citation-ref><a href=#dotNetChannelWriterWriteAsync></a></span>. <code>ChannelWriter&lt;T>.TryWrite(T)</code> returns <code>true</code>
+if the item was written to the channel, and <code>false</code> otherwise <span class=citation-ref><a href=#dotNetChannelWriterTryWrite></a></span>.</p><p><code>WriteAsync</code> is virtual. The base type&rsquo;s implementation is basically:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>async</span> <span style=color:#111>ValueTask</span> <span style=color:#111>WriteAsync</span><span style=color:#111>(</span><span style=color:#111>T</span> <span style=color:#111>item</span><span style=color:#111>,</span> <span style=color:#111>CancellationToken</span> <span style=color:#111>cancellationToken</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#00a8c8>await</span> <span style=color:#111>WaitToWriteAsync</span><span style=color:#111>(</span><span style=color:#111>cancellationToken</span><span style=color:#111>).</span><span style=color:#111>ConfigureAwait</span><span style=color:#111>(</span><span style=color:#00a8c8>false</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>TryWrite</span><span style=color:#111>(</span><span style=color:#111>item</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>return</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>ChannelCompletedException</span><span style=color:#111>();</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>&mldr; where looping on <code>WaitToWriteAsync</code> is important in the case of multiple
+producers being told yes, only for <code>TryWrite</code> to fail on the ones that lose the
+race condition after the channel becomes full. When one producer marks the
+channel as complete, the other producers will have <code>WaitToWriteAsync</code> and
+<code>TryWrite</code> return <code>false</code>, and <code>WriteAsync</code> throws a
+<code>ChannelCompletedException</code>. <span class=citation-ref><a href=#Toub2019></a></span></p><p><code>ChannelWriter&lt;T>.TryComplete(Exception?)</code> attempts to mark the channel as
+completed, i.e., no more data will be written to it. <code>false</code> is returned if the
+channel couldn&rsquo;t be marked for completion, e.g., due to having already been
+marked as such, or due to not supporting completion. Set <code>Exception</code> if the
+reason for completion was a failure. <span class=citation-ref><a href=#dotNetChannelWriterTryComplete></a></span><code>ChannelWriter&lt;T>.Complete(Exception?)</code> throws an <code>InvalidOperationException</code> if
+the channel has already been marked as complete. <span class=citation-ref><a href=#dotNetChannelWriterComplete></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>How can a channel not support completion? I haven&rsquo;t run into APIs that would get
+us into such a state.</p></div></div><h2 id=reading-from-a-channel>Reading from a Channel</h2><p><code>ChannelReader&lt;T>.Completion</code> gets a <code>Task</code> that completes when no more data
+will ever be available to be read from this channel <span class=citation-ref><a href=#dotNetChannelReaderCompletion></a></span>. Rephrased, completes after either
+<code>ChannelWriter&lt;T>.TryComplete(Exception?)</code> or
+<code>ChannelWriter&lt;T>.Complete(Exception?)</code> succeeds.</p><p><code>ChannelReader&lt;T>.WaitToReadAsync(CancellationToken)</code> returns a
+<code>ValueTask&lt;bool></code>. There will be a <code>true</code> result when data is available to read.
+There will be a <code>false</code> result when no further data will ever be available to be
+read due to the channel completely successfully. If the channel was completed
+with an <code>Exception</code>, then the <code>ValueTask&lt;bool></code> will also complete with an
+<code>Exception</code>. <span class=citation-ref><a href=#dotNetChannelReaderWaitToReadAsync></a></span></p><p><code>ChannelReader&lt;T>.Count</code> gets the current number of items available from this
+channel reader, throwing a <code>NotSupportedException</code> if counting is not supported.
+<code>ChannelReader&lt;T>.CanCount</code> is <code>true</code> when counting is supported. <span class=citation-ref><a href=#dotNetChannelReaderCount></a></span><span class=citation-ref><a href=#dotNetChannelReaderCanCount></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>How can a channel not support counting? I haven&rsquo;t run into APIs that would get
+us into such a state.</p></div></div><p><code>ChannelReader&lt;T>.TryPeek(T)</code> returns <code>true</code> if an item was peeked and written
+to <code>T</code>, and <code>false</code> if no item could be peeked. <code>ChannelReader&lt;T>.CanPeek</code> is
+<code>true</code> if the channel instance supports peeking. <span class=citation-ref><a href=#dotNetChannelReaderTryPeek></a></span><span class=citation-ref><a href=#dotNetChannelReaderCanPeek></a></span></p><p><code>ChannelReader&lt;T>.ReadAsync(CancellationToken)</code> returns a <code>ValueTask&lt;T></code>
+representing the asynchronous read operation <span class=citation-ref><a href=#dotNetChannelReaderReadAsync></a></span>. <code>ChannelReader&lt;T>.TryRead(T)</code> returns <code>true</code>
+if it read an item and wrote it into <code>T</code>; otherwise returns <code>false</code> <span class=citation-ref><a href=#dotNetChannelReaderTryRead></a></span>.</p><p><code>ChannelReader&lt;T>.ReadAllAsync(CancellationToken)</code> creates an
+<code>IAsyncEnumerable&lt;T></code> that enables reading all of the data from the channel.
+Each <code>IAsyncEnumerator&lt;T>.MoveNextAsync</code> call that returns <code>true</code> will read the
+next item out of the channel. <code>IAsyncEnumerator&lt;T>.MoveNextAsync</code> returns
+<code>false</code> once no more data is or will ever be available to read. <span class=citation-ref><a href=#dotNetChannelReaderReadAllAsync></a></span></p><p><code>ReadAsync</code> and <code>ReadAllAsync</code> are virtual. The base class implementation of
+<code>ReadAllAsync</code> is of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>virtual</span> <span style=color:#00a8c8>async</span> <span style=color:#111>IAsyncEnumerable</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>ReadAllAsync</span><span style=color:#111>(</span>
+</span></span><span style=display:flex><span><span style=color:#75af00>  [EnumeratorCancellation]</span> <span style=color:#111>CancellationToken</span> <span style=color:#111>cancellationToken</span> <span style=color:#111>=</span> <span style=color:#00a8c8>default</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span><span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#00a8c8>await</span> <span style=color:#111>WaitToReadAsync</span><span style=color:#111>(</span><span style=color:#111>cancellationToken</span><span style=color:#111>).</span><span style=color:#111>ConfigureAwait</span><span style=color:#111>(</span><span style=color:#00a8c8>false</span><span style=color:#111>))</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>while</span> <span style=color:#111>(</span><span style=color:#111>TryRead</span><span style=color:#111>(</span><span style=color:#00a8c8>out</span> <span style=color:#111>T</span> <span style=color:#111>item</span><span style=color:#111>))</span> <span style=color:#75715e>// Optimization to avoid WaitToReadAsync overhead in the happy case.</span>
+</span></span><span style=display:flex><span>      <span style=color:#00a8c8>yield</span> <span style=color:#00a8c8>return</span> <span style=color:#111>item</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p>&mldr; enabling all of the data to be read from a channel like so:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>await</span> <span style=color:#00a8c8>foreach</span> <span style=color:#111>(</span><span style=color:#111>T</span> <span style=color:#111>item</span> <span style=color:#00a8c8>in</span> <span style=color:#111>channelReader</span><span style=color:#111>.</span><span style=color:#111>ReadAllAsync</span><span style=color:#111>())</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>Use</span><span style=color:#111>(</span><span style=color:#111>item</span><span style=color:#111>);</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Toub2019></a></span></p><h2 id=performance-considerations>Performance Considerations</h2><p>Async writes and reads from channels return a <code>ValueTask</code> and not a <code>Task</code> so
+that the result can be allocation-free when it completely synchronously. For
+example, a channel with enough room for a write has <code>WriteAsync</code> return
+synchronously. Furthermore, the <code>System.Threading.Channels</code> implementation uses
+<code>IValueTaskSource&lt;T></code> to avoid allocations even when the various methods
+complete asynchronously and need to return tasks. <span class=citation-ref><a href=#Toub2019></a></span></p><p>Consider an unbounded <code>Channel&lt;int></code> where we pass 10M integers through. If we
+write then read, the reads will complete synchronously as there&rsquo;ll always be a
+<code>int</code> available to read. This benchmark completes in 527.8ms without extra
+allocations. If we read then write, the reads will complete asynchronously. This
+benchmark completes in 881.2ms, but even then, there are no extra allocations.
+<span class=citation-ref><a href=#Toub2019></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelTWriteTRead>Channel&lt;TWrite,TRead> Class (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channel-2?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelT>Channel&lt;T> Class (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channel-1?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelOptions>ChannelOptions Class (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channeloptions?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetCreateBounded>Channel.CreateBounded Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channel.createbounded?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetContinuationTasks>Chaining tasks using continuation tasks - .NET | Microsoft Learn<i>.</i>
+</cite><a href=https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/chaining-tasks-by-using-continuation-tasks target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetBoundedChannelFullMode>BoundedChannelFullMode Enum (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.boundedchannelfullmode?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetCreateUnbounded>Channel.CreateUnbounded Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channel.createunbounded?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetCreateUnboundedPrioritized>Channel.CreateUnboundedPrioritized Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channel.createunboundedprioritized?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelWriterWriteAsync>ChannelWriter&lt;T>.WriteAsync(T, CancellationToken) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelwriter-1.writeasync?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelWriterWaitToWriteAsync>ChannelWriter&lt;T>.WaitToWriteAsync(CancellationToken) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelwriter-1.waittowriteasync?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelWriterTryWrite>ChannelWriter&lt;T>.TryWrite(T) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelwriter-1.trywrite?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelWriterTryComplete>ChannelWriter&lt;T>.TryComplete(Exception) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelwriter-1.trycomplete?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelWriterComplete>ChannelWriter&lt;T>.Complete(Exception) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelwriter-1.complete?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderCount>ChannelReader&lt;T>.Count Property (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.count?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderCanCount>ChannelReader&lt;T>.CanCount Property (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.cancount?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderCompletion>ChannelReader&lt;T>.Completion Property (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.completion?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderTryPeek>ChannelReader&lt;T>.TryPeek(T) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.trypeek?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderCanPeek>ChannelReader&lt;T>.CanPeek Property (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.canpeek?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderTryRead>ChannelReader&lt;T>.TryRead(T) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.tryread?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderWaitToReadAsync>ChannelReader&lt;T>.WaitToReadAsync(CancellationToken) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.waittoreadasync?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderReadAsync>ChannelReader&lt;T>.ReadAsync(CancellationToken) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.readasync?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=dotNetChannelReaderReadAllAsync>ChannelReader&lt;T>.ReadAllAsync(CancellationToken) Method (System.Threading.Channels) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.channels.channelreader-1.readallasync?view=net-11.0-pp" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Toub2019>An Introduction to System.Threading.Channels - .NET Blog<i>.</i>
+</cite>Stephen Toub.
+<a href=https://devblogs.microsoft.com/dotnet/an-introduction-to-system-threading-channels/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=devblogs.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>devblogs.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+Dec 11, 2019.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Aug 1, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Toub-Stephen>Toub, Stephen</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/devblogs.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=devblogs.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+devblogs.microsoft.com
+</a><a href=/domains/learn.microsoft.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+learn.microsoft.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/greedy-algorithms/>&#171; Greedy Algorithms</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

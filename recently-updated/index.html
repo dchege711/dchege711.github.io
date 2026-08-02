@@ -1,5 +1,54 @@
 <!doctype html><html lang=en><head><title>Recently Updated Pages | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="A list of the most recently updated pages."><meta property="og:title" content="Recently Updated Pages"><meta property="og:description" content="A list of the most recently updated pages."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/recently-updated/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
-<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li class=active><a href=https://www.curiosities.dev/recently-updated/>Recently Updated Pages</a></li></ul></nav><p>A list of the most recently updated pages.</p><table border=0><tr class=no-decoration><td class=no-decoration>Jun 6, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/distributing-work/>Distributing Work</a>
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li class=active><a href=https://www.curiosities.dev/recently-updated/>Recently Updated Pages</a></li></ul></nav><p>A list of the most recently updated pages.</p><table border=0><tr class=no-decoration><td class=no-decoration>Aug 1, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/dotnet-threading-channels/>Passing Data Asynchronously Between Producers and Consumers (.NET)</a>
+<span class=meta>8 min; updated Aug 1, 2026
+<button id=34dcd006e5cb9cea213609d18a572600-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=34dcd006e5cb9cea213609d18a572600-summary style=display:none><p>A channel is a data structure that&rsquo;s used to store produced data for a consumer
+to retrieve, and an appropriate synchronization to enable that to happen safely,
+while also enabling appropriate notifications in both directions. <span class=citation-ref><a href=#Toub2019></a></span></p><h2 id=a-toy-channel>A Toy Channel</h2><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>sealed</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>Channel</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Use a thread-safe data store to free us from locking semantics for any</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// number of producers and consumers.</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>ConcurrentQueue</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>_items</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>ConcurrentQueue</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;();</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// A mechanism for coordinating between producers and consumers.</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>readonly</span> <span style=color:#111>SemaphoreSlim</span> <span style=color:#111>_semaphore</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span> <span style=color:#111>Semaphore</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>void</span> <span style=color:#111>Write</span><span style=color:#111>(</span><span style=color:#111>T</span> <span style=color:#111>item</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>_items</span><span style=color:#111>.</span><span style=color:#111>Enqueue</span><span style=color:#111>(</span><span style=color:#111>item</span><span style=color:#111>);</span> <span style=color:#75715e>// Store the data.</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>_semaphore</span><span style=color:#111>.</span><span style=color:#111>Release</span><span style=color:#111>();</span> <span style=color:#75715e>// Notify any consumers that more data is available.</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>public</span> <span style=color:#111>ValueTask</span><span style=color:#111>&lt;</span><span style=color:#111>T</span><span style=color:#111>&gt;</span> <span style=color:#111>ReadAsync</span><span style=color:#111>(</span><span style=color:#111>CancellationToken</span> <span style=color:#111>ct</span> <span style=color:#111>=</span> <span style=color:#00a8c8>default</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>await</span> <span style=color:#111>_semaphore</span><span style=color:#111>.</span><span style=color:#111>WaitAsync</span><span style=color:#111>(</span><span style=color:#111>ct</span><span style=color:#111>).</span><span style=color:#111>ConfigureAwait</span><span style=color:#111>(</span><span style=color:#00a8c8>false</span><span style=color:#111>);</span> <span style=color:#75715e>// Wait for data to be available.</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>bool</span> <span style=color:#111>gotOne</span> <span style=color:#111>=</span> <span style=color:#111>_items</span><span style=color:#111>.</span><span style=color:#111>TryDequeue</span><span style=color:#111>(</span><span style=color:#00a8c8>out</span> <span style=color:#111>T</span> <span style=color:#111>item</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>Debug</span><span style=color:#111>.</span><span style=color:#111>Assert</span><span style=color:#111>(</span><span style=color:#111>gotOne</span><span style=color:#111>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#00a8c8>return</span> <span style=color:#111>item</span><span style=color:#111>;</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
+</span></span><span style=display:flex><span><span style=color:#111>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Toub2019></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jun 6, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/caching/>Caching</a>
+<span class=meta>2 min; updated Jul 21, 2026
+<button id=566ad7647c9486118b230dc468ef9e5e-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=566ad7647c9486118b230dc468ef9e5e-summary style=display:none><h2 id=notes>Notes</h2><p>For read-heavy applications, storing frequently accessed data in fast memory
+(e.g., Redis) allows you to skip the DB entirely for some reads. A cache hit on
+Redis takes ~1ms compared to 20-50ms for a typical DB query, and this speedup is
+impactful in the order of millions of requests. In a web application, user
+sessions are typically stored in a distributed cache, allowing the system to
+quickly retrieve the data when a user makes a request. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span><span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jul 21, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/potpourri/>Distributed Systems Potpourri</a>
+<span class=meta>3 min; updated Jul 21, 2026
+<button id=fd020449c2e9ec52d127a1bcc3f3c44c-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=fd020449c2e9ec52d127a1bcc3f3c44c-summary style=display:none><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Contains content that is not extensive enough for its own page.</p></div></div><h2 id=streams-and-event-sourcing>Streams and Event Sourcing</h2><p>Unlike
+<a href=https://www.curiosities.dev/computer-science/distributed-systems/distributing-work/#queue target=_blank rel=noopener>message queues
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>, streams
+can retain data for a configurable period of time, allowing consumers to read
+and re-read messages from a specified time. You can use a stream to ingest high
+volumes of events in real-time, e.g., real-time analytics of user engagements in
+social media. <span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p><p><strong>Event sourcing</strong> involves storing changes in application state as a sequence
+of events. These events can be replayed to reconstruct the system&rsquo;s state at any
+point in time. The technique is useful for systems that require a detailed audit
+trail, e.g., a banking system, where every transaction (deposits, withdrawals,
+transfers) need to be recorded and may affect multiple accounts. <span class=citation-ref><a href=#KeyTechnologiesSysDesign></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jun 6, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/distributing-work/>Distributing Work</a>
 <span class=meta>3 min; updated Jul 16, 2026
 <button id=d1fb24ec3b867eddbf201c0a7f57e2f0-summary-controller onclick=toggleSummaryDisplay(this)>
 <i class="fas fa-chevron-down"></i></button></span><section class=meta id=d1fb24ec3b867eddbf201c0a7f57e2f0-summary style=display:none><h2 id=sharding>Sharding</h2><p>Sharding comes up when a single database won&rsquo;t work (e.g., hit storage limits,
@@ -182,30 +231,5 @@ job from its backlog and invokes it (&ldquo;gives it control&rdquo;). Once that 
 or completes, it returns control to the event loop which then selects another
 job from the backlog and invokes it. When there are no jobs to be done, the
 event loop rests (doesn&rsquo;t waster CPU cycles) and comes back when more jobs are
-enqueued.</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Nov 27, 2024</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/consistent-hashing/>Consistent Hashing</a>
-<span class=meta>6 min; updated Jun 6, 2026
-<button id=bf0f12a239ed3c5cdceaaba8a4454fea-summary-controller onclick=toggleSummaryDisplay(this)>
-<i class="fas fa-chevron-down"></i></button></span><section class=meta id=bf0f12a239ed3c5cdceaaba8a4454fea-summary style=display:none><div class=priors-holder><div class=priors title="Priors: my guess before digging deeper"><p>The term &ldquo;consistent hashing&rdquo; makes me think of hashing without randomization.
-Why isn&rsquo;t every hash consistent by definition? For example, a map implementation
-would need consistent hashing lest it&rsquo;s inaccurate when searching for stored
-values. Or is consistent hashing a tradeoff between collision-resistance and
-speed?</p></div></div><h2 id=web-caching>Web Caching</h2><p>Web caching was the original motivation for consistent hashing. With a web
-cache, if a browser requests a URL that is not in the cache, the page is
-downloaded from the server, and the result is sent to both the browser and the
-cache. On a second request, the page is served from the cache without contacting
-the server. <span class=citation-ref><a href=#CS168-01></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jun 6, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/networking-essentials/>Networking Essentials</a>
-<span class=meta>2 min; updated Jun 6, 2026
-<button id=e460e7e19ce5d833e49fd2023fe9b937-summary-controller onclick=toggleSummaryDisplay(this)>
-<i class="fas fa-chevron-down"></i></button></span><section class=meta id=e460e7e19ce5d833e49fd2023fe9b937-summary style=display:none><h2 id=notes>Notes</h2><p>At a basic level, understand how services talk to each other and what happens
-when those connections fail or get slow. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>For 90% of the use cases, default to HTTP over TCP. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>WebSockets and Server-Sent Events (SSE) come up when you need real-time updates.
-SSE is unidirectional - the client makes an initial HTTP request to open the
-connection, and the server pushes data down that connection. WebSockets handle
-bidirectional communication where both sides send messages freely. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jun 6, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/distributed-systems/cap-theorem/>CAP Theorem</a>
-<span class=meta>1 min; updated Jun 6, 2026
-<button id=15d78063bec472a1ed4595c2482909b7-summary-controller onclick=toggleSummaryDisplay(this)>
-<i class="fas fa-chevron-down"></i></button></span><section class=meta id=15d78063bec472a1ed4595c2482909b7-summary style=display:none><h2 id=notes>Notes</h2><p>The CAP theorem states that you can only have 2 of 3 properties at once:</p><ul><li>Consistency: All nodes see the same data.</li><li>Availability: Every request gets a response.</li><li>Partition Tolerance: System works even when network connections fail between
-nodes.</li></ul><p><span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p><p>In practice, network partitions are unavoidable in distributed system. Choosing
-consistency means some nodes will refuse to serve requests rather than return
-potentially stale data. Choosing availability means different nodes might
-temporarily have different data. <span class=citation-ref><a href=#CoreConceptsSysDesign></a></span></p>...</section></td></tr></table><style>body{background-image:none}</style><footer><a href=/about>About</a>
+enqueued.</p>...</section></td></tr></table><style>body{background-image:none}</style><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></div></body></html>
