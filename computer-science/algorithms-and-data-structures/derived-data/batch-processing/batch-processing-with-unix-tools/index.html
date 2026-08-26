@@ -1,0 +1,80 @@
+<!doctype html><html lang=en><head><title>Batch Processing with Unix Tools | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content='Simple Log Analysis
+Suppose you have a web server that appends a line to a log file every time it
+serves a request, e.g., using the nginx defaults (line breaks added for
+readability):
+216.58.210.78 - - [27/Feb/2015:17:55:11 +0000] "GET /css/main.css HTTP/1.1"
+200 3377 "http://foo.com/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+
+To find the 5 most popular pages on your website, you can do:...'><meta property="og:title" content="Batch Processing with Unix Tools"><meta property="og:description" content='Simple Log Analysis
+Suppose you have a web server that appends a line to a log file every time it
+serves a request, e.g., using the nginx defaults (line breaks added for
+readability):
+216.58.210.78 - - [27/Feb/2015:17:55:11 +0000] "GET /css/main.css HTTP/1.1"
+200 3377 "http://foo.com/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+
+To find the 5 most popular pages on your website, you can do:...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/algorithms-and-data-structures/derived-data/batch-processing/batch-processing-with-unix-tools/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/>Algorithms and Data Structures</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/derived-data/>Derived Data Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/derived-data/batch-processing/>Batch Processing</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/algorithms-and-data-structures/derived-data/batch-processing/batch-processing-with-unix-tools/>Batch Processing with Unix Tools</a></li></ul></nav><section><header><h1>Batch Processing with Unix Tools</h1><p class=meta>Dated Aug 10, 2026;
+last modified on Mon, 10 Aug 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#simple-log-analysis>Simple Log Analysis</a></li><li><a href=#the-unix-philosophy>The Unix Philosophy</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=simple-log-analysis>Simple Log Analysis</h2><p>Suppose you have a web server that appends a line to a log file every time it
+serves a request, e.g., using the nginx defaults (line breaks added for
+readability):</p><pre tabindex=0><code class=language-log data-lang=log>216.58.210.78 - - [27/Feb/2015:17:55:11 +0000] &#34;GET /css/main.css HTTP/1.1&#34;
+200 3377 &#34;http://foo.com/&#34; &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36&#34;
+</code></pre><p><span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><p>To find the 5 most popular pages on your website, you can do:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span>cat /var/log/nginx/access.log <span style=color:#111>|</span>
+</span></span><span style=display:flex><span>  awk <span style=color:#d88200>&#39;{print $7}&#39;</span> <span style=color:#111>|</span>
+</span></span><span style=display:flex><span>  sort             <span style=color:#111>|</span>
+</span></span><span style=display:flex><span>  uniq -c          <span style=color:#111>|</span>
+</span></span><span style=display:flex><span>  sort -r -n       <span style=color:#111>|</span>
+</span></span><span style=display:flex><span>  head -n <span style=color:#ae81ff>5</span>
+</span></span></code></pre></div><p>&mldr; where:</p><ul><li><code>cat</code> reads the log file</li><li><code>awk '{print $7}'</code> splits each line by whitespace and only outputs the 7th
+such field, e.g., <code>/css/main.css</code></li><li><code>sort</code> makes it such that repetitions of the same URL are adjacent to each
+other</li><li><code>uniq</code> filters out repeated adjacent lines, with <code>-c</code> prepending a count for
+each distinct line</li><li><code>sort</code> sorts by the number at the start of each line (<code>-n</code>), but in
+reverse/descending order (<code>-r</code>)</li><li><code>head</code> outputs the first five lines (<code>-n 5</code>) and discards the rest.</li></ul><p><span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>LLMs have made it easier to string together command line utilities without me
+digging deeper into the man pages to figure out the syntax. Looking at LLM
+trajectories also teaches me useful utilities like <code>tail</code>, which coding agents
+use to periodically check on the status of a long-running operation.</p></div></div><p>Compare the chain of Unix commands to this custom Ruby program:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-rb data-lang=rb><span style=display:flex><span><span style=color:#111>counts</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>Hash</span><span style=color:#f92672>.</span><span style=color:#111>new</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>File</span><span style=color:#f92672>.</span><span style=color:#111>open</span><span style=color:#111>(</span><span style=color:#d88200>&#39;/var/log/nginx/access.log&#39;</span><span style=color:#111>)</span> <span style=color:#00a8c8>do</span> <span style=color:#f92672>|</span><span style=color:#111>file</span><span style=color:#f92672>|</span>
+</span></span><span style=display:flex><span>  <span style=color:#111>file</span><span style=color:#f92672>.</span><span style=color:#111>each</span> <span style=color:#00a8c8>do</span> <span style=color:#f92672>|</span><span style=color:#111>line</span><span style=color:#f92672>|</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>url</span> <span style=color:#f92672>=</span> <span style=color:#111>line</span><span style=color:#f92672>.</span><span style=color:#111>split</span><span style=color:#f92672>[</span><span style=color:#ae81ff>6</span><span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>    <span style=color:#111>counts</span><span style=color:#f92672>[</span><span style=color:#111>url</span><span style=color:#f92672>]</span> <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>  <span style=color:#00a8c8>end</span>
+</span></span><span style=display:flex><span><span style=color:#00a8c8>end</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#111>top5</span> <span style=color:#f92672>=</span> <span style=color:#111>counts</span><span style=color:#f92672>.</span><span style=color:#111>map</span><span style=color:#111>{</span><span style=color:#f92672>|</span><span style=color:#111>url</span><span style=color:#111>,</span> <span style=color:#111>count</span><span style=color:#f92672>|</span> <span style=color:#f92672>[</span><span style=color:#111>count</span><span style=color:#111>,</span> <span style=color:#111>url</span><span style=color:#f92672>]</span><span style=color:#111>}</span><span style=color:#f92672>.</span><span style=color:#111>sort</span><span style=color:#f92672>.</span><span style=color:#111>reverse</span><span style=color:#f92672>[</span><span style=color:#ae81ff>0</span><span style=color:#f92672>...</span><span style=color:#ae81ff>5</span><span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#111>top5</span><span style=color:#f92672>.</span><span style=color:#111>each</span><span style=color:#111>{</span><span style=color:#f92672>|</span><span style=color:#111>count</span><span style=color:#111>,</span> <span style=color:#111>url</span><span style=color:#f92672>|</span> <span style=color:#111>puts</span> <span style=color:#d88200>&#34;</span><span style=color:#d88200>#{</span><span style=color:#111>count</span><span style=color:#d88200>}</span><span style=color:#d88200> </span><span style=color:#d88200>#{</span><span style=color:#111>url</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span> <span style=color:#111>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><p>Besides syntactic differences between the two approaches, also consider the
+amount of memory to which the job needs random access. For example, <code>sort</code>
+automatically handles larger-than-memory datasets by spilling to disk and
+parallelizing sorting across multiple CPU cores. &ndash; a sorting implementation
+that&rsquo;s better than that provided by some languages. <span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><h2 id=the-unix-philosophy>The Unix Philosophy</h2><p>Described in 1978 as follows:</p><ol><li>Make each program do one thing well. To do a new job, build afresh rather
+than complicate old programs by adding new &ldquo;features&rdquo;</li><li>Expect the output of every program to become the input to another, as yet
+unknown, program. Don&rsquo;t clutter output with extraneous information. Avoid
+stringently columnar or binary input formats. Don&rsquo;t insist on interactive
+input.</li><li>Design and build software, even operating systems, to be tried early, ideally
+within weeks. Don&rsquo;t hesitate to throw away the clumsy parts and rebuild them.</li><li>Use tools in preference to unskilled help to lighten a programming task, even
+if you have to detour to build the tools and expect to throw some of them out
+afterward you&rsquo;ve finished using them.</li></ol><p><span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><p>To have any programs output connect to any program&rsquo;s input, then all programs
+must use the same input/output interface. In Unix, that interface is a file
+descriptor &ndash; an ordered sequence of bytes. Multiple things can be represented
+as such, e.g., an actual file on the filesystem, <code>stdin</code>, <code>stdout</code>, a socket to
+another process, a socket representing a TCP connection, etc. By convention,
+most programs treat the sequence of bytes as ASCII text delimited by <code>\n</code>. <span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><p>The Unix approach works best when a program uses <code>stdin</code> and <code>stdout</code> instead of
+worrying about particular file paths. The separation of logic from wiring makes
+it easy to compose small tools into bigger systems. However, there are limits to
+a <code>stdin</code>/<code>stdout</code> model, e.g., programs that need multiple inputs or outputs;
+programs that spawn sub-processes, etc. <span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><p>Unix tools also make it easy to experiment and see what&rsquo;s going on. Input files
+are typically treated as immutable, and so running commands multiple times with
+different command-line options doesn&rsquo;t damage the input files. You can also end
+the pipeline at any point, e.g., pipe it into <code>less</code> to see if it has the
+expected form; output it to a file allowing you to restart later stages without
+re-running the entire pipeline. <span class=citation-ref><a href=#Kleppmann2017-Ch10></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-book' cited-by-count is-main><cite id=Kleppmann2017-Ch10>Designing Data-Intensive Applications: The big ideas behind reliable, scalable, and maintainable systems<i>.</i>
+Chapter 10: Batch Processing<i>.</i>
+</cite>Kleppmann, Martin.
+Mar 16, 2017.
+<a href="https://openlibrary.org/search?isbn=978-1098119065" target=_blank rel=noopener>ISBN: 978-1098119065 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a>.
+<i class='fas fa-fw fa-book' aria-hidden=true></i></div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Kleppmann-Martin>Kleppmann, Martin</a></aside></div></div><footer></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
