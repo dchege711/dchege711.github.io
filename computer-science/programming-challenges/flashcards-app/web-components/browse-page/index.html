@@ -37,25 +37,25 @@ cost a lot
 </a>.</p></div></div><p>Pleasantly surprised at how encapsulated
 <a href=https://github.com/dchege711/study_buddy/blob/8f2c3d8f32ce47ca81758ff2d8c2c4e142bf70a5/src/public/src/components/search-bar/search-bar.ts target=_blank rel=noopener><code>&lt;search-bar></code>
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
-</a>is. The core design is:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#111>&lt;</span><span style=color:#f92672>search-bar</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>&lt;</span><span style=color:#f92672>input</span> <span style=color:#111>/&gt;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>&lt;</span><span style=color:#f92672>ul</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>ul</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span><span style=color:#111>&lt;/</span><span style=color:#f92672>search-bar</span><span style=color:#111>&gt;</span>
+</a>is. The core design is:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>search-bar</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=p>&lt;</span><span class=nt>input</span> <span class=p>/&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=p>&lt;</span><span class=nt>ul</span><span class=p>&gt;&lt;/</span><span class=nt>ul</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>search-bar</span><span class=p>&gt;</span>
 </span></span></code></pre></div><p>&mldr; where the <code>&lt;ul></code> shows the search results, and on pressing <code>Enter</code>,
 <code>&lt;search-bar></code> dispatches a <code>CardSearchResultsEvent</code> containing the
 search results. <span class=citation-ref><a href=#eventsLit></a></span>talks about an &ldquo;events go up;
 properties come down&rdquo; UI approach that works well in <code>&lt;search-bar></code>&rsquo;s
 case. Down the line, we want the <code>&lt;search-results></code> element to
-display the results.</p><h2 id=search-results><code>&lt;search-results></code></h2><p>Currently, the structure is basically:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>id</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;temp_container&#39;</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>&lt;</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>id</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;minicards_search_results&#39;</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>class</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;minicard_search_result&#39;</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>      ...
-</span></span><span style=display:flex><span>      <span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>class</span><span style=color:#f92672>=</span><span style=color:#d88200>&#39;minicard_search_result&#39;</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>&lt;</span><span style=color:#f92672>div</span> <span style=color:#75af00>id</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;card_modal&#34;</span><span style=color:#111>&gt;</span>...<span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
-</span></span><span style=display:flex><span><span style=color:#111>&lt;/</span><span style=color:#f92672>div</span><span style=color:#111>&gt;</span>
+display the results.</p><h2 id=search-results><code>&lt;search-results></code></h2><p>Currently, the structure is basically:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>div</span> <span class=na>id</span><span class=o>=</span><span class=s>&#39;temp_container&#39;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=p>&lt;</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>div</span> <span class=na>id</span><span class=o>=</span><span class=s>&#39;minicards_search_results&#39;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=p>&lt;</span><span class=nt>div</span> <span class=na>class</span><span class=o>=</span><span class=s>&#39;minicard_search_result&#39;</span><span class=p>&gt;&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>      ...
+</span></span><span class=line><span class=cl>      <span class=p>&lt;</span><span class=nt>div</span> <span class=na>class</span><span class=o>=</span><span class=s>&#39;minicard_search_result&#39;</span><span class=p>&gt;&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>div</span> <span class=na>id</span><span class=o>=</span><span class=s>&#34;card_modal&#34;</span><span class=p>&gt;</span>...<span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
 </span></span></code></pre></div><p>&mldr; where <code>#temp_container</code> is <code>&lt;search-bar></code>&rsquo;s sibling.</p><p>Given that <code>&lt;search-results></code> is not <code>&lt;search-bar></code>&rsquo;s
 ancestor, the <code>CardSearchResultsEvent</code> will not bubble to it. Is event
 dispatch the correct design? For that event to be reflected in

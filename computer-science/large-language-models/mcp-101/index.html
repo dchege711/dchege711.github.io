@@ -58,59 +58,59 @@ application, enabling the MCP server to stay model-independent.</li><li><strong>
 monitoring purposes.</li><li><strong>Tasks (Experimental)</strong>: Durable execution wrappers that enable deferred
 result retrieval and status tracking for MCP requests.</li></ul><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>MCP also supports <strong>notifications</strong> to enable dynamic updates between servers
 and clients. Unlike other messages, notifications lack an <code>id</code> field as the
-sender (can be either the server or the client) doesn&rsquo;t need a response. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><h2 id=sample-flow>Sample Flow</h2><p>The client sends an <code>initialize</code> request, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;method&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;initialize&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;params&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;protocolVersion&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2025-06-18&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;capabilities&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#f92672>&#34;elicitation&#34;</span><span style=color:#111>:</span> <span style=color:#111>{}</span> <span style=color:#111>},</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;clientInfo&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#f92672>&#34;name&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;example-client&#34;</span><span style=color:#111>,</span> <span style=color:#f92672>&#34;version&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;1.0.0&#34;</span> <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span></code></pre></div><p>&mldr; and the server responds:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;result&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;protocolVersion&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2025-06-18&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;capabilities&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;tools&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#f92672>&#34;listChanged&#34;</span><span style=color:#111>:</span> <span style=color:#00a8c8>true</span> <span style=color:#111>},</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;resources&#34;</span><span style=color:#111>:</span> <span style=color:#111>{}</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>},</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;serverInfo&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#f92672>&#34;name&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;example-server&#34;</span><span style=color:#111>,</span> <span style=color:#f92672>&#34;version&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;1.0.0&#34;</span> <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+sender (can be either the server or the client) doesn&rsquo;t need a response. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><h2 id=sample-flow>Sample Flow</h2><p>The client sends an <code>initialize</code> request, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;method&#34;</span><span class=p>:</span> <span class=s2>&#34;initialize&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;params&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;protocolVersion&#34;</span><span class=p>:</span> <span class=s2>&#34;2025-06-18&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;capabilities&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;elicitation&#34;</span><span class=p>:</span> <span class=p>{}</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;clientInfo&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;example-client&#34;</span><span class=p>,</span> <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;1.0.0&#34;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; and the server responds:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;protocolVersion&#34;</span><span class=p>:</span> <span class=s2>&#34;2025-06-18&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;capabilities&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;tools&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;listChanged&#34;</span><span class=p>:</span> <span class=kc>true</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;resources&#34;</span><span class=p>:</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;serverInfo&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;example-server&#34;</span><span class=p>,</span> <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;1.0.0&#34;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p>&mldr; and the MCP host stores these capabilities for later use. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>If a mutually compatible <code>protocolVersion</code> cannot be found, the connection
 should be terminated. Otherwise, the client notifies the server that it&rsquo;s ready:
-<code>{ "jsonrpc": "2.0", "method": "notifications/initialized" }</code> <span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>To discover available tools, the client sends <code>{"jsonrpc": "2.0", "id": 2, "method": "tools/list"}</code> and the server responds, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>2</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;result&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;tools&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;weather_current&#34;</span><span style=color:#111>,</span> <span style=color:#75715e>// Unique within the server&#39;s namespace
-</span></span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;title&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Weather Information&#34;</span><span style=color:#111>,</span> <span style=color:#75715e>// Human readable name of the tool
-</span></span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;description&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Get current weather information for any location worldwide&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;inputSchema&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#75715e>// Enables type validation and documentation on required params
-</span></span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;type&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;object&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;properties&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;location&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;type&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;string&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;description&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;City name, address, or coordinates (latitude, longitude)&#34;</span>
-</span></span><span style=display:flex><span>            <span style=color:#111>},</span>
-</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;units&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;type&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;string&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;enum&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span><span style=color:#d88200>&#34;metric&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;imperial&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;kelvin&#34;</span><span style=color:#111>],</span>
-</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;description&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Temperature units to use in response&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;default&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;metric&#34;</span>
-</span></span><span style=display:flex><span>            <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>          <span style=color:#111>},</span>
-</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;required&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span><span style=color:#d88200>&#34;location&#34;</span><span style=color:#111>]</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>]</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+<code>{ "jsonrpc": "2.0", "method": "notifications/initialized" }</code> <span class=citation-ref><a href=#MCPArchOverview></a></span></p><p>To discover available tools, the client sends <code>{"jsonrpc": "2.0", "id": 2, "method": "tools/list"}</code> and the server responds, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;tools&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;weather_current&#34;</span><span class=p>,</span> <span class=c1>// Unique within the server&#39;s namespace
+</span></span></span><span class=line><span class=cl>        <span class=nt>&#34;title&#34;</span><span class=p>:</span> <span class=s2>&#34;Weather Information&#34;</span><span class=p>,</span> <span class=c1>// Human readable name of the tool
+</span></span></span><span class=line><span class=cl>        <span class=nt>&#34;description&#34;</span><span class=p>:</span> <span class=s2>&#34;Get current weather information for any location worldwide&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;inputSchema&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=c1>// Enables type validation and documentation on required params
+</span></span></span><span class=line><span class=cl>          <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;object&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>          <span class=nt>&#34;properties&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;location&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>              <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;string&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>              <span class=nt>&#34;description&#34;</span><span class=p>:</span> <span class=s2>&#34;City name, address, or coordinates (latitude, longitude)&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=p>},</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;units&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>              <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;string&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>              <span class=nt>&#34;enum&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;metric&#34;</span><span class=p>,</span> <span class=s2>&#34;imperial&#34;</span><span class=p>,</span> <span class=s2>&#34;kelvin&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>              <span class=nt>&#34;description&#34;</span><span class=p>:</span> <span class=s2>&#34;Temperature units to use in response&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>              <span class=nt>&#34;default&#34;</span><span class=p>:</span> <span class=s2>&#34;metric&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>          <span class=p>},</span>
+</span></span><span class=line><span class=cl>          <span class=nt>&#34;required&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;location&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p>&mldr; and the MCP host combines all the tools from the MCP servers into a unified
 tool registry that the LLM can access. <span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>There&rsquo;s additional bookkeeping needed on the MCP host. While <code>weather_current</code>
 is unique in <code>example-server</code>&rsquo;s namespace, that might not hold in the MCP
@@ -118,27 +118,27 @@ hosts&rsquo;s tool registry. A potential solution is prefixing with the server&r
 e.g., <code>example-server.weather_current</code>, and the host strips the prefix at the
 host/client boundary.</p></div></div><p>When the LLM decides to use a given tool, the MCP host routes it to the
 appropriate MCP client which sends a <code>tools/call</code> request to the MCP server,
-e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>3</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;method&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;tools/call&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;params&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;name&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;weather_current&#34;</span><span style=color:#111>,</span> <span style=color:#75715e>// Must match the name from tools/list
-</span></span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;arguments&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#f92672>&#34;location&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;San Francisco&#34;</span><span style=color:#111>,</span> <span style=color:#f92672>&#34;units&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;imperial&#34;</span> <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span></code></pre></div><p>&mldr; and the MCP server responds:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>3</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;result&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;content&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;type&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;text&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;text&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Current weather in San Francisco: 68°F, partly cloudy with light winds from the west at 8 mph. Humidity: 65%&#34;</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>]</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;method&#34;</span><span class=p>:</span> <span class=s2>&#34;tools/call&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;params&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;weather_current&#34;</span><span class=p>,</span> <span class=c1>// Must match the name from tools/list
+</span></span></span><span class=line><span class=cl>    <span class=nt>&#34;arguments&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;location&#34;</span><span class=p>:</span> <span class=s2>&#34;San Francisco&#34;</span><span class=p>,</span> <span class=nt>&#34;units&#34;</span><span class=p>:</span> <span class=s2>&#34;imperial&#34;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; and the MCP server responds:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;content&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;text&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;text&#34;</span><span class=p>:</span> <span class=s2>&#34;Current weather in San Francisco: 68°F, partly cloudy with light winds from the west at 8 mph. Humidity: 65%&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#MCPArchOverview></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>One of the common criticisms for MCP is that cases like <code>weather_current</code> can
 already be solved with existing tech, i.e., expose the API docs and a utility
 for making network calls. Admittedly, if I squint, MCP is the name for this
@@ -168,14 +168,14 @@ specific information from the user before calling a tool in the <code>vacation</
 server.</p><p>If the <code>plan-vacation</code> prompt contains procedural guidance on how to call the
 tools in the <code>vacation</code> MCP server, then why not have those instructions in some
 internal system prompt? Ah, we&rsquo;re assuming that <code>vacation</code> has an LLM, which is
-not true in general.</p></div></div><h3 id=tools>Tools</h3><p>A simple server implementation:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> <span style=color:#111>fastmcp</span> <span style=color:#f92672>import</span> <span style=color:#111>FastMCP</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>mcp</span> <span style=color:#f92672>=</span> <span style=color:#111>FastMCP</span><span style=color:#111>(</span><span style=color:#111>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;CalculatorServer&#34;</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>@mcp.tool</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>add</span><span style=color:#111>(</span><span style=color:#111>a</span><span style=color:#111>:</span> <span style=color:#111>int</span><span style=color:#111>,</span> <span style=color:#111>b</span><span style=color:#111>:</span> <span style=color:#111>int</span><span style=color:#111>)</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>int</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#d88200>&#34;&#34;&#34;Adds two integer numbers together.&#34;&#34;&#34;</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#111>a</span> <span style=color:#f92672>+</span> <span style=color:#111>b</span>
+not true in general.</p></div></div><h3 id=tools>Tools</h3><p>A simple server implementation:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>fastmcp</span> <span class=kn>import</span> <span class=n>FastMCP</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>mcp</span> <span class=o>=</span> <span class=n>FastMCP</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s2>&#34;CalculatorServer&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@mcp.tool</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=n>a</span><span class=p>:</span> <span class=nb>int</span><span class=p>,</span> <span class=n>b</span><span class=p>:</span> <span class=nb>int</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>int</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;&#34;&#34;Adds two integer numbers together.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>a</span> <span class=o>+</span> <span class=n>b</span>
 </span></span></code></pre></div><p>The function name, <code>add</code>, becomes the tool name and the docstring becomes the
 tool description. The <code>@mcp.tool</code> decorator also accepts arguments such as
 <code>name</code>, <code>description</code>, <code>tags</code>, <code>icons</code>, <code>annotations</code>, <code>meta</code>, <code>timeout</code>,
@@ -198,44 +198,44 @@ is desirable to combat unreliability on the LLM&rsquo;s part.</p><p>The <strong>
 liberal in what you accept</em>. However, this principle has been criticized for
 entrenching flaws as a de facto standard because ensuring interoperability in
 such environments is aiming yo be bug-for-bug compatible. <span class=citation-ref><a href=#RobustnessPrinciple></a></span></p></div></div><p>Using Pydantic&rsquo;s <code>Field</code> class with <code>Annotated</code> to impose validation
-constraints, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#75af00>@mcp.tool</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>search_database</span><span style=color:#111>(</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>query</span><span style=color:#111>:</span> <span style=color:#111>Annotated</span><span style=color:#111>[</span><span style=color:#111>str</span><span style=color:#111>,</span> <span style=color:#111>Field</span><span style=color:#111>(</span><span style=color:#111>description</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Search query string&#34;</span><span style=color:#111>)],</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>limit</span><span style=color:#111>:</span> <span style=color:#111>Annotated</span><span style=color:#111>[</span><span style=color:#111>int</span><span style=color:#111>,</span> <span style=color:#111>Field</span><span style=color:#111>(</span><span style=color:#111>description</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Maximum number of results&#34;</span><span style=color:#111>,</span> <span style=color:#111>ge</span><span style=color:#f92672>=</span><span style=color:#ae81ff>1</span><span style=color:#111>,</span> <span style=color:#111>le</span><span style=color:#f92672>=</span><span style=color:#ae81ff>100</span><span style=color:#111>)]</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
-</span></span><span style=display:flex><span><span style=color:#111>)</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>list</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#d88200>&#34;&#34;&#34;Search the database with the provided query.&#34;&#34;&#34;</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e># Implementation...</span>
+constraints, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=nd>@mcp.tool</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>search_database</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=n>query</span><span class=p>:</span> <span class=n>Annotated</span><span class=p>[</span><span class=nb>str</span><span class=p>,</span> <span class=n>Field</span><span class=p>(</span><span class=n>description</span><span class=o>=</span><span class=s2>&#34;Search query string&#34;</span><span class=p>)],</span>
+</span></span><span class=line><span class=cl>  <span class=n>limit</span><span class=p>:</span> <span class=n>Annotated</span><span class=p>[</span><span class=nb>int</span><span class=p>,</span> <span class=n>Field</span><span class=p>(</span><span class=n>description</span><span class=o>=</span><span class=s2>&#34;Maximum number of results&#34;</span><span class=p>,</span> <span class=n>ge</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> <span class=n>le</span><span class=o>=</span><span class=mi>100</span><span class=p>)]</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>list</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;&#34;&#34;Search the database with the provided query.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Implementation...</span>
 </span></span></code></pre></div><p>&mldr; where <code>Field</code> supports validation and documentation features like
 <code>description</code>, <code>ge</code>, <code>gt</code>, <code>le</code>, <code>lt</code>, <code>min_length</code>, <code>max_length</code>, <code>pattern</code>,
 and <code>default</code>. <span class=citation-ref><a href=#ToolsFastMCP></a></span></p><p>Parameters using <code>Depends()</code> are automatically excluded from the tool schema,
-e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> <span style=color:#111>fastmcp</span> <span style=color:#f92672>import</span> <span style=color:#111>FastMCP</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>from</span> <span style=color:#111>fastmcp.dependencies</span> <span style=color:#f92672>import</span> <span style=color:#111>Depends</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>mcp</span> <span style=color:#f92672>=</span> <span style=color:#111>FastMCP</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>get_user_</span><span style=color:#111>()</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>str</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#d88200>&#34;user_123&#34;</span> <span style=color:#75715e># Injected at runtime</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>@mcp.tool</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>get_user_details</span><span style=color:#111>(</span><span style=color:#111>user_id</span><span style=color:#111>:</span> <span style=color:#111>str</span> <span style=color:#f92672>=</span> <span style=color:#111>Depends</span><span style=color:#111>(</span><span style=color:#111>get_user_id</span><span style=color:#111>))</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>str</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e># user_id is injected by the server, not provided by the LLM.</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>return</span> <span style=color:#d88200>f</span><span style=color:#d88200>&#34;Details for </span><span style=color:#d88200>{</span><span style=color:#111>user_id</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span>
+e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>fastmcp</span> <span class=kn>import</span> <span class=n>FastMCP</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>fastmcp.dependencies</span> <span class=kn>import</span> <span class=n>Depends</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>mcp</span> <span class=o>=</span> <span class=n>FastMCP</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_user_</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=s2>&#34;user_123&#34;</span> <span class=c1># Injected at runtime</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@mcp.tool</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_user_details</span><span class=p>(</span><span class=n>user_id</span><span class=p>:</span> <span class=nb>str</span> <span class=o>=</span> <span class=n>Depends</span><span class=p>(</span><span class=n>get_user_id</span><span class=p>))</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=c1># user_id is injected by the server, not provided by the LLM.</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;Details for </span><span class=si>{</span><span class=n>user_id</span><span class=si>}</span><span class=s2>&#34;</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#ToolsFastMCP></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>This gels with
 <a href=https://www.curiosities.dev/computer-science/large-language-models/building-with-llms/#deterministic-control-flows-vs-prompting>Deterministic Control Flows vs. Prompting
 </a>.
 While we could prompt the LLM to give the correct <code>user_id</code>, this is a
 deterministic security/privacy boundary that we shouldn&rsquo;t toss the dice for.</p></div></div><p>The return type is influenced by the return type annotation. For example, <code>-> int</code> makes FastMCP generate a JSON schema for the output and also included a
-<code>structuredContent</code> in the response, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;content&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;type&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;text&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;text&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;8&#34;</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>],</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;structuredContent&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;result&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>8</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+<code>structuredContent</code> in the response, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;content&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;text&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;text&#34;</span><span class=p>:</span> <span class=s2>&#34;8&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;structuredContent&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=mi>8</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p>&mldr; That said, with <code>-> ToolResult</code> from <code>fastmcp.tools.tool</code>, one can specify
 the traditional content, structured data, and metadata (e.g., execution time).
 <span class=citation-ref><a href=#ToolsFastMCP></a></span></p><p>When the tool raises an exception, FastMCP logs it and sends back an MCP error
@@ -244,14 +244,14 @@ internal error details and uses a generic error message. However, <code>ToolErro
 from <code>fastmcp.exceptions</code> are always sent to clients with their error messages.
 <span class=citation-ref><a href=#ToolsFastMCP></a></span></p><p><code>@mcp.tool(timeout=30.0)</code> makes FastMCP return an error to the client indicating
 that the call timed out. However, tools that run as background tasks execute in
-a Docket worker and need a Docket timeout, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> <span style=color:#111>datetime</span> <span style=color:#f92672>import</span> <span style=color:#111>timedelta</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>from</span> <span style=color:#111>docket</span> <span style=color:#f92672>import</span> <span style=color:#111>Timeout</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>@mcp.tool</span><span style=color:#111>(</span><span style=color:#111>task</span><span style=color:#f92672>=</span><span style=color:#00a8c8>True</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>long_running_task</span><span style=color:#111>(</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>data</span><span style=color:#111>:</span> <span style=color:#111>str</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>timeout</span><span style=color:#111>:</span> <span style=color:#111>Timeout</span> <span style=color:#f92672>=</span> <span style=color:#111>Timeout</span><span style=color:#111>(</span><span style=color:#111>timedelta</span><span style=color:#111>(</span><span style=color:#111>minutes</span><span style=color:#f92672>=</span><span style=color:#ae81ff>10</span><span style=color:#111>)))</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>...</span>
+a Docket worker and need a Docket timeout, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>datetime</span> <span class=kn>import</span> <span class=n>timedelta</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>docket</span> <span class=kn>import</span> <span class=n>Timeout</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@mcp.tool</span><span class=p>(</span><span class=n>task</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>long_running_task</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=n>data</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=n>timeout</span><span class=p>:</span> <span class=n>Timeout</span> <span class=o>=</span> <span class=n>Timeout</span><span class=p>(</span><span class=n>timedelta</span><span class=p>(</span><span class=n>minutes</span><span class=o>=</span><span class=mi>10</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>  <span class=o>...</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#ToolsFastMCP></a></span></p><p>One can specify tags, e.g., <code>@mcp.tool(tags={"admin"})</code>, to allow batch updates.
 For instance, <code>mcp.disable(tags={"admin"})</code> disables all tools with the <code>admin</code>
 tag. Disabled tools don&rsquo;t appear in <code>list_tools</code> and can&rsquo;t be called. If there
@@ -264,53 +264,53 @@ annotations include <code>title: str</code>, <code>readOnlyHint: bool</code>, <c
 choose to skip confirmation prompts for read-only tools, and enable more
 aggressive batching and caching. <span class=citation-ref><a href=#ToolsFastMCP></a></span></p><h3 id=tasks>Tasks</h3><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Tasks are still experimental per <span class=citation-ref><a href=#TasksMCP></a></span>, having been proposed in
 Nov 2025.</p></div></div><p>MCP allows requestors (can be clients or servers) to augment their requests
-with tasks, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;method&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;tools/call&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;params&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;name&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;get_weather&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;arguments&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span><span style=color:#f92672>&#34;city&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;New York&#34;</span><span style=color:#111>},</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;task&#34;</span><span style=color:#111>:</span> <span style=color:#111>{}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span></code></pre></div><p>&mldr; upon which the receiver immediately returns, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>1</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;result&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span> <span style=color:#75715e>// CreateTaskResult
-</span></span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;task&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;taskId&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;task-123&#34;</span><span style=color:#111>,</span> <span style=color:#75715e>// Receiver-generated ID
-</span></span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;status&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;working&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;statusMessage&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;The operation is now in progress.&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;createdAt&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2025-11-25T10:30:00Z&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;lastUpdatedAt&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2025-11-25T10:40:00Z&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;ttl&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>60000</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;pollInterval&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>5000</span> <span style=color:#75715e>// As a courtesy, the requestor should respect this.
-</span></span></span><span style=display:flex><span>    <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+with tasks, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;method&#34;</span><span class=p>:</span> <span class=s2>&#34;tools/call&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;params&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;get_weather&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;arguments&#34;</span><span class=p>:</span> <span class=p>{</span><span class=nt>&#34;city&#34;</span><span class=p>:</span> <span class=s2>&#34;New York&#34;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;task&#34;</span><span class=p>:</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; upon which the receiver immediately returns, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=c1>// CreateTaskResult
+</span></span></span><span class=line><span class=cl>    <span class=nt>&#34;task&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;taskId&#34;</span><span class=p>:</span> <span class=s2>&#34;task-123&#34;</span><span class=p>,</span> <span class=c1>// Receiver-generated ID
+</span></span></span><span class=line><span class=cl>      <span class=nt>&#34;status&#34;</span><span class=p>:</span> <span class=s2>&#34;working&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;statusMessage&#34;</span><span class=p>:</span> <span class=s2>&#34;The operation is now in progress.&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;createdAt&#34;</span><span class=p>:</span> <span class=s2>&#34;2025-11-25T10:30:00Z&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;lastUpdatedAt&#34;</span><span class=p>:</span> <span class=s2>&#34;2025-11-25T10:40:00Z&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;ttl&#34;</span><span class=p>:</span> <span class=mi>60000</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;pollInterval&#34;</span><span class=p>:</span> <span class=mi>5000</span> <span class=c1>// As a courtesy, the requestor should respect this.
+</span></span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#TasksMCP></a></span></p><p>The requestor then polls <code>tasks/get</code> until the task reaches a terminal status (
 <code>completed</code>, <code>failed</code>, or <code>cancelled</code>) or until encountering the
 <code>input_required</code> status. Calling <code>tasks/result</code> blocks until the task reaches a
 terminal status (but requestors can keep polling <code>tasks/get</code> in parallel). The
-receiver responds to <code>tasks/result</code> with a result, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;jsonrpc&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2.0&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;id&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>4</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;result&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;content&#34;</span><span style=color:#111>:</span> <span style=color:#111>[</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;type&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;text&#34;</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;text&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Current weather in New York:\nTemperature: 68°F\nConditions: Partly windy&#34;</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>],</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;isError&#34;</span><span style=color:#111>:</span> <span style=color:#00a8c8>false</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;_meta&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;io.modelcontextprotocol/related-task&#34;</span><span style=color:#111>:</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;taskId&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;task-123&#34;</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+receiver responds to <code>tasks/result</code> with a result, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;jsonrpc&#34;</span><span class=p>:</span> <span class=s2>&#34;2.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=mi>4</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;content&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;text&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;text&#34;</span><span class=p>:</span> <span class=s2>&#34;Current weather in New York:\nTemperature: 68°F\nConditions: Partly windy&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;isError&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;_meta&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;io.modelcontextprotocol/related-task&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;taskId&#34;</span><span class=p>:</span> <span class=s2>&#34;task-123&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#TasksMCP></a></span></p><p>The <code>tasks.list</code> and <code>tasks.cancel</code> capabilities support the <code>tasks/list</code> and
 <code>tasks/cancel</code> operations. The server exposes the <code>tasks.requests.tools.call</code>
 capability to express support for task-augmented <code>tools/call</code> requests.
@@ -347,9 +347,9 @@ pickup time, and has no horizontal scaling. The Redis backend provides
 persistence across server restarts, sub-10ms task pickup latency, and horizontal
 scaling. <span class=citation-ref><a href=#TasksFastMCP></a></span></p><p>To report progress back to clients, FastMCP can inject a <code>Progress</code> object, with
 APIs for <code>set_total(n: int)</code>, <code>increment(amount: int)</code>, and <code>set_message(text)</code>,
-e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#75af00>@mcp.tool</span><span style=color:#111>(</span><span style=color:#111>task</span><span style=color:#f92672>=</span><span style=color:#00a8c8>True</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>process_files</span><span style=color:#111>(</span><span style=color:#111>files</span><span style=color:#111>:</span> <span style=color:#111>list</span><span style=color:#111>[</span><span style=color:#111>str</span><span style=color:#111>],</span> <span style=color:#111>progress</span><span style=color:#111>;</span> <span style=color:#111>Progress</span> <span style=color:#f92672>=</span> <span style=color:#111>Progress</span><span style=color:#111>())</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>str</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>...</span>
+e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=nd>@mcp.tool</span><span class=p>(</span><span class=n>task</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>process_files</span><span class=p>(</span><span class=n>files</span><span class=p>:</span> <span class=nb>list</span><span class=p>[</span><span class=nb>str</span><span class=p>],</span> <span class=n>progress</span><span class=p>;</span> <span class=n>Progress</span> <span class=o>=</span> <span class=n>Progress</span><span class=p>())</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=o>...</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#TasksFastMCP></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=MCPArchOverview>Architecture overview - Model Context Protocol<i>.</i>
 </cite><a href=https://modelcontextprotocol.io/docs/learn/architecture target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=modelcontextprotocol.io" loading=lazy aria-hidden=true width=16 height=16>
 <i>modelcontextprotocol.io</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>

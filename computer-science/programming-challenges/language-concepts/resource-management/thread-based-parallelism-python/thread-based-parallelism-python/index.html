@@ -32,37 +32,37 @@ sharing memory space. Threads are particularly useful for I/O bound tasks,
 where much of the time is spent waiting for external resources. <span class=citation-ref><a href=#threadingPy></a></span></p><p>Compared to Java&rsquo;s threading model, Python&rsquo;s model has some differences. Locks
 and condition variables are separate objects. Furthermore, there are no
 priorities, no thread groups, and threads cannot be destroyed, stopped,
-suspended, resumed, or interrupted. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=the-thread-object>The <code>Thread</code> Object</h2><div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#111>threading</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#111>time</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#f92672>from</span> <span style=color:#111>typing</span> <span style=color:#f92672>import</span> <span style=color:#111>List</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>links</span> <span style=color:#f92672>=</span> <span style=color:#111>[</span><span style=color:#d88200>f</span><span style=color:#d88200>&#34;https://my.docs.com/</span><span style=color:#d88200>{</span><span style=color:#111>x</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span> <span style=color:#00a8c8>for</span> <span style=color:#111>x</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#ae81ff>3</span><span style=color:#111>)]</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>crawl</span><span style=color:#111>(</span><span style=color:#111>link</span><span style=color:#111>,</span> <span style=color:#111>delay</span><span style=color:#f92672>=</span><span style=color:#ae81ff>3</span><span style=color:#111>):</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>f</span><span style=color:#d88200>&#34;Crawl started for </span><span style=color:#d88200>{</span><span style=color:#111>link</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>time</span><span style=color:#f92672>.</span><span style=color:#111>sleep</span><span style=color:#111>(</span><span style=color:#111>delay</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>f</span><span style=color:#d88200>&#34;Crawl ended for </span><span style=color:#d88200>{</span><span style=color:#111>link</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>threads</span><span style=color:#111>:</span> <span style=color:#111>List</span><span style=color:#111>[</span><span style=color:#111>threading</span><span style=color:#f92672>.</span><span style=color:#111>Thread</span><span style=color:#111>]</span> <span style=color:#f92672>=</span> <span style=color:#111>[]</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>for</span> <span style=color:#111>link</span> <span style=color:#f92672>in</span> <span style=color:#111>links</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e># Represents an activity that is run in a separate thread of control.</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>task</span> <span style=color:#f92672>=</span> <span style=color:#111>threading</span><span style=color:#f92672>.</span><span style=color:#111>Thread</span><span style=color:#111>(</span><span style=color:#111>target</span><span style=color:#f92672>=</span><span style=color:#111>crawl</span><span style=color:#111>,</span> <span style=color:#111>args</span><span style=color:#f92672>=</span><span style=color:#111>(</span><span style=color:#111>link</span><span style=color:#111>,),</span> <span style=color:#111>kwargs</span><span style=color:#f92672>=</span><span style=color:#111>{</span><span style=color:#d88200>&#34;delay&#34;</span><span style=color:#111>:</span> <span style=color:#ae81ff>2</span><span style=color:#111>})</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>threads</span><span style=color:#f92672>.</span><span style=color:#111>append</span><span style=color:#111>(</span><span style=color:#111>task</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>for</span> <span style=color:#111>t</span> <span style=color:#f92672>in</span> <span style=color:#111>threads</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>t</span><span style=color:#f92672>.</span><span style=color:#111>start</span><span style=color:#111>()</span> <span style=color:#75715e># Starts the activity in a separate thread of control by calling `t.run()`.</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>for</span> <span style=color:#111>t</span> <span style=color:#f92672>in</span> <span style=color:#111>threads</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>t</span><span style=color:#f92672>.</span><span style=color:#111>join</span><span style=color:#111>()</span> <span style=color:#75715e># Blocks the current thread until `t` is terminated.</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Sample output</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Crawl started for https://my.docs.com/0</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Crawl started for https://my.docs.com/1</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Crawl started for https://my.docs.com/2</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Crawl ended for https://my.docs.com/0</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Crawl ended for https://my.docs.com/2</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># Crawl ended for https://my.docs.com/1</span>
+suspended, resumed, or interrupted. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=the-thread-object>The <code>Thread</code> Object</h2><div><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>threading</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>typing</span> <span class=kn>import</span> <span class=n>List</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>links</span> <span class=o>=</span> <span class=p>[</span><span class=sa>f</span><span class=s2>&#34;https://my.docs.com/</span><span class=si>{</span><span class=n>x</span><span class=si>}</span><span class=s2>&#34;</span> <span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>3</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawl</span><span class=p>(</span><span class=n>link</span><span class=p>,</span> <span class=n>delay</span><span class=o>=</span><span class=mi>3</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Crawl started for </span><span class=si>{</span><span class=n>link</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=n>delay</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Crawl ended for </span><span class=si>{</span><span class=n>link</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>threads</span><span class=p>:</span> <span class=n>List</span><span class=p>[</span><span class=n>threading</span><span class=o>.</span><span class=n>Thread</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>link</span> <span class=ow>in</span> <span class=n>links</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Represents an activity that is run in a separate thread of control.</span>
+</span></span><span class=line><span class=cl>    <span class=n>task</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Thread</span><span class=p>(</span><span class=n>target</span><span class=o>=</span><span class=n>crawl</span><span class=p>,</span> <span class=n>args</span><span class=o>=</span><span class=p>(</span><span class=n>link</span><span class=p>,),</span> <span class=n>kwargs</span><span class=o>=</span><span class=p>{</span><span class=s2>&#34;delay&#34;</span><span class=p>:</span> <span class=mi>2</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>    <span class=n>threads</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>task</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>t</span> <span class=ow>in</span> <span class=n>threads</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>t</span><span class=o>.</span><span class=n>start</span><span class=p>()</span> <span class=c1># Starts the activity in a separate thread of control by calling `t.run()`.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>t</span> <span class=ow>in</span> <span class=n>threads</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>t</span><span class=o>.</span><span class=n>join</span><span class=p>()</span> <span class=c1># Blocks the current thread until `t` is terminated.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Sample output</span>
+</span></span><span class=line><span class=cl><span class=c1># Crawl started for https://my.docs.com/0</span>
+</span></span><span class=line><span class=cl><span class=c1># Crawl started for https://my.docs.com/1</span>
+</span></span><span class=line><span class=cl><span class=c1># Crawl started for https://my.docs.com/2</span>
+</span></span><span class=line><span class=cl><span class=c1># Crawl ended for https://my.docs.com/0</span>
+</span></span><span class=line><span class=cl><span class=c1># Crawl ended for https://my.docs.com/2</span>
+</span></span><span class=line><span class=cl><span class=c1># Crawl ended for https://my.docs.com/1</span>
 </span></span></code></pre></div></div><p><code>t.start()</code> must be called at most once per <code>t</code>, lest it raises a
 <code>RuntimeError</code>. <span class=citation-ref><a href=#threadingPy></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Why make it a hard error instead of no-op&rsquo;ing on subequent <code>t.start()</code> calls?</p></div></div><p><code>t.is_alive()</code> returns <code>True</code> just before the <code>t.run()</code> method starts until
 after the <code>t.run()</code> method terminates. <code>threading.enumerate()</code> returns a list of
@@ -72,32 +72,32 @@ By default <code>threading.excepthook()</code> ignores <code>SystemExit</code>. 
 <code>t.is_alive() == True</code>. A thread can be joined many times. <span class=citation-ref><a href=#threadingPy></a></span></p><p><code>t.daemon</code> must be set before <code>t.start()</code> is called, else a <code>RuntimeError</code>. The
 initial value is inherited from the creating thread. The main thread is not a
 daemon thread. The entire Python program exists when no alive non-daemon threads
-are left. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=thread-local-data>Thread-Local Data</h2><p>Thread-local data is data whose values are thread-specific, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#111>mydata</span> <span style=color:#f92672>=</span> <span style=color:#111>local</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#111>mydata</span><span style=color:#f92672>.</span><span style=color:#111>number</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>42</span> <span style=color:#75715e># Stored inside mydata.__dict__</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>log</span> <span style=color:#f92672>=</span> <span style=color:#111>[]</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>f</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>items</span> <span style=color:#f92672>=</span> <span style=color:#111>sorted</span><span style=color:#111>(</span><span style=color:#111>mydata</span><span style=color:#f92672>.</span><span style=color:#111>__dict__</span><span style=color:#f92672>.</span><span style=color:#111>items</span><span style=color:#111>())</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>log</span><span style=color:#f92672>.</span><span style=color:#111>append</span><span style=color:#111>(</span><span style=color:#111>items</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>mydata</span><span style=color:#f92672>.</span><span style=color:#111>number</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>11</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>log</span><span style=color:#f92672>.</span><span style=color:#111>append</span><span style=color:#111>(</span><span style=color:#111>mydata</span><span style=color:#f92672>.</span><span style=color:#111>number</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>thread</span> <span style=color:#f92672>=</span> <span style=color:#111>threading</span><span style=color:#f92672>.</span><span style=color:#111>Thread</span><span style=color:#111>(</span><span style=color:#111>target</span><span style=color:#f92672>=</span><span style=color:#111>f</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#111>thread</span><span style=color:#f92672>.</span><span style=color:#111>start</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#111>thread</span><span style=color:#f92672>.</span><span style=color:#111>join</span><span style=color:#111>()</span>
+are left. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=thread-local-data>Thread-Local Data</h2><p>Thread-local data is data whose values are thread-specific, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>mydata</span> <span class=o>=</span> <span class=n>local</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>mydata</span><span class=o>.</span><span class=n>number</span> <span class=o>=</span> <span class=mi>42</span> <span class=c1># Stored inside mydata.__dict__</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>log</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>f</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=n>items</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>mydata</span><span class=o>.</span><span class=vm>__dict__</span><span class=o>.</span><span class=n>items</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=n>log</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>items</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>mydata</span><span class=o>.</span><span class=n>number</span> <span class=o>=</span> <span class=mi>11</span>
+</span></span><span class=line><span class=cl>  <span class=n>log</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>mydata</span><span class=o>.</span><span class=n>number</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>thread</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Thread</span><span class=p>(</span><span class=n>target</span><span class=o>=</span><span class=n>f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=o>.</span><span class=n>start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=o>.</span><span class=n>join</span><span class=p>()</span>
 </span></span></code></pre></div><p>&mldr; where <code>log</code> will have two items, <code>[]</code>, and <code>11</code>. <code>mydata.number = 42</code>
 executed on a different thread than the one <code>mydata.number = 11</code> executed on.
 <span class=citation-ref><a href=#threadingPy></a></span></p><p>Subclasses of <code>local</code> can define <code>__slots__</code> that are shared across threads,
-e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>MyLocal</span><span style=color:#111>(</span><span style=color:#111>local</span><span style=color:#111>):</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>__slots__</span> <span style=color:#f92672>=</span> <span style=color:#d88200>&#34;number&#34;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>mydata</span> <span style=color:#f92672>=</span> <span style=color:#111>MyLocal</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#111>mydata</span><span style=color:#f92672>.</span><span style=color:#111>number</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>42</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>thread</span> <span style=color:#f92672>=</span> <span style=color:#111>threading</span><span style=color:#f92672>.</span><span style=color:#111>Thread</span><span style=color:#111>(</span><span style=color:#111>target</span><span style=color:#f92672>=</span><span style=color:#111>f</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#111>thread</span><span style=color:#f92672>.</span><span style=color:#111>start</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#111>thread</span><span style=color:#f92672>.</span><span style=color:#111>join</span><span style=color:#111>()</span>
+e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyLocal</span><span class=p>(</span><span class=n>local</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=vm>__slots__</span> <span class=o>=</span> <span class=s2>&#34;number&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>mydata</span> <span class=o>=</span> <span class=n>MyLocal</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>mydata</span><span class=o>.</span><span class=n>number</span> <span class=o>=</span> <span class=mi>42</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>thread</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Thread</span><span class=p>(</span><span class=n>target</span><span class=o>=</span><span class=n>f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=o>.</span><span class=n>start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=o>.</span><span class=n>join</span><span class=p>()</span>
 </span></span></code></pre></div><p>&mldr; where <code>mydata.number == 11</code>. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=lock-objects><code>Lock</code> Objects</h2><p>A <code>Lock</code> is a synchronization primitive that assumes one of two states: <code>locked</code>
 and <code>unlocked</code>. It is not owned by a particular thread when locked. <span class=citation-ref><a href=#threadingPy></a></span></p><p>If <code>acquire(blocking=True, timeout=-1)</code> returns <code>True</code>, then <code>l.locked() == True</code>. Using <code>blocking=True</code> blocks until the lock is unlocked, and then locks
 it and returns <code>True</code>. If <code>blocking=False</code>, then <code>acquire</code> only locks if <code>l</code> was
@@ -118,16 +118,16 @@ unlock <code>t</code>? Ah, some other thread <code>t2</code> can call <code>l.re
 <code>l</code> is unlocked (not owned by any thread) and exactly one of any pending threads
 proceed. If the recursion level is still non-zero, <code>l</code> remains locked and owned
 by the calling thread. <code>RuntimeError</code> results if <code>release()</code> is called on a lock
-that is not acquired. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=condition-variables>Condition Variables</h2><p>A condition variable is always associated with some kind of lock, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#111>cv</span> <span style=color:#f92672>=</span> <span style=color:#111>thread</span><span style=color:#f92672>.</span><span style=color:#111>Condition</span><span style=color:#111>(</span><span style=color:#111>lock</span><span style=color:#f92672>=</span><span style=color:#111>l</span><span style=color:#111>)</span> <span style=color:#75715e># cv has acquire(), release(), and locked() targeting l</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>with</span> <span style=color:#111>cv</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#f92672>not</span> <span style=color:#111>an_item_is_available</span><span style=color:#111>():</span> <span style=color:#75715e># Can be replaced w/ cv.wait_for(an_item_is_available)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>cv</span><span style=color:#f92672>.</span><span style=color:#111>wait</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>get_an_available_item</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>with</span> <span style=color:#111>cv</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>make_an_item_available</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>cv</span><span style=color:#f92672>.</span><span style=color:#111>notify</span><span style=color:#111>()</span>
+that is not acquired. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=condition-variables>Condition Variables</h2><p>A condition variable is always associated with some kind of lock, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>cv</span> <span class=o>=</span> <span class=n>thread</span><span class=o>.</span><span class=n>Condition</span><span class=p>(</span><span class=n>lock</span><span class=o>=</span><span class=n>l</span><span class=p>)</span> <span class=c1># cv has acquire(), release(), and locked() targeting l</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>cv</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=ow>not</span> <span class=n>an_item_is_available</span><span class=p>():</span> <span class=c1># Can be replaced w/ cv.wait_for(an_item_is_available)</span>
+</span></span><span class=line><span class=cl>    <span class=n>cv</span><span class=o>.</span><span class=n>wait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=n>get_an_available_item</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>cv</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=n>make_an_item_available</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=n>cv</span><span class=o>.</span><span class=n>notify</span><span class=p>()</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#threadingPy></a></span></p><p><code>wait(timeout=None)</code> releases the underlying lock (<code>RuntimeError</code> is the lock
 had not been acquired) and blocks until another thread awakens it via a
 <code>notify()</code>/<code>notify_call()</code> call. Once awakened, <code>wait()</code> re-acquires the lock
@@ -151,26 +151,26 @@ an event and other threads wait for it. <code>Event</code> manages a flag that c
 modified via <code>set()</code> and <code>clear()</code> and queried via <code>is_set()</code>.
 <code>wait(timeout=None)</code> blocks as long as <code>ev.is_set() == False</code> and the timeout,
 if given, has not expired. <span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=timer-objects>Timer Objects</h2><p><code>Timer</code> subclasses <code>Thread</code> and represents an action that should be run only
-after a certain amount of time has passed, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>hello</span><span style=color:#111>(</span><span style=color:#111>name</span><span style=color:#111>):</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>f</span><span style=color:#d88200>&#34;hello, </span><span style=color:#d88200>{</span><span style=color:#111>name</span><span style=color:#d88200>}</span><span style=color:#d88200>&#34;</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>t</span> <span style=color:#f92672>=</span> <span style=color:#111>Timer</span><span style=color:#111>(</span><span style=color:#ae81ff>30.0</span><span style=color:#111>,</span> <span style=color:#111>hello</span><span style=color:#111>,</span> <span style=color:#111>args</span><span style=color:#f92672>=</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Chege&#34;</span><span style=color:#111>,))</span>
-</span></span><span style=display:flex><span><span style=color:#111>t</span><span style=color:#f92672>.</span><span style=color:#111>start</span><span style=color:#111>()</span> <span style=color:#75715e># After 30s, &#34;hello, world&#34; will be printed. We can cancel() before 30s elapses.</span>
+after a certain amount of time has passed, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>def</span> <span class=nf>hello</span><span class=p>(</span><span class=n>name</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;hello, </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>t</span> <span class=o>=</span> <span class=n>Timer</span><span class=p>(</span><span class=mf>30.0</span><span class=p>,</span> <span class=n>hello</span><span class=p>,</span> <span class=n>args</span><span class=o>=</span><span class=p>(</span><span class=s2>&#34;Chege&#34;</span><span class=p>,))</span>
+</span></span><span class=line><span class=cl><span class=n>t</span><span class=o>.</span><span class=n>start</span><span class=p>()</span> <span class=c1># After 30s, &#34;hello, world&#34; will be printed. We can cancel() before 30s elapses.</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#threadingPy></a></span></p><h2 id=barrier-objects>Barrier Objects</h2><p><code>Barrier</code> is a synchronization primitive for use by \(n\) threads that need to
-wait for each other, e.g.,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#111>b</span> <span style=color:#f92672>=</span> <span style=color:#111>Barrier</span><span style=color:#111>(</span><span style=color:#ae81ff>2</span><span style=color:#111>,</span> <span style=color:#111>timeout</span><span style=color:#f92672>=</span><span style=color:#00a8c8>None</span><span style=color:#111>,</span> <span style=color:#111>action</span><span style=color:#f92672>=</span><span style=color:#00a8c8>None</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>server</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>start_server</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>b</span><span style=color:#f92672>.</span><span style=color:#111>wait</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#00a8c8>True</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>connection</span> <span style=color:#f92672>=</span> <span style=color:#111>accept_connection</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>process_server_connection</span><span style=color:#111>(</span><span style=color:#111>connection</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>def</span> <span style=color:#75af00>client</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>b</span><span style=color:#f92672>.</span><span style=color:#111>wait</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>while</span> <span style=color:#00a8c8>True</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>connection</span> <span style=color:#f92672>=</span> <span style=color:#111>make_connection</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>process_client_connection</span><span style=color:#111>(</span><span style=color:#111>connection</span><span style=color:#111>)</span>
+wait for each other, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>b</span> <span class=o>=</span> <span class=n>Barrier</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=n>timeout</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>action</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>server</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=n>start_server</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=n>b</span><span class=o>.</span><span class=n>wait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=kc>True</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>connection</span> <span class=o>=</span> <span class=n>accept_connection</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>process_server_connection</span><span class=p>(</span><span class=n>connection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>client</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=n>b</span><span class=o>.</span><span class=n>wait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=kc>True</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>connection</span> <span class=o>=</span> <span class=n>make_connection</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>process_client_connection</span><span class=p>(</span><span class=n>connection</span><span class=p>)</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#threadingPy></a></span></p><p>A <code>Barrier</code> can be reused any number of times for the same number of threads.
 <span class=citation-ref><a href=#threadingPy></a></span></p><p><code>wait(timeout=None)</code> passes the barrier. When all \(n\) threads call <code>wait()</code>,
 they are all released simultaneously. <code>wait</code> returns an integer \(x \in [0,

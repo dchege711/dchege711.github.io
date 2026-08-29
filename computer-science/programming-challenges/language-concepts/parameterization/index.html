@@ -14,23 +14,23 @@ set of types or values. <span class=citation-ref><a href=#Stroustrup2018-Ch6></a
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/classes-in-cpp/#containers target=_blank rel=noopener>vector-of-doubles
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>can be generalized to a vector-of-anything type by making it a
-template:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// `template&lt;typename T&gt;` can be read as &#34;for all types T&#34;. Older code
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// uses `template&lt;class T&gt;`, which is equivalent.
-</span></span></span><span style=display:flex><span><span style=color:#00a8c8>template</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>typename</span> <span style=color:#111>T</span><span style=color:#f92672>&gt;</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#75af00>Vector</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span> <span style=color:#00a8c8>public</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>explicit</span> <span style=color:#111>Vector</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span> <span style=color:#111>s</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>~</span><span style=color:#111>Vector</span><span style=color:#111>()</span> <span style=color:#111>{</span> <span style=color:#00a8c8>delete</span><span style=color:#111>[]</span> <span style=color:#111>elem</span><span style=color:#111>;</span> <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>// ... copy and move operations ...
-</span></span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>  <span style=color:#111>T</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>);</span>               <span style=color:#75715e>// For non-const Vectors
-</span></span></span><span style=display:flex><span>  <span style=color:#00a8c8>const</span> <span style=color:#111>T</span><span style=color:#f92672>&amp;</span> <span style=color:#00a8c8>operator</span><span style=color:#111>[](</span><span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>)</span> <span style=color:#00a8c8>const</span><span style=color:#111>;</span>   <span style=color:#75715e>// For const Vectors
-</span></span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#75af00>size</span><span style=color:#111>()</span> <span style=color:#00a8c8>const</span> <span style=color:#111>{</span> <span style=color:#00a8c8>return</span> <span style=color:#111>sz</span><span style=color:#111>;</span> <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span> <span style=color:#00a8c8>private</span><span style=color:#f92672>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>T</span><span style=color:#f92672>*</span> <span style=color:#111>elem</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>sz</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span><span style=color:#111>};</span>
+template:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// `template&lt;typename T&gt;` can be read as &#34;for all types T&#34;. Older code
+</span></span></span><span class=line><span class=cl><span class=c1>// uses `template&lt;class T&gt;`, which is equivalent.
+</span></span></span><span class=line><span class=cl><span class=k>template</span><span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Vector</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>  <span class=k>explicit</span> <span class=n>Vector</span><span class=p>(</span><span class=kt>int</span> <span class=n>s</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=o>~</span><span class=n>Vector</span><span class=p>()</span> <span class=p>{</span> <span class=k>delete</span><span class=p>[]</span> <span class=n>elem</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// ... copy and move operations ...
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>T</span><span class=o>&amp;</span> <span class=k>operator</span><span class=p>[](</span><span class=kt>int</span> <span class=n>i</span><span class=p>);</span>               <span class=c1>// For non-const Vectors
+</span></span></span><span class=line><span class=cl>  <span class=k>const</span> <span class=n>T</span><span class=o>&amp;</span> <span class=k>operator</span><span class=p>[](</span><span class=kt>int</span> <span class=n>i</span><span class=p>)</span> <span class=k>const</span><span class=p>;</span>   <span class=c1>// For const Vectors
+</span></span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=nf>size</span><span class=p>()</span> <span class=k>const</span> <span class=p>{</span> <span class=k>return</span> <span class=n>sz</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>  <span class=n>T</span><span class=o>*</span> <span class=n>elem</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>sz</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Stroustrup2018-Ch6></a></span></p>...</section></td></tr></table><script>let pageURLs=[];const alternateOrganizations=new Set(["tags","categories","domains","authors","publications"]);fetch("/json/site_tree.json").then(e=>e.json()).then(e=>{const s=document.location.pathname,n=s==="/random/"?"/":s,i=n==="/";let t=e;if(n.split("/").forEach(e=>{if(!e)return;t=t[e]}),!t)return;function o(e,t){const s=Object.keys(t);s.forEach(s=>{if(s==="_meta")return;if(n==="/"&&alternateOrganizations.has(s))return;let i=e===""?s:`${e}/${s}`;o(i,t[s])}),s.length===0&&e&&pageURLs.push(`${i?"/":""}${e}`)}o("",t)}).then(()=>{pageURLs.length===0&&(document.getElementById("randomSelectorContainer").style.display="none")});function goToRandomPage(){let e=Math.floor(Math.random()*pageURLs.length);window.open(pageURLs[e],"_self")}</script></main><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></div></body></html>

@@ -90,43 +90,43 @@ last modified on Wed, 25 Jun 2025</p></header><div id=toc-then-article><aside id
 <i class='fas fa-fw fa-globe' aria-hidden=true></i>
 Accessed Jun 25, 2025.</div><h2 id=data>Data</h2><p>There&rsquo;s just one problem: by holding the two lists up <strong>side by side</strong>, it
 quickly becomes clear that the lists aren&rsquo;t very similar. Maybe you can help The
-Historians reconcile their lists?</p><p>For example:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>3 4
-</span></span><span style=display:flex><span>4 3
-</span></span><span style=display:flex><span>2 5
-</span></span><span style=display:flex><span>1 3
-</span></span><span style=display:flex><span>3 9
-</span></span><span style=display:flex><span>3 3
-</span></span></code></pre></div><p>To parse the input:</p><div id=HistorianHysteria.Parse.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>using</span> <span style=color:#111>System.Text.RegularExpressions</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>HistorianHysteria</span>
-</span></span><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#111>LocationIds</span> <span style=color:#111>ParseLocationIds</span><span style=color:#111>(</span><span style=color:#00a8c8>string</span> <span style=color:#111>filePath</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>List</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>&gt;</span> <span style=color:#111>left</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>List</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>&gt;</span> <span style=color:#111>right</span> <span style=color:#111>=</span> <span style=color:#111>[];</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>using</span> <span style=color:#111>StreamReader</span> <span style=color:#111>inputReader</span> <span style=color:#111>=</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>filePath</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>string?</span> <span style=color:#111>line</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>while</span> <span style=color:#111>((</span><span style=color:#111>line</span> <span style=color:#111>=</span> <span style=color:#111>inputReader</span><span style=color:#111>.</span><span style=color:#111>ReadLine</span><span style=color:#111>())</span> <span style=color:#111>!=</span> <span style=color:#00a8c8>null</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>            <span style=color:#111>Match</span> <span style=color:#111>match</span> <span style=color:#111>=</span> <span style=color:#111>InputLineRegex</span><span style=color:#111>().</span><span style=color:#111>Match</span><span style=color:#111>(</span><span style=color:#111>line</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span>            <span style=color:#00a8c8>if</span> <span style=color:#111>(!</span><span style=color:#111>match</span><span style=color:#111>.</span><span style=color:#111>Success</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>                <span style=color:#00a8c8>throw</span> <span style=color:#00a8c8>new</span> <span style=color:#111>ArgumentException</span><span style=color:#111>(</span><span style=color:#d88200>$&#34;{line} is not well formatted&#34;</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>            <span style=color:#111>left</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>.</span><span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>match</span><span style=color:#111>.</span><span style=color:#111>Groups</span><span style=color:#111>[</span><span style=color:#d88200>&#34;left&#34;</span><span style=color:#111>].</span><span style=color:#111>Value</span><span style=color:#111>));</span>
-</span></span><span style=display:flex><span>            <span style=color:#111>right</span><span style=color:#111>.</span><span style=color:#111>Add</span><span style=color:#111>(</span><span style=color:#00a8c8>int</span><span style=color:#111>.</span><span style=color:#111>Parse</span><span style=color:#111>(</span><span style=color:#111>match</span><span style=color:#111>.</span><span style=color:#111>Groups</span><span style=color:#111>[</span><span style=color:#d88200>&#34;right&#34;</span><span style=color:#111>].</span><span style=color:#111>Value</span><span style=color:#111>));</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#00a8c8>new</span><span style=color:#111>(</span><span style=color:#111>left</span><span style=color:#111>,</span> <span style=color:#111>right</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>readonly</span> <span style=color:#00a8c8>record</span> <span style=color:#75af00>struct</span> <span style=color:#111>LocationIds</span><span style=color:#111>(</span><span style=color:#111>List</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>&gt;</span> <span style=color:#111>Left</span><span style=color:#111>,</span> <span style=color:#111>List</span><span style=color:#111>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#111>&gt;</span> <span style=color:#111>Right</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>
-</span></span></span><span style=display:flex><span><span style=color:#75af00>    [GeneratedRegex(@&#34;(?&lt;left&gt;\d+)\s+(?&lt;right&gt;\d+)&#34;)]</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>private</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>partial</span> <span style=color:#111>Regex</span> <span style=color:#111>InputLineRegex</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+Historians reconcile their lists?</p><p>For example:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>3 4
+</span></span><span class=line><span class=cl>4 3
+</span></span><span class=line><span class=cl>2 5
+</span></span><span class=line><span class=cl>1 3
+</span></span><span class=line><span class=cl>3 9
+</span></span><span class=line><span class=cl>3 3
+</span></span></code></pre></div><p>To parse the input:</p><div id=HistorianHysteria.Parse.cs><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Text.RegularExpressions</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>AoC2024</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>static</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>HistorianHysteria</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=n>LocationIds</span> <span class=n>ParseLocationIds</span><span class=p>(</span><span class=kt>string</span> <span class=n>filePath</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>List</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>&gt;</span> <span class=n>left</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>        <span class=n>List</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>&gt;</span> <span class=n>right</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>using</span> <span class=nn>StreamReader</span> <span class=n>inputReader</span> <span class=p>=</span> <span class=k>new</span><span class=p>(</span><span class=n>filePath</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>string?</span> <span class=n>line</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span> <span class=p>((</span><span class=n>line</span> <span class=p>=</span> <span class=n>inputReader</span><span class=p>.</span><span class=n>ReadLine</span><span class=p>())</span> <span class=p>!=</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Match</span> <span class=n>match</span> <span class=p>=</span> <span class=n>InputLineRegex</span><span class=p>().</span><span class=n>Match</span><span class=p>(</span><span class=n>line</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(!</span><span class=n>match</span><span class=p>.</span><span class=n>Success</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentException</span><span class=p>(</span><span class=s>$&#34;{line} is not well formatted&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>left</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=kt>int</span><span class=p>.</span><span class=n>Parse</span><span class=p>(</span><span class=n>match</span><span class=p>.</span><span class=n>Groups</span><span class=p>[</span><span class=s>&#34;left&#34;</span><span class=p>].</span><span class=n>Value</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>            <span class=n>right</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=kt>int</span><span class=p>.</span><span class=n>Parse</span><span class=p>(</span><span class=n>match</span><span class=p>.</span><span class=n>Groups</span><span class=p>[</span><span class=s>&#34;right&#34;</span><span class=p>].</span><span class=n>Value</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=k>new</span><span class=p>(</span><span class=n>left</span><span class=p>,</span> <span class=n>right</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>readonly</span> <span class=k>record</span> <span class=nc>struct</span> <span class=n>LocationIds</span><span class=p>(</span><span class=n>List</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>&gt;</span> <span class=n>Left</span><span class=p>,</span> <span class=n>List</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>&gt;</span> <span class=n>Right</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [GeneratedRegex(@&#34;(?&lt;left&gt;\d+)\s+(?&lt;right&gt;\d+)&#34;)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kd>static</span> <span class=kd>partial</span> <span class=n>Regex</span> <span class=n>InputLineRegex</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div></div><p>Creating a <code>static</code> class is basically the same as creating a class that
 contains only <code>static</code> members and a <code>private</code> constructor. A <code>private</code>
 constructor prevents the class from being instantiated. The advantage of using a
@@ -152,18 +152,18 @@ to <strong>add up all of those distances.</strong> For example, if you pair up a
 left list with a 7 from the right list, the distance apart is 4; if you pair up
 a 9 with a 3, the distance apart is 6.</p><p>To find the <strong>total distance</strong> between the left list and the right list, add up
 the distances between all of the pairs you found. <strong>What is the total distance
-between your lists?</strong></p><div id=HistorianHysteria.PartOne.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>HistorianHysteria</span>
-</span></span><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>int</span> <span style=color:#111>PartOne</span><span style=color:#111>(</span><span style=color:#111>LocationIds</span> <span style=color:#111>locationIds</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>left</span><span style=color:#111>,</span> <span style=color:#111>right</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>locationIds</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>left</span><span style=color:#111>.</span><span style=color:#111>Sort</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>right</span><span style=color:#111>.</span><span style=color:#111>Sort</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>left</span><span style=color:#111>.</span><span style=color:#111>Zip</span><span style=color:#111>(</span><span style=color:#111>right</span><span style=color:#111>,</span> <span style=color:#111>(</span><span style=color:#111>x1</span><span style=color:#111>,</span> <span style=color:#111>x2</span><span style=color:#111>)</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>int</span><span style=color:#111>.</span><span style=color:#111>Abs</span><span style=color:#111>(</span><span style=color:#111>x1</span> <span style=color:#111>-</span> <span style=color:#111>x2</span><span style=color:#111>)).</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+between your lists?</strong></p><div id=HistorianHysteria.PartOne.cs><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>AoC2024</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>static</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>HistorianHysteria</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>PartOne</span><span class=p>(</span><span class=n>LocationIds</span> <span class=n>locationIds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=p>(</span><span class=n>left</span><span class=p>,</span> <span class=n>right</span><span class=p>)</span> <span class=p>=</span> <span class=n>locationIds</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>left</span><span class=p>.</span><span class=n>Sort</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>right</span><span class=p>.</span><span class=n>Sort</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>left</span><span class=p>.</span><span class=n>Zip</span><span class=p>(</span><span class=n>right</span><span class=p>,</span> <span class=p>(</span><span class=n>x1</span><span class=p>,</span> <span class=n>x2</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=kt>int</span><span class=p>.</span><span class=n>Abs</span><span class=p>(</span><span class=n>x1</span> <span class=p>-</span> <span class=n>x2</span><span class=p>)).</span><span class=n>Sum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div></div><p>Given the positional syntax in <code>readonly record struct LocationIds(List&lt;int> Left, List&lt;int> Right)</code>, the compiler creates a <code>Deconstruct</code> method with an
 <code>out</code> parameters for each positional parameter. However, <code>Deconstruct</code> ignores
 properties that are defined using standard property syntax. <span class=citation-ref><a href=#RecordsPositionalSyntax></a></span></p><h2 id=part-two>Part Two</h2><p>This time, you&rsquo;ll need to figure out exactly how often each number from the left
@@ -175,24 +175,24 @@ third number in the left list is 2. It does not appear in the right list once,
 so the similarity score does not increase (\(2 \times 0 = 0\)). For the
 example list, the similarity score at the end of this process is \(9 + 4 + 0 +
 0 + 9 + 9 = 31\).</p><p>Once again, consider your left and right lists. <strong>What is their similarity
-score?</strong></p><div id=HistorianHysteria.PartTwo.cs><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#00a8c8>namespace</span> <span style=color:#111>AoC2024</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>partial</span> <span style=color:#00a8c8>class</span> <span style=color:#75af00>HistorianHysteria</span>
-</span></span><span style=display:flex><span><span style=color:#111>{</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>public</span> <span style=color:#00a8c8>static</span> <span style=color:#00a8c8>int</span> <span style=color:#111>PartTwo</span><span style=color:#111>(</span><span style=color:#111>LocationIds</span> <span style=color:#111>locationIds</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>(</span><span style=color:#111>left</span><span style=color:#111>,</span> <span style=color:#111>right</span><span style=color:#111>)</span> <span style=color:#111>=</span> <span style=color:#111>locationIds</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Objective: Use a functional approach. Avoid mutating values.</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>var</span> <span style=color:#111>rightLookupTable</span> <span style=color:#111>=</span> <span style=color:#111>right</span>
-</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>GroupBy</span><span style=color:#111>(</span><span style=color:#111>id</span> <span style=color:#111>=&gt;</span> <span style=color:#111>id</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>            <span style=color:#111>.</span><span style=color:#111>ToDictionary</span><span style=color:#111>(</span><span style=color:#00a8c8>group</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>group</span><span style=color:#111>.</span><span style=color:#111>Key</span><span style=color:#111>,</span> <span style=color:#00a8c8>group</span> <span style=color:#111>=&gt;</span> <span style=color:#00a8c8>group</span><span style=color:#111>.</span><span style=color:#111>Count</span><span style=color:#111>());</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>return</span> <span style=color:#111>(</span>
-</span></span><span style=display:flex><span>            <span style=color:#00a8c8>from</span> <span style=color:#111>id</span> <span style=color:#00a8c8>in</span> <span style=color:#111>left</span>
-</span></span><span style=display:flex><span>            <span style=color:#00a8c8>select</span> <span style=color:#111>id</span> <span style=color:#111>*</span> <span style=color:#111>rightLookupTable</span><span style=color:#111>.</span><span style=color:#111>GetValueOrDefault</span><span style=color:#111>(</span><span style=color:#111>id</span><span style=color:#111>,</span> <span style=color:#ae81ff>0</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>).</span><span style=color:#111>Sum</span><span style=color:#111>();</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>}</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
+score?</strong></p><div id=HistorianHysteria.PartTwo.cs><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>AoC2024</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>static</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>HistorianHysteria</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>PartTwo</span><span class=p>(</span><span class=n>LocationIds</span> <span class=n>locationIds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=p>(</span><span class=n>left</span><span class=p>,</span> <span class=n>right</span><span class=p>)</span> <span class=p>=</span> <span class=n>locationIds</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// Objective: Use a functional approach. Avoid mutating values.</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>rightLookupTable</span> <span class=p>=</span> <span class=n>right</span>
+</span></span><span class=line><span class=cl>            <span class=p>.</span><span class=n>GroupBy</span><span class=p>(</span><span class=n>id</span> <span class=p>=&gt;</span> <span class=n>id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>.</span><span class=n>ToDictionary</span><span class=p>(</span><span class=k>group</span> <span class=p>=&gt;</span> <span class=k>group</span><span class=p>.</span><span class=n>Key</span><span class=p>,</span> <span class=k>group</span> <span class=p>=&gt;</span> <span class=k>group</span><span class=p>.</span><span class=n>Count</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=k>from</span> <span class=n>id</span> <span class=k>in</span> <span class=n>left</span>
+</span></span><span class=line><span class=cl>            <span class=k>select</span> <span class=n>id</span> <span class=p>*</span> <span class=n>rightLookupTable</span><span class=p>.</span><span class=n>GetValueOrDefault</span><span class=p>(</span><span class=n>id</span><span class=p>,</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>).</span><span class=n>Sum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=StaticClasses>Static Classes and Static Class Members - C# | Microsoft Learn<i>.</i>
 </cite><a href=https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
 <i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>

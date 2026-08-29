@@ -34,12 +34,12 @@ job from its backlog and invokes it (&ldquo;gives it control&rdquo;). Once that 
 or completes, it returns control to the event loop which then selects another
 job from the backlog and invokes it. When there are no jobs to be done, the
 event loop rests (doesn&rsquo;t waster CPU cycles) and comes back when more jobs are
-enqueued.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#111>asyncio</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e># For demonstration. Usually, application code delegates event loop management</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># to `asyncio` and calls `asyncio.run` instead.</span>
-</span></span><span style=display:flex><span><span style=color:#111>event_loop</span> <span style=color:#f92672>=</span> <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>new_event_loop</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#111>event_loop</span><span style=color:#f92672>.</span><span style=color:#111>run_forever</span><span style=color:#111>()</span>
+enqueued.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>asyncio</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># For demonstration. Usually, application code delegates event loop management</span>
+</span></span><span class=line><span class=cl><span class=c1># to `asyncio` and calls `asyncio.run` instead.</span>
+</span></span><span class=line><span class=cl><span class=n>event_loop</span> <span class=o>=</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>new_event_loop</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>event_loop</span><span class=o>.</span><span class=n>run_forever</span><span class=p>()</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><h2 id=coroutine-functions-and-coroutines>Coroutine Functions and Coroutines</h2><p><code>async def</code> creates an async function or <strong>coroutine function</strong>. Calling the
 coroutine function creates a coroutine object; it doesn&rsquo;t execute the function.
 A coroutine has to be explicitly started.</p><pre tabindex=0><code class=language-repl data-lang=repl>&gt;&gt;&gt; async def f(): print(&#34;Hello, world&#34;)
@@ -47,58 +47,58 @@ A coroutine has to be explicitly started.</p><pre tabindex=0><code class=languag
 &gt;&gt;&gt; c
 &lt;coroutine object f at 0x10a585a80&gt;
 </code></pre><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><h2 id=tasks>Tasks</h2><p><strong>Tasks</strong> are coroutines that are tied to an event loop. <code>asyncio.create_task(c: Coroutine)</code> creates such a task, and adds a callback to run it in the event
-loop&rsquo;s collection of jobs.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>import</span> <span style=color:#111>asyncio</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>main</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>...</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>if</span> <span style=color:#111>__name__</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;__main__&#34;</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>run</span><span style=color:#111>(</span><span style=color:#111>main</span><span style=color:#111>())</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e># Program will not print this until the coroutine main() finishes</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;coroutine main() is done!&#34;</span><span style=color:#111>)</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><p>Only a callback to the task is added to the event loop; the task itself is not:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>hello</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;hello&#34;</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>main</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e># Because there is no reference to this task object, it might be garbage</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e># collected before the event loop invokes it.</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>create_task</span><span style=color:#111>(</span><span style=color:#111>hello</span><span style=color:#111>())</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>run</span><span style=color:#111>(</span><span style=color:#111>main</span><span style=color:#111>())</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><h2 id=await-keyword><code>await</code> Keyword</h2><h3 id=awaiting-a-task>Awaiting a Task</h3><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>plant_a_tree</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>dig_the_hole_task</span> <span style=color:#f92672>=</span> <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>create_task</span><span style=color:#111>(</span><span style=color:#111>dig_the_hole</span><span style=color:#111>())</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>await</span> <span style=color:#111>dig_the_hole_task</span>
-</span></span><span style=display:flex><span>  <span style=color:#f92672>...</span>
+loop&rsquo;s collection of jobs.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>import</span> <span class=nn>asyncio</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=o>...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=n>asyncio</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>main</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Program will not print this until the coroutine main() finishes</span>
+</span></span><span class=line><span class=cl>  <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;coroutine main() is done!&#34;</span><span class=p>)</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><p>Only a callback to the task is added to the event loop; the task itself is not:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>hello</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;hello&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=c1># Because there is no reference to this task object, it might be garbage</span>
+</span></span><span class=line><span class=cl>  <span class=c1># collected before the event loop invokes it.</span>
+</span></span><span class=line><span class=cl>  <span class=n>asyncio</span><span class=o>.</span><span class=n>create_task</span><span class=p>(</span><span class=n>hello</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>asyncio</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>main</span><span class=p>())</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><h2 id=await-keyword><code>await</code> Keyword</h2><h3 id=awaiting-a-task>Awaiting a Task</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>plant_a_tree</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=n>dig_the_hole_task</span> <span class=o>=</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>create_task</span><span class=p>(</span><span class=n>dig_the_hole</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=k>await</span> <span class=n>dig_the_hole_task</span>
+</span></span><span class=line><span class=cl>  <span class=o>...</span>
 </span></span></code></pre></div><p>Suppose the event loop has passed control to the start of the <code>plant_a_tree</code>
 coroutine:</p><ul><li><code>await dig_the_hole_task</code> adds a callback (which will resume <code>plant_a_tree()</code>)
 to <code>dig_the_hole_task</code>&rsquo;s list of callbacks, and then cedes control to the
 event loop.</li><li>Sometime later, the event loop passes control to <code>dig_the_hole_task</code>. Once the
 task finishes, it adds its various callbacks to the event loop, e.g., a call
 to resume <code>plant_a_tree()</code>.</li></ul><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><h3 id=awaiting-a-coroutine>Awaiting a Coroutine</h3><p><code>await coroutine</code> does not cede control back to the event loop. <code>await coroutine</code> is effectively the same as invoking a regular, synchronous Python
-function. <span class=citation-ref><a href=#PyAsyncIO></a></span></p><p>Consider:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>coro_a</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;I am coro_a(). Hi!&#34;</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>coro_b</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>print</span><span style=color:#111>(</span><span style=color:#d88200>&#34;I am coro_b(). I sure hope no one hogs the event loop...&#34;</span><span style=color:#111>)</span>
-</span></span></code></pre></div><p>Given:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>await_coroutines_a</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>task_b</span> <span style=color:#f92672>=</span> <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>create_task</span><span style=color:#111>(</span><span style=color:#111>coro_b</span><span style=color:#111>())</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span> <span style=color:#111>_</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#ae81ff>3</span><span style=color:#111>):</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>await</span> <span style=color:#111>coro_a</span><span style=color:#111>()</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>await</span> <span style=color:#111>task_b</span>
-</span></span></code></pre></div><p>&mldr; <code>asyncio.run(await_coroutines_a())</code> prints:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>I am coro_a(). Hi!
-</span></span><span style=display:flex><span>I am coro_a(). Hi!
-</span></span><span style=display:flex><span>I am coro_a(). Hi!
-</span></span><span style=display:flex><span>I am coro_b(). I sure hope no one hogs the event loop...
-</span></span></code></pre></div><p>Compare this to:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#00a8c8>async</span> <span style=color:#00a8c8>def</span> <span style=color:#75af00>await_tasks_a</span><span style=color:#111>():</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>task_b</span> <span style=color:#f92672>=</span> <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>create_task</span><span style=color:#111>(</span><span style=color:#111>coro_b</span><span style=color:#111>())</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>tasks_a</span> <span style=color:#f92672>=</span> <span style=color:#111>[</span> <span style=color:#111>asyncio</span><span style=color:#f92672>.</span><span style=color:#111>create_task</span><span style=color:#111>(</span><span style=color:#111>coro_a</span><span style=color:#111>())</span> <span style=color:#00a8c8>for</span> <span style=color:#111>_</span> <span style=color:#f92672>in</span> <span style=color:#111>range</span><span style=color:#111>(</span><span style=color:#ae81ff>3</span><span style=color:#111>)</span> <span style=color:#111>]</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>for</span> <span style=color:#111>task_a</span> <span style=color:#f92672>in</span> <span style=color:#111>tasks_a</span><span style=color:#111>:</span>
-</span></span><span style=display:flex><span>        <span style=color:#00a8c8>await</span> <span style=color:#111>task_a</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>await</span> <span style=color:#111>task_b</span>
-</span></span></code></pre></div><p>&mldr; where <code>asyncio.run(await_tasks_a())</code> prints:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>I am coro_b(). I sure hope no one hogs the event loop...
-</span></span><span style=display:flex><span>I am coro_a(). Hi!
-</span></span><span style=display:flex><span>I am coro_a(). Hi!
-</span></span><span style=display:flex><span>I am coro_a(). Hi!
+function. <span class=citation-ref><a href=#PyAsyncIO></a></span></p><p>Consider:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>coro_a</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;I am coro_a(). Hi!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>coro_b</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;I am coro_b(). I sure hope no one hogs the event loop...&#34;</span><span class=p>)</span>
+</span></span></code></pre></div><p>Given:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>await_coroutines_a</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>task_b</span> <span class=o>=</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>create_task</span><span class=p>(</span><span class=n>coro_b</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>3</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>await</span> <span class=n>coro_a</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=n>task_b</span>
+</span></span></code></pre></div><p>&mldr; <code>asyncio.run(await_coroutines_a())</code> prints:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>I am coro_a(). Hi!
+</span></span><span class=line><span class=cl>I am coro_a(). Hi!
+</span></span><span class=line><span class=cl>I am coro_a(). Hi!
+</span></span><span class=line><span class=cl>I am coro_b(). I sure hope no one hogs the event loop...
+</span></span></code></pre></div><p>Compare this to:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>await_tasks_a</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>task_b</span> <span class=o>=</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>create_task</span><span class=p>(</span><span class=n>coro_b</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    <span class=n>tasks_a</span> <span class=o>=</span> <span class=p>[</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>create_task</span><span class=p>(</span><span class=n>coro_a</span><span class=p>())</span> <span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span> <span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>task_a</span> <span class=ow>in</span> <span class=n>tasks_a</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>await</span> <span class=n>task_a</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=n>task_b</span>
+</span></span></code></pre></div><p>&mldr; where <code>asyncio.run(await_tasks_a())</code> prints:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>I am coro_b(). I sure hope no one hogs the event loop...
+</span></span><span class=line><span class=cl>I am coro_a(). Hi!
+</span></span><span class=line><span class=cl>I am coro_a(). Hi!
+</span></span><span class=line><span class=cl>I am coro_a(). Hi!
 </span></span></code></pre></div><p><span class=citation-ref><a href=#PyAsyncIO></a></span></p><h3 id=rationale-for-awaits-split-behavior>Rationale for <code>await</code>&rsquo;s Split Behavior</h3><p><code>asyncio.run()</code> has a <code>debug=True</code> flag that logs coroutines that monopolize
 execution for +100ms, among other things. <span class=citation-ref><a href=#PyAsyncIO></a></span></p><p><code>await coroutine</code>&rsquo;s behavior trades conceptual clarity for improved performance.
 <code>await task</code> needs to pass control all the way up the call stack to the event

@@ -86,124 +86,124 @@ alphabetical position in the list to obtain a name score.</p><p>For example, whe
 which is worth \(3 + 15 + 12 + 9 + 14 = 53\), is the 938th name in the
 list. So COLIN would obtain a score of \(938 \times 53 = 49{,}714\).</p><p>What is the total of all name scores in the file?</p><h2 id=my-solution>My Solution</h2><p>This problem is a brute-force kind of problem, so no fancy shortcuts can
 make it feasible to solve by hand. Will solve this in Haskell to
-continue learning more about functional programming.</p><div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-haskell data-lang=haskell><span style=display:flex><span><span style=color:#75715e>{-# OPTIONS_GHC -Wall #-}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>Data.Char</span> <span style=color:#111>(</span><span style=color:#75af00>isAlpha</span><span style=color:#111>,</span> <span style=color:#75af00>ord</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>Data.List</span> <span style=color:#111>(</span><span style=color:#75af00>sort</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>Data.String</span> <span style=color:#111>(</span><span style=color:#00a8c8>IsString</span> <span style=color:#111>(</span><span style=color:#75af00>fromString</span><span style=color:#111>))</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>Data.Text.Lazy</span> <span style=color:#111>(</span><span style=color:#00a8c8>Text</span><span style=color:#111>,</span> <span style=color:#75af00>split</span><span style=color:#111>,</span> <span style=color:#75af00>unpack</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>System.IO</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>(</span> <span style=color:#00a8c8>BufferMode</span> <span style=color:#111>(</span><span style=color:#00a8c8>LineBuffering</span><span style=color:#111>),</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>IOMode</span> <span style=color:#111>(</span><span style=color:#00a8c8>ReadMode</span><span style=color:#111>),</span>
-</span></span><span style=display:flex><span>    <span style=color:#75af00>hGetLine</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>    <span style=color:#75af00>hSetBuffering</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>    <span style=color:#75af00>withFile</span><span style=color:#111>,</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>getNameScore</span> <span style=color:#f92672>::</span> <span style=color:#111>(</span><span style=color:#00a8c8>Text</span><span style=color:#111>,</span> <span style=color:#00a8c8>Int</span><span style=color:#111>)</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>getNameScore</span> <span style=color:#111>(</span><span style=color:#111>name</span><span style=color:#111>,</span> <span style=color:#111>pos</span><span style=color:#111>)</span> <span style=color:#f92672>=</span> <span style=color:#111>score</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>where</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>startingOrdValue</span> <span style=color:#f92672>=</span> <span style=color:#111>ord</span> <span style=color:#d88200>&#39;A&#39;</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>score</span> <span style=color:#f92672>=</span>
-</span></span><span style=display:flex><span>      <span style=color:#111>pos</span>
-</span></span><span style=display:flex><span>        <span style=color:#f92672>*</span> <span style=color:#111>sum</span>
-</span></span><span style=display:flex><span>          <span style=color:#111>(</span> <span style=color:#111>map</span> <span style=color:#111>(</span><span style=color:#75af00>\</span><span style=color:#111>c</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>ord</span> <span style=color:#111>c</span> <span style=color:#f92672>-</span> <span style=color:#111>startingOrdValue</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>filter</span> <span style=color:#111>isAlpha</span> <span style=color:#111>(</span><span style=color:#111>unpack</span> <span style=color:#111>name</span><span style=color:#111>))</span>
-</span></span><span style=display:flex><span>          <span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- In an imperative language, I&#39;d have thoughtlessly written a parameter-less</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- function (hard-corded) to fetch the names from disk. But Haskell&#39;s functional</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- nature makes me think about what it means for a function to take no</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- parameters. Something about that feels wrong. Granted, I could make it take</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- the filepath as a parameter. [1] suggests something like</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- `sumOfNameScores :: Int`.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- Not to fret though. I ended up placing the I/O logic in the main function,</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- so `sumOfNameScores` is a proper function with input paramaters.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- [1]: https://stackoverflow.com/a/52349907/7812406</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>sumOfNameScores</span> <span style=color:#f92672>::</span> <span style=color:#111>[</span><span style=color:#00a8c8>Text</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Int</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>sumOfNameScores</span> <span style=color:#111>names</span> <span style=color:#f92672>=</span> <span style=color:#111>score</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>where</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>sortedNames</span> <span style=color:#f92672>=</span> <span style=color:#111>sort</span> <span style=color:#111>names</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- [1] contends that needing an index while processing a list is a code</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- smell for an inefficient algorithm, and that we should look into using a</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- vector.</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Currying is the process of transforming a function that takes multiple</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- arguments in a tuple as its argument, into a function that takes just a</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- single argument and returns another function which accepts further</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- arguments, e.g. `g :: (a, b) -&gt; c` after currying becomes into `f :: a -&gt;</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- (b -&gt; c)`. Currying is especially useful as it allows partial</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- application. [2]</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- [1]: https://stackoverflow.com/a/16191987/7812406</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- [2]: https://wiki.haskell.org/Currying</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>score</span> <span style=color:#f92672>=</span> <span style=color:#111>sum</span> <span style=color:#111>(</span><span style=color:#111>zipWith</span> <span style=color:#111>(</span><span style=color:#111>curry</span> <span style=color:#111>getNameScore</span><span style=color:#111>)</span> <span style=color:#111>sortedNames</span> <span style=color:#111>[</span><span style=color:#ae81ff>1</span> <span style=color:#f92672>..</span><span style=color:#111>])</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- Pure code refers to functions that always return the same result when given</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- the same input, have no side effects (e.g. I/O on files, printing to screen),</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- and never alter state. I/O in Haskell is impure code. [1]</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- A side effect is anything that causes the evaluation of an expression to</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- interact with something outside itself. Side effects are time-sensitive, e.g.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- * It matters when one modifies a global variable as it may affect the</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--   evaluation of other expressions.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- * It matters when an item is printed to screen as it may need to be in a</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--   certain order w.r.t. other writes to the screen.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- * It matters when we read from a file or the network as the contents of the</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--   file may affect the outcome.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- [2]</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io.html</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- [2]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/6-laziness#side-effects-and-purity</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>main</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>main</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>putStr</span> <span style=color:#d88200>&#34;The total of all the name scores in names.txt is &#34;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>-- Open file handles ought to be closed. [1] suggested using the `openFile`</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>-- function together with the `bracket` function to ensure that the handle got</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>-- closed. However, HLint further suggested the `withFile` function, which is</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>-- less verbose, and achieves the same safety. [1] does not mention the</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>-- `withFile` function (maybe it was introduced later?)</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io-case-study-a-library-for-searching-the-filesystem.html#find.acquire.use.release</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>withFile</span>
-</span></span><span style=display:flex><span>    <span style=color:#d88200>&#34;scratchpad/names.txt&#34;</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>ReadMode</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- Haskell tries to make educated guesses on the buffering used in I/O.</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- In this case though, we know that names.txt is a list of</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- comma-delimited names in one line, so `LineBuffering` makes more</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- sense. The default was `BlockBuffering Nothing`, which means use an</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- implementation-defined block size.</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io.html#id615631</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>hSetBuffering</span> <span style=color:#111>h</span> <span style=color:#00a8c8>LineBuffering</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- The `&lt;-` binds the result from executing an I/O action to a name.</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- [1]: http://book.realworldhaskell.org/read/io.html#x_CC</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>allNamesStr</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetLine</span> <span style=color:#111>h</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- Surprised that Haskell&#39;s core library lacks a string splitter!</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- The `fromString` is needed to form a `Text` out of the `String` type</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- (which is an alias for `[Char]`).</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- [1]: https://stackoverflow.com/a/37895439/7812406</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- If `?` is an operator, then:</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--    `(?y)` is equivalent to the function `\x -&gt; x ? y`</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--    `(y?)` is equivalent to the function `\x -&gt; y ? x`</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>--</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>-- [1]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/4-higher-order-programming-and-type-inference#anonymous-functions</span>
-</span></span><span style=display:flex><span>        <span style=color:#111>print</span> <span style=color:#f92672>$</span> <span style=color:#111>sumOfNameScores</span> <span style=color:#111>(</span><span style=color:#111>split</span> <span style=color:#111>(</span><span style=color:#f92672>==</span> <span style=color:#d88200>&#39;,&#39;</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>allNamesStr</span><span style=color:#111>))</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>)</span>
+continue learning more about functional programming.</p><div><div class=highlight><pre tabindex=0 class=chroma><code class=language-haskell data-lang=haskell><span class=line><span class=cl><span class=cm>{-# OPTIONS_GHC -Wall #-}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=nn>Data.Char</span> <span class=p>(</span><span class=nf>isAlpha</span><span class=p>,</span> <span class=nf>ord</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=nn>Data.List</span> <span class=p>(</span><span class=nf>sort</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=nn>Data.String</span> <span class=p>(</span><span class=kt>IsString</span> <span class=p>(</span><span class=nf>fromString</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=nn>Data.Text.Lazy</span> <span class=p>(</span><span class=kt>Text</span><span class=p>,</span> <span class=nf>split</span><span class=p>,</span> <span class=nf>unpack</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=nn>System.IO</span>
+</span></span><span class=line><span class=cl>  <span class=p>(</span> <span class=kt>BufferMode</span> <span class=p>(</span><span class=kt>LineBuffering</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=kt>IOMode</span> <span class=p>(</span><span class=kt>ReadMode</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=nf>hGetLine</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nf>hSetBuffering</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nf>withFile</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>getNameScore</span> <span class=ow>::</span> <span class=p>(</span><span class=kt>Text</span><span class=p>,</span> <span class=kt>Int</span><span class=p>)</span> <span class=ow>-&gt;</span> <span class=kt>Int</span>
+</span></span><span class=line><span class=cl><span class=nf>getNameScore</span> <span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>pos</span><span class=p>)</span> <span class=ow>=</span> <span class=n>score</span>
+</span></span><span class=line><span class=cl>  <span class=kr>where</span>
+</span></span><span class=line><span class=cl>    <span class=n>startingOrdValue</span> <span class=ow>=</span> <span class=n>ord</span> <span class=sc>&#39;A&#39;</span> <span class=o>-</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=ow>=</span>
+</span></span><span class=line><span class=cl>      <span class=n>pos</span>
+</span></span><span class=line><span class=cl>        <span class=o>*</span> <span class=n>sum</span>
+</span></span><span class=line><span class=cl>          <span class=p>(</span> <span class=n>map</span> <span class=p>(</span><span class=nf>\</span><span class=n>c</span> <span class=ow>-&gt;</span> <span class=n>ord</span> <span class=n>c</span> <span class=o>-</span> <span class=n>startingOrdValue</span><span class=p>)</span> <span class=p>(</span><span class=n>filter</span> <span class=n>isAlpha</span> <span class=p>(</span><span class=n>unpack</span> <span class=n>name</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>          <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- In an imperative language, I&#39;d have thoughtlessly written a parameter-less</span>
+</span></span><span class=line><span class=cl><span class=c1>-- function (hard-corded) to fetch the names from disk. But Haskell&#39;s functional</span>
+</span></span><span class=line><span class=cl><span class=c1>-- nature makes me think about what it means for a function to take no</span>
+</span></span><span class=line><span class=cl><span class=c1>-- parameters. Something about that feels wrong. Granted, I could make it take</span>
+</span></span><span class=line><span class=cl><span class=c1>-- the filepath as a parameter. [1] suggests something like</span>
+</span></span><span class=line><span class=cl><span class=c1>-- `sumOfNameScores :: Int`.</span>
+</span></span><span class=line><span class=cl><span class=c1>--</span>
+</span></span><span class=line><span class=cl><span class=c1>-- Not to fret though. I ended up placing the I/O logic in the main function,</span>
+</span></span><span class=line><span class=cl><span class=c1>-- so `sumOfNameScores` is a proper function with input paramaters.</span>
+</span></span><span class=line><span class=cl><span class=c1>--</span>
+</span></span><span class=line><span class=cl><span class=c1>-- [1]: https://stackoverflow.com/a/52349907/7812406</span>
+</span></span><span class=line><span class=cl><span class=nf>sumOfNameScores</span> <span class=ow>::</span> <span class=p>[</span><span class=kt>Text</span><span class=p>]</span> <span class=ow>-&gt;</span> <span class=kt>Int</span>
+</span></span><span class=line><span class=cl><span class=nf>sumOfNameScores</span> <span class=n>names</span> <span class=ow>=</span> <span class=n>score</span>
+</span></span><span class=line><span class=cl>  <span class=kr>where</span>
+</span></span><span class=line><span class=cl>    <span class=n>sortedNames</span> <span class=ow>=</span> <span class=n>sort</span> <span class=n>names</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>-- [1] contends that needing an index while processing a list is a code</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- smell for an inefficient algorithm, and that we should look into using a</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- vector.</span>
+</span></span><span class=line><span class=cl>    <span class=c1>--</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- Currying is the process of transforming a function that takes multiple</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- arguments in a tuple as its argument, into a function that takes just a</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- single argument and returns another function which accepts further</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- arguments, e.g. `g :: (a, b) -&gt; c` after currying becomes into `f :: a -&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- (b -&gt; c)`. Currying is especially useful as it allows partial</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- application. [2]</span>
+</span></span><span class=line><span class=cl>    <span class=c1>--</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- [1]: https://stackoverflow.com/a/16191987/7812406</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- [2]: https://wiki.haskell.org/Currying</span>
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=ow>=</span> <span class=n>sum</span> <span class=p>(</span><span class=n>zipWith</span> <span class=p>(</span><span class=n>curry</span> <span class=n>getNameScore</span><span class=p>)</span> <span class=n>sortedNames</span> <span class=p>[</span><span class=mi>1</span> <span class=o>..</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- Pure code refers to functions that always return the same result when given</span>
+</span></span><span class=line><span class=cl><span class=c1>-- the same input, have no side effects (e.g. I/O on files, printing to screen),</span>
+</span></span><span class=line><span class=cl><span class=c1>-- and never alter state. I/O in Haskell is impure code. [1]</span>
+</span></span><span class=line><span class=cl><span class=c1>--</span>
+</span></span><span class=line><span class=cl><span class=c1>-- A side effect is anything that causes the evaluation of an expression to</span>
+</span></span><span class=line><span class=cl><span class=c1>-- interact with something outside itself. Side effects are time-sensitive, e.g.</span>
+</span></span><span class=line><span class=cl><span class=c1>--</span>
+</span></span><span class=line><span class=cl><span class=c1>-- * It matters when one modifies a global variable as it may affect the</span>
+</span></span><span class=line><span class=cl><span class=c1>--   evaluation of other expressions.</span>
+</span></span><span class=line><span class=cl><span class=c1>-- * It matters when an item is printed to screen as it may need to be in a</span>
+</span></span><span class=line><span class=cl><span class=c1>--   certain order w.r.t. other writes to the screen.</span>
+</span></span><span class=line><span class=cl><span class=c1>-- * It matters when we read from a file or the network as the contents of the</span>
+</span></span><span class=line><span class=cl><span class=c1>--   file may affect the outcome.</span>
+</span></span><span class=line><span class=cl><span class=c1>--</span>
+</span></span><span class=line><span class=cl><span class=c1>-- [2]</span>
+</span></span><span class=line><span class=cl><span class=c1>--</span>
+</span></span><span class=line><span class=cl><span class=c1>-- [1]: http://book.realworldhaskell.org/read/io.html</span>
+</span></span><span class=line><span class=cl><span class=c1>-- [2]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/6-laziness#side-effects-and-purity</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span> <span class=ow>::</span> <span class=kt>IO</span> <span class=nb>()</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span> <span class=ow>=</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>  <span class=n>putStr</span> <span class=s>&#34;The total of all the name scores in names.txt is &#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>-- Open file handles ought to be closed. [1] suggested using the `openFile`</span>
+</span></span><span class=line><span class=cl>  <span class=c1>-- function together with the `bracket` function to ensure that the handle got</span>
+</span></span><span class=line><span class=cl>  <span class=c1>-- closed. However, HLint further suggested the `withFile` function, which is</span>
+</span></span><span class=line><span class=cl>  <span class=c1>-- less verbose, and achieves the same safety. [1] does not mention the</span>
+</span></span><span class=line><span class=cl>  <span class=c1>-- `withFile` function (maybe it was introduced later?)</span>
+</span></span><span class=line><span class=cl>  <span class=c1>--</span>
+</span></span><span class=line><span class=cl>  <span class=c1>-- [1]: http://book.realworldhaskell.org/read/io-case-study-a-library-for-searching-the-filesystem.html#find.acquire.use.release</span>
+</span></span><span class=line><span class=cl>  <span class=n>withFile</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;scratchpad/names.txt&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>ReadMode</span>
+</span></span><span class=line><span class=cl>    <span class=p>(</span> <span class=nf>\</span><span class=n>h</span> <span class=ow>-&gt;</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- Haskell tries to make educated guesses on the buffering used in I/O.</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- In this case though, we know that names.txt is a list of</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- comma-delimited names in one line, so `LineBuffering` makes more</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- sense. The default was `BlockBuffering Nothing`, which means use an</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- implementation-defined block size.</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- [1]: http://book.realworldhaskell.org/read/io.html#id615631</span>
+</span></span><span class=line><span class=cl>        <span class=n>hSetBuffering</span> <span class=n>h</span> <span class=kt>LineBuffering</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>-- The `&lt;-` binds the result from executing an I/O action to a name.</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- [1]: http://book.realworldhaskell.org/read/io.html#x_CC</span>
+</span></span><span class=line><span class=cl>        <span class=n>allNamesStr</span> <span class=ow>&lt;-</span> <span class=n>hGetLine</span> <span class=n>h</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>-- Surprised that Haskell&#39;s core library lacks a string splitter!</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- The `fromString` is needed to form a `Text` out of the `String` type</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- (which is an alias for `[Char]`).</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- [1]: https://stackoverflow.com/a/37895439/7812406</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>-- If `?` is an operator, then:</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--    `(?y)` is equivalent to the function `\x -&gt; x ? y`</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--    `(y?)` is equivalent to the function `\x -&gt; y ? x`</span>
+</span></span><span class=line><span class=cl>        <span class=c1>--</span>
+</span></span><span class=line><span class=cl>        <span class=c1>-- [1]: https://www.schoolofhaskell.com/user/school/starting-with-haskell/introduction-to-haskell/4-higher-order-programming-and-type-inference#anonymous-functions</span>
+</span></span><span class=line><span class=cl>        <span class=n>print</span> <span class=o>$</span> <span class=n>sumOfNameScores</span> <span class=p>(</span><span class=n>split</span> <span class=p>(</span><span class=o>==</span> <span class=sc>&#39;,&#39;</span><span class=p>)</span> <span class=p>(</span><span class=n>fromString</span> <span class=n>allNamesStr</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
 </span></span></code></pre></div></div><h2 id=learning-from-others-solutions>Learning from Others&rsquo; Solutions</h2><p>Problem 022 did not have tricky bits, so <span class=citation-ref><a href=#ProjectEuler022Thread></a></span>doesn&rsquo;t offer much beyond decisions like:</p><ul><li>How the list is parsed, e.g.
 <a href=https://docs.python.org/3/library/csv.html target=_blank rel=noopener>python has an in-built <code>csv</code>
 module

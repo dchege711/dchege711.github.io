@@ -56,16 +56,16 @@ HaskellWiki
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>) for
 determining which third-party library to build on when several claim to
-do the job.</p></div></div><p>The package structure is of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>2021
-</span></span><span style=display:flex><span>├── advent-of-code-y2021.cabal
-</span></span><span style=display:flex><span>├── app
-</span></span><span style=display:flex><span>│   └── Main.hs
-</span></span><span style=display:flex><span>├── src
-</span></span><span style=display:flex><span>│   ├── AoC2021.hs
-</span></span><span style=display:flex><span>│   ├── SonarSweep.hs
-</span></span><span style=display:flex><span>│   └── SonarSweep.md
-</span></span><span style=display:flex><span>└── test
-</span></span><span style=display:flex><span>    └──  AoC2021Test.hs
+do the job.</p></div></div><p>The package structure is of the form:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>2021
+</span></span><span class=line><span class=cl>├── advent-of-code-y2021.cabal
+</span></span><span class=line><span class=cl>├── app
+</span></span><span class=line><span class=cl>│   └── Main.hs
+</span></span><span class=line><span class=cl>├── src
+</span></span><span class=line><span class=cl>│   ├── AoC2021.hs
+</span></span><span class=line><span class=cl>│   ├── SonarSweep.hs
+</span></span><span class=line><span class=cl>│   └── SonarSweep.md
+</span></span><span class=line><span class=cl>└── test
+</span></span><span class=line><span class=cl>    └──  AoC2021Test.hs
 </span></span></code></pre></div><p>I ended up using Cabal only as I thought it wouldn&rsquo;t have too many bells
 and whistles. <code>cabal init --interactive</code> got most of my <code>.cabal</code> file
 set up.</p><p><code>cabal run advent-of-code-y2021</code> runs my solutions to the AoC problems .
@@ -102,13 +102,13 @@ update
 </a>leading to erroneous flagging of code that compiles fine. Restarting the
 language server every once in a while is a tad inconvenient.</p><p>Sometimes VS Code reports that it can&rsquo;t find both <code>GHC</code> and <code>HLint</code>.
 <span class=citation-ref><a href=#rHaskellCantFindGHC></a></span>&rsquo;s suggestion of launching VS Code via
-<code>code .</code> works.</p><h2 id=debugging-haskell>Debugging Haskell</h2><p>A lot of the errors are caught by the compiler given the strong typing.</p><p>One option is to load the .hs file into GHCi and experiment in there.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span>$ ghci
-</span></span><span style=display:flex><span>GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? <span style=color:#00a8c8>for</span> <span style=color:#111>help</span>
-</span></span><span style=display:flex><span>Loaded package environment from /Users/dchege711/.ghc/x86_64-darwin-8.10.7/environments/default
-</span></span><span style=display:flex><span>Prelude&gt; :load src/Dive/Dive.hs
-</span></span><span style=display:flex><span><span style=color:#f92672>[</span><span style=color:#ae81ff>1</span> of 1<span style=color:#f92672>]</span> Compiling Dive.Dive        <span style=color:#f92672>(</span> src/Dive/Dive.hs, interpreted <span style=color:#f92672>)</span>
-</span></span><span style=display:flex><span>Ok, one module loaded.
-</span></span><span style=display:flex><span>*Dive.Dive&gt;
+<code>code .</code> works.</p><h2 id=debugging-haskell>Debugging Haskell</h2><p>A lot of the errors are caught by the compiler given the strong typing.</p><p>One option is to load the .hs file into GHCi and experiment in there.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ ghci
+</span></span><span class=line><span class=cl>GHCi, version 8.10.7: https://www.haskell.org/ghc/  :? <span class=k>for</span> <span class=nb>help</span>
+</span></span><span class=line><span class=cl>Loaded package environment from /Users/dchege711/.ghc/x86_64-darwin-8.10.7/environments/default
+</span></span><span class=line><span class=cl>Prelude&gt; :load src/Dive/Dive.hs
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=m>1</span> of 1<span class=o>]</span> Compiling Dive.Dive        <span class=o>(</span> src/Dive/Dive.hs, interpreted <span class=o>)</span>
+</span></span><span class=line><span class=cl>Ok, one module loaded.
+</span></span><span class=line><span class=cl>*Dive.Dive&gt;
 </span></span></code></pre></div><p><a href="https://marketplace.visualstudio.com/items?itemName=phoityne.phoityne-vscode" target=_blank rel=noopener>Haskell GHCi Debug Adapter
 Phoityne
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
@@ -172,28 +172,28 @@ lines that only have <code>%</code>s, adding YAML, changing the opening back-tic
 to have <code>hs</code> (HighlightJS guesses the language correctly though). Maybe
 <code>lhs2TeX</code> has some customization options that won&rsquo;t require me to whip
 up a Python script? Didn&rsquo;t find anything promising. This script
-suffices:</p><div id=publish_lhs_files.zsh><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-zsh data-lang=zsh><span style=display:flex><span><span style=color:#75715e>#!/bin/zsh
-</span></span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>if</span> <span style=color:#f92672>[[</span> <span style=color:#111>$1</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;--all&#34;</span> <span style=color:#f92672>]]</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>then</span>
-</span></span><span style=display:flex><span><span style=color:#111>working_dir</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;</span><span style=color:#00a8c8>$(</span>dirname <span style=color:#111>$0</span><span style=color:#00a8c8>)</span><span style=color:#d88200>&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#111>lhs_files</span><span style=color:#f92672>=(</span><span style=color:#111>$working_dir</span>/**/*.lhs<span style=color:#f92672>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>elif</span> <span style=color:#f92672>[[</span> <span style=color:#111>$1</span> <span style=color:#f92672>]]</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>then</span>
-</span></span><span style=display:flex><span><span style=color:#111>lhs_files</span><span style=color:#f92672>=(</span><span style=color:#111>$1</span><span style=color:#f92672>)</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>else</span>
-</span></span><span style=display:flex><span><span style=color:#111>printf</span> <span style=color:#d88200>&#34;Either supply a filepath to an .lhs file, or use &#39;--all&#39;\n&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#111>exit</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>fi</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>for</span> lhs_file in <span style=color:#111>$lhs_files</span> <span style=color:#111>;</span> <span style=color:#00a8c8>do</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>output_file</span><span style=color:#f92672>=</span><span style=color:#d88200>${</span><span style=color:#111>lhs_file</span><span style=color:#111>/.lhs/.md</span><span style=color:#d88200>}</span> <span style=color:#75715e># Replace .lhs with .md</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e># Delete the first 2 lines which only have a `%` character.</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e># The 2nd expression replaces `\#` with `#`. The former is needed for .lhs</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e># to compile. As an SO user said, when in doubt, add another backslash.</span>
-</span></span><span style=display:flex><span>    lhs2tex --markdown <span style=color:#111>$lhs_file</span> <span style=color:#111>|</span> sed -e <span style=color:#d88200>&#39;1,2d&#39;</span> -e s.^<span style=color:#8045ff>\\\\\#</span>.<span style=color:#8045ff>\#</span>. &gt; <span style=color:#111>$output_file</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>printf</span> <span style=color:#d88200>&#34;Published </span><span style=color:#111>$output_file</span><span style=color:#d88200>\n&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>done</span>
+suffices:</p><div id=publish_lhs_files.zsh><div class=highlight><pre tabindex=0 class=chroma><code class=language-zsh data-lang=zsh><span class=line><span class=cl><span class=cp>#!/bin/zsh
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=o>[[</span> <span class=nv>$1</span> <span class=o>==</span> <span class=s2>&#34;--all&#34;</span> <span class=o>]]</span>
+</span></span><span class=line><span class=cl><span class=k>then</span>
+</span></span><span class=line><span class=cl><span class=nv>working_dir</span><span class=o>=</span><span class=s2>&#34;</span><span class=k>$(</span>dirname <span class=nv>$0</span><span class=k>)</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>lhs_files</span><span class=o>=(</span><span class=nv>$working_dir</span>/**/*.lhs<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=o>[[</span> <span class=nv>$1</span> <span class=o>]]</span>
+</span></span><span class=line><span class=cl><span class=k>then</span>
+</span></span><span class=line><span class=cl><span class=nv>lhs_files</span><span class=o>=(</span><span class=nv>$1</span><span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span>
+</span></span><span class=line><span class=cl><span class=nb>printf</span> <span class=s2>&#34;Either supply a filepath to an .lhs file, or use &#39;--all&#39;\n&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>exit</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=k>fi</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> lhs_file in <span class=nv>$lhs_files</span> <span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=nv>output_file</span><span class=o>=</span><span class=si>${</span><span class=nv>lhs_file</span><span class=p>/.lhs/.md</span><span class=si>}</span> <span class=c1># Replace .lhs with .md</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Delete the first 2 lines which only have a `%` character.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The 2nd expression replaces `\#` with `#`. The former is needed for .lhs</span>
+</span></span><span class=line><span class=cl>    <span class=c1># to compile. As an SO user said, when in doubt, add another backslash.</span>
+</span></span><span class=line><span class=cl>    lhs2tex --markdown <span class=nv>$lhs_file</span> <span class=p>|</span> sed -e <span class=s1>&#39;1,2d&#39;</span> -e s.^<span class=se>\\\\\#</span>.<span class=se>\#</span>. &gt; <span class=nv>$output_file</span>
+</span></span><span class=line><span class=cl>    <span class=nb>printf</span> <span class=s2>&#34;Published </span><span class=nv>$output_file</span><span class=s2>\n&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>done</span>
 </span></span></code></pre></div></div><p>VS Code lacks multi-mode, which is helpful when editing .lhs files.
 <del>Emacs it is!</del> The editor shows highlights the non-code portions as
 Haskell, but the language server doesn&rsquo;t trip up. I&rsquo;ll keep using VS
@@ -225,54 +225,54 @@ Should Not)
 and whenever I fret about efficiency, I mumble something to do with lazy
 evaluation in Haskell.</p></div></div><p>Pattern matching drives evaluation. Expressions are only evaluated when
 pattern-matched, and only as far as necessary for the match to proceed,
-and no farther. For example, given these definitions:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>repeat</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>repeat</span> <span style=color:#111>x</span> <span style=color:#f92672>=</span> <span style=color:#111>x</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#111>x</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>[</span><span style=color:#111>a</span><span style=color:#111>]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#111>n</span> <span style=color:#00a8c8>_</span> <span style=color:#f92672>|</span> <span style=color:#111>n</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>   <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#00a8c8>_</span> <span style=color:#00a8c8>[]</span>           <span style=color:#f92672>=</span> <span style=color:#00a8c8>[]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>take</span> <span style=color:#111>n</span> <span style=color:#111>(</span><span style=color:#111>x</span><span style=color:#00a8c8>:</span><span style=color:#111>xs</span><span style=color:#111>)</span>       <span style=color:#f92672>=</span> <span style=color:#111>x</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#111>n</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>xs</span>
+and no farther. For example, given these definitions:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=nf>repeat</span> <span class=ow>::</span> <span class=n>a</span> <span class=ow>-&gt;</span> <span class=p>[</span><span class=n>a</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>repeat</span> <span class=n>x</span> <span class=ow>=</span> <span class=n>x</span> <span class=kt>:</span> <span class=n>repeat</span> <span class=n>x</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>take</span> <span class=ow>::</span> <span class=kt>Int</span> <span class=ow>-&gt;</span> <span class=p>[</span><span class=n>a</span><span class=p>]</span> <span class=ow>-&gt;</span> <span class=p>[</span><span class=n>a</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>take</span> <span class=n>n</span> <span class=kr>_</span> <span class=o>|</span> <span class=n>n</span> <span class=o>&lt;=</span> <span class=mi>0</span>   <span class=ow>=</span> <span class=kt>[]</span>
+</span></span><span class=line><span class=cl><span class=nf>take</span> <span class=kr>_</span> <span class=kt>[]</span>           <span class=ow>=</span> <span class=kt>[]</span>
+</span></span><span class=line><span class=cl><span class=nf>take</span> <span class=n>n</span> <span class=p>(</span><span class=n>x</span><span class=kt>:</span><span class=n>xs</span><span class=p>)</span>       <span class=ow>=</span> <span class=n>x</span> <span class=kt>:</span> <span class=n>take</span> <span class=p>(</span><span class=n>n</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=n>xs</span>
 </span></span></code></pre></div><p>&mldr; we expect <code>take 3 (repeat 7)</code> to evaluate to <code>[7, 7, 7]</code>. A
-step-by-step evaluation looks like:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span>  <span style=color:#111>take</span> <span style=color:#ae81ff>3</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Matches clause 2, which needs the 2nd arg. Expand `repeat 7` one</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- step.</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#111>take</span> <span style=color:#ae81ff>3</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Matches clause 3. (3-1) not yet evaluated as not needed for</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- pattern-matching.</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>3</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- (3-1) &lt;= 0 forces evaluation of (3-1).</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>2</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>-- Matches clause 2; expand 2nd arg one step.</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>2</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>2</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>1</span> <span style=color:#111>(</span><span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#111>(</span><span style=color:#ae81ff>1</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#111>take</span> <span style=color:#ae81ff>0</span> <span style=color:#111>(</span><span style=color:#111>repeat</span> <span style=color:#ae81ff>7</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>=</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#ae81ff>7</span> <span style=color:#00a8c8>:</span> <span style=color:#00a8c8>[]</span>
+step-by-step evaluation looks like:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl>  <span class=n>take</span> <span class=mi>3</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- Matches clause 2, which needs the 2nd arg. Expand `repeat 7` one</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- step.</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=n>take</span> <span class=mi>3</span> <span class=p>(</span><span class=mi>7</span> <span class=kt>:</span> <span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- Matches clause 3. (3-1) not yet evaluated as not needed for</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- pattern-matching.</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=p>(</span><span class=mi>3</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- (3-1) &lt;= 0 forces evaluation of (3-1).</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=mi>2</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1>-- Matches clause 2; expand 2nd arg one step.</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=mi>2</span> <span class=p>(</span><span class=mi>7</span> <span class=kt>:</span> <span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=p>(</span><span class=mi>2</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=mi>1</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=mi>1</span> <span class=p>(</span><span class=mi>7</span> <span class=kt>:</span> <span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=p>(</span><span class=mi>1</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=n>take</span> <span class=mi>0</span> <span class=p>(</span><span class=n>repeat</span> <span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=ow>=</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=mi>7</span> <span class=kt>:</span> <span class=kt>[]</span>
 </span></span></code></pre></div><p>The GHC compiler uses graph reduction, where the expression being
 evaluated is represented as a graph, so that different parts of the
 expression can share pointers to the same subexpression. Haskell&rsquo;s
 runtime works out the memoization aspect of dynamic programming on our
-behalf!</p><p><span class=citation-ref><a href=#Yorgey2013Laziness></a></span></p><h2 id=parsing-input>Parsing Input</h2><p>For the first two AoC problems, my parsing technique has basically been:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>solutionX</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>solutionX</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>fileName</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>getDataFileName</span> <span style=color:#d88200>&#34;dayX/input.txt&#34;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>withFile</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>fileName</span>
-</span></span><span style=display:flex><span>    <span style=color:#00a8c8>ReadMone</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>(</span> <span style=color:#75af00>\</span><span style=color:#111>h</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>do</span> <span style=color:#111>s</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>hGetContents</span> <span style=color:#111>h</span>
-</span></span><span style=display:flex><span>               <span style=color:#111>print</span> <span style=color:#111>(</span><span style=color:#111>solveX</span> <span style=color:#111>lines</span> <span style=color:#111>(</span><span style=color:#111>fromString</span> <span style=color:#111>s</span><span style=color:#111>))</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>)</span>
+behalf!</p><p><span class=citation-ref><a href=#Yorgey2013Laziness></a></span></p><h2 id=parsing-input>Parsing Input</h2><p>For the first two AoC problems, my parsing technique has basically been:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=nf>solutionX</span> <span class=ow>::</span> <span class=kt>IO</span> <span class=nb>()</span>
+</span></span><span class=line><span class=cl><span class=nf>solutionX</span> <span class=ow>=</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>  <span class=n>fileName</span> <span class=ow>&lt;-</span> <span class=n>getDataFileName</span> <span class=s>&#34;dayX/input.txt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=n>withFile</span>
+</span></span><span class=line><span class=cl>    <span class=n>fileName</span>
+</span></span><span class=line><span class=cl>    <span class=kt>ReadMone</span>
+</span></span><span class=line><span class=cl>    <span class=p>(</span> <span class=nf>\</span><span class=n>h</span> <span class=ow>-&gt;</span> <span class=kr>do</span> <span class=n>s</span> <span class=ow>&lt;-</span> <span class=n>hGetContents</span> <span class=n>h</span>
+</span></span><span class=line><span class=cl>               <span class=n>print</span> <span class=p>(</span><span class=n>solveX</span> <span class=n>lines</span> <span class=p>(</span><span class=n>fromString</span> <span class=n>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
 </span></span></code></pre></div><p>Granted, IO is lazy, but there are improvements to the above sort of
-parsing.</p><p>For example, Day 1 has input of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>199
-</span></span><span style=display:flex><span>200
-</span></span></code></pre></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>parsed it as follows:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#111>RIO</span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>import</span> <span style=color:#00a8c8>qualified</span> <span style=color:#111>RIO.Text</span> <span style=color:#00a8c8>as</span> <span style=color:#111>Text</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>MonadIO</span> <span style=color:#111>m</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>m</span> <span style=color:#111>[</span><span style=color:#00a8c8>Int</span><span style=color:#111>]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>text</span> <span style=color:#f92672>&lt;-</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>lines</span> <span style=color:#f92672>&lt;$&gt;</span> <span style=color:#111>readFileUtf8</span> <span style=color:#d88200>&#34;data/day01.txt&#34;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>return</span> <span style=color:#f92672>$</span> <span style=color:#111>mapMaybe</span> <span style=color:#111>(</span><span style=color:#111>readMaybe</span> <span style=color:#f92672>.</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>unpack</span><span style=color:#111>)</span> <span style=color:#111>text</span>
+parsing.</p><p>For example, Day 1 has input of the form:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>199
+</span></span><span class=line><span class=cl>200
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>parsed it as follows:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=kr>import</span> <span class=nn>RIO</span>
+</span></span><span class=line><span class=cl><span class=kr>import</span> <span class=k>qualified</span> <span class=nn>RIO.Text</span> <span class=k>as</span> <span class=n>Text</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>readInput</span> <span class=ow>::</span> <span class=kt>MonadIO</span> <span class=n>m</span> <span class=ow>=&gt;</span> <span class=n>m</span> <span class=p>[</span><span class=kt>Int</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>readInput</span> <span class=ow>=</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>  <span class=n>text</span> <span class=ow>&lt;-</span> <span class=kt>Text</span><span class=o>.</span><span class=n>lines</span> <span class=o>&lt;$&gt;</span> <span class=n>readFileUtf8</span> <span class=s>&#34;data/day01.txt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=n>return</span> <span class=o>$</span> <span class=n>mapMaybe</span> <span class=p>(</span><span class=n>readMaybe</span> <span class=o>.</span> <span class=kt>Text</span><span class=o>.</span><span class=n>unpack</span><span class=p>)</span> <span class=n>text</span>
 </span></span></code></pre></div><p>Notice how <code>readInput</code> parses the input and takes care of converting
 into expected data types <code>[Int]</code> and takes care of parsing uncertainty
 with <code>*Maybe</code>. In comparison, my
@@ -282,19 +282,19 @@ with <code>*Maybe</code>. In comparison, my
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/2021/src/Dive/02-dive/#Dive.hs target=_blank rel=noopener><code>Dive.productOfFinalPosition*</code>
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>functions receive a <code>[String]</code> which they then parse into intended
-types.</p><p>Day 2 had input of the form:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>forward 5
-</span></span><span style=display:flex><span>down 5
-</span></span><span style=display:flex><span>forward 8
-</span></span></code></pre></div><p>&mldr; and I parsed it using regular expressions. <a id=HiddingAoC2021-02-ParsingInput></a><span class=citation-ref><a href=#HiddingAoC2021-02></a></span>used the <code>Parsing</code> module, which results in pretty concise code:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>data</span> <span style=color:#00a8c8>Instruction</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>GoForward</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoUp</span> <span style=color:#00a8c8>Int</span> <span style=color:#f92672>|</span> <span style=color:#00a8c8>GoDown</span> <span style=color:#00a8c8>Int</span> <span style=color:#00a8c8>deriving</span> <span style=color:#111>(</span><span style=color:#00a8c8>Show</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>instructions</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>Parser</span> <span style=color:#111>[</span><span style=color:#00a8c8>Instruction</span><span style=color:#111>]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>instructions</span> <span style=color:#f92672>=</span> <span style=color:#111>sepEndBy1</span> <span style=color:#111>(</span><span style=color:#111>lexeme</span> <span style=color:#111>direction</span> <span style=color:#f92672>&lt;*&gt;</span> <span style=color:#111>integer</span><span style=color:#111>)</span> <span style=color:#111>eol</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>where</span> <span style=color:#111>direction</span> <span style=color:#f92672>=</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;forward&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoForward</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;up&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoUp</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;|&gt;</span> <span style=color:#111>(</span><span style=color:#111>string</span> <span style=color:#d88200>&#34;down&#34;</span> <span style=color:#f92672>$&gt;</span> <span style=color:#00a8c8>GoDown</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>::</span> <span style=color:#111>(</span><span style=color:#00a8c8>Monad</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>MonadReader</span> <span style=color:#111>env</span> <span style=color:#111>m</span><span style=color:#111>,</span> <span style=color:#00a8c8>HasLogFunc</span> <span style=color:#111>env</span><span style=color:#111>)</span> <span style=color:#f92672>=&gt;</span> <span style=color:#111>m</span> <span style=color:#111>[</span><span style=color:#00a8c8>Instruction</span><span style=color:#111>]</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>readInput</span> <span style=color:#f92672>=</span> <span style=color:#111>readInputParsing</span> <span style=color:#d88200>&#34;data/day02.txt&#34;</span> <span style=color:#111>instructions</span>
+types.</p><p>Day 2 had input of the form:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>forward 5
+</span></span><span class=line><span class=cl>down 5
+</span></span><span class=line><span class=cl>forward 8
+</span></span></code></pre></div><p>&mldr; and I parsed it using regular expressions. <a id=HiddingAoC2021-02-ParsingInput></a><span class=citation-ref><a href=#HiddingAoC2021-02></a></span>used the <code>Parsing</code> module, which results in pretty concise code:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=kr>data</span> <span class=kt>Instruction</span> <span class=ow>=</span> <span class=kt>GoForward</span> <span class=kt>Int</span> <span class=o>|</span> <span class=kt>GoUp</span> <span class=kt>Int</span> <span class=o>|</span> <span class=kt>GoDown</span> <span class=kt>Int</span> <span class=kr>deriving</span> <span class=p>(</span><span class=kt>Show</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>instructions</span> <span class=ow>::</span> <span class=kt>Parser</span> <span class=p>[</span><span class=kt>Instruction</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>instructions</span> <span class=ow>=</span> <span class=n>sepEndBy1</span> <span class=p>(</span><span class=n>lexeme</span> <span class=n>direction</span> <span class=o>&lt;*&gt;</span> <span class=n>integer</span><span class=p>)</span> <span class=n>eol</span>
+</span></span><span class=line><span class=cl>  <span class=kr>where</span> <span class=n>direction</span> <span class=ow>=</span> <span class=p>(</span><span class=n>string</span> <span class=s>&#34;forward&#34;</span> <span class=o>$&gt;</span> <span class=kt>GoForward</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=o>&lt;|&gt;</span> <span class=p>(</span><span class=n>string</span> <span class=s>&#34;up&#34;</span> <span class=o>$&gt;</span> <span class=kt>GoUp</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=o>&lt;|&gt;</span> <span class=p>(</span><span class=n>string</span> <span class=s>&#34;down&#34;</span> <span class=o>$&gt;</span> <span class=kt>GoDown</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>readInput</span> <span class=ow>::</span> <span class=p>(</span><span class=kt>Monad</span> <span class=kt>IO</span> <span class=n>m</span><span class=p>,</span> <span class=kt>MonadReader</span> <span class=n>env</span> <span class=n>m</span><span class=p>,</span> <span class=kt>HasLogFunc</span> <span class=n>env</span><span class=p>)</span> <span class=ow>=&gt;</span> <span class=n>m</span> <span class=p>[</span><span class=kt>Instruction</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>readInput</span> <span class=ow>=</span> <span class=n>readInputParsing</span> <span class=s>&#34;data/day02.txt&#34;</span> <span class=n>instructions</span>
 </span></span></code></pre></div><p>These parsing utilities are not in the packages on Stackage. Turns out
 <span class=citation-ref><a href=#HiddingAoC2021-02></a></span>has a custom
 <a href=https://jhidding.github.io/aoc2021/#appendix-parsing target=_blank rel=noopener>app/Parsing.hs
@@ -341,9 +341,9 @@ simply an identity. For example, where \(S\) is the set of real
 numbers, and \(*\) is the addition operator, \(0\) is the identity
 element. <span class=citation-ref><a href=#WikiIdentityElement></a></span></p></div></div><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><span class=citation-ref><a href=#Control.Monad></a></span>uses the phrase &ldquo;instances of <code>Monad</code>&rdquo;, which
 requires a bit of digging from my side.</p><p>Type classes correspond to <em>sets of types</em> which have certain operations
-defined for them. For instance,</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>class</span> <span style=color:#00a8c8>Eq</span> <span style=color:#111>a</span> <span style=color:#00a8c8>where</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>(</span><span style=color:#f92672>==</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>(</span><span style=color:#f92672>/=</span><span style=color:#111>)</span> <span style=color:#f92672>::</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#111>a</span> <span style=color:#f92672>-&gt;</span> <span style=color:#00a8c8>Bool</span>
+defined for them. For instance,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=kr>class</span> <span class=kt>Eq</span> <span class=n>a</span> <span class=kr>where</span>
+</span></span><span class=line><span class=cl>  <span class=p>(</span><span class=o>==</span><span class=p>)</span> <span class=ow>::</span> <span class=n>a</span> <span class=ow>-&gt;</span> <span class=n>a</span> <span class=ow>-&gt;</span> <span class=kt>Bool</span>
+</span></span><span class=line><span class=cl>  <span class=p>(</span><span class=o>/=</span><span class=p>)</span> <span class=ow>::</span> <span class=n>a</span> <span class=ow>-&gt;</span> <span class=n>a</span> <span class=ow>-&gt;</span> <span class=kt>Bool</span>
 </span></span></code></pre></div><p>&mldr; can be read as: <code>Eq</code> is declared to be a type class with a single
 parameter, <code>a</code>. Any type <code>a</code> that wants to be an <em>instance</em> of <code>Eq</code> must
 define two functions, <code>(==)</code> and <code>(/=)</code>, with the indicated type
@@ -354,8 +354,8 @@ read this as: for any type <code>a</code>, as long as <code>a</code> is an insta
 <code>(==)</code> can take two values of <code>a</code> and return a <code>Bool</code>; it is a type
 error to call the function <code>(==)</code> on some type which is not an instance
 of <code>Eq</code>. <span class=citation-ref><a href=#Yorgey2013TypeClasses></a></span></p></div></div><p>The <code>(>>=)</code> (bind) operator sequentially composes two actions, passing
-any value produced by the first as an argument to the second. <code>as >>= bs</code> can be understood as:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>do</span> <span style=color:#111>a</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>as</span>
-</span></span><span style=display:flex><span>   <span style=color:#111>bs</span> <span style=color:#111>a</span>
+any value produced by the first as an argument to the second. <code>as >>= bs</code> can be understood as:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=kr>do</span> <span class=n>a</span> <span class=ow>&lt;-</span> <span class=n>as</span>
+</span></span><span class=line><span class=cl>   <span class=n>bs</span> <span class=n>a</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p><span class=citation-ref><a href=#CIS194Spring13Monads></a></span>dissects <code>(>>=) :: m a -> (a -> m b) -> m b</code> in an enlightening way. <code>(>>=)</code> takes two arguments. The first
 one is a monadic value (or computation or mobit) that represents a
 computation which results in a value (or several values, or no values)
@@ -369,23 +369,23 @@ find the writings of
 <a href=https://www.curiosities.dev/cited-authors/yorgey-brent/>Brent Yorgey
 </a>, the Spring 2013 instructor, clearer.</p></div></div><p><span class=citation-ref><a href=#></a></span></p><p>The <code>(>>)</code> (&ldquo;and then&rdquo;) operator sequentially composes two actions,
 discarding any value produced by the first. <code>as >> bs</code> can be
-understood as:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#00a8c8>do</span> <span style=color:#111>as</span>
-</span></span><span style=display:flex><span>   <span style=color:#111>bs</span>
-</span></span></code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p>Each statement in a <code>do</code> block is one of these:</p><ul><li>A single expression <code>e</code>, which is then prepended to the rest with <code>e >> ...</code></li><li>A monadic bind <code>p &lt;- e</code>, which is replaced by <code>e >>= (\p -> ...)</code></li><li>A <code>let</code> binding <code>let p = e</code>, which is translated to <code>let p = e in ...</code></li></ul><p>&mldr; so <code>main</code> and <code>main'</code> are equivalent:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75715e>-- Side note: `readLn` throws an exception if the input is not a number.</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- Actual code should use `getLine`, `readMaybe`, and handle input that</span>
-</span></span><span style=display:flex><span><span style=color:#75715e>-- is not a number. However, we&#39;re currently concerned with monads.</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>main</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>main</span> <span style=color:#f92672>=</span> <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Please enter a number: &#34;</span> <span style=color:#f92672>&gt;&gt;</span>
-</span></span><span style=display:flex><span>       <span style=color:#111>readLn</span> <span style=color:#f92672>&gt;&gt;</span> <span style=color:#75af00>\</span><span style=color:#111>n</span> <span style=color:#f92672>-&gt;</span>
-</span></span><span style=display:flex><span>       <span style=color:#00a8c8>let</span> <span style=color:#111>m</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#00a8c8>in</span>
-</span></span><span style=display:flex><span>       <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#111>show</span> <span style=color:#111>m</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75af00>main&#39;</span> <span style=color:#f92672>::</span> <span style=color:#00a8c8>IO</span> <span style=color:#111>()</span>
-</span></span><span style=display:flex><span><span style=color:#75af00>main&#39;</span> <span style=color:#f92672>=</span> <span style=color:#00a8c8>do</span> <span style=color:#111>putStrLn</span> <span style=color:#d88200>&#34;Please enter a number: &#34;</span>
-</span></span><span style=display:flex><span>           <span style=color:#111>n</span> <span style=color:#f92672>&lt;-</span> <span style=color:#111>readLn</span>
-</span></span><span style=display:flex><span>           <span style=color:#00a8c8>let</span> <span style=color:#111>m</span> <span style=color:#f92672>=</span> <span style=color:#111>n</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>           <span style=color:#111>putStrLn</span> <span style=color:#111>(</span><span style=color:#111>show</span> <span style=color:#111>m</span><span style=color:#111>)</span>
+understood as:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=kr>do</span> <span class=n>as</span>
+</span></span><span class=line><span class=cl>   <span class=n>bs</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#Control.Monad></a></span></p><p>Each statement in a <code>do</code> block is one of these:</p><ul><li>A single expression <code>e</code>, which is then prepended to the rest with <code>e >> ...</code></li><li>A monadic bind <code>p &lt;- e</code>, which is replaced by <code>e >>= (\p -> ...)</code></li><li>A <code>let</code> binding <code>let p = e</code>, which is translated to <code>let p = e in ...</code></li></ul><p>&mldr; so <code>main</code> and <code>main'</code> are equivalent:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=c1>-- Side note: `readLn` throws an exception if the input is not a number.</span>
+</span></span><span class=line><span class=cl><span class=c1>-- Actual code should use `getLine`, `readMaybe`, and handle input that</span>
+</span></span><span class=line><span class=cl><span class=c1>-- is not a number. However, we&#39;re currently concerned with monads.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>main</span> <span class=ow>::</span> <span class=kt>IO</span> <span class=nb>()</span>
+</span></span><span class=line><span class=cl><span class=nf>main</span> <span class=ow>=</span> <span class=n>putStrLn</span> <span class=s>&#34;Please enter a number: &#34;</span> <span class=o>&gt;&gt;</span>
+</span></span><span class=line><span class=cl>       <span class=n>readLn</span> <span class=o>&gt;&gt;</span> <span class=nf>\</span><span class=n>n</span> <span class=ow>-&gt;</span>
+</span></span><span class=line><span class=cl>       <span class=kr>let</span> <span class=n>m</span> <span class=ow>=</span> <span class=n>n</span> <span class=o>+</span> <span class=mi>1</span> <span class=kr>in</span>
+</span></span><span class=line><span class=cl>       <span class=n>putStrLn</span> <span class=p>(</span><span class=n>show</span> <span class=n>m</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>main&#39;</span> <span class=ow>::</span> <span class=kt>IO</span> <span class=nb>()</span>
+</span></span><span class=line><span class=cl><span class=nf>main&#39;</span> <span class=ow>=</span> <span class=kr>do</span> <span class=n>putStrLn</span> <span class=s>&#34;Please enter a number: &#34;</span>
+</span></span><span class=line><span class=cl>           <span class=n>n</span> <span class=ow>&lt;-</span> <span class=n>readLn</span>
+</span></span><span class=line><span class=cl>           <span class=kr>let</span> <span class=n>m</span> <span class=ow>=</span> <span class=n>n</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>           <span class=n>putStrLn</span> <span class=p>(</span><span class=n>show</span> <span class=n>m</span><span class=p>)</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#CIS194Fall16IOAndMonads></a></span></p><p>A <code>Monad</code> <code>m</code> also offers a <code>return</code> function of type <code>a -> m a</code>, which
 injects a value into the monadic type. <span class=citation-ref><a href=#Control.Monad></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Examples of <code>Monad</code> instances from <span class=citation-ref><a href=#Control.Monad></a></span>that I
 might find useful: <code>Identity</code>, <code>First</code>, <code>Last</code>, <code>Max</code>, <code>Min</code>, <code>Product</code>,
@@ -400,7 +400,7 @@ monad? Credits:
 https://wiki.haskell.org/Typeclassopedia
 &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true">&lt;/i></code></pre><p></a></p></figcaption></p></figure><p>For now, my takeaway is: <code>Monad</code>s encapsulate computations which can
 choose what to do next based on the results of previous computations.</p></div></div><h2 id=functor><code>Functor</code></h2><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>In hindsight, I should have started with exploring <code>Functor</code>s, but here
-I am exploring them after <code>Monad</code>s.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>does:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-hs data-lang=hs><span style=display:flex><span><span style=color:#75af00>text</span> <span style=color:#f92672>&lt;-</span> <span style=color:#00a8c8>Text</span><span style=color:#f92672>.</span><span style=color:#111>lines</span> <span style=color:#f92672>&lt;$&gt;</span> <span style=color:#111>readFileUtf8</span> <span style=color:#d88200>&#34;data/day01.txt&#34;</span>
+I am exploring them after <code>Monad</code>s.</p></div></div><p><span class=citation-ref><a href=#HiddingAoC2021-01></a></span>does:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-hs data-lang=hs><span class=line><span class=cl><span class=nf>text</span> <span class=ow>&lt;-</span> <span class=kt>Text</span><span class=o>.</span><span class=n>lines</span> <span class=o>&lt;$&gt;</span> <span class=n>readFileUtf8</span> <span class=s>&#34;data/day01.txt&#34;</span>
 </span></span></code></pre></div><p>A simple intuition is that a <code>Functor</code> represents a &ldquo;container&rdquo; of some
 sort, along with the ability to apply a function uniformly to every
 element in the container. A more useful but more difficult to explain

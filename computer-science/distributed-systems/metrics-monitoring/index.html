@@ -63,13 +63,13 @@ configured channel.</li></ol><p>&mldr; where steps 1-2 are write-heavy and conti
 bursty (engineers debugging incidents), and steps 4-5 need to be reliable above
 all else. <span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I should consider the core data flow before the non-functional requirements as
 the former informs the latter.</p></div></div><h2 id=system-api>System API</h2><p>Ingesting metrics is a high-volume operation. Protobufs are ideal for the wire
-protocol. Using JSON here for ease in writing:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>POST /v1/metrics/ingest
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>  name: string,
-</span></span><span style=display:flex><span>  value: number,
-</span></span><span style=display:flex><span>  timestamp: number,
-</span></span><span style=display:flex><span>  labels: {name: string, value: string | number}[],
-</span></span><span style=display:flex><span>}[]
+protocol. Using JSON here for ease in writing:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>POST /v1/metrics/ingest
+</span></span><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>  name: string,
+</span></span><span class=line><span class=cl>  value: number,
+</span></span><span class=line><span class=cl>  timestamp: number,
+</span></span><span class=line><span class=cl>  labels: {name: string, value: string | number}[],
+</span></span><span class=line><span class=cl>}[]
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Initially did not batch <code>POST /v1/metrics/ingest</code>. Consider that ingestion is
 a high volume operation. You&rsquo;d typically have SDKs installed on the services
 that batch metrics and send them in one payload. Sending individual metrics is
@@ -86,31 +86,31 @@ time series for the <code>http_requests_total</code> metric with the given <code
 application and process type. <span class=citation-ref><a href=#PromQLExamples></a></span>Our platform can use
 something similar, e.g., <code>GET /metrics/query?query=avg(cpu_usage{region="us-east"})&amp;start=A&amp;end=B&amp;step=60</code>.
 <span class=citation-ref><a href=#Mai2026></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Prior experience with <span class=citation-ref><a href=#PromQLExamples></a></span>could have helped here. I
-initially had:</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>POST /v1/metrics/query
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>  name: string,
-</span></span><span style=display:flex><span>  labels: {name: string, value: string | number}[],
-</span></span><span style=display:flex><span>  aggregation: {
-</span></span><span style=display:flex><span>    type: &#34;average&#34; | &#34;percentile&#34; | ...,
-</span></span><span style=display:flex><span>    ... # params specific to aggregation type
-</span></span><span style=display:flex><span>  },
-</span></span><span style=display:flex><span>  startTime: number,
-</span></span><span style=display:flex><span>  endTime?: number, # Omitting this triggers SSE events for latest updates
-</span></span><span style=display:flex><span>}
+initially had:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>POST /v1/metrics/query
+</span></span><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>  name: string,
+</span></span><span class=line><span class=cl>  labels: {name: string, value: string | number}[],
+</span></span><span class=line><span class=cl>  aggregation: {
+</span></span><span class=line><span class=cl>    type: &#34;average&#34; | &#34;percentile&#34; | ...,
+</span></span><span class=line><span class=cl>    ... # params specific to aggregation type
+</span></span><span class=line><span class=cl>  },
+</span></span><span class=line><span class=cl>  startTime: number,
+</span></span><span class=line><span class=cl>  endTime?: number, # Omitting this triggers SSE events for latest updates
+</span></span><span class=line><span class=cl>}
 </span></span></code></pre></div><p>&mldr; which is a rudimentary version of a querying DSL. A proper DSL shifts
 complexity away from the request payload. Complexity of the payload was a reason
 why I opted to use POST as a GET-like request, because GET requests shouldn&rsquo;t
 have bodies. <span class=citation-ref><a href=#mdnGet></a></span></p><p>The DSL specification also requires front-end support for forming the queries
-and backend support for evaluating them.</p></div></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>POST /v1/alerts/rules
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>  name: &#34;High CPU alert&#34;,
-</span></span><span style=display:flex><span>  query: &#34;avg(cpu_usage{region=&#39;us-east&#39;}) &gt; 0.9&#34;, # Using the DSL
-</span></span><span style=display:flex><span>  duration: number,
-</span></span><span style=display:flex><span>  notificationChannels: {
-</span></span><span style=display:flex><span>    type: &#34;email&#34; | &#34;slack&#34; | &#34;pagerDuty&#34;,
-</span></span><span style=display:flex><span>    ... # params specific to notification channel type
-</span></span><span style=display:flex><span>  }[]
-</span></span><span style=display:flex><span>}
+and backend support for evaluating them.</p></div></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>POST /v1/alerts/rules
+</span></span><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>  name: &#34;High CPU alert&#34;,
+</span></span><span class=line><span class=cl>  query: &#34;avg(cpu_usage{region=&#39;us-east&#39;}) &gt; 0.9&#34;, # Using the DSL
+</span></span><span class=line><span class=cl>  duration: number,
+</span></span><span class=line><span class=cl>  notificationChannels: {
+</span></span><span class=line><span class=cl>    type: &#34;email&#34; | &#34;slack&#34; | &#34;pagerDuty&#34;,
+</span></span><span class=line><span class=cl>    ... # params specific to notification channel type
+</span></span><span class=line><span class=cl>  }[]
+</span></span><span class=line><span class=cl>}
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Mai2026></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Mai2026>Design a Metrics Monitoring Platform like Datadog<i>.</i>
 </cite>Stefan Mai.
 <a href=https://www.hellointerview.com/learn/system-design/problem-breakdowns/metrics-monitoring target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>

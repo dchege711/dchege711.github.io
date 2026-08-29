@@ -56,44 +56,44 @@ void f(Entry* pe) {
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/>Unions in C++</a></li></ul></nav><section><header><h1>Unions in C++</h1><p class=meta>Dated Jun 4, 2022;
 last modified on Sat, 04 Jun 2022</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>A <strong>union</strong> is a <code>struct</code> in which all members are allocated at the same
 address so that the <code>union</code> occupies as much space as its largest
-member, e.g.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// This is a naked union because it doesn&#39;t have an associated indicator
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// for which member it holds.
-</span></span></span><span style=display:flex><span><span style=color:#00a8c8>union</span> <span style=color:#75af00>Value</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>Node</span><span style=color:#f92672>*</span> <span style=color:#111>p</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>int</span> <span style=color:#111>i</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>// The language doesn&#39;t keep track of which kind of value is held by a
-</span></span></span><span style=display:flex><span><span style=color:#75715e>// union, so the programmer must do that themselves, e.g.
-</span></span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>enum</span> <span style=color:#75af00>Type</span> <span style=color:#111>{</span> <span style=color:#111>ptr</span><span style=color:#111>,</span> <span style=color:#111>num</span> <span style=color:#111>};</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>struct</span> <span style=color:#75af00>Entry</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>string</span> <span style=color:#111>name</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>Type</span> <span style=color:#111>t</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>Value</span> <span style=color:#111>v</span><span style=color:#111>;</span>      <span style=color:#75715e>// use v.p if t == ptr; use v.i if t == num
-</span></span></span><span style=display:flex><span><span style=color:#111>};</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e>// Sample usage.
-</span></span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>f</span><span style=color:#111>(</span><span style=color:#111>Entry</span><span style=color:#f92672>*</span> <span style=color:#111>pe</span><span style=color:#111>)</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>pe</span><span style=color:#f92672>-&gt;</span><span style=color:#111>t</span> <span style=color:#f92672>==</span> <span style=color:#111>num</span><span style=color:#111>)</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>pe</span><span style=color:#f92672>-&gt;</span><span style=color:#111>v</span><span style=color:#111>.</span><span style=color:#111>i</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>// ...
-</span></span></span><span style=display:flex><span><span style=color:#111>}</span>
+member, e.g.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// This is a naked union because it doesn&#39;t have an associated indicator
+</span></span></span><span class=line><span class=cl><span class=c1>// for which member it holds.
+</span></span></span><span class=line><span class=cl><span class=k>union</span> <span class=nc>Value</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>Node</span><span class=o>*</span> <span class=n>p</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// The language doesn&#39;t keep track of which kind of value is held by a
+</span></span></span><span class=line><span class=cl><span class=c1>// union, so the programmer must do that themselves, e.g.
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>enum</span> <span class=nc>Type</span> <span class=p>{</span> <span class=n>ptr</span><span class=p>,</span> <span class=n>num</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>Entry</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>string</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Type</span> <span class=n>t</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Value</span> <span class=n>v</span><span class=p>;</span>      <span class=c1>// use v.p if t == ptr; use v.i if t == num
+</span></span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Sample usage.
+</span></span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>f</span><span class=p>(</span><span class=n>Entry</span><span class=o>*</span> <span class=n>pe</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=n>pe</span><span class=o>-&gt;</span><span class=n>t</span> <span class=o>==</span> <span class=n>num</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>pe</span><span class=o>-&gt;</span><span class=n>v</span><span class=p>.</span><span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><p>Maintaining the correspondence between <code>Entry</code>&rsquo;s <code>t</code> and the type held
 in the union is error-prone. One approach is to encapsulate the union
 and type-field in a class, and only offer access through member
 functions that use the union correctly. <span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><p>The STL type, <code>variant</code>, can be used to eliminate most direct uses of
-unions, e.g.</p><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:2;-o-tab-size:2;tab-size:2;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#00a8c8>struct</span> <span style=color:#75af00>Entry</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>string</span> <span style=color:#111>name</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span>  <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>variant</span><span style=color:#f92672>&lt;</span><span style=color:#111>Node</span><span style=color:#f92672>*</span><span style=color:#111>,</span> <span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span> <span style=color:#111>v</span><span style=color:#111>;</span>
-</span></span><span style=display:flex><span><span style=color:#111>}</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#00a8c8>void</span> <span style=color:#75af00>f</span><span style=color:#111>(</span><span style=color:#111>Entry</span><span style=color:#f92672>*</span> <span style=color:#111>pe</span><span style=color:#111>)</span> <span style=color:#111>{</span>
-</span></span><span style=display:flex><span>  <span style=color:#00a8c8>if</span> <span style=color:#111>(</span><span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>holds_alternative</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>pe</span><span style=color:#f92672>-&gt;</span><span style=color:#111>v</span><span style=color:#111>))</span>
-</span></span><span style=display:flex><span>    <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>cout</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#111>std</span><span style=color:#f92672>::</span><span style=color:#111>get</span><span style=color:#f92672>&lt;</span><span style=color:#00a8c8>int</span><span style=color:#f92672>&gt;</span><span style=color:#111>(</span><span style=color:#111>pe</span><span style=color:#f92672>-&gt;</span><span style=color:#111>v</span><span style=color:#111>);</span>
-</span></span><span style=display:flex><span>  <span style=color:#75715e>// ...
-</span></span></span><span style=display:flex><span><span style=color:#111>}</span>
+unions, e.g.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>Entry</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>string</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>variant</span><span class=o>&lt;</span><span class=n>Node</span><span class=o>*</span><span class=p>,</span> <span class=kt>int</span><span class=o>&gt;</span> <span class=n>v</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>f</span><span class=p>(</span><span class=n>Entry</span><span class=o>*</span> <span class=n>pe</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>holds_alternative</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=n>pe</span><span class=o>-&gt;</span><span class=n>v</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>get</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=n>pe</span><span class=o>-&gt;</span><span class=n>v</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p><span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p><span class=citation-ref><a href=#Stroustrup2018-Ch2></a></span>notes, &ldquo;For many uses, a <code>variant</code> is
 simpler and safer to use than a <code>union</code>.&rdquo; When would we ever prefer a
 <code>union</code> to a <code>variant</code>?</p></div></div><ol><li><div class=citation citation-icon-class='fas fa-fw fa-book' cited-by-count is-main><cite id=Stroustrup2018-Ch2>A Tour of C++ (Second Edition)<i>.</i>
