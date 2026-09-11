@@ -1,0 +1,67 @@
+<!doctype html><html lang=en><head><title>Low Level Design | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="While high level system design concerns architecture at scale (think traffic,
+storage, consistency, caching, sharding, etc.), low level design deals with
+classes, methods, relationships, and state transitions. For example, when
+designing a ride-share system:
+
+System design covers a matching service, a location service, a datastore, a
+queue, how data flows, scaling each piece, handling load spikes, making the
+system reliable, etc.
+Low level design drills down to a single part of the system, e.g., design the
+Trip class and the PricingCalculator interface.
+
+..."><meta property="og:title" content="Low Level Design"><meta property="og:description" content="While high level system design concerns architecture at scale (think traffic,
+storage, consistency, caching, sharding, etc.), low level design deals with
+classes, methods, relationships, and state transitions. For example, when
+designing a ride-share system:
+
+System design covers a matching service, a location service, a datastore, a
+queue, how data flows, scaling each piece, handling load spikes, making the
+system reliable, etc.
+Low level design drills down to a single part of the system, e.g., design the
+Trip class and the PricingCalculator interface.
+
+..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li></ul></nav><main><article><header><h1>Low Level Design</h1><p class=meta>Dated Sep 10, 2026;
+last modified on Thu, 10 Sep 2026</p></header><p>While high level system design concerns architecture at scale (think traffic,
+storage, consistency, caching, sharding, etc.), low level design deals with
+classes, methods, relationships, and state transitions. For example, when
+designing a ride-share system:</p><ul><li>System design covers a matching service, a location service, a datastore, a
+queue, how data flows, scaling each piece, handling load spikes, making the
+system reliable, etc.</li><li>Low level design drills down to a single part of the system, e.g., design the
+<code>Trip</code> class and the <code>PricingCalculator</code> interface.</li></ul><p><span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLD>Low Level Design in a Hurry | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/introduction target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 10, 2026.</div></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage()>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>Jul 5, 2020</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/code-smells-and-hygiene/>Of Code Smells and Hygiene</a>
+<span class=meta>10 min; updated Sep 10, 2026
+<button id=ecfa2983b9c0c60e35577d20cb64f1b9-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=ecfa2983b9c0c60e35577d20cb64f1b9-summary style=display:none><p><span class=tag-ref><a href=/tags/code-hygiene>#code-hygiene</a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Pick up from:</p><ul><li>IEEE&rsquo;s
+<a href=https://ieeexplore.ieee.org/xpl/conhome/1000694/all-proceedings target=_blank rel=noopener>International Conference on Software
+Maintenance
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a><ul><li><a href=https://www.inf.usi.ch/lanza/Downloads/Pant2018a.pdf target=_blank rel=noopener>Improving Code: The (Mis)perception of Quality
+Metrics
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></li></ul></li><li>Springer&rsquo;s
+<a href=https://www.springer.com/journal/11219 target=_blank rel=noopener>Software Quality Journal
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></li></ul></div></div><h2 id=on-abstractions>On Abstractions</h2><p>If you find yourself adding more parameters and if-statements to an existing
+abstraction, is the abstraction still apt? Why not remove the old abstraction
+and re-extract a new [more apt] abstraction? Devs frequently succumb to the
+sunken cost fallacy thinking that there must have been a reason that the code
+was written in a certain way. <span class=citation-ref><a href=#Metz2016></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Sep 10, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/>Acing an LLD Interview</a>
+<span class=meta>5 min; updated Sep 10, 2026
+<button id=bd41018f35d8af48c1df17eeb1e1d771-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=bd41018f35d8af48c1df17eeb1e1d771-summary style=display:none><h2 id=interviewing-rubric>Interviewing Rubric</h2><p><strong>Problem Analysis</strong>. Extract key entities and responsibilities, ask a few
+questions to lock down scope, and frame the problem before touching code. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Class Design</strong>. Choose the right responsibilities, shape the method
+signatures, define clear ownership, and keep the boundaries clean. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Code Quality</strong>. Encapsulation, well-managed state, sensible use of composition
+or inheritance, clear separation of concerns, naming, consistency, and
+dependency direction. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Extensibility and Maintainability</strong>. Can the design absorb new functionality
+without being rewritten? Designs should adapt easily, without anticipating every
+possible future. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Feb 17, 2025</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/case-studies/>Case Studies: Elegant Implementations</a>
+<span class=meta>(1 items)
+<button id=932641e7d5cfa5b45708e66df343589c-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><p class=meta id=932641e7d5cfa5b45708e66df343589c-summary style=display:none>Calculators;</p></td></tr><tr class=no-decoration><td class=no-decoration>Oct 21, 1994</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/gang-of-four-design-patterns/>Design Patterns: Elements of Reusable Object-Oriented Software</a>
+<span class=meta>(2 items)
+<button id=8f1b12e2df4d6be6e1a1531c6cda3cbb-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><p class=meta id=8f1b12e2df4d6be6e1a1531c6cda3cbb-summary style=display:none>Intro to Design Patterns;
+Observer;</p></td></tr></table><script>let pageURLs=[];const alternateOrganizations=new Set(["tags","categories","domains","authors","publications"]);fetch("/json/site_tree.json").then(e=>e.json()).then(e=>{const s=document.location.pathname,n=s==="/random/"?"/":s,i=n==="/";let t=e;if(n.split("/").forEach(e=>{if(!e)return;t=t[e]}),!t)return;function o(e,t){const s=Object.keys(t);s.forEach(s=>{if(s==="_meta")return;if(n==="/"&&alternateOrganizations.has(s))return;let i=e===""?s:`${e}/${s}`;o(i,t[s])}),s.length===0&&e&&pageURLs.push(`${i?"/":""}${e}`)}o("",t)}).then(()=>{pageURLs.length===0&&(document.getElementById("randomSelectorContainer").style.display="none")});function goToRandomPage(){let e=Math.floor(Math.random()*pageURLs.length);window.open(pageURLs[e],"_self")}</script></main><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

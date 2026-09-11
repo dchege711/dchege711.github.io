@@ -1,0 +1,121 @@
+<!doctype html><html lang=en><head><title>Acing an LLD Interview | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Interviewing Rubric
+Problem Analysis. Extract key entities and responsibilities, ask a few
+questions to lock down scope, and frame the problem before touching code. 
+Class Design. Choose the right responsibilities, shape the method
+signatures, define clear ownership, and keep the boundaries clean. 
+Code Quality. Encapsulation, well-managed state, sensible use of composition
+or inheritance, clear separation of concerns, naming, consistency, and
+dependency direction. 
+Extensibility and Maintainability. Can the design absorb new functionality
+without being rewritten? Designs should adapt easily, without anticipating every
+possible future. ..."><meta property="og:title" content="Acing an LLD Interview"><meta property="og:description" content="Interviewing Rubric
+Problem Analysis. Extract key entities and responsibilities, ask a few
+questions to lock down scope, and frame the problem before touching code. 
+Class Design. Choose the right responsibilities, shape the method
+signatures, define clear ownership, and keep the boundaries clean. 
+Code Quality. Encapsulation, well-managed state, sensible use of composition
+or inheritance, clear separation of concerns, naming, consistency, and
+dependency direction. 
+Extensibility and Maintainability. Can the design absorb new functionality
+without being rewritten? Designs should adapt easily, without anticipating every
+possible future. ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/>Acing an LLD Interview</a></li></ul></nav><section><header><h1>Acing an LLD Interview</h1><p class=meta>Dated Sep 10, 2026;
+last modified on Thu, 10 Sep 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#interviewing-rubric>Interviewing Rubric</a></li><li><a href=#delivery-framework>Delivery Framework</a><ul><li><a href=#requirements-5-min>Requirements (~5 min)</a></li><li><a href=#entities-and-relationships-3-min>Entities and Relationships (~3 min)</a></li><li><a href=#class-design-10-15-min>Class Design (~10-15 min)</a></li><li><a href=#implementation-10min>Implementation (~10min)</a></li><li><a href=#extensibility-5min>Extensibility (~5min)</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=interviewing-rubric>Interviewing Rubric</h2><p><strong>Problem Analysis</strong>. Extract key entities and responsibilities, ask a few
+questions to lock down scope, and frame the problem before touching code. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Class Design</strong>. Choose the right responsibilities, shape the method
+signatures, define clear ownership, and keep the boundaries clean. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Code Quality</strong>. Encapsulation, well-managed state, sensible use of composition
+or inheritance, clear separation of concerns, naming, consistency, and
+dependency direction. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Extensibility and Maintainability</strong>. Can the design absorb new functionality
+without being rewritten? Designs should adapt easily, without anticipating every
+possible future. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><p><strong>Communication</strong>. Clear narrative, thoughtful reasoning, and ability to adjust
+when the interviewer probes. <span class=citation-ref><a href=#HelloInterviewLLD></a></span></p><h2 id=delivery-framework>Delivery Framework</h2><h3 id=requirements-5-min>Requirements (~5 min)</h3><p>Go from &ldquo;Design Tic Tac Toe&rdquo; to a set of requirements, e.g.,</p><ul><li>Two players alternate placing <code>X</code> and <code>O</code> on a \(3 \times 3\) grid.</li><li>A player wins by completing a row, column, or diagonal.</li><li>The game ends in a draw if all nine cells are filled with no winner.</li><li>Invalid moves, e.g., placing on an occupied cell, should be rejected.</li><li>The system should provide a way to query current game state and reset the
+game.</li><li>Out of scope: UI/rendering layer, AI opponent or move suggestions, networked
+multiplayer, variable board sizes, undo/redo functionality.</li></ul><p><span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>It helps to be familiar with the scenario you&rsquo;re designing for. In 2019, my
+LiveRamp interview wanted me to design a bowling scorer. I had never been
+bowling, and found the scoring and turn logic rather arbitrary.</p></div></div><p>To come up with such requirements, ask:</p><ul><li>What operations must this system support?</li><li>What conditions define success, failure, or system stoppage? What are the
+transitions?</li><li>How should the system respond to invalid inputs?</li><li>What areas are in scope and what areas are explicitly out of scope?</li></ul><p><span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><h3 id=entities-and-relationships-3-min>Entities and Relationships (~3 min)</h3><p>Pull out meaningful nouns. If something maintains changing state or enforcing
+rules, it likely deserves to be its own entity. In the tic-tac-toe problem, the
+entities can be <code>Game</code>, <code>Board</code>, and <code>Player</code>. <span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><p>With the entities locked down, think through their interactions, e.g., which
+entity orchestrates, which entities own durable state, what are their
+correspondences, where should specific rules logically live? For example, in
+tic-tac-toe, <code>Game -> Board</code> and <code>Game -> Player (2x)</code>. <span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><h3 id=class-design-10-15-min>Class Design (~10-15 min)</h3><p>Derive the state each entity needs to maintain to enforce the requirements,
+e.g., for <code>Game</code> in tic-tac-toe:</p><table><thead><tr><th>Requirement</th><th>What <code>Game</code> must track</th></tr></thead><tbody><tr><td>Two players alternate placing <code>X</code> and <code>O</code> on a \(3 \times 3\) grid.</td><td><code>playerX: Player</code>, <code>playerO: Player</code>, <code>currentPlayer: Player</code>, and the <code>board: Board</code>.</td></tr><tr><td>The game ends when a player wins or the board is full.</td><td><code>gameState: GameState (IN_PROGRESS, WON, DRAW)</code> and <code>winner: Player?</code></td></tr></tbody></table><p><span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Why can&rsquo;t <code>Board</code> maintain <code>currentPlayer</code>? Given the initial <code>Player</code>, <code>Board</code>
+can compute whose turn it is given the current set of <code>X</code>s and <code>O</code>s. However,
+some other component (<code>Game</code>) had to decide the initial <code>Player</code>, so why not
+have <em>that</em> component maintain <code>currentPlayer</code>?</p></div></div><p>Derive the behavior from the requirements. For each entity, which operations do
+we need to satisfy the requirements, e.g., for <code>Game</code> in tic-tac-toe:</p><table><thead><tr><th>Need from requirements</th><th>Method on <code>Game</code></th></tr></thead><tbody><tr><td>Players need to make moves</td><td><code>makeMove(player, row, col)</code> returns <code>bool</code></td></tr><tr><td>Ask whose turn it is</td><td><code>getCurrentPlayer()</code> returns <code>Player</code></td></tr><tr><td>Check game state</td><td><code>getGameState()</code> returns <code>GameState</code></td></tr><tr><td>See who won</td><td><code>getWinner()</code> returns <code>Player?</code></td></tr><tr><td>Inspect the board</td><td><code>getBoard()</code> returns <code>Board</code></td></tr></tbody></table><p><span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><p>Anchor on <strong>encapsulation</strong>: objects should manage their own state and expose
+behavior, not getters for callers to make decisions. &ldquo;Can this operation run
+right now?&rdquo; belongs in the orchestrator. Data-specific rules, e.g., is this cell
+already occupied, belong in the entity that owns that data. <span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>A different perspective on the &ldquo;Why can&rsquo;t <code>Board</code> maintain <code>currentPlayer</code>?&rdquo;
+thread from earlier.</p></div></div><p>UML was designed for an era when inspecting and running code was expensive. When
+thinking out loud and iterating, UML&rsquo;s added formality slows you down without
+adding commensurate clarity. <span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>I went an embarassingly long period of time in my career without knowing UML and
+sequence diagram. Only when I was a Senior SWE did I draw my first UML.</p></div></div><h3 id=implementation-10min>Implementation (~10min)</h3><p>For each major (interviewer can guide you) method, start with the happy linear
+path. After that, handle edge cases, e.g., invalid inputs, invalid operations,
+etc. For instance, <code>makeMove</code> in tic-tac-toe:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=k>class</span> <span class=nc>Game</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>bool</span> <span class=n>makeMove</span><span class=p>(</span><span class=n>Player</span> <span class=n>player</span><span class=p>,</span> <span class=kt>int</span> <span class=n>row</span><span class=p>,</span> <span class=kt>int</span> <span class=n>col</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>gameState</span> <span class=p>!=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>InProgress</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>player</span> <span class=p>!=</span> <span class=n>currentPlayer</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(!</span><span class=n>board</span><span class=p>.</span><span class=n>canPlace</span><span class=p>(</span><span class=n>row</span><span class=p>,</span> <span class=n>col</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>board</span><span class=p>.</span><span class=n>placeMark</span><span class=p>(</span><span class=n>row</span><span class=p>,</span> <span class=n>col</span><span class=p>,</span> <span class=n>player</span><span class=p>.</span><span class=n>mark</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>board</span><span class=p>.</span><span class=n>checkWin</span><span class=p>(</span><span class=n>row</span><span class=p>,</span> <span class=n>col</span><span class=p>,</span> <span class=n>player</span><span class=p>.</span><span class=n>mark</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>gameState</span> <span class=p>=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>Won</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>winner</span> <span class=p>=</span> <span class=n>player</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>board</span><span class=p>.</span><span class=n>isFull</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>gameState</span> <span class=p>=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>Draw</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>currentPlayer</span> <span class=p>=</span> <span class=p>(</span><span class=n>player</span> <span class=p>==</span> <span class=n>playerX</span><span class=p>)</span> <span class=p>?</span> <span class=n>playerO</span> <span class=p>:</span> <span class=n>playerX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><p>After implementing core methods, verify your logic by tracing through a simple
+but non-trivial scenario. This helps you catch logical errors before your
+interviewer finds them. <span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><h3 id=extensibility-5min>Extensibility (~5min)</h3><p>The interviewer may was &ldquo;what if we&mldr;&rdquo; questions to prod whether the initial
+design can handle natural follow-ups without falling apart or turning into a
+pile of special cases. For example, what if we want to add undo functionality in
+tic-tac-toe? An answer might be adding a command history stack, where each
+successful action records the previous state before modifying anything; <code>undo()</code>
+pops the stack and reverts to that state. <span class=citation-ref><a href=#HelloInterviewLLDDeliveryFramework></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><code>chrome://downloads</code> has an <code>Undo</code> method for reverting the deletion of
+downloads. <span class=citation-ref><a href=#ChromiumDownloadsDOMHandler></a></span></p><p>Whenever a user deletes downloads via <code>chrome://downloads/</code>, Chromium pushes
+those downloads to a <code>removals_</code> list, hides them from <code>chrome://downloads/</code>,
+but doesn&rsquo;t actually delete them from the file system. <code>chrome://downloads/</code>. On
+closing <code>chrome://downloads/</code>, <code>ChromiumDownloadsDOMHandler</code>&rsquo;s destructor
+iterates through <code>removals_</code> and actually deletes the files. <span class=citation-ref><a href=#ChromiumDownloadsDOMHandler></a></span></p><p>Chromium implements the <code>Undo</code> functionality by removing the IDs from the
+<code>removals_</code> list, &ldquo;revives&rdquo; the downloads, and shows them in
+<code>chrome://downloads/</code>. <span class=citation-ref><a href=#ChromiumDownloadsDOMHandler></a></span></p><p><code>chrome://downloads/</code>&rsquo;s <code>Undo</code> ends up spilling into the implementation of
+<code>RemoveDownloads</code>, and the lifetime of the <code>DownloadsDOMHandler</code> object.</p></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLD>Low Level Design in a Hurry | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/introduction target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 10, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLDDeliveryFramework>Low Level Design Interview Delivery Framework | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/delivery target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 10, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ChromiumDownloadsDOMHandler>downloads_dom_handler.cc - Chromium Code Search<i>.</i>
+</cite><a href="https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/ui/webui/downloads/downloads_dom_handler.cc;l=499;drc=02166b18d474528d89c26a7289954687d368b262;bpv=1;bpt=1" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 10, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/source.chromium.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true width=16 height=16>
+source.chromium.org
+</a><a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/low-level-design/code-smells-and-hygiene/>Of Code Smells and Hygiene &#187;</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
