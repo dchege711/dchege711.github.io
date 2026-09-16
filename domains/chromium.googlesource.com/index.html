@@ -1,6 +1,6 @@
 <!doctype html><html lang=en><head><title>Chromium.googlesource.com | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content><meta property="og:title" content="Chromium.googlesource.com"><meta property="og:description" content><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/domains/chromium.googlesource.com/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/domains/>Cited Domains</a></li><li class=active><a href=https://www.curiosities.dev/domains/chromium.googlesource.com/>Chromium.googlesource.com</a></li></ul></nav><main><article><header><h1><img src="https://www.google.com/s2/favicons?domain=Chromium.googlesource.com" loading=lazy> Chromium.googlesource.com</h1></header></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage()>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>Sep 28, 2021</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/gang-of-four-design-patterns/behavioral-patterns/07-observer/>Observer</a>
-<span class=meta>8 min; updated Sep 10, 2026
+<span class=meta>8 min; updated Sep 13, 2026
 <button id=770065b912b1f50ff78892e58786508f-summary-controller onclick=toggleSummaryDisplay(this)>
 <i class="fas fa-chevron-down"></i></button></span><section class=meta id=770065b912b1f50ff78892e58786508f-summary style=display:none><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p><span class=citation-ref><a href=#WikiObserverPattern></a></span>notes that <span class=citation-ref><a href=#GangOfFour1994></a></span>, the
 primary source, glosses over nitty-gritties. e.g. the &ldquo;message queue&rdquo; server.
@@ -10,7 +10,42 @@ read
 <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>criticizes the observer pattern for murking dependency chains. Investigate
 more in this regard.</p></div></div><h2 id=intent>Intent</h2><p>A one-to-many dependency between object so that when one object (subject)
-changes, all its dependents (observers) are notified and update automatically.</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jul 4, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/www/high-perf-networking-in-chrome/>High Performance Networking in Chrome</a>
+changes, all its dependents (observers) are notified and update automatically.</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Sep 13, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/dependency-inversion-principle/>Dependency Inversion Principle</a>
+<span class=meta>3 min; updated Sep 13, 2026
+<button id=667824a73df47868104b2929a2e3c797-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=667824a73df47868104b2929a2e3c797-summary style=display:none><h2 id=dependency-inversion-principle>Dependency Inversion Principle</h2><p>Your code should depend on abstractions, not concrete implementations. Instead
+of:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>EmailSender</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Send</span><span class=p>(</span><span class=kt>string</span> <span class=n>message</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>NotificationService</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>EmailSender</span> <span class=n>_emailSender</span> <span class=p>=</span> <span class=k>new</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Notify</span><span class=p>(</span><span class=kt>string</span> <span class=n>message</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>_emailSender</span><span class=p>.</span><span class=n>Send</span><span class=p>(</span><span class=n>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; have:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>interface</span> <span class=nc>IMessageSender</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>void</span> <span class=n>Send</span><span class=p>(</span><span class=kt>string</span> <span class=n>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>EmailMessageSender</span> <span class=p>:</span> <span class=n>IMessageSender</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Send</span><span class=p>(</span><span class=kt>string</span> <span class=n>message</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>NotificationService</span><span class=p>(</span><span class=n>IMessageSender</span> <span class=n>messageSender</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Notify</span><span class=p>(</span><span class=kt>string</span> <span class=n>message</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>messageSender</span><span class=p>.</span><span class=n>Send</span><span class=p>(</span><span class=n>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; so that swapping out an <code>EmailMessageSender</code> for an <code>SmsMessageSender</code> is
+easy. Even more commonly, unit testing <code>NotificationService</code> with a
+<code>MockMessageSender</code> that doesn&rsquo;t send real messages. <span class=citation-ref><a href=#HelloInterviewLLDDesignPrinciples></a></span></p><h2 id=notes-from-chromium>Notes from Chromium</h2><p>Phrased differently, inversion of control allows users of a framework/library
+(clients) to customize the behavior of the framework. The control flow is
+inverted because the library (e.g., <code>NotificationService</code>) calls back into the
+client&rsquo;s code (e.g., the specific <code>IMessageSender</code> implementation) so that
+control flows back from a low-level class to a high-level class. <span class=citation-ref><a href=#ChromiumInversionOfControl></a></span>.</p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Jul 4, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/www/high-perf-networking-in-chrome/>High Performance Networking in Chrome</a>
 <span class=meta>7 min; updated Jul 5, 2026
 <button id=82b3aa86b2e7c6105c16266f8d640ab0-summary-controller onclick=toggleSummaryDisplay(this)>
 <i class="fas fa-chevron-down"></i></button></span><section class=meta id=82b3aa86b2e7c6105c16266f8d640ab0-summary style=display:none><h2 id=performance-in-context>Performance in Context</h2><p>The execution of a web browser primarily involves three tasks: fetching

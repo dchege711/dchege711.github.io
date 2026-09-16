@@ -1,0 +1,118 @@
+<!doctype html><html lang=en><head><title>Single Responsibility Principle | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="A class should have one reason to change. For example,
+public class Report
+{
+  public string GenerateContent() { ... }
+  public void PrintToPdf() { ... }
+  public void SaveToFile() { ... }
+}
+&mldr; violates this principle because content generation, PDF formatting, and file
+storage are all in one place. 
+
+
+
+
+    What defines &ldquo;reason&rdquo;? Do reasons map to user-facing requirements?
+
+
+
+
+Instead, split the responsibilities into separate classes:
+public class Report
+{
+  public string GenerateContent() { ... }
+}
+
+public class PdfPrinter
+{
+  public void Print(Report report) { ... }
+}
+
+public class FileStorage
+{
+  public void Save(string content) { ... }
+}
+
+
+
+
+
+    WebContents, Chromium&rsquo;s class that &ldquo;renders web content (usually HTML) in a
+rectangular area&rdquo;, contains 200+ pure virtual methods! ..."><meta property="og:title" content="Single Responsibility Principle"><meta property="og:description" content="A class should have one reason to change. For example,
+public class Report
+{
+  public string GenerateContent() { ... }
+  public void PrintToPdf() { ... }
+  public void SaveToFile() { ... }
+}
+&mldr; violates this principle because content generation, PDF formatting, and file
+storage are all in one place. 
+
+
+
+
+    What defines &ldquo;reason&rdquo;? Do reasons map to user-facing requirements?
+
+
+
+
+Instead, split the responsibilities into separate classes:
+public class Report
+{
+  public string GenerateContent() { ... }
+}
+
+public class PdfPrinter
+{
+  public void Print(Report report) { ... }
+}
+
+public class FileStorage
+{
+  public void Save(string content) { ... }
+}
+
+
+
+
+
+    WebContents, Chromium&rsquo;s class that &ldquo;renders web content (usually HTML) in a
+rectangular area&rdquo;, contains 200+ pure virtual methods! ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/single-responsibility-principle/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/>Object-Oriented Design Principles</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/single-responsibility-principle/>Single Responsibility Principle</a></li></ul></nav><section><header><h1>Single Responsibility Principle</h1><p class=meta>Dated Sep 13, 2026;
+last modified on Sun, 13 Sep 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents></nav></aside><article id=main-article><p>A class should have one reason to change. For example,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Report</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>GenerateContent</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>PrintToPdf</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>SaveToFile</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; violates this principle because content generation, PDF formatting, and file
+storage are all in one place. <span class=citation-ref><a href=#HelloInterviewLLDDesignPrinciples></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>What defines &ldquo;reason&rdquo;? Do reasons map to user-facing requirements?</p></div></div><p>Instead, split the responsibilities into separate classes:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Report</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>GenerateContent</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>PdfPrinter</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Print</span><span class=p>(</span><span class=n>Report</span> <span class=n>report</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>FileStorage</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Save</span><span class=p>(</span><span class=kt>string</span> <span class=n>content</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewLLDDesignPrinciples></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><code>WebContents</code>, Chromium&rsquo;s class that &ldquo;renders web content (usually HTML) in a
+rectangular area&rdquo;, contains 200+ pure virtual methods! <span class=citation-ref><a href=#ChromiumWebContents></a></span></p></div></div><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLDDesignPrinciples>Design Principles | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/design-principles target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 13, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ChromiumWebContents>web_contents.h - Chromium Code Search<i>.</i>
+</cite><a href=https://source.chromium.org/chromium/chromium/src/+/main:content/public/browser/web_contents.h target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>source.chromium.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 13, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/source.chromium.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=source.chromium.org" loading=lazy aria-hidden=true width=16 height=16>
+source.chromium.org
+</a><a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/open-closed-principle/>Open/Closed Principle &#187;</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

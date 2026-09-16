@@ -1,4 +1,43 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Source.chromium.org on Chege's Blog</title><link>https://www.curiosities.dev/domains/source.chromium.org/</link><description>Recent content in Source.chromium.org on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 10 Sep 2026 21:25:14 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/source.chromium.org/index.xml" rel="self" type="application/rss+xml"/><item><title>Acing an LLD Interview</title><link>https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/</link><pubDate>Thu, 10 Sep 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/</guid><description>&lt;h2 id="interviewing-rubric"&gt;Interviewing Rubric&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Source.chromium.org on Chege's Blog</title><link>https://www.curiosities.dev/domains/source.chromium.org/</link><description>Recent content in Source.chromium.org on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sun, 13 Sep 2026 16:54:23 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/source.chromium.org/index.xml" rel="self" type="application/rss+xml"/><item><title>Single Responsibility Principle</title><link>https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/single-responsibility-principle/</link><pubDate>Sun, 13 Sep 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-principles/single-responsibility-principle/</guid><description>&lt;p&gt;A class should have one reason to change. For example,&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Report&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;GenerateContent&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;void&lt;/span&gt; &lt;span class="n"&gt;PrintToPdf&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;void&lt;/span&gt; &lt;span class="n"&gt;SaveToFile&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&amp;hellip; violates this principle because content generation, PDF formatting, and file
+storage are all in one place. &lt;span class="citation-ref"&gt;&lt;a href="#HelloInterviewLLDDesignPrinciples"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment open-comment" title="Open comment: unresolved question"&gt;&lt;p&gt;What defines &amp;ldquo;reason&amp;rdquo;? Do reasons map to user-facing requirements?&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;p&gt;Instead, split the responsibilities into separate classes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Report&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;GenerateContent&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PdfPrinter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;void&lt;/span&gt; &lt;span class="n"&gt;Print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Report&lt;/span&gt; &lt;span class="n"&gt;report&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FileStorage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;void&lt;/span&gt; &lt;span class="n"&gt;Save&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#HelloInterviewLLDDesignPrinciples"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+
+
+
+&lt;div class="comment-holder"&gt;
+ &lt;div class="comment" title="Comment: tangential aside"&gt;&lt;p&gt;&lt;code&gt;WebContents&lt;/code&gt;, Chromium&amp;rsquo;s class that &amp;ldquo;renders web content (usually HTML) in a
+rectangular area&amp;rdquo;, contains 200+ pure virtual methods! &lt;span class="citation-ref"&gt;&lt;a href="#ChromiumWebContents"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Acing an LLD Interview</title><link>https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/</link><pubDate>Thu, 10 Sep 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/low-level-design/lld-interviews/</guid><description>&lt;h2 id="interviewing-rubric"&gt;Interviewing Rubric&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Problem Analysis&lt;/strong&gt;. Extract key entities and responsibilities, ask a few
 questions to lock down scope, and frame the problem before touching code. &lt;span class="citation-ref"&gt;&lt;a href="#HelloInterviewLLD"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Class Design&lt;/strong&gt;. Choose the right responsibilities, shape the method
