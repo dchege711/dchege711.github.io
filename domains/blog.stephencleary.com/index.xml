@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog.stephencleary.com on Chege's Blog</title><link>https://www.curiosities.dev/domains/blog.stephencleary.com/</link><description>Recent content in Blog.stephencleary.com on Chege's Blog</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 24 Sep 2026 07:04:04 -0700</lastBuildDate><atom:link href="https://www.curiosities.dev/domains/blog.stephencleary.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Cancellation in .NET</title><link>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/cancellation-in-dotnet/</link><pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/cancellation-in-dotnet/</guid><description>&lt;h2 id="overview"&gt;Overview&lt;/h2&gt;
+&lt;p&gt;Cancellation is cooperative. One part of the code politely notifies the other
+code that it&amp;rsquo;d like it to please stop. The responding code may immediately stop,
+or continue until it reaches a valid stopping point, or ignore the cancellation
+request entirely. &lt;span class="citation-ref"&gt;&lt;a href="#Cleary2022"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Most code has the form:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;async&lt;/span&gt; &lt;span class="n"&gt;Task&lt;/span&gt; &lt;span class="n"&gt;DoSomethingAsync&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;CancellationToken&lt;/span&gt; &lt;span class="n"&gt;cancellationToken&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;var&lt;/span&gt; &lt;span class="n"&gt;intermediateValue&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;DoFirstStepAsync&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cancellationToken&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;DoSecondStepAsync&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;intermediateValue&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cancellationToken&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&amp;hellip; where the &lt;code&gt;CancellationToken&lt;/code&gt; is passed down to whatever APIs you call. &lt;span class="citation-ref"&gt;&lt;a href="#Cleary2022"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;By convention, the &lt;code&gt;CancellationToken&lt;/code&gt; is the last in the method signature:&lt;/p&gt;</description></item><item><title>Concurrency Concerns in C#</title><link>https://www.curiosities.dev/todo/computer-science/cancellation-c-sharp/</link><pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/todo/computer-science/cancellation-c-sharp/</guid><description>&lt;h2 id="cancellation"&gt;Cancellation&lt;/h2&gt;
+&lt;p&gt;Sourced from &lt;span class="citation-ref"&gt;&lt;a href="#Cleary2022"&gt;&lt;/a&gt;&lt;/span&gt;. 
+&lt;a href="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/cancellation-in-dotnet/"
+ 
+ 
+ 
+ target="_blank" rel="noopener"
+ &gt;
+ Notes
+ &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+&lt;/a&gt;
+&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;✅ Overview: cooperative cancellation; the 90% case; the cancellation
+contract; exceptions to the &amp;ldquo;90% case&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;✅ Requesting Cancellation: &lt;code&gt;CancellationTokenSource&lt;/code&gt;; timeouts; manual
+cancellation; cancelling and disposing&lt;/li&gt;
+&lt;li&gt;✅ Detecting Cancellation: responding to cancellation;
+&lt;code&gt;TaskCanceledException&lt;/code&gt;; &lt;code&gt;OperationCanceledException.CancellationToken&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;✅ Polling: how to poll; how not to poll; when to poll&lt;/li&gt;
+&lt;li&gt;✅ Registration: how to register; a race condition; cleanup is important;
+synchronous cancellation callbacks&lt;/li&gt;
+&lt;li&gt;✅ Linking: linked cancellation tokens; use cases; don&amp;rsquo;t use
+&lt;code&gt;OperationCanceledException.CancellationToken&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="references"&gt;References&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+ 
+
+&lt;div class="citation" citation-icon-class='fas fa-fw fa-globe' cited-by-count='' is-main=''&gt;
+ &lt;cite id='Cleary2022'&gt;
+ 
+ Cancellation, Part 1: Overview&lt;i&gt;.&lt;/i&gt;
+ 
+ &lt;/cite&gt;
+ 
+ Stephen Cleary.
+ 
+ 
+ 
+ 
+ &lt;a href="https://blog.stephencleary.com/2022/02/cancellation-1-overview.html" target="_blank" rel="noopener"&gt;
+ &lt;img src="https://www.google.com/s2/favicons?domain=blog.stephencleary.com" loading="lazy" aria-hidden="true" width="16" height="16"&gt;
+ &lt;i&gt;blog.stephencleary.com&lt;/i&gt; &lt;i class="fas fa-fw fa-external-link-alt" aria-hidden="true"&gt;&lt;/i&gt;
+ &lt;/a&gt;.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ &lt;i class='fas fa-fw fa-globe' aria-hidden="true"&gt;&lt;/i&gt;
+ 
+ Accessed Sep 22, 2026.
+ 
+ 
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</description></item></channel></rss>

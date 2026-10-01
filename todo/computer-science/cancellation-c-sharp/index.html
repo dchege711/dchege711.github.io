@@ -1,0 +1,130 @@
+<!doctype html><html lang=en><head><title>Concurrency Concerns in C# | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Cancellation
+Sourced from . 
+
+    Notes
+     
+
+
+
+✅ Overview: cooperative cancellation; the 90% case; the cancellation
+contract; exceptions to the &ldquo;90% case&rdquo;
+✅ Requesting Cancellation: CancellationTokenSource; timeouts; manual
+cancellation; cancelling and disposing
+✅ Detecting Cancellation: responding to cancellation;
+TaskCanceledException; OperationCanceledException.CancellationToken
+✅ Polling: how to poll; how not to poll; when to poll
+✅ Registration: how to register; a race condition; cleanup is important;
+synchronous cancellation callbacks
+✅ Linking: linked cancellation tokens; use cases; don&rsquo;t use
+OperationCanceledException.CancellationToken
+
+References
+
+
+    
+
+
+    
+        
+        Cancellation, Part 1: Overview.
+        
+    
+    
+     Stephen Cleary.
+    
+    
+    
+    
+    
+        
+        blog.stephencleary.com 
+    .
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 22, 2026.
+    
+    
+
+
+"><meta property="og:title" content="Concurrency Concerns in C#"><meta property="og:description" content="Cancellation
+Sourced from . 
+
+    Notes
+     
+
+
+
+✅ Overview: cooperative cancellation; the 90% case; the cancellation
+contract; exceptions to the &ldquo;90% case&rdquo;
+✅ Requesting Cancellation: CancellationTokenSource; timeouts; manual
+cancellation; cancelling and disposing
+✅ Detecting Cancellation: responding to cancellation;
+TaskCanceledException; OperationCanceledException.CancellationToken
+✅ Polling: how to poll; how not to poll; when to poll
+✅ Registration: how to register; a race condition; cleanup is important;
+synchronous cancellation callbacks
+✅ Linking: linked cancellation tokens; use cases; don&rsquo;t use
+OperationCanceledException.CancellationToken
+
+References
+
+
+    
+
+
+    
+        
+        Cancellation, Part 1: Overview.
+        
+    
+    
+     Stephen Cleary.
+    
+    
+    
+    
+    
+        
+        blog.stephencleary.com 
+    .
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     Accessed Sep 22, 2026.
+    
+    
+
+
+"><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/todo/computer-science/cancellation-c-sharp/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href>To-Do List</a></li><li><a href=https://www.curiosities.dev/todo/computer-science/>[ToDo] Computer Science</a></li><li class=active><a href=https://www.curiosities.dev/todo/computer-science/cancellation-c-sharp/>Concurrency Concerns in C#</a></li></ul></nav><section><header><h1>Concurrency Concerns in C#</h1><p class=meta>Dated Sep 22, 2026;
+last modified on Thu, 24 Sep 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#cancellation>Cancellation</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=cancellation>Cancellation</h2><p>Sourced from <span class=citation-ref><a href=#Cleary2022></a></span>.
+<a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/cancellation-in-dotnet/ target=_blank rel=noopener>Notes
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i></a></p><ol><li>✅ Overview: cooperative cancellation; the 90% case; the cancellation
+contract; exceptions to the &ldquo;90% case&rdquo;</li><li>✅ Requesting Cancellation: <code>CancellationTokenSource</code>; timeouts; manual
+cancellation; cancelling and disposing</li><li>✅ Detecting Cancellation: responding to cancellation;
+<code>TaskCanceledException</code>; <code>OperationCanceledException.CancellationToken</code></li><li>✅ Polling: how to poll; how not to poll; when to poll</li><li>✅ Registration: how to register; a race condition; cleanup is important;
+synchronous cancellation callbacks</li><li>✅ Linking: linked cancellation tokens; use cases; don&rsquo;t use
+<code>OperationCanceledException.CancellationToken</code></li></ol><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=Cleary2022>Cancellation, Part 1: Overview<i>.</i>
+</cite>Stephen Cleary.
+<a href=https://blog.stephencleary.com/2022/02/cancellation-1-overview.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=blog.stephencleary.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>blog.stephencleary.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Sep 22, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+<a href=/cited-authors/Cleary-Stephen>Cleary, Stephen</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/blog.stephencleary.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=blog.stephencleary.com" loading=lazy aria-hidden=true width=16 height=16>
+blog.stephencleary.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/todo/computer-science/hello-interview/>&#171; Hello Interview</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
