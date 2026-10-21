@@ -1,0 +1,152 @@
+<!doctype html><html lang=en><head><title>OOP Structural Patterns: Facade | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Definition
+A facade is an orchestrator class that hides the complexity of coordinating
+multiple components behind a clean interface. It&rsquo;s rare to explicitly name it as
+most new code design clean orchestrators from scratch. You might name it when
+wrapping existing messy code, e.g., after inheriting a complex subsystem with
+awkward APIs. 
+Sample Code
+public enum GameState { InProgress, Won, Draw }
+
+public class Board
+{
+  public bool PlaceMark(int r, int c, string mark) { ... }
+  public bool CheckWin(int r, int c) { ... }
+  public bool IsFull() { ... }
+}
+
+public class Player
+{
+  public string Mark { get; }
+  public Player(string mark) { ... }
+}
+
+public class Game // This is the Facade
+{
+  private readonly Board _board;
+  private readonly Player _playerX;
+  private readonly Player _playerO;
+  private Player _currentPlayer;
+  private GameState _gameState;
+
+  public Game() { ... }
+
+  public bool MakeMove(int r, int c)
+  {
+    if (_gameState != GameState.InProgress) return false;
+
+    if (!_board.PlaceMark(r, c, _currentPlayer.Mark)) return false;
+
+    if (_board.CheckWin(r, c))
+      _gameState = GameState.Won;
+    else if (_board.IsFull())
+      _gameState = GameState.Draw;
+    else
+      _currentPlayer = _currentPlayer == playerX ? playerO : playerX;
+
+    return true;
+  }
+}
+..."><meta property="og:title" content="OOP Structural Patterns: Facade"><meta property="og:description" content="Definition
+A facade is an orchestrator class that hides the complexity of coordinating
+multiple components behind a clean interface. It&rsquo;s rare to explicitly name it as
+most new code design clean orchestrators from scratch. You might name it when
+wrapping existing messy code, e.g., after inheriting a complex subsystem with
+awkward APIs. 
+Sample Code
+public enum GameState { InProgress, Won, Draw }
+
+public class Board
+{
+  public bool PlaceMark(int r, int c, string mark) { ... }
+  public bool CheckWin(int r, int c) { ... }
+  public bool IsFull() { ... }
+}
+
+public class Player
+{
+  public string Mark { get; }
+  public Player(string mark) { ... }
+}
+
+public class Game // This is the Facade
+{
+  private readonly Board _board;
+  private readonly Player _playerX;
+  private readonly Player _playerO;
+  private Player _currentPlayer;
+  private GameState _gameState;
+
+  public Game() { ... }
+
+  public bool MakeMove(int r, int c)
+  {
+    if (_gameState != GameState.InProgress) return false;
+
+    if (!_board.PlaceMark(r, c, _currentPlayer.Mark)) return false;
+
+    if (_board.CheckWin(r, c))
+      _gameState = GameState.Won;
+    else if (_board.IsFull())
+      _gameState = GameState.Draw;
+    else
+      _currentPlayer = _currentPlayer == playerX ? playerO : playerX;
+
+    return true;
+  }
+}
+..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/facade/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/>Object-Oriented Design Patterns</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/>OOP Structural Patterns</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/facade/>OOP Structural Patterns: Facade</a></li></ul></nav><section><header><h1>OOP Structural Patterns: Facade</h1><p class=meta>Dated Oct 3, 2026;
+last modified on Sat, 03 Oct 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#definition>Definition</a></li><li><a href=#sample-code>Sample Code</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=definition>Definition</h2><p>A facade is an orchestrator class that hides the complexity of coordinating
+multiple components behind a clean interface. It&rsquo;s rare to explicitly name it as
+most new code design clean orchestrators from scratch. You might name it when
+wrapping existing messy code, e.g., after inheriting a complex subsystem with
+awkward APIs. <span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=sample-code>Sample Code</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=kd>enum</span> <span class=n>GameState</span> <span class=p>{</span> <span class=n>InProgress</span><span class=p>,</span> <span class=n>Won</span><span class=p>,</span> <span class=n>Draw</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Board</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>PlaceMark</span><span class=p>(</span><span class=kt>int</span> <span class=n>r</span><span class=p>,</span> <span class=kt>int</span> <span class=n>c</span><span class=p>,</span> <span class=kt>string</span> <span class=n>mark</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>CheckWin</span><span class=p>(</span><span class=kt>int</span> <span class=n>r</span><span class=p>,</span> <span class=kt>int</span> <span class=n>c</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>IsFull</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Player</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>Mark</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>Player</span><span class=p>(</span><span class=kt>string</span> <span class=n>mark</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Game</span> <span class=c1>// This is the Facade</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Board</span> <span class=n>_board</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Player</span> <span class=n>_playerX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Player</span> <span class=n>_playerO</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>Player</span> <span class=n>_currentPlayer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>GameState</span> <span class=n>_gameState</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>Game</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>MakeMove</span><span class=p>(</span><span class=kt>int</span> <span class=n>r</span><span class=p>,</span> <span class=kt>int</span> <span class=n>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_gameState</span> <span class=p>!=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>InProgress</span><span class=p>)</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(!</span><span class=n>_board</span><span class=p>.</span><span class=n>PlaceMark</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>_currentPlayer</span><span class=p>.</span><span class=n>Mark</span><span class=p>))</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_board</span><span class=p>.</span><span class=n>CheckWin</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=n>c</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>      <span class=n>_gameState</span> <span class=p>=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>Won</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>_board</span><span class=p>.</span><span class=n>IsFull</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>      <span class=n>_gameState</span> <span class=p>=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>Draw</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>      <span class=n>_currentPlayer</span> <span class=p>=</span> <span class=n>_currentPlayer</span> <span class=p>==</span> <span class=n>playerX</span> <span class=p>?</span> <span class=n>playerO</span> <span class=p>:</span> <span class=n>playerX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLDDesignPatterns>Design Patterns | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/patterns target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 3, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/decorator/>&#171; OOP Structural Patterns: Decorator</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

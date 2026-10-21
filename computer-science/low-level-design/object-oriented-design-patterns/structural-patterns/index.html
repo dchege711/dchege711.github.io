@@ -1,0 +1,95 @@
+<!doctype html><html lang=en><head><title>OOP Structural Patterns | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="How to build flexible relationships between classes without tight coupling or
+messy dependencies."><meta property="og:title" content="OOP Structural Patterns"><meta property="og:description" content="How to build flexible relationships between classes without tight coupling or
+messy dependencies."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/>Object-Oriented Design Patterns</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/>OOP Structural Patterns</a></li></ul></nav><main><article><header><h1>OOP Structural Patterns</h1><p class=meta>Dated Oct 3, 2026;
+last modified on Sat, 03 Oct 2026</p></header><p>How to build flexible relationships between classes without tight coupling or
+messy dependencies.</p></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage()>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>Oct 3, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/facade/>OOP Structural Patterns: Facade</a>
+<span class=meta>1 min; updated Oct 3, 2026
+<button id=f4607076e7204d3a75f202475dac6e20-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=f4607076e7204d3a75f202475dac6e20-summary style=display:none><h2 id=definition>Definition</h2><p>A facade is an orchestrator class that hides the complexity of coordinating
+multiple components behind a clean interface. It&rsquo;s rare to explicitly name it as
+most new code design clean orchestrators from scratch. You might name it when
+wrapping existing messy code, e.g., after inheriting a complex subsystem with
+awkward APIs. <span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=sample-code>Sample Code</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=kd>enum</span> <span class=n>GameState</span> <span class=p>{</span> <span class=n>InProgress</span><span class=p>,</span> <span class=n>Won</span><span class=p>,</span> <span class=n>Draw</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Board</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>PlaceMark</span><span class=p>(</span><span class=kt>int</span> <span class=n>r</span><span class=p>,</span> <span class=kt>int</span> <span class=n>c</span><span class=p>,</span> <span class=kt>string</span> <span class=n>mark</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>CheckWin</span><span class=p>(</span><span class=kt>int</span> <span class=n>r</span><span class=p>,</span> <span class=kt>int</span> <span class=n>c</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>IsFull</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Player</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>Mark</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>Player</span><span class=p>(</span><span class=kt>string</span> <span class=n>mark</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Game</span> <span class=c1>// This is the Facade</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Board</span> <span class=n>_board</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Player</span> <span class=n>_playerX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Player</span> <span class=n>_playerO</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>Player</span> <span class=n>_currentPlayer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>GameState</span> <span class=n>_gameState</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>Game</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>MakeMove</span><span class=p>(</span><span class=kt>int</span> <span class=n>r</span><span class=p>,</span> <span class=kt>int</span> <span class=n>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_gameState</span> <span class=p>!=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>InProgress</span><span class=p>)</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(!</span><span class=n>_board</span><span class=p>.</span><span class=n>PlaceMark</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=n>c</span><span class=p>,</span> <span class=n>_currentPlayer</span><span class=p>.</span><span class=n>Mark</span><span class=p>))</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_board</span><span class=p>.</span><span class=n>CheckWin</span><span class=p>(</span><span class=n>r</span><span class=p>,</span> <span class=n>c</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>      <span class=n>_gameState</span> <span class=p>=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>Won</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>_board</span><span class=p>.</span><span class=n>IsFull</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>      <span class=n>_gameState</span> <span class=p>=</span> <span class=n>GameState</span><span class=p>.</span><span class=n>Draw</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>      <span class=n>_currentPlayer</span> <span class=p>=</span> <span class=n>_currentPlayer</span> <span class=p>==</span> <span class=n>playerX</span> <span class=p>?</span> <span class=n>playerO</span> <span class=p>:</span> <span class=n>playerX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Oct 3, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/decorator/>OOP Structural Patterns: Decorator</a>
+<span class=meta>2 min; updated Oct 3, 2026
+<button id=c077f6169520a5a5ed7122a670b0fea9-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=c077f6169520a5a5ed7122a670b0fea9-summary style=display:none><h2 id=example>Example</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>interface</span> <span class=nc>IDataSource</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>void</span> <span class=n>WriteData</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>string</span> <span class=n>ReadData</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>FileDataSource</span><span class=p>(</span><span class=kt>string</span> <span class=n>fileName</span><span class=p>)</span> <span class=p>:</span> <span class=n>IDataSource</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>WriteData</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>ReadData</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>EncryptionDecorator</span><span class=p>(</span><span class=n>IDataSource</span> <span class=n>wrapped</span><span class=p>)</span> <span class=p>:</span> <span class=n>IDataSource</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>WriteData</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>wrapped</span><span class=p>.</span><span class=n>WriteData</span><span class=p>(</span><span class=n>Encrypt</span><span class=p>(</span><span class=n>data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>ReadData</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>Decrypt</span><span class=p>(</span><span class=n>wrapped</span><span class=p>.</span><span class=n>ReadData</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>string</span> <span class=n>Encrypt</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>string</span> <span class=n>Decrypt</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; where we can have other decorators, e.g., <code>CompressionDecorator</code>. Usage is
+of the form:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=n>IDataSource</span> <span class=n>source</span> <span class=p>=</span> <span class=k>new</span> <span class=n>FileDataSource</span><span class=p>(</span><span class=s>&#34;data.txt&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>source</span> <span class=p>=</span> <span class=k>new</span> <span class=n>EncryptionDecorator</span><span class=p>(</span><span class=n>source</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>source</span> <span class=p>=</span> <span class=k>new</span> <span class=n>CompressionDecorator</span><span class=p>(</span><span class=n>source</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>source</span><span class=p>.</span><span class=n>WriteData</span><span class=p>(</span><span class=s>&#34;Sensitive info&#34;</span><span class=p>);</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=use-case>Use Case</h2><p>When you need to layer on extra functionality at runtime based on conditions,
+e.g., encrypt certain messages, wrap a service with logging in debug mode, etc.
+<span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><p>Consider a <code>Window</code> in a windowing system. To allow scrolling on some <code>Window</code>
+objects, one could either create a <code>ScrollingWindow</code> subclass, or create a
+<code>ScrollingWindowDecorator</code> that adds this functionality to existing <code>Window</code>
+objects. Suppose you then want to support adding borders to some <code>Window</code>
+objects. If continuing with sub-classing, then we&rsquo;d have <code>WindowWithBorder</code>,
+<code>ScrollingWindowWithBorder</code>, etc. Compare that to having a
+<code>BorderedWindowDecorator</code>, where any combination of <code>ScrollingWindowDecorator</code>
+or <code>BorderedWindowDecorator</code> can decorate existing <code>Window</code>s. If the
+functionality needs to be added to all <code>Window</code>s, the base class can be
+modified. However, sometimes modifying the base class is not possible, e.g.,
+using an external framework where it&rsquo;s not possible/legal to modify the base
+class. <span class=citation-ref><a href=#WikiDecoratorPattern></a></span></p>...</section></td></tr></table><script>let pageURLs=[];const alternateOrganizations=new Set(["tags","categories","domains","authors","publications"]);fetch("/json/site_tree.json").then(e=>e.json()).then(e=>{const s=document.location.pathname,n=s==="/random/"?"/":s,i=n==="/";let t=e;if(n.split("/").forEach(e=>{if(!e)return;t=t[e]}),!t)return;function o(e,t){const s=Object.keys(t);s.forEach(s=>{if(s==="_meta")return;if(n==="/"&&alternateOrganizations.has(s))return;let i=e===""?s:`${e}/${s}`;o(i,t[s])}),s.length===0&&e&&pageURLs.push(`${i?"/":""}${e}`)}o("",t)}).then(()=>{pageURLs.length===0&&(document.getElementById("randomSelectorContainer").style.display="none")});function goToRandomPage(){let e=Math.floor(Math.random()*pageURLs.length);window.open(pageURLs[e],"_self")}</script></main><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

@@ -6,7 +6,80 @@ focus from the flow of control, to the way objects are interconnected."><meta pr
 <input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/>Object-Oriented Design Patterns</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/behavioral-patterns/>Behavioral Patterns</a></li></ul></nav><main><article><header><h1>Behavioral Patterns</h1><p class=meta>Dated Sep 28, 2021;
 last modified on Wed, 16 Sep 2026</p></header><p>Concerned with algorithms and the assignment of responsibilities between
 objects. Describe patterns of communication between objects allows us to shift
-focus from the flow of control, to the way objects are interconnected.</p></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage()>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>Sep 28, 2021</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/behavioral-patterns/07-observer/>Observer</a>
+focus from the flow of control, to the way objects are interconnected.</p></article><table border=0><tr class=no-decoration id=randomSelectorContainer><td class=no-decoration></td><td class=no-decoration></td><td class=no-decoration><span class=link-style onclick=goToRandomPage()>Random Link ¯\_(ツ)_/¯</span></td></tr><tr class=no-decoration><td class=no-decoration>Oct 3, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/behavioral-patterns/state-machine/>State Machine</a>
+<span class=meta>1 min; updated Oct 3, 2026
+<button id=9213db4a709887d22447d36638c08589-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=9213db4a709887d22447d36638c08589-summary style=display:none><h2 id=motivation>Motivation</h2><p>Use it when an object&rsquo;s behavior changes based on its internal state and you
+have complex state transition rules. It&rsquo;s the antidote to scattered conditionals
+checking current state. Each state know which state comes next and what actions
+are valid. <span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=sample-code>Sample Code</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>interface</span> <span class=nc>IVendingMachineState</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>void</span> <span class=n>InsertCoin</span><span class=p>(</span><span class=n>VendingMachine</span> <span class=n>machine</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>void</span> <span class=n>SelectProduct</span><span class=p>(</span><span class=n>VendingMachine</span> <span class=n>machine</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>void</span> <span class=n>Dispense</span><span class=p>(</span><span class=n>VendingMachine</span> <span class=n>machine</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>NoCoinState</span> <span class=p>:</span> <span class=n>IVendingMachineState</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>InsertCoin</span><span class=p>(</span><span class=n>VendingMachine</span> <span class=n>machine</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=n>machine</span><span class=p>.</span><span class=n>SetState</span><span class=p>(</span><span class=k>new</span> <span class=n>HasCoinState</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>SelectProduct</span><span class=p>(</span><span class=n>VendingMachine</span> <span class=n>machine</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Insert coin first&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Dispense</span><span class=p>(</span><span class=n>VendingMachine</span> <span class=n>machine</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Insert coin first&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>HasCoinState</span> <span class=p>:</span> <span class=n>IVendingMachineState</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>DispenseState</span> <span class=p>:</span> <span class=n>IVendingMachineState</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>VendingMachine</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>IVendingMachineState</span> <span class=n>_currentState</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>VendingMachine</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>_currentState</span> <span class=p>=</span> <span class=k>new</span> <span class=n>NoCoinState</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>SetState</span><span class=p>(</span><span class=n>IVendingMachineState</span> <span class=n>state</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>_currentState</span> <span class=p>=</span> <span class=n>state</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>InsertCoin</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>_currentState</span><span class=p>.</span><span class=n>InsertCoin</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>SelectProduct</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>_currentState</span><span class=p>.</span><span class=n>SelectProduct</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Dispense</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>_currentState</span><span class=p>.</span><span class=n>Dispense</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLDDesignPatterns>Design Patterns | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/patterns target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 3, 2026.</div></li></ol></section></td></tr><tr class=no-decoration><td class=no-decoration>Oct 3, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/behavioral-patterns/strategy/>Strategy</a>
+<span class=meta>1 min; updated Oct 3, 2026
+<button id=73592283718cac86b93f69f6af8cb733-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=73592283718cac86b93f69f6af8cb733-summary style=display:none><h2 id=motivation>Motivation</h2><p>Strategy is the single most common pattern in LLD interviews. Whenever you see
+conditional logic based on type, then that&rsquo;s a strategy pattern waiting to
+happen. Strategy replaces conditional logic with polymorphism. <span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=sample-code>Sample Code</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>interface</span> <span class=nc>IPaymentStrategy</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>bool</span> <span class=n>Pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>CreditCardPayment</span><span class=p>(</span><span class=kt>string</span> <span class=n>cardNumber</span><span class=p>)</span> <span class=p>:</span> <span class=n>IPaymentStrategy</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>Pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>PayPalPayment</span><span class=p>(</span><span class=kt>string</span> <span class=n>email</span><span class=p>)</span> <span class=p>:</span> <span class=n>IPaymentStrategy</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>Pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>ShoppingCart</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>IPaymentStrategy</span><span class=p>?</span> <span class=n>_paymentStrategy</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>SetPaymentStrategy</span><span class=p>(</span><span class=n>IPaymentStrategy</span> <span class=n>strategy</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Checkout</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=p>{</span> <span class=n>_paymentStrategy</span><span class=p>?.</span><span class=n>Pay</span><span class=p>(</span><span class=n>amount</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; where <code>ShoppingCart.Checkout</code> doesn&rsquo;t have clauses like <code>if (paymentType == "credit") { ... }</code>. <span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Sep 28, 2021</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/behavioral-patterns/07-observer/>Observer</a>
 <span class=meta>8 min; updated Sep 16, 2026
 <button id=7eb284506a90a2836c25bcbb2e918472-summary-controller onclick=toggleSummaryDisplay(this)>
 <i class="fas fa-chevron-down"></i></button></span><section class=meta id=7eb284506a90a2836c25bcbb2e918472-summary style=display:none><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p><span class=citation-ref><a href=#WikiObserverPattern></a></span>notes that <span class=citation-ref><a href=#GangOfFour1994></a></span>, the

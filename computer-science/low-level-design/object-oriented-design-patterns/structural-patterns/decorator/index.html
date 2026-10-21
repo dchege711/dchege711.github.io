@@ -1,0 +1,139 @@
+<!doctype html><html lang=en><head><title>OOP Structural Patterns: Decorator | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content='Example
+public interface IDataSource
+{
+  void WriteData(string data);
+  string ReadData();
+}
+
+public class FileDataSource(string fileName) : IDataSource
+{
+  public void WriteData(string data) { ... }
+  public string ReadData() { ... }
+}
+
+public class EncryptionDecorator(IDataSource wrapped) : IDataSource
+{
+  public void WriteData(string data) => wrapped.WriteData(Encrypt(data));
+  public string ReadData() => Decrypt(wrapped.ReadData());
+  private string Encrypt(string data) { ... }
+  private string Decrypt(string data) { ... }
+}
+&mldr; where we can have other decorators, e.g., CompressionDecorator. Usage is
+of the form:
+IDataSource source = new FileDataSource("data.txt");
+source = new EncryptionDecorator(source);
+source = new CompressionDecorator(source);
+source.WriteData("Sensitive info");
+
+Use Case
+When you need to layer on extra functionality at runtime based on conditions,
+e.g., encrypt certain messages, wrap a service with logging in debug mode, etc.
+
+Consider a Window in a windowing system. To allow scrolling on some Window
+objects, one could either create a ScrollingWindow subclass, or create a
+ScrollingWindowDecorator that adds this functionality to existing Window
+objects. Suppose you then want to support adding borders to some Window
+objects. If continuing with sub-classing, then we&rsquo;d have WindowWithBorder,
+ScrollingWindowWithBorder, etc. Compare that to having a
+BorderedWindowDecorator, where any combination of ScrollingWindowDecorator
+or BorderedWindowDecorator can decorate existing Windows. If the
+functionality needs to be added to all Windows, the base class can be
+modified. However, sometimes modifying the base class is not possible, e.g.,
+using an external framework where it&rsquo;s not possible/legal to modify the base
+class. ...'><meta property="og:title" content="OOP Structural Patterns: Decorator"><meta property="og:description" content='Example
+public interface IDataSource
+{
+  void WriteData(string data);
+  string ReadData();
+}
+
+public class FileDataSource(string fileName) : IDataSource
+{
+  public void WriteData(string data) { ... }
+  public string ReadData() { ... }
+}
+
+public class EncryptionDecorator(IDataSource wrapped) : IDataSource
+{
+  public void WriteData(string data) => wrapped.WriteData(Encrypt(data));
+  public string ReadData() => Decrypt(wrapped.ReadData());
+  private string Encrypt(string data) { ... }
+  private string Decrypt(string data) { ... }
+}
+&mldr; where we can have other decorators, e.g., CompressionDecorator. Usage is
+of the form:
+IDataSource source = new FileDataSource("data.txt");
+source = new EncryptionDecorator(source);
+source = new CompressionDecorator(source);
+source.WriteData("Sensitive info");
+
+Use Case
+When you need to layer on extra functionality at runtime based on conditions,
+e.g., encrypt certain messages, wrap a service with logging in debug mode, etc.
+
+Consider a Window in a windowing system. To allow scrolling on some Window
+objects, one could either create a ScrollingWindow subclass, or create a
+ScrollingWindowDecorator that adds this functionality to existing Window
+objects. Suppose you then want to support adding borders to some Window
+objects. If continuing with sub-classing, then we&rsquo;d have WindowWithBorder,
+ScrollingWindowWithBorder, etc. Compare that to having a
+BorderedWindowDecorator, where any combination of ScrollingWindowDecorator
+or BorderedWindowDecorator can decorate existing Windows. If the
+functionality needs to be added to all Windows, the base class can be
+modified. However, sometimes modifying the base class is not possible, e.g.,
+using an external framework where it&rsquo;s not possible/legal to modify the base
+class. ...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/decorator/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/>Object-Oriented Design Patterns</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/>OOP Structural Patterns</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/decorator/>OOP Structural Patterns: Decorator</a></li></ul></nav><section><header><h1>OOP Structural Patterns: Decorator</h1><p class=meta>Dated Oct 3, 2026;
+last modified on Sat, 03 Oct 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#example>Example</a></li><li><a href=#use-case>Use Case</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=example>Example</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>interface</span> <span class=nc>IDataSource</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>void</span> <span class=n>WriteData</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>string</span> <span class=n>ReadData</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>FileDataSource</span><span class=p>(</span><span class=kt>string</span> <span class=n>fileName</span><span class=p>)</span> <span class=p>:</span> <span class=n>IDataSource</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>WriteData</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>ReadData</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>EncryptionDecorator</span><span class=p>(</span><span class=n>IDataSource</span> <span class=n>wrapped</span><span class=p>)</span> <span class=p>:</span> <span class=n>IDataSource</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>WriteData</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>wrapped</span><span class=p>.</span><span class=n>WriteData</span><span class=p>(</span><span class=n>Encrypt</span><span class=p>(</span><span class=n>data</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string</span> <span class=n>ReadData</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>Decrypt</span><span class=p>(</span><span class=n>wrapped</span><span class=p>.</span><span class=n>ReadData</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>string</span> <span class=n>Encrypt</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>string</span> <span class=n>Decrypt</span><span class=p>(</span><span class=kt>string</span> <span class=n>data</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; where we can have other decorators, e.g., <code>CompressionDecorator</code>. Usage is
+of the form:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=n>IDataSource</span> <span class=n>source</span> <span class=p>=</span> <span class=k>new</span> <span class=n>FileDataSource</span><span class=p>(</span><span class=s>&#34;data.txt&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>source</span> <span class=p>=</span> <span class=k>new</span> <span class=n>EncryptionDecorator</span><span class=p>(</span><span class=n>source</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>source</span> <span class=p>=</span> <span class=k>new</span> <span class=n>CompressionDecorator</span><span class=p>(</span><span class=n>source</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>source</span><span class=p>.</span><span class=n>WriteData</span><span class=p>(</span><span class=s>&#34;Sensitive info&#34;</span><span class=p>);</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><h2 id=use-case>Use Case</h2><p>When you need to layer on extra functionality at runtime based on conditions,
+e.g., encrypt certain messages, wrap a service with logging in debug mode, etc.
+<span class=citation-ref><a href=#HelloInterviewLLDDesignPatterns></a></span></p><p>Consider a <code>Window</code> in a windowing system. To allow scrolling on some <code>Window</code>
+objects, one could either create a <code>ScrollingWindow</code> subclass, or create a
+<code>ScrollingWindowDecorator</code> that adds this functionality to existing <code>Window</code>
+objects. Suppose you then want to support adding borders to some <code>Window</code>
+objects. If continuing with sub-classing, then we&rsquo;d have <code>WindowWithBorder</code>,
+<code>ScrollingWindowWithBorder</code>, etc. Compare that to having a
+<code>BorderedWindowDecorator</code>, where any combination of <code>ScrollingWindowDecorator</code>
+or <code>BorderedWindowDecorator</code> can decorate existing <code>Window</code>s. If the
+functionality needs to be added to all <code>Window</code>s, the base class can be
+modified. However, sometimes modifying the base class is not possible, e.g.,
+using an external framework where it&rsquo;s not possible/legal to modify the base
+class. <span class=citation-ref><a href=#WikiDecoratorPattern></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewLLDDesignPatterns>Design Patterns | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/in-a-hurry/patterns target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 3, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=WikiDecoratorPattern>Decorator pattern - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Decorator_pattern target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 3, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org
+</a><a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/low-level-design/object-oriented-design-patterns/structural-patterns/facade/>OOP Structural Patterns: Facade &#187;</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
