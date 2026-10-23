@@ -16,7 +16,19 @@ their parameter counts; GPT-4 was leaked to have 1.8T parameters. &lt;span class
 translation, LLMs are increasingly capable of being a standalone system. Recall
 that LMs are capable of conditional generation (given a prompt, generate a
 completion). This allows the same LLM to solve a variety of tasks by changing
-the prompt, e.g.,&lt;/p&gt;</description></item><item><title>LLM Instructions for Advent of Code</title><link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/advent-of-code.instructions/</link><pubDate>Sun, 07 Sep 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/advent-of-code.instructions/</guid><description>&lt;h1 id="advent-of-code-challenges"&gt;Advent of Code Challenges&lt;/h1&gt;
+the prompt, e.g.,&lt;/p&gt;</description></item><item><title>Synchronization Primitives with Python Specifics</title><link>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/sync-primitives-w-python-specifics/</link><pubDate>Tue, 02 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/sync-primitives-w-python-specifics/</guid><description>&lt;div class="priors-holder"&gt;
+ &lt;div class="priors" title="Priors: my guess before digging deeper"&gt;&lt;p&gt;In Chromium, why wasn&amp;rsquo;t explicit threading a thing? Data structures are usually
+not thread-safe. There were guardrails for scenarios like checking &lt;code&gt;WeakPtr&lt;/code&gt;s
+on a different thread. However, I didn&amp;rsquo;t come out of it with a mental model for
+threading primitives.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Threads are smaller units of a process that allow executing tasks in parallel,
+sharing memory space. Threads are particularly useful for I/O bound tasks,
+where much of the time is spent waiting for external resources. &lt;span class="citation-ref"&gt;&lt;a href="#threadingPy"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>LLM Instructions for Advent of Code</title><link>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/advent-of-code.instructions/</link><pubDate>Sun, 07 Sep 2025 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/advent-of-code/advent-of-code.instructions/</guid><description>&lt;h1 id="advent-of-code-challenges"&gt;Advent of Code Challenges&lt;/h1&gt;
 &lt;p&gt;Advent of Code is an annual programming event comprising of 25 challenges that
 are tied together by a narrative. The user&amp;rsquo;s objective is to pick a language and
 then learn about it by solving the programming challenges. At the end of each
@@ -3268,7 +3280,30 @@ preventing memory exhaustion which would take down the whole application.&lt;/li
 &lt;li&gt;&lt;strong&gt;Thread safety&lt;/strong&gt;: The coordination mechanism itself must handle concurrent
 access without corruption.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#CoordinationHelloInterview"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Imperial Reckoning: The Untold Story of Britain's Gulag in Kenya</title><link>https://www.curiosities.dev/politics-and-governance/imperial-reckoning/</link><pubDate>Sun, 04 Oct 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/politics-and-governance/imperial-reckoning/</guid><description>&lt;div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count='' is-main=''&gt;
+&lt;p&gt;&lt;span class="citation-ref"&gt;&lt;a href="#CoordinationHelloInterview"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Ensuring Correctness in Concurrent Execution</title><link>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/correctness-in-concurrency/</link><pubDate>Thu, 22 Oct 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/correctness-in-concurrency/</guid><description>&lt;h2 id="bug-patterns"&gt;Bug Patterns&lt;/h2&gt;
+&lt;h3 id="check-then-act"&gt;Check-Then-Act&lt;/h3&gt;
+&lt;p&gt;Involves checking a condition and then making a decision based on that check,
+e.g., in a ticket booking system, checking that a seat is available and then
+booking it if so. &lt;span class="citation-ref"&gt;&lt;a href="#HelloInterviewCorrectness"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Consider this buggy code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RateLimiterBroken&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="k"&gt;readonly&lt;/span&gt; &lt;span class="n"&gt;Dictionary&lt;/span&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;_requestCounts&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="k"&gt;readonly&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;_maxRequests&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="m"&gt;100&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ShouldAllowRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_requestCounts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TryGetValue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;out&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="p"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;_maxRequests&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_requestCounts&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="p"&gt;+&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&amp;hellip; where thread A reads &lt;code&gt;count&lt;/code&gt; as &lt;code&gt;99&lt;/code&gt;, but before it updates the map, thread
+B also reads &lt;code&gt;count&lt;/code&gt; as &lt;code&gt;99&lt;/code&gt;. Both threads A and B increment the count from &lt;code&gt;99&lt;/code&gt;
+to &lt;code&gt;100&lt;/code&gt; even though the user has made &lt;code&gt;101&lt;/code&gt; requests. &lt;span class="citation-ref"&gt;&lt;a href="#HelloInterviewCorrectness"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Imperial Reckoning: The Untold Story of Britain's Gulag in Kenya</title><link>https://www.curiosities.dev/politics-and-governance/imperial-reckoning/</link><pubDate>Sun, 04 Oct 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/politics-and-governance/imperial-reckoning/</guid><description>&lt;div class="citation" citation-icon-class='fas fa-fw fa-book' cited-by-count='' is-main=''&gt;
  &lt;cite id='Elkins2005'&gt;
  
  Imperial Reckoning: The Untold Story of Britain&amp;#39;s Gulag in Kenya&lt;i&gt;.&lt;/i&gt;
@@ -4958,19 +4993,7 @@ However, a single &lt;code&gt;Lock&lt;/code&gt; proved awkward to reason about.&
 from each category, in either order. A ride may be started at its opening time
 or any later moment. Immediately after finishing one ride, the tourist may board
 the other if it&amp;rsquo;s already open or wait until it opens. Return the earliest
-possible time at which the tourist can finish both rides. &lt;span class="citation-ref"&gt;&lt;a href="#LCEarliestFinishTime"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Synchronization Primitives with Python Specifics</title><link>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/sync-primitives-w-python-specifics/</link><pubDate>Tue, 02 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/sync-primitives-w-python-specifics/</guid><description>&lt;div class="priors-holder"&gt;
- &lt;div class="priors" title="Priors: my guess before digging deeper"&gt;&lt;p&gt;In Chromium, why wasn&amp;rsquo;t explicit threading a thing? Data structures are usually
-not thread-safe. There were guardrails for scenarios like checking &lt;code&gt;WeakPtr&lt;/code&gt;s
-on a different thread. However, I didn&amp;rsquo;t come out of it with a mental model for
-threading primitives.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-
-
-&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;Threads are smaller units of a process that allow executing tasks in parallel,
-sharing memory space. Threads are particularly useful for I/O bound tasks,
-where much of the time is spent waiting for external resources. &lt;span class="citation-ref"&gt;&lt;a href="#threadingPy"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Minimum Cost of Buying Candies with Discount</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/min-cost-buying-candies-with-discount/</link><pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/min-cost-buying-candies-with-discount/</guid><description>&lt;p&gt;The customer can choose any candy to takeaway for free as long as the cost of
+possible time at which the tourist can finish both rides. &lt;span class="citation-ref"&gt;&lt;a href="#LCEarliestFinishTime"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;</description></item><item><title>Minimum Cost of Buying Candies with Discount</title><link>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/min-cost-buying-candies-with-discount/</link><pubDate>Mon, 01 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.curiosities.dev/computer-science/programming-challenges/leet-code-and-others/sorting-and-searching/min-cost-buying-candies-with-discount/</guid><description>&lt;p&gt;The customer can choose any candy to takeaway for free as long as the cost of
 the chosen candy is less than or equal to the minimum cost of the two candies
 bought. Find the minimum cost of buying all the candies. &lt;span class="citation-ref"&gt;&lt;a href="#LCBuyingCandiesWithDiscount"&gt;&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;details&gt;

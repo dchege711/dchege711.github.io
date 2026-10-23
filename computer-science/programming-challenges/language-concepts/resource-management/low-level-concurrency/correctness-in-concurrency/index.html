@@ -1,0 +1,263 @@
+<!doctype html><html lang=en><head><title>Ensuring Correctness in Concurrent Execution | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Bug Patterns
+Check-Then-Act
+Involves checking a condition and then making a decision based on that check,
+e.g., in a ticket booking system, checking that a seat is available and then
+booking it if so. 
+Consider this buggy code:
+public class RateLimiterBroken
+{
+  private readonly Dictionary<string, int> _requestCounts = [];
+  private readonly int _maxRequests = 100;
+
+  public bool ShouldAllowRequest(string userId)
+  {
+    _requestCounts.TryGetValue(userId, out int count);
+
+    if (count >= _maxRequests) { return false; }
+
+    _requestCounts[userId] = count + 1;
+    return true;
+  }
+}
+&mldr; where thread A reads count as 99, but before it updates the map, thread
+B also reads count as 99. Both threads A and B increment the count from 99
+to 100 even though the user has made 101 requests. ..."><meta property="og:title" content="Ensuring Correctness in Concurrent Execution"><meta property="og:description" content="Bug Patterns
+Check-Then-Act
+Involves checking a condition and then making a decision based on that check,
+e.g., in a ticket booking system, checking that a seat is available and then
+booking it if so. 
+Consider this buggy code:
+public class RateLimiterBroken
+{
+  private readonly Dictionary<string, int> _requestCounts = [];
+  private readonly int _maxRequests = 100;
+
+  public bool ShouldAllowRequest(string userId)
+  {
+    _requestCounts.TryGetValue(userId, out int count);
+
+    if (count >= _maxRequests) { return false; }
+
+    _requestCounts[userId] = count + 1;
+    return true;
+  }
+}
+&mldr; where thread A reads count as 99, but before it updates the map, thread
+B also reads count as 99. Both threads A and B increment the count from 99
+to 100 even though the user has made 101 requests. ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/correctness-in-concurrency/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/>Resource Management</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/>Low Level Concurrency</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/correctness-in-concurrency/>Ensuring Correctness in Concurrent Execution</a></li></ul></nav><section><header><h1>Ensuring Correctness in Concurrent Execution</h1><p class=meta>Dated Oct 22, 2026;
+last modified on Thu, 22 Oct 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#bug-patterns>Bug Patterns</a><ul><li><a href=#check-then-act>Check-Then-Act</a></li><li><a href=#read-modify-write>Read-Modify-Write</a></li></ul></li><li><a href=#solutions>Solutions</a><ul><li><a href=#atomic-variables>Atomic Variables</a></li><li><a href=#coarse-grained-locking>Coarse-Grained Locking</a></li><li><a href=#read-write-shared-exclusive-locks>Read-Write (Shared-Exclusive) Locks</a></li><li><a href=#fine-grained-locking>Fine-Grained Locking</a></li><li><a href=#thread-confinement-shared-nothing>Thread Confinement (Shared Nothing)</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=bug-patterns>Bug Patterns</h2><h3 id=check-then-act>Check-Then-Act</h3><p>Involves checking a condition and then making a decision based on that check,
+e.g., in a ticket booking system, checking that a seat is available and then
+booking it if so. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Consider this buggy code:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>RateLimiterBroken</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Dictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>int</span><span class=p>&gt;</span> <span class=n>_requestCounts</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=kt>int</span> <span class=n>_maxRequests</span> <span class=p>=</span> <span class=m>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>ShouldAllowRequest</span><span class=p>(</span><span class=kt>string</span> <span class=n>userId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>_requestCounts</span><span class=p>.</span><span class=n>TryGetValue</span><span class=p>(</span><span class=n>userId</span><span class=p>,</span> <span class=k>out</span> <span class=kt>int</span> <span class=n>count</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>count</span> <span class=p>&gt;=</span> <span class=n>_maxRequests</span><span class=p>)</span> <span class=p>{</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>_requestCounts</span><span class=p>[</span><span class=n>userId</span><span class=p>]</span> <span class=p>=</span> <span class=n>count</span> <span class=p>+</span> <span class=m>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; where thread A reads <code>count</code> as <code>99</code>, but before it updates the map, thread
+B also reads <code>count</code> as <code>99</code>. Both threads A and B increment the count from <code>99</code>
+to <code>100</code> even though the user has made <code>101</code> requests. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h3 id=read-modify-write>Read-Modify-Write</h3><p>Involves reading a value, computing something from it, and writing the result
+back. Bugs manifest as lost updates, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>RequestCounterBroken</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>int</span> <span class=n>_requestCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Increment operations are actually three steps (read, add, write) that can</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// interleave.</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>OnRequest</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>_requestCount</span><span class=p>++;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; where threads <code>A</code> and <code>B</code> both read <code>5</code>, and both increment to <code>6</code>, even
+though the final count should be <code>7</code>. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h2 id=solutions>Solutions</h2><h3 id=atomic-variables>Atomic Variables</h3><p>Atomic variables use special CPU instructions to perform read-modify-write
+operations in a single, uninterruptible step without needing a lock, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>BookingStats</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>int</span> <span class=n>_bookedCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>OnSeatBooked</span> <span class=p>=&gt;</span> <span class=n>Interlocked</span><span class=p>.</span><span class=n>Increment</span><span class=p>(</span><span class=k>ref</span> <span class=n>_bookedCount</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>int</span> <span class=n>GetBookedCount</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>Interlocked</span><span class=p>.</span><span class=n>CompareExchange</span><span class=p>(</span><span class=k>ref</span> <span class=n>_bookedCount</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p><code>Interlocked.CompareExchange(ref location, newValue, expected)</code> returns the
+original value. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p></div></div><p>Complex updates need a compare-and-swap (CAS) loop, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>ConcurrencyTracker</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>int</span> <span class=n>_maxConcurrent</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>UpdateMaxConcurrent</span><span class=p>(</span><span class=kt>int</span> <span class=n>current</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>observed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>observed</span> <span class=p>=</span> <span class=n>_maxConcurrent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=n>current</span> <span class=p>&lt;=</span> <span class=n>observed</span><span class=p>)</span> <span class=p>{</span> <span class=k>return</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span><span class=n>Interlocked</span><span class=p>.</span><span class=n>CompareExchange</span><span class=p>(</span><span class=k>ref</span> <span class=n>_maxConcurrent</span><span class=p>,</span> <span class=n>current</span><span class=p>,</span> <span class=n>observed</span><span class=p>)</span> <span class=p>!=</span> <span class=n>observed</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>This is not intuitive code! Have there been ergonomic improvements since?</p></div></div><p>However, atomics only work for single variables. Atomics in a booking system
+wouldn&rsquo;t work for booking multiple seats:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TicketBookingBuggyAtomic</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>ConcurrentDictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>string</span><span class=p>&gt;</span> <span class=n>_seatOwners</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>BookSeat</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitorId</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>_seatOwners</span><span class=p>.</span><span class=n>TryAdd</span><span class=p>(</span><span class=n>seatId</span><span class=p>,</span> <span class=n>visitorId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Cannot atomically update two separate atomic reference objects.</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>BookSeats</span><span class=p>(</span><span class=kt>string</span> <span class=n>seat1</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitor1</span><span class=p>,</span> <span class=kt>string</span> <span class=n>seat2</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitor2</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h3 id=coarse-grained-locking>Coarse-Grained Locking</h3><p>The lock creates a critical section where only one thread executes at a time.
+The check and the update happen together with no possibility of interleaving,
+e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TicketBooking</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=kt>object</span> <span class=n>_bookingLock</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>Dictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>string</span><span class=p>&gt;</span> <span class=n>_seatOwners</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>BookSeat</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitorId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>_bookingLock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=n>_seatOwners</span><span class=p>.</span><span class=n>ContainsKey</span><span class=p>(</span><span class=n>seatId</span><span class=p>))</span> <span class=p>{</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=n>_seatOwners</span><span class=p>[</span><span class=n>seatId</span><span class=p>]</span> <span class=p>=</span> <span class=n>visitorId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Do not release the lock too early, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TicketBooking</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=kt>object</span> <span class=n>_bookingLock</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>Dictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>string</span><span class=p>&gt;</span> <span class=n>_seatOwners</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>BookSeat</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitorId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>isAlreadyTaken</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>_bookingLock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>isAlreadyTaken</span> <span class=p>=</span> <span class=n>_seatOwners</span><span class=p>.</span><span class=n>ContainsKey</span><span class=p>(</span><span class=n>seatId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>isAlreadyTaken</span><span class=p>)</span> <span class=p>{</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Bug: A concurrent thread might give this seat to someone else!</span>
+</span></span><span class=line><span class=cl>    <span class=n>_seatOwners</span><span class=p>[</span><span class=n>seatId</span><span class=p>]</span> <span class=p>=</span> <span class=n>visitorId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Don&rsquo;t use different locks for operations that need to be atomic together, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TicketBookingBroken2</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=kt>object</span> <span class=n>_availabilityLock</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=kt>object</span> <span class=n>_assignmentLock</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=n>Dictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>string</span><span class=p>&gt;</span> <span class=n>_seatOwners</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>IsAvailable</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>_availabilityLock</span><span class=p>)</span> <span class=p>{</span> <span class=k>return</span> <span class=p>!</span><span class=n>_seatOwners</span><span class=p>.</span><span class=n>ContainsKey</span><span class=p>(</span><span class=n>seatId</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>MarkBooked</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitorId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>_assignmentLock</span><span class=p>)</span> <span class=p>{</span> <span class=n>_seatOwners</span><span class=p>[</span><span class=n>seatId</span><span class=p>]</span> <span class=p>=</span> <span class=n>visitorId</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Coarse-grained locking is the right choice for short critical sections (think
+milliseconds) and moderate contention. Human-triggered operations are in this
+category, e.g., a ticketing system with 10,000 users racing for seats won&rsquo;t have
+more than a few dozen hitting the lock at the exact same microsecond. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h3 id=read-write-shared-exclusive-locks>Read-Write (Shared-Exclusive) Locks</h3><p>A workload might be heavily skewed towards reads. A coarse-grained lock would be
+wasteful because readers block each other even though they&rsquo;re not modifying
+anything.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Cache</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>ReaderWriterLockSlim</span> <span class=n>_rwLock</span> <span class=p>=</span> <span class=k>new</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>Dictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>string</span><span class=p>&gt;</span> <span class=n>_data</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>string?</span> <span class=n>Get</span><span class=p>(</span><span class=kt>string</span> <span class=n>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>_rwLock</span><span class=p>.</span><span class=n>EnterReadLock</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// Multiple threads can hold the read lock simultaneously because they&#39;re</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// just reading and can&#39;t corrupt each other&#39;s view.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span> <span class=k>return</span> <span class=n>_data</span><span class=p>.</span><span class=n>TryGetValue</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=k>out</span> <span class=kt>var</span> <span class=k>value</span><span class=p>)</span> <span class=p>?</span> <span class=k>value</span> <span class=p>:</span> <span class=kc>null</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span> <span class=p>{</span> <span class=n>_rwLock</span><span class=p>.</span><span class=n>ExitReadLock</span><span class=p>();</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Put</span><span class=p>(</span><span class=kt>string</span> <span class=n>key</span><span class=p>,</span> <span class=kt>string</span> <span class=k>value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>_rwLock</span><span class=p>.</span><span class=n>EnterWriteLock</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// The write lock is exclusive. It waits for all readers to finish, and then</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// blocks everyone else until the write completes.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span> <span class=n>_data</span><span class=p>[</span><span class=n>key</span><span class=p>]</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span> <span class=p>{</span> <span class=n>_rwLock</span><span class=p>.</span><span class=n>ExitWriteLock</span><span class=p>();</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h3 id=fine-grained-locking>Fine-Grained Locking</h3><p>Different threads calling the same function acquire different locks based on the
+inputs, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TicketBookingFineGrained</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>ConcurrentDictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>object</span><span class=p>&gt;</span> <span class=n>_seatLocks</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>ConcurrentDictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>string</span><span class=p>&gt;</span> <span class=n>_seatOwners</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>object</span> <span class=n>GetLock</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>_seatLocks</span><span class=p>.</span><span class=n>GetOrAdd</span><span class=p>(</span><span class=n>seatId</span><span class=p>,</span> <span class=n>_</span> <span class=p>=&gt;</span> <span class=k>new</span> <span class=kt>object</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>BookSeat</span><span class=p>(</span><span class=kt>string</span> <span class=n>seatId</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitorId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>GetLock</span><span class=p>(</span><span class=n>seatId</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=n>_seatOwners</span><span class=p>.</span><span class=n>ContainsKey</span><span class=p>(</span><span class=n>seatId</span><span class=p>))</span> <span class=p>{</span> <span class=k>return</span> <span class=kc>false</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=n>_seatOwners</span><span class=p>[</span><span class=n>seatId</span><span class=p>]</span> <span class=p>=</span> <span class=n>visitorId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; allowing for greater throughput, assuming the input is randomly distributed.
+<span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Fine-grained locking incurs complexity when operations span multiple &ldquo;splits&rdquo;,
+e.g., Alice wants to swap seat <code>7A</code> for <code>12B</code>, while Bob wants to swap <code>12B</code> for
+<code>7A</code>. This code will deadlock:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TicketBookingDeadlock</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kt>bool</span> <span class=n>SwapSeats</span><span class=p>(</span><span class=kt>string</span> <span class=n>visitor1</span><span class=p>,</span> <span class=kt>string</span> <span class=n>seat1</span><span class=p>,</span> <span class=kt>string</span> <span class=n>visitor2</span><span class=p>,</span> <span class=kt>string</span> <span class=n>seat2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>GetLock</span><span class=p>(</span><span class=n>seat1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>lock</span> <span class=p>(</span><span class=n>GetLock</span><span class=p>(</span><span class=n>seat2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ... perform swap.</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; if thread <code>A</code> locks <code>7A</code> waiting for <code>12B</code>, and thread <code>B</code> locks <code>12B</code>
+waiting for <code>7A</code>. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>The solution is to acquire locks in a consistent order, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kt>bool</span> <span class=n>shouldLockSeat1First</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Compare</span><span class=p>(</span><span class=n>seat1</span><span class=p>,</span> <span class=n>seat2</span><span class=p>)</span> <span class=p>&lt;</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>string</span> <span class=n>first</span> <span class=p>=</span> <span class=n>shouldLockSeat1First</span> <span class=p>?</span> <span class=n>seat1</span> <span class=p>:</span> <span class=n>seat2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>string</span> <span class=n>second</span> <span class=p>=</span> <span class=n>shouldLockSeat1First</span> <span class=p>?</span> <span class=n>seat2</span> <span class=p>:</span> <span class=n>seat1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>lock</span> <span class=p>(</span><span class=n>GetLock</span><span class=p>(</span><span class=n>first</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>lock</span> <span class=p>(</span><span class=n>GetLock</span><span class=p>(</span><span class=n>second</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// ... perform swap</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Fine-grained locking also introduces practical overhead. A long running
+application with unbounded resources would need to clean up locks that are no
+longer in use. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h3 id=thread-confinement-shared-nothing>Thread Confinement (Shared Nothing)</h3><p>Partition the dataso that each thread owns its slice, e.g., in a booking system,
+have thread 1 handle sections <code>A-M</code>, thread 2 handle sections <code>N-Z</code>. Database
+connection pools often give each thread its own connection. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><p>Thread confinement trades synchronization complexity for architectural
+complexity, e.g., coordinating actions that span multiple partitions (booking
+seats in sections <code>B</code> and <code>S</code>), load imbalances if some partitions are hotter
+than others, etc. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=HelloInterviewCorrectness>Correctness in Low Level Design | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/concurrency/correctness target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 22, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/coordinating-work-between-threads/>&#171; Coordinating Work Between Threads</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
