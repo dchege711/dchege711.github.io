@@ -1,0 +1,164 @@
+<!doctype html><html lang=en><head><title>Managing Limited Resources | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Limit Concurrent Operations
+Applies when you have operations that can run concurrently, but you need to cap
+how many can run at once, e.g., integrating with an external API that allows at
+most 10 concurrent requests per account, limiting number of image processing
+jobs to avoid CPU saturation, etc. 
+Semaphores solve this directly, e.g.,
+public class APIClient
+{
+  // Limit to at most 5 concurrent requests.
+  private readonly SemaphoreSlim _requestPermits = new SemaphoreSlim(5);
+
+  public async Task<Response> MakeRequestAsync(string endpoint)
+  {
+    await _requestPermits.WaitAsync(); // Block if 5 requests are in-flight
+
+    try { return await _httpClient.GetAsync(endpoint); }
+    finally { _requestPermits.Release(); }
+  }
+}
+..."><meta property="og:title" content="Managing Limited Resources"><meta property="og:description" content="Limit Concurrent Operations
+Applies when you have operations that can run concurrently, but you need to cap
+how many can run at once, e.g., integrating with an external API that allows at
+most 10 concurrent requests per account, limiting number of image processing
+jobs to avoid CPU saturation, etc. 
+Semaphores solve this directly, e.g.,
+public class APIClient
+{
+  // Limit to at most 5 concurrent requests.
+  private readonly SemaphoreSlim _requestPermits = new SemaphoreSlim(5);
+
+  public async Task<Response> MakeRequestAsync(string endpoint)
+  {
+    await _requestPermits.WaitAsync(); // Block if 5 requests are in-flight
+
+    try { return await _httpClient.GetAsync(endpoint); }
+    finally { _requestPermits.Release(); }
+  }
+}
+..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/managing-limited-resources/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/>Resource Management</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/>Low Level Concurrency</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/managing-limited-resources/>Managing Limited Resources</a></li></ul></nav><section><header><h1>Managing Limited Resources</h1><p class=meta>Dated Oct 24, 2026;
+last modified on Sat, 24 Oct 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#limit-concurrent-operations>Limit Concurrent Operations</a></li><li><a href=#limit-aggregate-consumption>Limit Aggregate Consumption</a></li><li><a href=#reuse-expensive-objects>Reuse Expensive Objects</a></li><li><a href=#how-to-determine-capacity>How to Determine Capacity</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=limit-concurrent-operations>Limit Concurrent Operations</h2><p>Applies when you have operations that can run concurrently, but you need to cap
+how many can run at once, e.g., integrating with an external API that allows at
+most 10 concurrent requests per account, limiting number of image processing
+jobs to avoid CPU saturation, etc. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p>Semaphores solve this directly, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>APIClient</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Limit to at most 5 concurrent requests.</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>SemaphoreSlim</span> <span class=n>_requestPermits</span> <span class=p>=</span> <span class=k>new</span> <span class=n>SemaphoreSlim</span><span class=p>(</span><span class=m>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kd>async</span> <span class=n>Task</span><span class=p>&lt;</span><span class=n>Response</span><span class=p>&gt;</span> <span class=n>MakeRequestAsync</span><span class=p>(</span><span class=kt>string</span> <span class=n>endpoint</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=n>_requestPermits</span><span class=p>.</span><span class=n>WaitAsync</span><span class=p>();</span> <span class=c1>// Block if 5 requests are in-flight</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span> <span class=k>return</span> <span class=k>await</span> <span class=n>_httpClient</span><span class=p>.</span><span class=n>GetAsync</span><span class=p>(</span><span class=n>endpoint</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span> <span class=p>{</span> <span class=n>_requestPermits</span><span class=p>.</span><span class=n>Release</span><span class=p>();</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><h2 id=limit-aggregate-consumption>Limit Aggregate Consumption</h2><p>Applies when the constraint isn&rsquo;t on the number of concurrent operations, but
+how much of some resource those operations are collectively using, e.g.,
+limiting data uploads to \(N\) MB to avoid overwhelming memory buffers. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p>Use a semaphore, where each permit represents a unit of the resource, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>DiskWriter</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kd>const</span> <span class=kt>int</span> <span class=n>MB</span> <span class=p>=</span> <span class=m>1024</span> <span class=p>*</span> <span class=m>1024</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=kt>object</span> <span class=n>_lock</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>int</span> <span class=n>_availableMB</span> <span class=p>=</span> <span class=m>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kd>async</span> <span class=n>Task</span> <span class=n>WriteFileAsync</span><span class=p>(</span><span class=kt>byte</span><span class=p>[]</span> <span class=n>data</span><span class=p>,</span> <span class=kt>string</span> <span class=n>path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>neededMB</span> <span class=p>=</span> <span class=n>Math</span><span class=p>.</span><span class=n>Max</span><span class=p>(</span><span class=m>1</span><span class=p>,</span> <span class=p>(</span><span class=n>data</span><span class=p>.</span><span class=n>length</span> <span class=p>+</span> <span class=n>MB</span> <span class=p>-</span> <span class=m>1</span><span class=p>)</span> <span class=p>/</span> <span class=n>MB</span><span class=p>);</span> <span class=c1>// Round up permits</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>lock</span> <span class=p>(</span><span class=n>_lock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>while</span> <span class=p>(</span><span class=n>_availableMB</span> <span class=p>&lt;</span> <span class=n>neededMB</span><span class=p>)</span> <span class=p>{</span> <span class=n>Monitor</span><span class=p>.</span><span class=n>Wait</span><span class=p>(</span><span class=n>_lock</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=n>_availableMB</span> <span class=p>-=</span> <span class=n>neededMB</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span> <span class=k>await</span> <span class=n>File</span><span class=p>.</span><span class=n>WriteAllBytesAsync</span><span class=p>(</span><span class=n>path</span><span class=p>,</span> <span class=n>data</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>lock</span> <span class=p>(</span><span class=n>_lock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>_availableMB</span> <span class=p>+=</span> <span class=n>neededMB</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>Monitor</span><span class=p>.</span><span class=n>PulseAll</span><span class=p>(</span><span class=n>_lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><h2 id=reuse-expensive-objects>Reuse Expensive Objects</h2><p>The constraint is a fixed set of expensive objects that are costly to create but
+can be reused, e.g., database connections which take time to establish, GPU
+contexts which consume memory, file handles which are limited by the OS. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>ConnectionPool</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>BlockingCollection</span><span class=p>&lt;</span><span class=n>Connection</span><span class=p>&gt;</span> <span class=n>_availableConnections</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>ConnectionPool</span><span class=p>(</span><span class=kt>int</span> <span class=n>poolSize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>_availableConnections</span> <span class=p>=</span> <span class=k>new</span> <span class=n>BlockingCollection</span><span class=p>&lt;</span><span class=n>Connection</span><span class=p>&gt;(</span><span class=n>poolSize</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>poolSize</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>_availableConnections</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=n>CreateNewConnection</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>Connection</span> <span class=n>Acquire</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=k>return</span> <span class=n>_availableConnections</span><span class=p>.</span><span class=n>Take</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>Release</span><span class=p>(</span><span class=n>Connection</span> <span class=n>connection</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>_availableConnections</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=n>connection</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>ExecuteQuery</span><span class=p>(</span><span class=kt>string</span> <span class=n>query</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>connection</span> <span class=p>=</span> <span class=n>Acquire</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span> <span class=n>connection</span><span class=p>.</span><span class=n>Execute</span><span class=p>(</span><span class=n>query</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span> <span class=p>{</span> <span class=n>Release</span><span class=p>(</span><span class=n>connection</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Can&rsquo;t <code>ConnectionPool</code> expose an <code>IDisposable</code> that returns the <code>Connection</code> to
+the <code>BlockingCollection</code> on disposal? Every <code>Acquire</code> call needs a <code>Release</code>
+call, and disposables seem like the C# idiom for achieving guaranteed cleanup.</p></div></div><p>Creating all the objects upfront slows down startup, but subsequent requests are
+fast. Lazy initialization needs to take into account race conditions when
+establishing the objects. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p>Use timeout variants to avoid blocking forever on request paths, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>ConnectionPool</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ...</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>TimeSpan</span> <span class=n>_timeout</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>ConnectionPool</span><span class=p>(</span><span class=kt>int</span> <span class=n>poolSize</span><span class=p>,</span> <span class=n>TimeSpan</span> <span class=n>timeout</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=n>Connection</span> <span class=n>Acquire</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_availableConnections</span><span class=p>.</span><span class=n>TryTake</span><span class=p>(</span><span class=k>out</span> <span class=kt>var</span> <span class=n>conn</span><span class=p>,</span> <span class=n>_timeout</span><span class=p>))</span> <span class=p>{</span> <span class=k>return</span> <span class=n>conn</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>throw</span> <span class=k>new</span> <span class=n>TimeoutException</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>      <span class=s>$&#34;No connection available within {_timeout.TotalMilliseconds}ms&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p>Most blocking queue implementations are approximately FIFO in which thread gets
+woken up. At the cost of reduced throughput, you can guarantee strict fairness,
+e.g., using an <code>ArrayBlockingQueue</code> with <code>fair=true</code>. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p>Avoid nested checkout of objects as that may deadlock. Suppose there are 10
+connections, and 10 worker threads, each using a connection. If these threads
+try to check out a second connection, then they&rsquo;ll become stuck. Instead, have
+each worker request all of its connections upfront as an all-or-nothing step.
+<span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p><code>ExecuteQuery</code> can catch fatal network or protocol errors, and use that to
+discard an invalid <code>Connection</code> and replace it with a valid one. This is useful
+for long-lived objects that can be invalidated outside the pooling mechanism,
+e.g., DB restarts, voiding current connections. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>IMO, it should be up to the <code>Connection</code> itself to ensure its own validity.
+Having the <code>ConnectionPool</code> take that into account muddies the waters for me.</p></div></div><h2 id=how-to-determine-capacity>How to Determine Capacity</h2><p>Little&rsquo;s Law states that:</p><p>$$ L = \lambda W $$</p><p>&mldr; where \(L\) is the long-term average number of customers in a stationary
+system, and \(\lambda\) is the long-term average effective arrival rate, and
+\(W\) is the average time a customer spends in the system. In most queuing
+systems, service time is the bottleneck that creates the queue. <span class=citation-ref><a href=#LittlesLawWiki></a></span></p><p>If a service receives 150 req/sec, and each request holds a DB connection for an
+average of 20ms, then the average concurrent connection demand is \( 150 \times
+0.02 = 3\). To run at no more than 75% average utilization, use a pool of
+\(\frac{3}{0.75} = 4\) connections. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=ScarcityHelloInterview>Scarcity in Low Level Design | Hello Interview Low Level Design<i>.</i>
+</cite><a href=https://www.hellointerview.com/learn/low-level-design/concurrency/scarcity target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 24, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=LittlesLawWiki>Little's law - Wikipedia<i>.</i>
+</cite><a href=https://en.wikipedia.org/wiki/Little%27s_law target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>en.wikipedia.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Oct 24, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/en.wikipedia.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=en.wikipedia.org" loading=lazy aria-hidden=true width=16 height=16>
+en.wikipedia.org
+</a><a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/correctness-in-concurrency/>&#171; Ensuring Correctness in Concurrent Execution</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

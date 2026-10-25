@@ -34,7 +34,26 @@ not thread-safe. There were guardrails for scenarios like checking <code>WeakPtr
 on a different thread. However, I didn&rsquo;t come out of it with a mental model for
 threading primitives.</p></div></div><h2 id=introduction>Introduction</h2><p>Threads are smaller units of a process that allow executing tasks in parallel,
 sharing memory space. Threads are particularly useful for I/O bound tasks,
-where much of the time is spent waiting for external resources. <span class=citation-ref><a href=#threadingPy></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Oct 22, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/coordinating-work-between-threads/>Coordinating Work Between Threads</a>
+where much of the time is spent waiting for external resources. <span class=citation-ref><a href=#threadingPy></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Oct 24, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/managing-limited-resources/>Managing Limited Resources</a>
+<span class=meta>4 min; updated Oct 24, 2026
+<button id=cef897e630050212926ac339d18b93e7-summary-controller onclick=toggleSummaryDisplay(this)>
+<i class="fas fa-chevron-down"></i></button></span><section class=meta id=cef897e630050212926ac339d18b93e7-summary style=display:none><h2 id=limit-concurrent-operations>Limit Concurrent Operations</h2><p>Applies when you have operations that can run concurrently, but you need to cap
+how many can run at once, e.g., integrating with an external API that allows at
+most 10 concurrent requests per account, limiting number of image processing
+jobs to avoid CPU saturation, etc. <span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p><p>Semaphores solve this directly, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>APIClient</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Limit to at most 5 concurrent requests.</span>
+</span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=k>readonly</span> <span class=n>SemaphoreSlim</span> <span class=n>_requestPermits</span> <span class=p>=</span> <span class=k>new</span> <span class=n>SemaphoreSlim</span><span class=p>(</span><span class=m>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=kd>async</span> <span class=n>Task</span><span class=p>&lt;</span><span class=n>Response</span><span class=p>&gt;</span> <span class=n>MakeRequestAsync</span><span class=p>(</span><span class=kt>string</span> <span class=n>endpoint</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=n>_requestPermits</span><span class=p>.</span><span class=n>WaitAsync</span><span class=p>();</span> <span class=c1>// Block if 5 requests are in-flight</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>try</span> <span class=p>{</span> <span class=k>return</span> <span class=k>await</span> <span class=n>_httpClient</span><span class=p>.</span><span class=n>GetAsync</span><span class=p>(</span><span class=n>endpoint</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span> <span class=p>{</span> <span class=n>_requestPermits</span><span class=p>.</span><span class=n>Release</span><span class=p>();</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#ScarcityHelloInterview></a></span></p>...</section></td></tr><tr class=no-decoration><td class=no-decoration>Oct 22, 2026</td><td class=no-decoration>&#187;</td><td class=no-decoration><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/resource-management/low-level-concurrency/coordinating-work-between-threads/>Coordinating Work Between Threads</a>
 <span class=meta>5 min; updated Oct 22, 2026
 <button id=11a1d15f23f94541973c65cac026b1c5-summary-controller onclick=toggleSummaryDisplay(this)>
 <i class="fas fa-chevron-down"></i></button></span><section class=meta id=11a1d15f23f94541973c65cac026b1c5-summary style=display:none><h2 id=the-problem>The Problem</h2><p>Some work should not be ran in the mainline as it takes too long, and makes your
