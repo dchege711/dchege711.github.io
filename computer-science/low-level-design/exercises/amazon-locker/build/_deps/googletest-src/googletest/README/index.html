@@ -1,0 +1,154 @@
+<!doctype html><html lang=en><head><title>| curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Generic Build Instructions
+Setup
+To build GoogleTest and your tests that use it, you need to tell your build
+system where to find its headers and source files. The exact way to do it
+depends on which build system you use, and is usually straightforward.
+Build with CMake
+GoogleTest comes with a CMake build script
+(
+
+    CMakeLists.txt
+     
+
+)
+that can be used on a wide range of platforms (&ldquo;C&rdquo; stands for cross-platform.).
+If you don&rsquo;t have CMake installed already, you can download it for free from
+
+
+    https://cmake.org/
+     
+
+...."><meta property="og:title" content><meta property="og:description" content="Generic Build Instructions
+Setup
+To build GoogleTest and your tests that use it, you need to tell your build
+system where to find its headers and source files. The exact way to do it
+depends on which build system you use, and is usually straightforward.
+Build with CMake
+GoogleTest comes with a CMake build script
+(
+
+    CMakeLists.txt
+     
+
+)
+that can be used on a wide range of platforms (&ldquo;C&rdquo; stands for cross-platform.).
+If you don&rsquo;t have CMake installed already, you can download it for free from
+
+
+    https://cmake.org/
+     
+
+...."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/low-level-design/exercises/amazon-locker/build/_deps/googletest-src/googletest/README/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/>Low Level Design</a></li><li><a href=https://www.curiosities.dev/computer-science/low-level-design/exercises/>Low Level Design Exercises</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/low-level-design/exercises/amazon-locker/build/_deps/googletest-src/googletest/README/></a></li></ul></nav><section><header><h1></h1><p class=meta>last modified on Mon, 01 Jan 0001</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><ul><li><a href=#generic-build-instructions>Generic Build Instructions</a><ul><li><a href=#setup>Setup</a></li></ul></li><li><a href=#build-with-cmake>Build with CMake</a><ul><li><a href=#standalone-cmake-project>Standalone CMake Project</a></li><li><a href=#incorporating-into-an-existing-cmake-project>Incorporating Into An Existing CMake Project</a><ul><li><a href=#visual-studio-dynamic-vs-static-runtimes>Visual Studio Dynamic vs Static Runtimes</a></li></ul></li><li><a href=#c-standard-version>C++ Standard Version</a></li></ul></li><li><a href=#tweaking-googletest>Tweaking GoogleTest</a></li><li><a href=#multi-threaded-tests>Multi-threaded Tests</a></li><li><a href=#as-a-shared-library-dll>As a Shared Library (DLL)</a></li><li><a href=#avoiding-macro-name-clashes>Avoiding Macro Name Clashes</a></li></ul></li></ul></nav></aside><article id=main-article><h3 id=generic-build-instructions>Generic Build Instructions</h3><h4 id=setup>Setup</h4><p>To build GoogleTest and your tests that use it, you need to tell your build
+system where to find its headers and source files. The exact way to do it
+depends on which build system you use, and is usually straightforward.</p><h3 id=build-with-cmake>Build with CMake</h3><p>GoogleTest comes with a CMake build script
+(
+<a href=https://github.com/google/googletest/blob/main/CMakeLists.txt target=_blank rel=noopener>CMakeLists.txt
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>)
+that can be used on a wide range of platforms (&ldquo;C&rdquo; stands for cross-platform.).
+If you don&rsquo;t have CMake installed already, you can download it for free from
+<a href=https://cmake.org/ target=_blank rel=noopener>https://cmake.org/
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.</p><p>CMake works by generating native makefiles or build projects that can be used in
+the compiler environment of your choice. You can either build GoogleTest as a
+standalone project or it can be incorporated into an existing CMake build for
+another project.</p><h4 id=standalone-cmake-project>Standalone CMake Project</h4><p>When building GoogleTest as a standalone project, the typical workflow starts
+with</p><pre tabindex=0><code>git clone https://github.com/google/googletest.git -b v1.17.0
+cd googletest        # Main directory of the cloned repository.
+mkdir build          # Create a directory to hold the build output.
+cd build
+cmake ..             # Generate native build scripts for GoogleTest.
+</code></pre><p>The above command also includes GoogleMock by default. And so, if you want to
+build only GoogleTest, you should replace the last command with</p><pre tabindex=0><code>cmake .. -DBUILD_GMOCK=OFF
+</code></pre><p>If you are on a *nix system, you should now see a Makefile in the current
+directory. Just type <code>make</code> to build GoogleTest. And then you can simply install
+GoogleTest if you are a system administrator.</p><pre tabindex=0><code>make
+sudo make install    # Install in /usr/local/ by default
+</code></pre><p>If you use Windows and have Visual Studio installed, a <code>gtest.sln</code> file and
+several <code>.vcproj</code> files will be created. You can then build them using Visual
+Studio.</p><p>On Mac OS X with Xcode installed, a <code>.xcodeproj</code> file will be generated.</p><h4 id=incorporating-into-an-existing-cmake-project>Incorporating Into An Existing CMake Project</h4><p>If you want to use GoogleTest in a project which already uses CMake, the easiest
+way is to get installed libraries and headers.</p><ul><li>Import GoogleTest by using <code>find_package</code> (or <code>pkg_check_modules</code>). For
+example, if <code>find_package(GTest CONFIG REQUIRED)</code> succeeds, you can use the
+libraries as <code>GTest::gtest</code>, <code>GTest::gmock</code>.</li></ul><p>And a more robust and flexible approach is to build GoogleTest as part of that
+project directly. This is done by making the GoogleTest source code available to
+the main build and adding it using CMake&rsquo;s <code>add_subdirectory()</code> command. This
+has the significant advantage that the same compiler and linker settings are
+used between GoogleTest and the rest of your project, so issues associated with
+using incompatible libraries (eg debug/release), etc. are avoided. This is
+particularly useful on Windows. Making GoogleTest&rsquo;s source code available to the
+main build can be done a few different ways:</p><ul><li>Download the GoogleTest source code manually and place it at a known
+location. This is the least flexible approach and can make it more difficult
+to use with continuous integration systems, etc.</li><li>Embed the GoogleTest source code as a direct copy in the main project&rsquo;s
+source tree. This is often the simplest approach, but is also the hardest to
+keep up to date. Some organizations may not permit this method.</li><li>Add GoogleTest as a git submodule or equivalent. This may not always be
+possible or appropriate. Git submodules, for example, have their own set of
+advantages and drawbacks.</li><li>Use CMake to download GoogleTest as part of the build&rsquo;s configure step. This
+approach doesn&rsquo;t have the limitations of the other methods.</li></ul><p>The last of the above methods is implemented with a small piece of CMake code
+that downloads and pulls the GoogleTest code into the main build.</p><p>Just add to your <code>CMakeLists.txt</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cmake data-lang=cmake><span class=line><span class=cl><span class=nb>include</span><span class=p>(</span><span class=s>FetchContent</span><span class=p>)</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=nb>FetchContent_Declare</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>googletest</span>
+</span></span><span class=line><span class=cl>  <span class=c># Specify the commit you depend on and update it regularly.
+</span></span></span><span class=line><span class=cl>  <span class=s>URL</span> <span class=s>https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip</span>
+</span></span><span class=line><span class=cl><span class=p>)</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=c># For Windows: Prevent overriding the parent project&#39;s compiler/linker settings
+</span></span></span><span class=line><span class=cl><span class=nb>set</span><span class=p>(</span><span class=s>gtest_force_shared_crt</span> <span class=s>ON</span> <span class=s>CACHE</span> <span class=s>BOOL</span> <span class=s2>&#34;&#34;</span> <span class=s>FORCE</span><span class=p>)</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=nb>FetchContent_MakeAvailable</span><span class=p>(</span><span class=s>googletest</span><span class=p>)</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=c># Now simply link against gtest or gtest_main as needed. Eg
+</span></span></span><span class=line><span class=cl><span class=nb>add_executable</span><span class=p>(</span><span class=s>example</span> <span class=s>example.cpp</span><span class=p>)</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=nb>target_link_libraries</span><span class=p>(</span><span class=s>example</span> <span class=s>gtest_main</span><span class=p>)</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=nb>add_test</span><span class=p>(</span><span class=s>NAME</span> <span class=s>example_test</span> <span class=s>COMMAND</span> <span class=s>example</span><span class=p>)</span><span class=err>
+</span></span></span></code></pre></div><p>Note that this approach requires CMake 3.14 or later due to its use of the
+<code>FetchContent_MakeAvailable()</code> command.</p><h5 id=visual-studio-dynamic-vs-static-runtimes>Visual Studio Dynamic vs Static Runtimes</h5><p>By default, new Visual Studio projects link the C runtimes dynamically but
+GoogleTest links them statically. This will generate an error that looks
+something like the following: gtest.lib(gtest-all.obj) : error LNK2038: mismatch
+detected for &lsquo;RuntimeLibrary&rsquo;: value &lsquo;MTd_StaticDebug&rsquo; doesn&rsquo;t match value
+&lsquo;MDd_DynamicDebug&rsquo; in main.obj</p><p>GoogleTest already has a CMake option for this: <code>gtest_force_shared_crt</code></p><p>Enabling this option will make gtest link the runtimes dynamically too, and
+match the project in which it is included.</p><h4 id=c-standard-version>C++ Standard Version</h4><p>An environment that supports C++17 is required in order to successfully build
+GoogleTest. One way to ensure this is to specify the standard in the top-level
+project, for example by using the <code>set(CMAKE_CXX_STANDARD 17)</code> command along
+with <code>set(CMAKE_CXX_STANDARD_REQUIRED ON)</code>. If this is not feasible, for example
+in a C project using GoogleTest for validation, then it can be specified by
+adding it to the options for cmake via the<code>-DCMAKE_CXX_FLAGS</code> option.</p><h3 id=tweaking-googletest>Tweaking GoogleTest</h3><p>GoogleTest can be used in diverse environments. The default configuration may
+not work (or may not work well) out of the box in some environments. However,
+you can easily tweak GoogleTest by defining control macros on the compiler
+command line. Generally, these macros are named like <code>GTEST_XYZ</code> and you define
+them to either 1 or 0 to enable or disable a certain feature.</p><p>We list the most frequently used macros below. For a complete list, see file
+<a href=https://github.com/google/googletest/blob/main/googletest/include/gtest/internal/gtest-port.h target=_blank rel=noopener>include/gtest/internal/gtest-port.h
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.</p><h3 id=multi-threaded-tests>Multi-threaded Tests</h3><p>GoogleTest is thread-safe where the pthread library is available. After
+<code>#include &lt;gtest/gtest.h></code>, you can check the
+<code>GTEST_IS_THREADSAFE</code> macro to see whether this is the case (yes if the macro is
+<code>#defined</code> to 1, no if it&rsquo;s undefined.).</p><p>If GoogleTest doesn&rsquo;t correctly detect whether pthread is available in your
+environment, you can force it with</p><pre tabindex=0><code>-DGTEST_HAS_PTHREAD=1
+</code></pre><p>or</p><pre tabindex=0><code>-DGTEST_HAS_PTHREAD=0
+</code></pre><p>When GoogleTest uses pthread, you may need to add flags to your compiler and/or
+linker to select the pthread library, or you&rsquo;ll get link errors. If you use the
+CMake script, this is taken care of for you. If you use your own build script,
+you&rsquo;ll need to read your compiler and linker&rsquo;s manual to figure out what flags
+to add.</p><h3 id=as-a-shared-library-dll>As a Shared Library (DLL)</h3><p>GoogleTest is compact, so most users can build and link it as a static library
+for the simplicity. You can choose to use GoogleTest as a shared library (known
+as a DLL on Windows) if you prefer.</p><p>To compile <em>gtest</em> as a shared library, add</p><pre tabindex=0><code>-DGTEST_CREATE_SHARED_LIBRARY=1
+</code></pre><p>to the compiler flags. You&rsquo;ll also need to tell the linker to produce a shared
+library instead - consult your linker&rsquo;s manual for how to do it.</p><p>To compile your <em>tests</em> that use the gtest shared library, add</p><pre tabindex=0><code>-DGTEST_LINKED_AS_SHARED_LIBRARY=1
+</code></pre><p>to the compiler flags.</p><p>Note: while the above steps aren&rsquo;t technically necessary today when using some
+compilers (e.g. GCC), they may become necessary in the future, if we decide to
+improve the speed of loading the library (see
+<a href=https://gcc.gnu.org/wiki/Visibility target=_blank rel=noopener>https://gcc.gnu.org/wiki/Visibility
+<i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>for details). Therefore you are
+recommended to always add the above flags when using GoogleTest as a shared
+library. Otherwise a future release of GoogleTest may break your build script.</p><h3 id=avoiding-macro-name-clashes>Avoiding Macro Name Clashes</h3><p>In C++, macros don&rsquo;t obey namespaces. Therefore two libraries that both define a
+macro of the same name will clash if you <code>#include</code> both definitions. In case a
+GoogleTest macro clashes with another library, you can force GoogleTest to
+rename its macro to avoid the conflict.</p><p>Specifically, if both GoogleTest and some other code define macro FOO, you can
+add</p><pre tabindex=0><code>-DGTEST_DONT_DEFINE_FOO=1
+</code></pre><p>to the compiler flags to tell GoogleTest to change the macro&rsquo;s name from <code>FOO</code>
+to <code>GTEST_FOO</code>. Currently <code>FOO</code> can be <code>ASSERT_EQ</code>, <code>ASSERT_FALSE</code>, <code>ASSERT_GE</code>,
+<code>ASSERT_GT</code>, <code>ASSERT_LE</code>, <code>ASSERT_LT</code>, <code>ASSERT_NE</code>, <code>ASSERT_TRUE</code>,
+<code>EXPECT_FALSE</code>, <code>EXPECT_TRUE</code>, <code>FAIL</code>, <code>SUCCEED</code>, <code>TEST</code>, or <code>TEST_F</code>. For
+example, with <code>-DGTEST_DONT_DEFINE_TEST=1</code>, you&rsquo;ll need to write</p><pre tabindex=0><code>GTEST_TEST(SomeTest, DoesThis) { ... }
+</code></pre><p>instead of</p><pre tabindex=0><code>TEST(SomeTest, DoesThis) { ... }
+</code></pre><p>in order to define a test.</p></article><div style=font-size:smaller></div></div><footer><a href=https://www.curiosities.dev/computer-science/low-level-design/exercises/amazon-locker/build/_deps/googletest-src/googletest/include/gtest/internal/custom/README/>&#171; </a><a href=https://www.curiosities.dev/computer-science/low-level-design/exercises/amazon-locker/build/_deps/googletest-src/README/>&#187;</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>
