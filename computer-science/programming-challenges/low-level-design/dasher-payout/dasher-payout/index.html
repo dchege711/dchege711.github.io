@@ -1,0 +1,182 @@
+<!doctype html><html lang=en><head><title>Dasher Payout Calculation | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content='Problem Statement
+Design an API that calculates total payout for a driver based on their delivery
+events. Each delivery event has a status that&rsquo;s one of accepted, delivered,
+or cancelled. The payout for completed deliveries is:
+payout = base_rate * (1 + bonus_factor * concurrent_count)
+&mldr; where concurrent_count is determined at the time of accepting the delivery
+request. 
+Solution
+Parse, Don&rsquo;t Validate
+ passes delivery events of the form:
+{id: "D1", status: "accepted", time: "10:00"}
+&mldr; and so parse them into appropriate types:...'><meta property="og:title" content="Dasher Payout Calculation"><meta property="og:description" content='Problem Statement
+Design an API that calculates total payout for a driver based on their delivery
+events. Each delivery event has a status that&rsquo;s one of accepted, delivered,
+or cancelled. The payout for completed deliveries is:
+payout = base_rate * (1 + bonus_factor * concurrent_count)
+&mldr; where concurrent_count is determined at the time of accepting the delivery
+request. 
+Solution
+Parse, Don&rsquo;t Validate
+ passes delivery events of the form:
+{id: "D1", status: "accepted", time: "10:00"}
+&mldr; and so parse them into appropriate types:...'><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/low-level-design/dasher-payout/dasher-payout/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><script type=text/javascript async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/low-level-design/>Low Level Design Exercises</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/low-level-design/dasher-payout/dasher-payout/>Dasher Payout Calculation</a></li></ul></nav><section><header><h1>Dasher Payout Calculation</h1><p class=meta>Dated Nov 19, 2026;
+last modified on Thu, 19 Nov 2026</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#problem-statement>Problem Statement</a></li><li><a href=#solution>Solution</a><ul><li><a href=#parse-dont-validate>Parse, Don&rsquo;t Validate</a></li><li><a href=#payout-calculation>Payout Calculation</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=problem-statement>Problem Statement</h2><p>Design an API that calculates total payout for a driver based on their delivery
+events. Each delivery event has a status that&rsquo;s one of <code>accepted</code>, <code>delivered</code>,
+or <code>cancelled</code>. The payout for completed deliveries is:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>payout</span> <span class=o>=</span> <span class=n>base_rate</span> <span class=o>*</span> <span class=p>(</span><span class=mi>1</span> <span class=o>+</span> <span class=n>bonus_factor</span> <span class=o>*</span> <span class=n>concurrent_count</span><span class=p>)</span>
+</span></span></code></pre></div><p>&mldr; where <code>concurrent_count</code> is determined at the time of accepting the delivery
+request. <span class=citation-ref><a href=#DasherPayoutHelloInterview></a></span></p><h2 id=solution>Solution</h2><h3 id=parse-dont-validate>Parse, Don&rsquo;t Validate</h3><p><span class=citation-ref><a href=#DasherPayoutHelloInterview></a></span>passes delivery events of the form:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=line><span class=cl><span class=p>{</span><span class=nx>id</span><span class=o>:</span> <span class=s2>&#34;D1&#34;</span><span class=p>,</span> <span class=nx>status</span><span class=o>:</span> <span class=s2>&#34;accepted&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=o>:</span> <span class=s2>&#34;10:00&#34;</span><span class=p>}</span>
+</span></span></code></pre></div><p>&mldr; and so parse them into appropriate types:</p><details><summary>DeliveryEvent.cs</summary><div><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>DasherPayout</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=kd>enum</span> <span class=n>DeliveryStatus</span> <span class=p>{</span> <span class=n>Accepted</span><span class=p>,</span> <span class=n>Delivered</span><span class=p>,</span> <span class=n>Cancelled</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=k>record</span> <span class=nc>struct</span> <span class=n>DeliveryEvent</span><span class=p>(</span><span class=kt>string</span> <span class=n>Id</span><span class=p>,</span> <span class=n>DeliveryStatus</span> <span class=n>Status</span><span class=p>,</span> <span class=n>TimeOnly</span> <span class=n>Time</span><span class=p>);</span>
+</span></span></code></pre></div></div></details><details><summary>Converters.cs</summary><div><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Globalization</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>DasherPayout</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=kd>static</span> <span class=k>class</span> <span class=nc>Converters</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>extension</span><span class=p>(</span><span class=n>External</span><span class=p>.</span><span class=n>DeliveryEvent</span> <span class=n>deliveryEvent</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kd>internal</span> <span class=n>DeliveryEvent</span> <span class=n>ToInternal</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>DeliveryStatus</span> <span class=n>status</span> <span class=p>=</span> <span class=n>Enum</span><span class=p>.</span><span class=n>Parse</span><span class=p>&lt;</span><span class=n>DeliveryStatus</span><span class=p>&gt;(</span><span class=n>deliveryEvent</span><span class=p>.</span><span class=n>Status</span><span class=p>,</span> <span class=n>ignoreCase</span><span class=p>:</span> <span class=kc>true</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(!</span><span class=n>Enum</span><span class=p>.</span><span class=n>IsDefined</span><span class=p>(</span><span class=n>status</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentException</span><span class=p>(</span><span class=s>$&#34;{status} is not a recognized event status&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>time</span> <span class=p>=</span> <span class=n>TimeOnly</span><span class=p>.</span><span class=n>Parse</span><span class=p>(</span><span class=n>deliveryEvent</span><span class=p>.</span><span class=n>Time</span><span class=p>,</span> <span class=n>CultureInfo</span><span class=p>.</span><span class=n>InvariantCulture</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=k>new</span><span class=p>(</span><span class=n>deliveryEvent</span><span class=p>.</span><span class=n>Id</span><span class=p>,</span> <span class=n>status</span><span class=p>,</span> <span class=n>time</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div></div></details><p>&mldr; where <code>enum DeliveryStatus</code> affords us stricter typing on the possible
+statuses, and <code>TimeOnly Time</code> gets us a sorting key, e.g., &ldquo;8:00&rdquo; is less than
+&ldquo;10:00&rdquo;.</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The canonical input is to have a timestamp based on a pre-agreed epoch. Sending
+timestamps as strings is a weird choice on <span class=citation-ref><a href=#DasherPayoutHelloInterview></a></span>&rsquo;s part.</p></div></div><p>Using a <code>double</code> for money introduces rounding errors that are not appropriate
+for financial calculations, which require large numbers and no round-off errors.
+.NET&rsquo;s <code>Decimal</code> fills this gap, supporting values in the range \([-(2^{96} -
+1), 2^{96} - 1]\):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=m>0.1</span>  <span class=p>+</span> <span class=m>0.2</span>  <span class=p>==</span> <span class=m>0.3</span><span class=p>);</span>  <span class=c1>// False: double</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=m>0.1</span><span class=n>m</span> <span class=p>+</span> <span class=m>0.2</span><span class=n>m</span> <span class=p>==</span> <span class=m>0.3</span><span class=n>m</span><span class=p>);</span> <span class=c1>// True: decimal</span>
+</span></span></code></pre></div><p><span class=citation-ref><a href=#DotNetDecimal></a></span></p><div class=comment-holder><div class="comment open-comment" title="Open comment: unresolved question"><p>Find practice problems that demand an understanding of rounding off errors to
+further cement this.</p></div></div><h3 id=payout-calculation>Payout Calculation</h3><p>I initially &ldquo;reduced&rdquo; this problem to a harder problem where I parsed the
+delivery events into a sequence of intervals:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>private</span> <span class=k>record</span> <span class=nc>struct</span> <span class=n>Delivery</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=kt>string</span> <span class=n>Id</span><span class=p>,</span> <span class=n>TimeOnly</span> <span class=n>Start</span><span class=p>,</span> <span class=n>TimeOnly</span> <span class=n>End</span><span class=p>,</span> <span class=n>DeliveryTerminalStatus</span> <span class=n>Status</span><span class=p>);</span>
+</span></span></code></pre></div><p>&mldr; and then proceeded to sweep through the intervals in order, and extract
+concurrent counts.</p><figure><img src=/img/computer-science/low-level-design/dasher-payout/interval-sweep.svg alt="Sweeping through intervals. Credits: GPT-6.1 Sol."><figcaption><p>Sweeping through intervals. Credits: GPT-6.1 Sol.</p></figcaption></figure><p>However, the sweep ends up re-creating the original events, e.g.,
+<code>Delivery.Start</code> is the original <code>Delivery.Accepted</code> event! Processing the
+<code>DeliveryEvent</code>s in increasing <code>Time</code> order gets us there:</p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>The failure mode here was having just enough information to trip myself up. I
+vaguely remembered some computational geometry algorithms from college, and
+rushed to assume that this was an instance of it.</p><p>The algorithm involved two instances of the <code>Delivery</code> lists, one sorted by
+<code>Delivery.Start</code> and the other sorted by <code>Delivery.End</code>. We then advanced a
+pointer in each list, while computing the overlapping intervals along the way.
+<span class=citation-ref><a href=#DasherPayoutAtb0a598c></a></span></p></div></div><p>Define the simultaneity contract when processing a sequence of events w.r.t.
+time. For example, define that a delivery is active over <code>[accepted, closed)</code>.
+That way, if <code>D2</code> ends at <code>11:00</code> and <code>D3</code> starts at <code>11:00</code>, then <code>D3</code> payout
+will not be affected by when we processed <code>D2</code>&rsquo;s end event.</p><div><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=err>﻿</span><span class=k>using</span> <span class=nn>ExhaustiveMatching</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>DasherPayout</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>DasherPayout</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>decimal</span> <span class=n>CalculatePayout</span><span class=p>(</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>External</span><span class=p>.</span><span class=n>DeliveryEvent</span><span class=p>&gt;</span> <span class=n>externalEvents</span><span class=p>,</span> <span class=kt>decimal</span> <span class=n>baseRate</span><span class=p>,</span> <span class=kt>decimal</span> <span class=n>bonusFactor</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=n>CalculatePayout</span><span class=p>(</span><span class=n>externalEvents</span><span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>e</span> <span class=p>=&gt;</span> <span class=n>e</span><span class=p>.</span><span class=n>ToInternal</span><span class=p>()),</span> <span class=n>baseRate</span><span class=p>,</span> <span class=n>bonusFactor</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kd>static</span> <span class=kt>decimal</span> <span class=n>CalculatePayout</span><span class=p>(</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>DeliveryEvent</span><span class=p>&gt;</span> <span class=n>events</span><span class=p>,</span> <span class=kt>decimal</span> <span class=n>baseRate</span><span class=p>,</span> <span class=kt>decimal</span> <span class=n>bonusFactor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// Can&#39;t assume that events come in order. In a real system, network delays</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// might cause events to come out of order. Someone, e.g., our events store,</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// needs to guarantee that we&#39;re processing events in their correct order.</span>
+</span></span><span class=line><span class=cl>        <span class=n>IOrderedEnumerable</span><span class=p>&lt;</span><span class=n>IGrouping</span><span class=p>&lt;</span><span class=n>TimeOnly</span><span class=p>,</span> <span class=n>DeliveryEvent</span><span class=p>&gt;&gt;</span> <span class=n>sortedEvents</span> <span class=p>=</span>
+</span></span><span class=line><span class=cl>            <span class=n>events</span><span class=p>.</span><span class=n>GroupBy</span><span class=p>(</span><span class=n>ev</span> <span class=p>=&gt;</span> <span class=n>ev</span><span class=p>.</span><span class=n>Time</span><span class=p>).</span><span class=n>OrderBy</span><span class=p>(</span><span class=n>g</span> <span class=p>=&gt;</span> <span class=n>g</span><span class=p>.</span><span class=n>Key</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>concurrentCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>Dictionary</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>,</span> <span class=kt>int</span><span class=p>&gt;</span> <span class=n>multiplierByDeliveryId</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>        <span class=kt>decimal</span> <span class=n>runningPayout</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>HashSet</span><span class=p>&lt;</span><span class=kt>string</span><span class=p>&gt;</span> <span class=n>deliveryIdsPendingClosure</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=n>IGrouping</span><span class=p>&lt;</span><span class=n>TimeOnly</span><span class=p>,</span> <span class=n>DeliveryEvent</span><span class=p>&gt;</span> <span class=k>group</span> <span class=k>in</span> <span class=n>sortedEvents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>DeliveryEvent</span><span class=p>[]</span> <span class=n>simultaneousEvents</span> <span class=p>=</span> <span class=p>[..</span> <span class=k>group</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// Define `concurrentCount`&#39;s delta independent of the original order in `events`.</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>newCount</span> <span class=p>=</span> <span class=k>group</span><span class=p>.</span><span class=n>Count</span><span class=p>(</span><span class=n>ev</span> <span class=p>=&gt;</span> <span class=n>ev</span><span class=p>.</span><span class=n>Status</span> <span class=p>==</span> <span class=n>DeliveryStatus</span><span class=p>.</span><span class=n>Accepted</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>concurrentCount</span> <span class=p>+=</span> <span class=n>newCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>concurrentCount</span> <span class=p>-=</span> <span class=n>simultaneousEvents</span><span class=p>.</span><span class=n>Length</span> <span class=p>-</span> <span class=n>newCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>foreach</span> <span class=p>(</span><span class=n>DeliveryEvent</span> <span class=n>@event</span> <span class=k>in</span> <span class=n>simultaneousEvents</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>switch</span> <span class=p>(</span><span class=n>@event</span><span class=p>.</span><span class=n>Status</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>DeliveryStatus</span><span class=p>.</span><span class=n>Accepted</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>var</span> <span class=n>added</span> <span class=p>=</span> <span class=n>deliveryIdsPendingClosure</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=n>@event</span><span class=p>.</span><span class=n>Id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=k>if</span> <span class=p>(!</span><span class=n>added</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentException</span><span class=p>(</span><span class=s>$&#34;Multiple Accepted events for delivery {@event.Id}&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=n>multiplierByDeliveryId</span><span class=p>[</span><span class=n>@event</span><span class=p>.</span><span class=n>Id</span><span class=p>]</span> <span class=p>=</span> <span class=n>concurrentCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>DeliveryStatus</span><span class=p>.</span><span class=n>Delivered</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>var</span> <span class=n>removed</span> <span class=p>=</span> <span class=n>deliveryIdsPendingClosure</span><span class=p>.</span><span class=n>Remove</span><span class=p>(</span><span class=n>@event</span><span class=p>.</span><span class=n>Id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=k>if</span> <span class=p>(!</span><span class=n>removed</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentException</span><span class=p>(</span><span class=s>$&#34;Delivery {@event.Id} delivered w/o being accepted first.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=n>runningPayout</span> <span class=p>+=</span> <span class=n>baseRate</span> <span class=p>*</span> <span class=p>(</span><span class=m>1</span> <span class=p>+</span> <span class=p>(</span><span class=n>bonusFactor</span> <span class=p>*</span> <span class=n>multiplierByDeliveryId</span><span class=p>[</span><span class=n>@event</span><span class=p>.</span><span class=n>Id</span><span class=p>]));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=n>DeliveryStatus</span><span class=p>.</span><span class=n>Cancelled</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=kt>var</span> <span class=n>removed</span> <span class=p>=</span> <span class=n>deliveryIdsPendingClosure</span><span class=p>.</span><span class=n>Remove</span><span class=p>(</span><span class=n>@event</span><span class=p>.</span><span class=n>Id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=k>if</span> <span class=p>(!</span><span class=n>removed</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentException</span><span class=p>(</span><span class=s>$&#34;Delivery {@event.Id} cancelled w/o being accepted first.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=k>default</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=k>throw</span> <span class=n>ExhaustiveMatch</span><span class=p>.</span><span class=n>Failed</span><span class=p>(</span><span class=n>@event</span><span class=p>.</span><span class=n>Status</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>runningPayout</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div></div><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=DasherPayoutHelloInterview>Design Dasher Payout Calculation System Based on Delivery Events | Hello Interview<i>.</i>
+</cite><a href=https://www.hellointerview.com/community/questions/dasher-payout-classes/cmdckvv0i008qad08os5l6gv2 target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>www.hellointerview.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Nov 19, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=DasherPayoutAtb0a598c>blog/content/computer-science/low-level-design/exercises/dasher-payout/DasherPayout/DasherPayout.cs at b0a598c99f9611ca66fad95b53e6b2c25217caba · dchege711/blog<i>.</i>
+</cite><a href=https://github.com/dchege711/blog/blob/b0a598c99f9611ca66fad95b53e6b2c25217caba/content/computer-science/low-level-design/exercises/dasher-payout/DasherPayout/DasherPayout.cs target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>github.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Nov 22, 2026.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=DotNetDecimal>Decimal Struct (System) | Microsoft Learn<i>.</i>
+</cite><a href="https://learn.microsoft.com/en-us/dotnet/api/system.decimal?view=net-10.0" target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=learn.microsoft.com" loading=lazy aria-hidden=true width=16 height=16>
+<i>learn.microsoft.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Nov 22, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
+<a href=/domains/github.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=github.com" loading=lazy aria-hidden=true width=16 height=16>
+github.com
+</a><a href=/domains/www.hellointerview.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=www.hellointerview.com" loading=lazy aria-hidden=true width=16 height=16>
+www.hellointerview.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/low-level-design/elevator/elevator/>&#171; Elevator Control</a></footer></section><footer><a href=/about>About</a>
+<a href=/search>Search</a></footer></div></body></html>

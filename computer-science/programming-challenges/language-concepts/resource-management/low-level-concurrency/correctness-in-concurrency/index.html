@@ -75,7 +75,11 @@ back. Bugs manifest as lost updates, e.g.,</p><div class=highlight><pre tabindex
 </span></span><span class=line><span class=cl>  <span class=kd>public</span> <span class=k>void</span> <span class=n>OnRequest</span><span class=p>()</span> <span class=p>=&gt;</span> <span class=n>_requestCount</span><span class=p>++;</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></div><p>&mldr; where threads <code>A</code> and <code>B</code> both read <code>5</code>, and both increment to <code>6</code>, even
-though the final count should be <code>7</code>. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><h2 id=solutions>Solutions</h2><h3 id=atomic-variables>Atomic Variables</h3><p>Atomic variables use special CPU instructions to perform read-modify-write
+though the final count should be <code>7</code>. <span class=citation-ref><a href=#HelloInterviewCorrectness></a></span></p><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Don&rsquo;t conflate idempotency for thread-safety. For example, adding the same key
+to a <code>HashSet</code> is idempotent, in that two sequential additions have the same
+effect. However, two concurrent additions of the same key are not thread-safe,
+e.g., the first call may embark on a rebalancing of the underlying binary tree,
+and the second concurrent call might corrupt the binary tree itself.</p></div></div><h2 id=solutions>Solutions</h2><h3 id=atomic-variables>Atomic Variables</h3><p>Atomic variables use special CPU instructions to perform read-modify-write
 operations in a single, uninterruptible step without needing a lock, e.g.,</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>BookingStats</span>
 </span></span><span class=line><span class=cl><span class=p>{</span>
 </span></span><span class=line><span class=cl>  <span class=kd>private</span> <span class=kt>int</span> <span class=n>_bookedCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>

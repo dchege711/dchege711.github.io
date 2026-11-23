@@ -1,4 +1,4 @@
-<!doctype html><html lang=en><head><title>Inheritance | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Mixins
+<!doctype html><html lang=en><head><title>Inheritance (and Ways to Avoid It) | curiosities.dev</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo (https://gohugo.io/)"><meta name=description content="Mixins
 
 
 
@@ -26,7 +26,7 @@ const randomizerMixin = (Base) =>
 
 class Foo {}
 class Bar extends calculatorMixin(randomizerMixin(Foo)) {}
-..."><meta property="og:title" content="Inheritance"><meta property="og:description" content="Mixins
+..."><meta property="og:title" content="Inheritance (and Ways to Avoid It)"><meta property="og:description" content="Mixins
 
 
 
@@ -55,8 +55,8 @@ const randomizerMixin = (Base) =>
 class Foo {}
 class Bar extends calculatorMixin(randomizerMixin(Foo)) {}
 ..."><meta property="og:type" content="website"><meta property="og:url" content="https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/"><meta property="og:site_name" content="curiosities.dev"><link rel=stylesheet type=text/css href=/css/main.min.css><link rel=preload href=/css/all_font_awesome_v5.9.min.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/all_font_awesome_v5.9.min.min.css></noscript><link rel="shortcut icon" href=/img/favicon_io/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/img/favicon_io/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/img/favicon_io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/img/favicon_io/favicon-16x16.png><script async type=text/javascript src=/js/OrganizeCitations.min.js></script><script async type=text/javascript src=/js/HighlightAnchor.min.js></script><script async type=text/javascript src=/js/SummaryPageUtils.min.js></script><link rel=preload href=/css/vs.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=/css/vs.min.css></noscript><script defer type=text/javascript src=/js/highlight.min.min.js onload=addURLHighlighter()></script><script defer>const hjlsURLRegex=/https?:\/\/[^\s<]+/g,hjlsCitationRegex=/&lt;span class=&quot;citation-ref&quot;&gt;&lt;a href=&quot;(.*)&quot;&gt;&lt;\/a&gt;&lt;\/span&gt;/g;function addURLHighlighter(){hljs.addPlugin({"after:highlight":e=>{e.value=e.value.replaceAll(hjlsURLRegex,"<a href='$&' target='_blank'>$&</a>"),console.log(e.value),e.value=e.value.replaceAll(hjlsCitationRegex,"<span class='citation-ref'><a href='$1'></a></span>")}}),hljs.highlightAll()}</script></head><body><div class=container id=main_div><form action=/search method=get id=globalSearchForm><input type=text id=q name=q title="Search Query">
-<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/>Inheritance</a></li></ul></nav><section><header><h1>Inheritance</h1><p class=meta>Dated May 5, 2024;
-last modified on Sun, 05 May 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#mixins>Mixins</a></li></ul></nav></aside><article id=main-article><h2 id=mixins>Mixins</h2><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Introduced to mixins by <span class=citation-ref><a href=#mixinsLit></a></span>. Didn&rsquo;t know that there
+<input type=submit id=submitButton value=Search></form><nav aria-label=Breadcrumb class=breadcrumb><ul><li><a href=https://www.curiosities.dev/>Home</a></li><li><a href=https://www.curiosities.dev/computer-science/>Computer Science & Software Engineering</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/>Programming Challenges</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/>Language Concepts</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/>Type Systems</a></li><li><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/>User-Defined Types</a></li><li class=active><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/inheritance/>Inheritance (and Ways to Avoid It)</a></li></ul></nav><section><header><h1>Inheritance (and Ways to Avoid It)</h1><p class=meta>Dated May 5, 2024;
+last modified on Sun, 05 May 2024</p></header><div id=toc-then-article><aside id=toc><nav id=TableOfContents><ul><li><a href=#mixins>Mixins</a></li><li><a href=#structural-sub-typing>Structural Sub-Typing</a></li><li><a href=#references>References</a></li></ul></nav></aside><article id=main-article><h2 id=mixins>Mixins</h2><div class=comment-holder><div class=comment title="Comment: tangential aside"><p>Introduced to mixins by <span class=citation-ref><a href=#mixinsLit></a></span>. Didn&rsquo;t know that there
 are passionate advocates for this, e.g., <span class=citation-ref><a href=#fagnani2015></a></span>&rsquo;s &ldquo;You
 can even look at normal subclass inheritance as a degenerate form of
 mixin inheritance where the superclass is known at class definition
@@ -78,7 +78,26 @@ use one particular feature in a lot of different classes. One way to
 think about mixins is a small base type designed to add a small amount
 of functionality to a type without otherwise affecting that type. <span class=citation-ref><a href=#mixinUsefulnessSO></a></span>Mixins are rarely useful as standalone
 objects. One can think of it as an interface with an associated
-implementation. <span class=citation-ref><a href=#mixinVsInheritanceSO></a></span></p><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=mixinsLit>Mixins – Lit<i>.</i>
+implementation. <span class=citation-ref><a href=#mixinVsInheritanceSO></a></span></p><h2 id=structural-sub-typing>Structural Sub-Typing</h2><p>Python&rsquo;s <code>Protocol</code> exists to support structural subtyping, e.g., given
+the <code>SupportsClose</code> protocol:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=kn>from</span> <span class=nn>typing</span> <span class=kn>import</span> <span class=n>Protocol</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SupportsClose</span><span class=p>(</span><span class=n>Protocol</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>close</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>pass</span>
+</span></span></code></pre></div><p>&mldr; and some class with a <code>close</code> method whose type signature is assignable to
+<code>SupportsClose.close</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>class</span> <span class=nc>Resource</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=c1># ...</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>close</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=bp>self</span><span class=o>.</span><span class=n>file</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=bp>self</span><span class=o>.</span><span class=n>lock</span><span class=o>.</span><span class=n>release</span><span class=p>()</span>
+</span></span></code></pre></div><p>&mldr; and a function like:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=k>def</span> <span class=nf>close_all</span><span class=p>(</span><span class=n>things</span><span class=p>:</span> <span class=n>Iterable</span><span class=p>[</span><span class=n>SupportsClose</span><span class=p>])</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=n>t</span> <span class=ow>in</span> <span class=n>things</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>t</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span></code></pre></div><p>&mldr; then this successfully type-checks:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-py data-lang=py><span class=line><span class=cl><span class=n>f</span> <span class=o>=</span> <span class=nb>open</span><span class=p>(</span><span class=s2>&#34;foo.txt&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>r</span> <span class=o>=</span> <span class=n>Resource</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>close_all</span><span class=p>([</span><span class=n>f</span><span class=p>,</span> <span class=n>r</span><span class=p>])</span>
+</span></span></code></pre></div><p>&mldr; and notice that neither <code>Resource</code> nor <code>IO</code> (from the <code>open</code> call)
+explicitly reference <code>SupportsClose</code>. <span class=citation-ref><a href=#PythonProtocols></a></span></p><h2 id=references>References</h2><ol><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=mixinsLit>Mixins – Lit<i>.</i>
 </cite><a href=https://lit.dev/docs/composition/mixins/ target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
 <i>lit.dev</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.
@@ -105,7 +124,12 @@ Accessed May 5, 2024.</div></li><li><div class=citation citation-icon-class='fas
 <i>stackoverflow.com</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
 </a>.
 <i class='fas fa-fw fa-globe' aria-hidden=true></i>
-Accessed May 5, 2024.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
+Accessed May 5, 2024.</div></li><li><div class=citation citation-icon-class='fas fa-fw fa-globe' cited-by-count is-main><cite id=PythonProtocols>Protocols — typing documentation<i>.</i>
+</cite><a href=https://typing.python.org/en/latest/spec/protocol.html target=_blank rel=noopener><img src="https://www.google.com/s2/favicons?domain=typing.python.org" loading=lazy aria-hidden=true width=16 height=16>
+<i>typing.python.org</i> <i class="fas fa-fw fa-external-link-alt" aria-hidden=true></i>
+</a>.
+<i class='fas fa-fw fa-globe' aria-hidden=true></i>
+Accessed Nov 22, 2026.</div></li></ol></article><div style=font-size:smaller><aside id=authors-holder style="margin:0 0 2%">Cited Authors:
 <a href=/cited-authors/Fagnani-Justin>Fagnani, Justin</a></aside><aside id=domains-holder style="margin:0 0 2%">Cited Domains:
 <a href=/domains/developer.mozilla.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=developer.mozilla.org" loading=lazy aria-hidden=true width=16 height=16>
 developer.mozilla.org
@@ -114,6 +138,8 @@ justinfagnani.com
 </a><a href=/domains/lit.dev style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=lit.dev" loading=lazy aria-hidden=true width=16 height=16>
 lit.dev
 </a><a href=/domains/stackoverflow.com style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com" loading=lazy aria-hidden=true width=16 height=16>
-stackoverflow.com</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/>&#171; Unions in C++</a>
+stackoverflow.com
+</a><a href=/domains/typing.python.org style="margin:0 2px"><img src="https://www.google.com/s2/favicons?domain=typing.python.org" loading=lazy aria-hidden=true width=16 height=16>
+typing.python.org</a></aside></div></div><footer><a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/unions-in-cpp/>&#171; Unions in C++</a>
 <a href=https://www.curiosities.dev/computer-science/programming-challenges/language-concepts/type-systems/user-defined-types/dict-based-impl-of-objects-and-class-python/>Dictionary-Based Implementation of Classes and Objects (Python) &#187;</a></footer></section><footer><a href=/about>About</a>
 <a href=/search>Search</a></footer></div></body></html>
